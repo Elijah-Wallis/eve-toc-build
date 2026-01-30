@@ -2,30 +2,43 @@
   "plant_type": "MedSpa (Eve)",
   "tables": {
     "leads_queue": {
+      "description": "Tracks Raw Material (WIP) entering the plant.",
       "columns": {
-        "lead_id": "UUID",
-        "created_at": "Timestamp",
-        "lead_source": "String",
-        "current_stage": "Enum",
-        "is_stale": "Boolean"
+        "lead_id": "UUID (PK)",
+        "created_at": "Timestamp (Entry Time)",
+        "lead_source": "String (Marketing Channel)",
+        "current_stage": "Enum(New, Attempted, Connected, Booked, Treated)",
+        "is_stale": "Boolean (True if time_in_system > 14 days)"
       }
     },
     "resource_capacity": {
+      "description": "Tracks the Constraints (Machines/Rooms).",
       "columns": {
-        "resource_id": "UUID",
-        "resource_name": "String",
-        "total_available_hours": "Float",
-        "booked_hours": "Float",
-        "utilization_rate": "Float"
+        "resource_id": "UUID (PK)",
+        "resource_name": "String (e.g., 'Injector_Layla', 'Laser_Room_1')",
+        "total_available_hours": "Float (Capacity)",
+        "booked_hours": "Float (Load)",
+        "utilization_rate": "Generated(booked / total)"
       }
     },
     "throughput_log": {
+      "description": "Tracks Finished Goods (T).",
       "columns": {
-        "transaction_id": "UUID",
-        "lead_id": "UUID",
+        "transaction_id": "UUID (PK)",
+        "lead_id": "UUID (FK)",
         "treatment_type": "String",
-        "revenue_collected": "Float",
-        "cycle_time_days": "Float"
+        "revenue_collected": "Float (Throughput Value)",
+        "cycle_time_days": "Float (Days from Lead Creation to Payment)"
+      }
+    },
+    "variability_metrics": {
+      "description": "Tracks Entropy (V) for VUT Calculation.",
+      "columns": {
+        "date": "Date",
+        "total_appointments": "Integer",
+        "cancellations": "Integer",
+        "no_shows": "Integer",
+        "show_rate": "Generated(1 - ((cancellations + no_shows) / total_appointments))"
       }
     }
   }
