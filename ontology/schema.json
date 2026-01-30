@@ -1,0 +1,25 @@
+{
+  "tables": {
+    "resources": {
+      "id": "UUID",
+      "name": "String",
+      "capacity_rb": "Float",
+      "current_utilization": "Float",
+      "is_bottleneck": "Boolean"
+    },
+    "inventory_buffers": {
+      "id": "UUID",
+      "resource_id": "UUID",
+      "current_wip": "Integer",
+      "buffer_size_limit": "Integer",
+      "status": "Enum(Green, Yellow, Red)"
+    },
+    "system_metrics": {
+      "timestamp": "DateTime",
+      "throughput_t": "Float",
+      "operating_expense_oe": "Float",
+      "inventory_i": "Float",
+      "fcf": "Generated(T - OE)"
+    }
+  }
+}
