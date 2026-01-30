@@ -1,25 +1,32 @@
 {
+  "plant_type": "MedSpa (Eve)",
   "tables": {
-    "resources": {
-      "id": "UUID",
-      "name": "String",
-      "capacity_rb": "Float",
-      "current_utilization": "Float",
-      "is_bottleneck": "Boolean"
+    "leads_queue": {
+      "columns": {
+        "lead_id": "UUID",
+        "created_at": "Timestamp",
+        "lead_source": "String",
+        "current_stage": "Enum",
+        "is_stale": "Boolean"
+      }
     },
-    "inventory_buffers": {
-      "id": "UUID",
-      "resource_id": "UUID",
-      "current_wip": "Integer",
-      "buffer_size_limit": "Integer",
-      "status": "Enum(Green, Yellow, Red)"
+    "resource_capacity": {
+      "columns": {
+        "resource_id": "UUID",
+        "resource_name": "String",
+        "total_available_hours": "Float",
+        "booked_hours": "Float",
+        "utilization_rate": "Float"
+      }
     },
-    "system_metrics": {
-      "timestamp": "DateTime",
-      "throughput_t": "Float",
-      "operating_expense_oe": "Float",
-      "inventory_i": "Float",
-      "fcf": "Generated(T - OE)"
+    "throughput_log": {
+      "columns": {
+        "transaction_id": "UUID",
+        "lead_id": "UUID",
+        "treatment_type": "String",
+        "revenue_collected": "Float",
+        "cycle_time_days": "Float"
+      }
     }
   }
 }
