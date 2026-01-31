@@ -1,0 +1,18 @@
+nervous_system:
+  sense: "Auditory / Speech"
+  agent_identity: "Eve - Operational Auditor"
+  voice_id: "Retell AI / Cassidy"
+  protocol: "TITAN_PROTOCOL"
+  
+  source_document: "Sales/Receptionist/Clinical Diagnostic Voice Agent SOP"
+  
+  triggers:
+    - condition: "High Friction / Low Probability Lead"
+      action: "Pivot to Virtual Consult"
+    - condition: "Gatekeeper Detected"
+      strategy: "Extreme Deference (Audit Frame)"
+      
+  integration_path:
+    brain: "GoHighLevel (Context)"
+    nerve: "Make.com (Signal)"
+    mouth: "Retell AI (Action)"
