@@ -1,0 +1,11 @@
+metabolism:
+  definition: "Conversion of Patient Flow into Revenue."
+  nutrients:
+    - {type: "Botox", energy: 450}
+    - {type: "Laser", energy: 1200}
+  organs:
+    reception: {function: "Mouth", capacity: 20}
+    numbing: {function: "Stomach", capacity: 4}
+    laser_room: {function: "Heart", capacity: 1}
+  waste:
+    churn: "Metabolic Waste"

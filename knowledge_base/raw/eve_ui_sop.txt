@@ -1,0 +1,22 @@
+EVE INTERFACE SOP
+=================
+CORE DIRECTIVE:
+The "Bifurcation of Complexity" is absolute.
+
+1. BACK-END STANDARD (The Engine)
+   - Target Audience: World-Class Engineers / System Architects.
+   - Requirement: Highest possible technical standard. Use advanced patterns (LangGraph, Vector Logic, Physics).
+   - Tone: Precise, mathematical, uncompromising.
+
+2. FRONT-END STANDARD (The Face)
+   - Target Audience: "Sarah" (Non-technical Staff).
+   - Requirement: 3rd Grade Reading Level. Zero Cognitive Load.
+   - The "Sarah Test": If a user cannot understand the action in 3 seconds, the UI is a failure.
+   - Translations:
+     * "Utilization > 90%" -> "STOP / FULL"
+     * "Variance Analysis" -> "THE COST"
+     * "Constraint" -> "TRAFFIC JAM"
+
+3. EXECUTION RULE
+   - Never expose raw data without a "Translator Layer."
+   - Visuals (Red/Green) take precedence over text.

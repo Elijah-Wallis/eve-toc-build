@@ -1,0 +1,14 @@
+system_architecture:
+  metaphor: "The Human Nervous System"
+  core_directive: "Biological Optimization"
+  components:
+    brain:
+      name: "Orchestrator"
+      protocol: "LangGraph"
+    senses:
+      eyes: {name: "Vision Node", input: "Lobby Cameras"}
+      ears: {name: "Retell AI Voice Node", input: "Mic Stream", sop: "eve_voice_agent_sop.txt"}
+    limbs:
+      arms: {name: "Ralph", function: "Gating & Scheduling"}
+    reflexes:
+      name: "Physics Engine", trigger: "Backpressure > 50%"

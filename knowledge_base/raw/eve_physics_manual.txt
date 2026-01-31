@@ -1,0 +1,109 @@
+Chapter 7: Mode: KINETIC (Pure Execution)
+Score: 98 (Surgical Application)
+Delta: Low (Raw Reality)
+Role: Eve OS Operations Architect
+Problem: Translating abstract manufacturing physics into a concrete revenue-maximization model for Eve (Medspa MSO).
+Constraint: Maximize Throughput (Revenue); Minimize Cycle Time (Patient Duration); Zero "seaman/maritime" metaphors.
+Executive Summary: The Medspa as a "Physics Engine"
+Chapter 7 of Factory Physics argues that production lines are governed by immutable mathematical laws, not just management "vibes." For Eve, we are not managing a factory of parts; we are managing a Factory of Revenue.
+To make this concrete: Your "Part" is the Patient. Your "Machine" is the Injector/Provider. Your "Throughput" is Revenue per Hour.
+Below is the translation of the chapter’s core laws into the Eve Operational Model.
+1. The Ontology: Redefining Eve’s Terms
+To optimize Eve, we must define the variables strictly.
+Factory Physics Term | Eve Translation | Concrete Definition
+Workstation | Service Bay | The Treatment Room, the Numbing Chair, or the Front Desk.
+Part | Patient Encounter | The patient moving through the appointment.
+Consumables | Inventory | Botox units, filler syringes, gauze. (These are supplies, not the product itself. The "product" is the treated patient).
+Bottleneck ($r_b$) | The Provider | The resource with the lowest capacity. Usually the Master Injector. The speed of the clinic is limited by this person's speed.
+Raw Process Time ($T_0$) | Touch Time | The absolute minimum time needed to treat a patient if the clinic were empty (0 minutes waiting).
+WIP (Work in Process) | Patient Load | The number of patients currently in the building (Waiting Room + Numbing + Treatment).
+Cycle Time (CT) | Door-to-Door Time | How long the patient is physically in the clinic.
+Throughput (TH) | Velocity | Revenue generated per hour.
+2. The Governing Laws of Eve
+A. Little’s Law ($WIP = TH \times CT$)
+This is the "F=ma" of your business. It states that the number of patients in your clinic ($WIP$) is equal to your Throughput ($TH$) multiplied by the time they spend there ($CT$).
+The Trap: Most clinic owners try to increase Revenue ($TH$) by cramming more patients into the schedule (increasing $WIP$).
+The Physics Reality: If you increase $WIP$ without increasing the speed of the Injector ($r_b$), you simply increase the Cycle Time ($CT$).
+Result: Patients wait longer, get angry, and you make zero extra money.
+Eve Protocol:
+You cannot increase Revenue ($TH$) by just filling the waiting room. You can only increase Revenue by decreasing the time it takes to treat a patient ($T_0$) or adding another Provider (Parallel Machine).
+B. The Bottleneck Rate ($r_b$)
+The capacity of Eve is defined solely by the bottleneck.
+Scenario: Front desk checks in 20 people/hour. Numbing tech preps 10 people/hour. Injector treats 4 people/hour.
+Reality: The capacity of this clinic is 4 people/hour.
+Optimization: Any money spent making the Front Desk faster is waste. You must optimize the Injector.
+C. Critical WIP ($W_0$)
+The text defines Critical WIP as the "sweet spot"—the exact amount of inventory needed to keep the bottleneck busy without creating a line.
+$$W_0 = r_b \times T_0$$
+Concrete Example for Eve:
+Bottleneck ($r_b$): Your Injector can do 2 patients per hour ($0.5$ hours per patient).
+Raw Time ($T_0$): The perfect patient journey (Check-in + Numb + Inject + Pay) takes 1 hour total.
+Calculation: $W_0 = 2 \text{ patients/hr} \times 1 \text{ hr} = 2$.
+The Eve Rule: At any given second, there should be exactly 2 patients in the flow (e.g., one numbing, one injecting).
+If WIP < 2: The Injector is idle (Lost Revenue).
+If WIP > 2: Patients are waiting (Bad Customer Experience).
+3. Variability: The Efficiency Killer
+The text distinguishes between Best Case (Robots) and Practical Worst Case (Humans).
+Best Case: Every Botox appointment takes exactly 15 minutes. No one is late.
+Worst Case (Batching): You wait for 4 patients to arrive, numb them all at once, then inject them all. (This creates massive wait times).
+Practical Worst Case (Randomness): Patients arrive late; some ask 50 questions; some bleed more; the credit card machine jams.
+Eve’s "High Optimization Delta":
+Most clinics operate in the "Bad Region" (worse than Practical Worst Case) because they allow high variability.
+The Fix (Reducing Variability):
+Standardized Intake: Digital forms done before arrival (reduces Check-in variability).
+Menu Limitations: Don't let patients decide treatment in the chair. Consults happen separate from treatment or are strictly time-boxed.
+Parallel Processing: Use "Numbing Chairs" (cheaper resource) to buffer the "Injector" (expensive bottleneck).
+4. Strategic Application: The "Botox Fab" Model
+We will apply the Penny Fab Two model (unbalanced line with multimachine stations) to Eve.
+The Setup:
+Station 1 (Check-In): 1 Receptionist. Fast process.
+Station 2 (Prep/Numb): 2 Medical Assistants (MA). Slower process, but cheap labor.
+Station 3 (Inject): 1 Master Injector. The Bottleneck.
+Station 4 (Pay/Rebook): 1 Receptionist.
+The Optimization Strategy (Kinetic):
+Step 1: Exploit the Bottleneck. The Injector must never do tasks that are not injecting.
+Action: MAs handle all photography, numbing, cleaning, and product explanation. The Injector walks in, needles, walks out.
+Step 2: Buffer the Bottleneck. Because we calculated Critical WIP ($W_0$), we know we need patients "ready to go" exactly when the Injector is free.
+Action: Ensure the Numbing Station (Station 2) always has a patient ready. It is better to have a patient wait 5 minutes in numbing than to have the Injector wait 5 minutes for a patient.
+Step 3: Unbalance the Line.
+The text states: "Unbalanced lines exhibit less congestion."
+Translation: It is okay if the Front Desk is idle 50% of the time. Do not "give them more work" just to keep them busy. Their spare capacity is "insurance" to ensure the line never stops.
+5. Labor-Constrained Systems (The "Ample Capacity" Case)
+Section 7.4 discusses lines where Labor is the constraint, not machines. This is Eve. You have plenty of rooms (Machines), but few Injectors (Labor).
+The Chaining Policy (Figure 7.20):
+The text suggests "Chaining"—cross-training staff to cover adjacent steps.
+Application: Train your MAs to Check-out/Rebook patients.
+Why: If the Front Desk gets stuck on a long phone call, the patient flow stops. If the MA can jump in and check the patient out, the flow continues, and the Cycle Time ($CT$) drops.
+6. Summary of Actionable "Eve" Laws
+Goal | Factory Physics Law | Eve Action
+Max Revenue | $TH_{max} = r_b$ | Identify the Bottleneck (Injector). Remove ALL non-needle tasks from them.
+Min Wait Time | $W_0 = r_b \times T_0$ | Calculate the ideal patient load. Do not overbook simply to "look busy."
+Control Chaos | $CT_{PWC} = T_0 + \frac{W-1}{r_b}$ | Reduce variability. Enforce late policies. Standardize procedure times.
+Scale Capacity | Parallel Machines | When $r_b$ is maxed out, you do not need more rooms; you need a second Injector.
+
+Chapter 8: The VUT Protocol for Eve
+$$CT_q \approx \left( \frac{CV_a^2 + CV_e^2}{2} \right) \times \left( \frac{u}{1-u} \right) \times t_e$$
+Translated to Eve: Wait Time depends on Variability and Utilization.
+Rule: Cap Utilization at 85%. If u > 0.9, wait times explode.
+Variability Pooling: Use generic appointment slots (e.g., "Laser Hair Removal") instead of provider-specific slots to pool capacity and reduce queues.
+
+Chapter 9: The Three Buffers
+1. Inventory (Waiting Room) - Toxic.
+2. Time (Booking Lag) - Dangerous.
+3. Capacity (Idle Staff) - Necessary Evil.
+SOP: The 85% Booking Rule. Hard cap schedules at 85%.
+SOP: Atomic Lead Processing. Batch Size = 1.
+SOP: The Bottleneck Audit. If utilization > 85%, constraint is clinical (Hire). If < 75%, constraint is marketing (Ad Spend).
+
+Chapter 10: Push vs Pull
+Eve is a CONWIP System (Constant Work In Process).
+Protocol: Set a WIP Cap (e.g., 4 Active Patients).
+If Cap is hit, Front Desk stops check-in.
+This prevents "WIP Explosions" and preserves Cycle Time.
+
+Chapter 16: Aggregate Planning
+Use the Eve Cycle Capacity Calculator.
+Load Ratio L = Required Capacity / Base Capacity.
+If L > 1.10: Trigger Tier 2 (Hire).
+If 0.9 < L < 1.10: Trigger Overtime.
+If L < 0.70: Trigger Ad Spend.
