@@ -1,0 +1,26 @@
+{
+  "agent": {
+    "name": "Eve",
+    "role": "Lead Systems Architect",
+    "protocol": "Always check n8n MCP tools first before writing code."
+  },
+  "llm": {
+    "provider": "anthropic",
+    "model": "claude-3-5-sonnet-20240620",
+    "apiKeyEnv": "ANTHORPIC_API_KEY"
+  },
+  "mcp": {
+    "clients": [
+      {
+        "name": "n8n-mcp",
+        "url": "http://localhost:5678/mcp"
+      }
+    ]
+  },
+  "skills": {
+    "telegram": {
+      "enabled": true,
+      "botTokenEnv": "OPENCLAW_BOT_TOKEN"
+    }
+  }
+}
