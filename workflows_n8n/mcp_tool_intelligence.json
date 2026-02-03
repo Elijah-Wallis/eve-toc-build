@@ -1,0 +1,83 @@
+{
+  "name": "MCP Tool - Intelligence (Clay+Xano)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual_trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {"name": "email", "value": "={{$json.email}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "input_map",
+      "name": "Input Map",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{$env.CLAY_ENRICH_URL}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParametersUi": {
+          "parameter": [
+            {"name": "email", "value": "={{$json.email}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "clay_enrich",
+      "name": "Clay Enrich",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [460, 0]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{$env.XANO_METADATA_URL}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParametersUi": {
+          "parameter": [
+            {"name": "email", "value": "={{$json.email}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "xano_metadata",
+      "name": "Xano Metadata",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [700, 0]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {"main": [[{"node": "Input Map", "type": "main", "index": 0}]]},
+    "Input Map": {"main": [[{"node": "Clay Enrich", "type": "main", "index": 0}]]},
+    "Clay Enrich": {"main": [[{"node": "Xano Metadata", "type": "main", "index": 0}]]}
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "mcpTool": {
+      "name": "intelligence",
+      "description": "Fetch lead metadata via Clay and Xano",
+      "inputSchema": {"type": "object", "properties": {"email": {"type": "string"}}, "required": ["email"]}
+    }
+  }
+}

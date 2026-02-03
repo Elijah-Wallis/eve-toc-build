@@ -1,0 +1,86 @@
+{
+  "name": "MCP Tool - Communications (Retell+Twilio)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual_trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {"name": "phone", "value": "={{$json.phone}}"},
+            {"name": "script", "value": "={{$json.script}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "input_map",
+      "name": "Input Map",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.RETELL_AI_CALL_URL}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParametersUi": {
+          "parameter": [
+            {"name": "phone", "value": "={{$json.phone}}"},
+            {"name": "script", "value": "={{$json.script}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "retell_call",
+      "name": "Retell AI Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [460, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.TWILIO_CALL_URL}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParametersUi": {
+          "parameter": [
+            {"name": "To", "value": "={{$json.phone}}"},
+            {"name": "Twiml", "value": "={{$json.script}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "twilio_call",
+      "name": "Twilio Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [700, 0]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {"main": [[{"node": "Input Map", "type": "main", "index": 0}]]},
+    "Input Map": {"main": [[{"node": "Retell AI Call", "type": "main", "index": 0}]]},
+    "Retell AI Call": {"main": [[{"node": "Twilio Call", "type": "main", "index": 0}]]}
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "mcpTool": {
+      "name": "communications",
+      "description": "Trigger AI voice call via Retell + Twilio",
+      "inputSchema": {"type": "object", "properties": {"phone": {"type": "string"}, "script": {"type": "string"}}, "required": ["phone", "script"]}
+    }
+  }
+}

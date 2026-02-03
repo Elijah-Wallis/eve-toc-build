@@ -1,0 +1,86 @@
+{
+  "name": "MCP Tool - Speech (ElevenLabs+Cartesia)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual_trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {"name": "text", "value": "={{$json.text}}"},
+            {"name": "voice_id", "value": "={{$json.voice_id}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "input_map",
+      "name": "Input Map",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.ELEVENLABS_TTS_URL}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParametersUi": {
+          "parameter": [
+            {"name": "text", "value": "={{$json.text}}"},
+            {"name": "voice_id", "value": "={{$json.voice_id}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "elevenlabs_tts",
+      "name": "ElevenLabs TTS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [460, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.CARTESIA_TTS_URL}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParametersUi": {
+          "parameter": [
+            {"name": "text", "value": "={{$json.text}}"},
+            {"name": "voice_id", "value": "={{$json.voice_id}}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "cartesia_tts",
+      "name": "Cartesia TTS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [700, 0]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {"main": [[{"node": "Input Map", "type": "main", "index": 0}]]},
+    "Input Map": {"main": [[{"node": "ElevenLabs TTS", "type": "main", "index": 0}]]},
+    "ElevenLabs TTS": {"main": [[{"node": "Cartesia TTS", "type": "main", "index": 0}]]}
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "mcpTool": {
+      "name": "speech",
+      "description": "Return audio buffer via ElevenLabs + Cartesia",
+      "inputSchema": {"type": "object", "properties": {"text": {"type": "string"}, "voice_id": {"type": "string"}}, "required": ["text", "voice_id"]}
+    }
+  }
+}
