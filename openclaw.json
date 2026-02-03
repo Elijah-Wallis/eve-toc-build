@@ -22,5 +22,12 @@
       "enabled": true,
       "botTokenEnv": "OPENCLAW_BOT_TOKEN"
     }
+  },
+  "paths": {
+    "rootDirectory": "/Users/e/Developer/eve-toc-build",
+    "knowledgeBaseDirectory": "/Users/e/Developer/eve-toc-build/knowledge_base",
+    "ontologyDirectory": "/Users/e/Developer/eve-toc-build/ontology",
+    "commandQueueFile": "/Users/e/eve_godmode/command_queue.txt",
+    "dashboardFile": "/Users/e/eve_godmode/eve-toc-build/eve_dashboard.py"
   }
 }
