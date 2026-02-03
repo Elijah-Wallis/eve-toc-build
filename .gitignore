@@ -1,3 +1,6 @@
 __pycache__/
 *.html
 .DS_Store
+.env
+vault_context.md
+maritime_leads.md
