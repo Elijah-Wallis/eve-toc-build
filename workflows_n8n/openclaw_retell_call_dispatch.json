@@ -1,0 +1,177 @@
+{
+  "name": "openclaw_retell_call_dispatch",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-dispatch",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [-320, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ [($env.CALL_WINDOW_DAYS || 'Mon,Tue,Wed,Thu,Fri,Sat').split(','), $env.CALL_WINDOW_START || '09:00', $env.CALL_WINDOW_END || '18:00', $moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago')] && ($env.CALL_WINDOW_DAYS || 'Mon,Tue,Wed,Thu,Fri,Sat').split(',').includes($moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('ddd')) && $moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('HH:mm') >= ($env.CALL_WINDOW_START || '09:00') && $moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('HH:mm') <= ($env.CALL_WINDOW_END || '18:00') }}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "2",
+      "name": "Within Call Window?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [-80, 0]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,lead_type,last_contacted_at&status=eq.NEW&phone=not.is.null&order=created_at.asc&limit=25",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+      },
+      "id": "3",
+      "name": "Fetch Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [160, 0]
+    },
+    {
+      "parameters": {
+        "batchSize": 1
+      },
+      "id": "4",
+      "name": "Split Leads",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [360, 0]
+    },
+    {
+      "parameters": {
+        "functionCode": "const lead = item.json || {};\nconst agentType = lead.lead_type === 'B2C' ? 'B2C' : 'B2B';\nconst agentId = agentType === 'B2C' ? $env.RETELL_AGENT_B2C_ID : $env.RETELL_AGENT_B2B_ID;\nconst fromNumber = $env.RETELL_FROM_NUMBER;\nreturn [{ json: { lead, agent_id: agentId, agent_type: agentType, from_number: fromNumber } }];"
+      },
+      "id": "5",
+      "name": "Build Call Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [560, 0]
+    },
+    {
+      "parameters": {
+        "url": "https://api.retellai.com/v2/create-phone-call",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={{JSON.stringify({from_number: $json.from_number, to_number: $json.lead.phone, override_agent_id: $json.agent_id, retell_llm_dynamic_variables: { lead_first_name: $json.lead.first_name || '', business_name: $json.lead.business_name || '', city: $json.lead.city || '' }})}}",
+        "headerParametersJson": "{\"Authorization\":\"Bearer {{$env.RETELL_AI_KEY}}\"}"
+      },
+      "id": "6",
+      "name": "Retell Create Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [800, 0]
+    },
+    {
+      "parameters": {
+        "functionCode": "const lead = $node[\"Build Call Payload\"].json.lead || {};\nconst agentType = $node[\"Build Call Payload\"].json.agent_type || 'B2B';\nconst resp = $json || {};\nconst callId = resp.call_id || resp.callId || resp.id || null;\nreturn [{ json: { lead, call_id: callId, agent_type: agentType } }];"
+      },
+      "id": "7",
+      "name": "Extract Call ID",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [1040, 0]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/call_sessions",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={{JSON.stringify({lead_id: $json.lead.id, retell_call_id: $json.call_id, agent_type: $json.agent_type})}}",
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
+      },
+      "id": "8",
+      "name": "Insert Call Session",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1240, -80]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?id=eq.{{$json.lead.id}}",
+        "method": "PATCH",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={{JSON.stringify({status: 'CALLING', last_contacted_at: new Date().toISOString()})}}",
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
+      },
+      "id": "9",
+      "name": "Update Lead Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1240, 80]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          { "node": "Within Call Window?", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Within Call Window?": {
+      "main": [
+        [
+          { "node": "Fetch Leads", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Fetch Leads": {
+      "main": [
+        [
+          { "node": "Split Leads", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Split Leads": {
+      "main": [
+        [
+          { "node": "Build Call Payload", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Build Call Payload": {
+      "main": [
+        [
+          { "node": "Retell Create Call", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Retell Create Call": {
+      "main": [
+        [
+          { "node": "Extract Call ID", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Extract Call ID": {
+      "main": [
+        [
+          { "node": "Insert Call Session", "type": "main", "index": 0 },
+          { "node": "Update Lead Status", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  }
+}
