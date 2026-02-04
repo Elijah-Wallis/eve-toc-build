@@ -13,14 +13,14 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [-320, 0]
+      "position": [-360, 0]
     },
     {
       "parameters": {
         "conditions": {
           "boolean": [
             {
-              "value1": "={{ [($env.CALL_WINDOW_DAYS || 'Mon,Tue,Wed,Thu,Fri,Sat').split(','), $env.CALL_WINDOW_START || '09:00', $env.CALL_WINDOW_END || '18:00', $moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago')] && ($env.CALL_WINDOW_DAYS || 'Mon,Tue,Wed,Thu,Fri,Sat').split(',').includes($moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('ddd')) && $moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('HH:mm') >= ($env.CALL_WINDOW_START || '09:00') && $moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('HH:mm') <= ($env.CALL_WINDOW_END || '18:00') }}",
+              "value1": "={{ ($env.CALL_WINDOW_DAYS || 'Mon,Tue,Wed,Thu,Fri,Sat').split(',').includes($moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('ddd')) && $moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('HH:mm') >= ($env.CALL_WINDOW_START || '09:00') && $moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('HH:mm') <= ($env.CALL_WINDOW_END || '18:00') }}",
               "operation": "isTrue"
             }
           ]
@@ -30,11 +30,11 @@
       "name": "Within Call Window?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [-80, 0]
+      "position": [-120, 0]
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,lead_type,last_contacted_at&status=eq.NEW&phone=not.is.null&order=created_at.asc&limit=25",
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD)&phone=not.is.null&order=created_at.asc&limit=25",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
@@ -44,7 +44,7 @@
       "name": "Fetch Leads",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [160, 0]
+      "position": [140, 0]
     },
     {
       "parameters": {
@@ -54,17 +54,59 @@
       "name": "Split Leads",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 1,
-      "position": [360, 0]
+      "position": [340, 0]
     },
     {
       "parameters": {
-        "functionCode": "const lead = item.json || {};\nconst agentType = lead.lead_type === 'B2C' ? 'B2C' : 'B2B';\nconst agentId = agentType === 'B2C' ? $env.RETELL_AGENT_B2C_ID : $env.RETELL_AGENT_B2B_ID;\nconst fromNumber = $env.RETELL_FROM_NUMBER;\nreturn [{ json: { lead, agent_id: agentId, agent_type: agentType, from_number: fromNumber } }];"
+        "functionCode": "const lead = item.json || {};\nconst now = new Date();\nconst minHours = Number($env.MIN_HOURS_BETWEEN_TOUCHES || 72);\nif (!lead.phone) return [];\nif (lead.paused_until && new Date(lead.paused_until) > now) return [];\nconst touches = lead.touch_count || 0;\nif (touches >= 8) return [];\nif (lead.last_contacted_at) {\n  const diffMs = now - new Date(lead.last_contacted_at);\n  if (diffMs < minHours * 3600 * 1000) return [];\n}\nreturn [item];"
       },
       "id": "5",
+      "name": "Filter Leads",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [520, 0]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/stoplist?phone=eq.{{$json.phone}}&limit=1",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+      },
+      "id": "6",
+      "name": "Check Stoplist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [720, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$json.length || 0}}",
+              "operation": "equal",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "id": "7",
+      "name": "Not In Stoplist?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [920, 0]
+    },
+    {
+      "parameters": {
+        "functionCode": "const lead = $node[\"Filter Leads\"].json || {};\nconst agentType = lead.decision_maker_confirmed ? 'B2C' : 'B2B';\nconst agentId = agentType === 'B2C' ? $env.RETELL_AGENT_B2C_ID : $env.RETELL_AGENT_B2B_ID;\nconst fromNumber = $env.RETELL_FROM_NUMBER;\nif (!fromNumber || !lead.phone) return [];\nreturn [{ json: { lead, agent_id: agentId, agent_type: agentType, from_number: fromNumber } }];"
+      },
+      "id": "8",
       "name": "Build Call Payload",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
-      "position": [560, 0]
+      "position": [1120, 0]
     },
     {
       "parameters": {
@@ -75,21 +117,21 @@
         "bodyParametersJson": "={{JSON.stringify({from_number: $json.from_number, to_number: $json.lead.phone, override_agent_id: $json.agent_id, retell_llm_dynamic_variables: { lead_first_name: $json.lead.first_name || '', business_name: $json.lead.business_name || '', city: $json.lead.city || '' }})}}",
         "headerParametersJson": "{\"Authorization\":\"Bearer {{$env.RETELL_AI_KEY}}\"}"
       },
-      "id": "6",
+      "id": "9",
       "name": "Retell Create Call",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [800, 0]
+      "position": [1360, 0]
     },
     {
       "parameters": {
         "functionCode": "const lead = $node[\"Build Call Payload\"].json.lead || {};\nconst agentType = $node[\"Build Call Payload\"].json.agent_type || 'B2B';\nconst resp = $json || {};\nconst callId = resp.call_id || resp.callId || resp.id || null;\nreturn [{ json: { lead, call_id: callId, agent_type: agentType } }];"
       },
-      "id": "7",
+      "id": "10",
       "name": "Extract Call ID",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
-      "position": [1040, 0]
+      "position": [1560, 0]
     },
     {
       "parameters": {
@@ -100,11 +142,11 @@
         "bodyParametersJson": "={{JSON.stringify({lead_id: $json.lead.id, retell_call_id: $json.call_id, agent_type: $json.agent_type})}}",
         "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
       },
-      "id": "8",
+      "id": "11",
       "name": "Insert Call Session",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [1240, -80]
+      "position": [1760, -80]
     },
     {
       "parameters": {
@@ -112,14 +154,14 @@
         "method": "PATCH",
         "jsonParameters": true,
         "options": {},
-        "bodyParametersJson": "={{JSON.stringify({status: 'CALLING', last_contacted_at: new Date().toISOString()})}}",
+        "bodyParametersJson": "={{JSON.stringify({status: 'CALLING', last_contacted_at: new Date().toISOString(), first_contacted_at: $json.lead.first_contacted_at || new Date().toISOString(), touch_count: ($json.lead.touch_count || 0) + 1})}}",
         "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
       },
-      "id": "9",
+      "id": "12",
       "name": "Update Lead Status",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [1240, 80]
+      "position": [1760, 80]
     }
   ],
   "connections": {
@@ -145,6 +187,27 @@
       ]
     },
     "Split Leads": {
+      "main": [
+        [
+          { "node": "Filter Leads", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Filter Leads": {
+      "main": [
+        [
+          { "node": "Check Stoplist", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Check Stoplist": {
+      "main": [
+        [
+          { "node": "Not In Stoplist?", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Not In Stoplist?": {
       "main": [
         [
           { "node": "Build Call Payload", "type": "main", "index": 0 }

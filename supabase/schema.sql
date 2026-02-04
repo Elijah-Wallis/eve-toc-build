@@ -24,7 +24,14 @@ create table if not exists leads (
   categories text[],
   status text default 'NEW',
   lead_type text default 'B2B',
+  decision_maker_confirmed boolean default false,
+  dm_email text,
+  positive_signal boolean default false,
+  touch_count integer default 0,
+  first_contacted_at timestamptz,
   last_contacted_at timestamptz,
+  next_touch_at timestamptz,
+  paused_until timestamptz,
   created_at timestamptz default now()
 );
 
@@ -64,5 +71,7 @@ create table if not exists segments (
 
 create index if not exists leads_phone_idx on leads(phone);
 create index if not exists leads_status_idx on leads(status);
+create index if not exists leads_next_touch_idx on leads(next_touch_at);
+create index if not exists leads_paused_until_idx on leads(paused_until);
 create index if not exists lead_events_place_id_idx on lead_events(place_id);
 create index if not exists call_sessions_outcome_idx on call_sessions(outcome);

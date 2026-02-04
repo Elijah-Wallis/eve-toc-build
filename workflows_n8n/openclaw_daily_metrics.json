@@ -1,0 +1,96 @@
+{
+  "name": "openclaw_daily_metrics",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyDay",
+              "hour": 18,
+              "minute": 0
+            }
+          ]
+        },
+        "timezone": "America/Chicago"
+      },
+      "id": "1",
+      "name": "Daily Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [-420, 0]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?select=id,status,created_at",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+      },
+      "id": "2",
+      "name": "Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [-160, -120]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/call_sessions?select=id,outcome,created_at",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+      },
+      "id": "3",
+      "name": "Calls",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [-160, 80]
+    },
+    {
+      "parameters": {
+        "functionCode": "const leads = $items('Leads').map(i => i.json);\nconst calls = $items('Calls').map(i => i.json);\nconst now = new Date();\nconst since24h = new Date(now.getTime() - 24*3600*1000);\nconst since7d = new Date(now.getTime() - 7*24*3600*1000);\n\nconst totalLeads = leads.length;\nconst newLeads24h = leads.filter(l => new Date(l.created_at) >= since24h).length;\nconst calls24h = calls.filter(c => new Date(c.created_at) >= since24h).length;\nconst calls7d = calls.filter(c => new Date(c.created_at) >= since7d);\nconst granted7d = calls7d.filter(c => (c.outcome || '') === 'GRANTED').length;\nconst conversion7d = calls7d.length ? (granted7d / calls7d.length) : 0;\n\nconst outcomeCounts = calls.reduce((acc, c) => {\n  const k = c.outcome || 'UNKNOWN';\n  acc[k] = (acc[k] || 0) + 1;\n  return acc;\n}, {});\n\nreturn [{ json: {\n  totalLeads,\n  newLeads24h,\n  calls24h,\n  conversion7d,\n  outcomeCounts\n}}];"
+      },
+      "id": "4",
+      "name": "Compute Metrics",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [120, -20]
+    },
+    {
+      "parameters": {
+        "url": "https://api.telegram.org/bot{{$env.OPENCLAW_TELEGRAM_BOT_TOKEN}}/sendMessage",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={{JSON.stringify({chat_id: $env.OPENCLAW_TELEGRAM_CHAT_ID, text: `Daily Metrics\\nLeads: ${$json.totalLeads} (+${$json.newLeads24h}/24h)\\nCalls: ${$json.calls24h}/24h\\n7d Conversion: ${( ($json.conversion7d*100).toFixed(1) )}%\\nOutcomes: ${Object.entries($json.outcomeCounts).map(([k,v])=>`${k}:${v}`).join(', ')}`})}}"
+      },
+      "id": "5",
+      "name": "Send Telegram Metrics",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [360, -20]
+    }
+  ],
+  "connections": {
+    "Daily Cron": {
+      "main": [
+        [
+          { "node": "Leads", "type": "main", "index": 0 },
+          { "node": "Calls", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Leads": {
+      "main": [[{ "node": "Compute Metrics", "type": "main", "index": 0 }]]
+    },
+    "Calls": {
+      "main": [[{ "node": "Compute Metrics", "type": "main", "index": 0 }]]
+    },
+    "Compute Metrics": {
+      "main": [[{ "node": "Send Telegram Metrics", "type": "main", "index": 0 }]]
+    }
+  }
+}

@@ -1,0 +1,198 @@
+{
+  "name": "openclaw_nurture_engine",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyDay",
+              "hour": 10,
+              "minute": 0
+            }
+          ]
+        },
+        "timezone": "America/Chicago"
+      },
+      "id": "1",
+      "name": "Daily Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [-400, 0]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,next_touch_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD,QUALIFIED)&order=created_at.asc&limit=200",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+      },
+      "id": "2",
+      "name": "Fetch Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [-160, 0]
+    },
+    {
+      "parameters": {
+        "batchSize": 1
+      },
+      "id": "3",
+      "name": "Split Leads",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [40, 0]
+    },
+    {
+      "parameters": {
+        "functionCode": "const lead = item.json || {};\nconst now = new Date();\nconst gapDays = Number($env.TOUCH_GAP_DAYS || 3);\nconst maxTouches = 8;\nif (lead.paused_until && new Date(lead.paused_until) > now) return [];\nconst firstContact = lead.first_contacted_at ? new Date(lead.first_contacted_at) : null;\nconst touchCount = lead.touch_count || 0;\nconst daysSinceFirst = firstContact ? (now - firstContact) / 86400000 : 0;\nif (touchCount >= maxTouches && !lead.positive_signal && daysSinceFirst >= 30) {\n  return [{ json: { action: 'PAUSE', lead } }];\n}\nif (lead.next_touch_at && new Date(lead.next_touch_at) > now) return [];\nconst touchIndex = touchCount % 5; // 4:1 value:ask\nconst isValue = touchIndex < 4;\n\nconst tz = $env.CALL_WINDOW_TZ || 'America/Chicago';\nconst days = ($env.CALL_WINDOW_DAYS || 'Mon,Tue,Wed,Thu,Fri,Sat').split(',');\nconst start = $env.CALL_WINDOW_START || '09:00';\nconst end = $env.CALL_WINDOW_END || '18:00';\nconst parts = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false, weekday: 'short' }).formatToParts(now);\nconst day = parts.find(p => p.type === 'weekday')?.value || '';\nconst hour = parts.find(p => p.type === 'hour')?.value || '00';\nconst minute = parts.find(p => p.type === 'minute')?.value || '00';\nconst time = `${hour}:${minute}`;\nconst withinWindow = days.includes(day) && time >= start && time <= end;\n\nlet action = 'VALUE_LOG';\nif (isValue) {\n  if (lead.positive_signal && lead.phone && $env.TWILIO_FROM_NUMBER) action = 'VALUE_SMS';\n  else action = 'VALUE_LOG';\n} else {\n  action = withinWindow ? 'ASK_CALL' : 'VALUE_LOG';\n}\nconst nextTouchAt = new Date(now.getTime() + gapDays * 86400000).toISOString();\nreturn [{ json: { action, lead, touch_kind: isValue ? 'VALUE' : 'ASK', next_touch_at: nextTouchAt } }];"
+      },
+      "id": "4",
+      "name": "Plan Touch",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{$json.action}}",
+        "rules": [
+          { "operation": "equal", "value2": "PAUSE" },
+          { "operation": "equal", "value2": "VALUE_SMS" },
+          { "operation": "equal", "value2": "VALUE_LOG" },
+          { "operation": "equal", "value2": "ASK_CALL" }
+        ]
+      },
+      "id": "5",
+      "name": "Route Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?id=eq.{{$json.lead.id}}",
+        "method": "PATCH",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={{JSON.stringify({status: 'PAUSED', paused_until: new Date(Date.now() + 60*86400000).toISOString()})}}",
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
+      },
+      "id": "6",
+      "name": "Pause Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, -200]
+    },
+    {
+      "parameters": {
+        "functionCode": "const lead = $json.lead;\nconst sid = $env.TWILIO_ACCOUNT_SID || '';\nconst token = $env.TWILIO_AUTH_TOKEN || '';\nconst auth = Buffer.from(`${sid}:${token}`).toString('base64');\nconst url = $env.AUDIT_REPORT_URL || '';\nconst reportText = url ? `Value report: ${url}` : 'Value report ready.';\nconst body = `Audit ready for ${lead.business_name || 'your practice'}. ${reportText} Reply to confirm best email.`;\nreturn [{ json: { auth, to: lead.phone, from: $env.TWILIO_FROM_NUMBER, body, lead } }];"
+      },
+      "id": "7",
+      "name": "Build SMS",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [680, -40]
+    },
+    {
+      "parameters": {
+        "url": "https://api.twilio.com/2010-04-01/Accounts/{{$env.TWILIO_ACCOUNT_SID}}/Messages.json",
+        "method": "POST",
+        "jsonParameters": false,
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            { "name": "To", "value": "={{$json.to}}" },
+            { "name": "From", "value": "={{$json.from}}" },
+            { "name": "Body", "value": "={{$json.body}}" }
+          ]
+        },
+        "headerParametersJson": "={{JSON.stringify({Authorization: `Basic ${$json.auth}`})}}"
+      },
+      "id": "8",
+      "name": "Send SMS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, -40]
+    },
+    {
+      "parameters": {
+        "url": "https://api.retellai.com/v2/create-phone-call",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={{JSON.stringify({from_number: $env.RETELL_FROM_NUMBER, to_number: $json.lead.phone, override_agent_id: ($json.lead.decision_maker_confirmed ? $env.RETELL_AGENT_B2C_ID : $env.RETELL_AGENT_B2B_ID), retell_llm_dynamic_variables: { business_name: $json.lead.business_name || '', city: $json.lead.city || '' }})}}",
+        "headerParametersJson": "{\"Authorization\":\"Bearer {{$env.RETELL_AI_KEY}}\"}"
+      },
+      "id": "9",
+      "name": "Ask Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [680, 120]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={{JSON.stringify({lead_id: $json.lead.id, place_id: $json.lead.place_id, event_type: ($json.action === 'VALUE_SMS' ? 'nurture_value_sms' : $json.action === 'ASK_CALL' ? 'nurture_ask_call' : 'nurture_value_log'), idempotency_key: `${$json.lead.id}-${$json.action}-${new Date().toISOString().slice(0,10)}`, payload_json: $json})}}",
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"resolution=merge-duplicates,return=minimal\"}"
+      },
+      "id": "10",
+      "name": "Insert Nurture Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, 120]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?id=eq.{{$json.lead.id}}",
+        "method": "PATCH",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={{JSON.stringify({status: ($json.action === 'ASK_CALL' ? 'CALLING' : 'NURTURE'), last_contacted_at: new Date().toISOString(), first_contacted_at: $json.lead.first_contacted_at || new Date().toISOString(), touch_count: ($json.lead.touch_count || 0) + 1, next_touch_at: $json.next_touch_at})}}",
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
+      },
+      "id": "11",
+      "name": "Update Lead Touch",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [900, 240]
+    }
+  ],
+  "connections": {
+    "Daily Cron": {
+      "main": [[{ "node": "Fetch Leads", "type": "main", "index": 0 }]]
+    },
+    "Fetch Leads": {
+      "main": [[{ "node": "Split Leads", "type": "main", "index": 0 }]]
+    },
+    "Split Leads": {
+      "main": [[{ "node": "Plan Touch", "type": "main", "index": 0 }]]
+    },
+    "Plan Touch": {
+      "main": [[{ "node": "Route Action", "type": "main", "index": 0 }]]
+    },
+    "Route Action": {
+      "main": [
+        [{ "node": "Pause Lead", "type": "main", "index": 0 }],
+        [{ "node": "Build SMS", "type": "main", "index": 0 }],
+        [{ "node": "Insert Nurture Event", "type": "main", "index": 0 }, { "node": "Update Lead Touch", "type": "main", "index": 0 }],
+        [{ "node": "Ask Call", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build SMS": {
+      "main": [[{ "node": "Send SMS", "type": "main", "index": 0 }]]
+    },
+    "Send SMS": {
+      "main": [[{ "node": "Insert Nurture Event", "type": "main", "index": 0 }, { "node": "Update Lead Touch", "type": "main", "index": 0 }]]
+    },
+    "Ask Call": {
+      "main": [[{ "node": "Insert Nurture Event", "type": "main", "index": 0 }, { "node": "Update Lead Touch", "type": "main", "index": 0 }]]
+    }
+  }
+}
