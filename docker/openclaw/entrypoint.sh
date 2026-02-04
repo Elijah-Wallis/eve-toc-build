@@ -16,6 +16,9 @@ mkdir -p "$workspace_root"
 if [[ ! -f "${workspace_root}/BOOTSTRAP.md" ]]; then
   cp -R /template/. "$workspace_root/"
 fi
+if [[ ! -e "${workspace_root}/repo" ]]; then
+  ln -s /repo "${workspace_root}/repo"
+fi
 
 auth_choice="skip"
 auth_flags=()
@@ -99,7 +102,7 @@ openclaw --profile "$profile" gateway run \
 gateway_pid="$!"
 
 tries=0
-until openclaw --profile "$profile" gateway health --timeout 10000 >/dev/null 2>&1; do
+until openclaw --profile "$profile" gateway health --timeout 5000 >/dev/null 2>&1; do
   tries=$((tries + 1))
   if [[ "$tries" -gt 50 ]]; then
     echo "ERROR: gateway failed health check" >&2
@@ -118,6 +121,7 @@ if [[ -n "${OPENCLAW_TELEGRAM_CHAT_ID:-}" ]]; then
     --every 30m \
     --agent main \
     --thinking medium \
+    --timeout-seconds 120 \
     --message "PROTOCOL ZERO. Identify the current constraint in /repo (use fast file search). Execute one safe, reversible improvement. Report: what changed, why, and next constraint." \
     --deliver \
     --channel telegram \
@@ -130,6 +134,7 @@ if [[ -n "${OPENCLAW_TELEGRAM_CHAT_ID:-}" ]]; then
     --every 24h \
     --agent main \
     --thinking low \
+    --timeout-seconds 120 \
     --message "Summarize the last 24h: actions taken, outcomes, failures, next constraint. Keep it short and signal-only." \
     --deliver \
     --channel telegram \
