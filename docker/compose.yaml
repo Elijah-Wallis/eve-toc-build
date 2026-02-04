@@ -1,0 +1,46 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    environment:
+      - N8N_PORT=5678
+      - N8N_MCP_ENABLED=true
+      - N8N_HOST=0.0.0.0
+      - N8N_PROTOCOL=http
+      - GENERIC_TIMEZONE=America/New_York
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ../workflows_n8n:/import/workflows:ro
+    restart: unless-stopped
+
+  openclaw:
+    build:
+      context: ..
+      dockerfile: docker/openclaw/Dockerfile
+    depends_on:
+      - n8n
+    environment:
+      - OPENCLAW_PROFILE=${OPENCLAW_PROFILE:-eve}
+      - OPENCLAW_GATEWAY_PORT=${OPENCLAW_GATEWAY_PORT:-19001}
+      - OPENCLAW_GATEWAY_BIND=${OPENCLAW_GATEWAY_BIND:-lan}
+      - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENCLAW_TELEGRAM_BOT_TOKEN=${OPENCLAW_TELEGRAM_BOT_TOKEN}
+      - OPENCLAW_TELEGRAM_CHAT_ID=${OPENCLAW_TELEGRAM_CHAT_ID}
+      - OPENCLAW_N8N_MCP_URL=http://n8n:5678/mcp
+      - TZ=America/New_York
+    ports:
+      - "19001:19001"
+    volumes:
+      - openclaw_state:/root
+      - ../openclaw_workspace_template:/template:ro
+      - ..:/repo:ro
+    restart: unless-stopped
+
+volumes:
+  n8n_data:
+  openclaw_state:
+
