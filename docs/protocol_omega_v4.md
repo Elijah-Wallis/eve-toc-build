@@ -67,6 +67,12 @@ python omega_factory.py \
 
 Send payload with `force_drift: true` to simulate API failure and trigger Vision fallback.
 
+## Daily Audit (Class A)
+
+```bash
+python omega_audit.py --ledger ~/.openclaw-eve/omega/ledger.jsonl
+```
+
 ## Risk Class A
 
 Class A requires Triad consensus. Configure a real LLM client in the generated skill

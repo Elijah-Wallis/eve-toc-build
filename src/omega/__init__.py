@@ -7,6 +7,7 @@ from .validator import OmegaValidator, ValidationError
 from .lazarus import VisionAgent
 from .triad import TriadConsensus, TriadDecision
 from .ledger import Ledger
+from .audit import run_audit, AuditReport
 from .runtime import OmegaRuntime, OmegaRuntimeError
 
 __all__ = [
@@ -21,6 +22,8 @@ __all__ = [
     "TriadConsensus",
     "TriadDecision",
     "Ledger",
+    "run_audit",
+    "AuditReport",
     "OmegaRuntime",
     "OmegaRuntimeError",
 ]
