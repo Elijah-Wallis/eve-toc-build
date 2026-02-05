@@ -13,7 +13,10 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [-360, 0]
+      "position": [
+        -360,
+        0
+      ]
     },
     {
       "parameters": {
@@ -30,7 +33,10 @@
       "name": "Within Call Window?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [-120, 0]
+      "position": [
+        -120,
+        0
+      ]
     },
     {
       "parameters": {
@@ -44,7 +50,10 @@
       "name": "Fetch Leads",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [140, 0]
+      "position": [
+        140,
+        0
+      ]
     },
     {
       "parameters": {
@@ -54,7 +63,10 @@
       "name": "Split Leads",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 1,
-      "position": [340, 0]
+      "position": [
+        340,
+        0
+      ]
     },
     {
       "parameters": {
@@ -64,7 +76,10 @@
       "name": "Filter Leads",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
-      "position": [520, 0]
+      "position": [
+        520,
+        0
+      ]
     },
     {
       "parameters": {
@@ -78,7 +93,10 @@
       "name": "Check Stoplist",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [720, 0]
+      "position": [
+        720,
+        0
+      ]
     },
     {
       "parameters": {
@@ -96,7 +114,10 @@
       "name": "Not In Stoplist?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [920, 0]
+      "position": [
+        920,
+        0
+      ]
     },
     {
       "parameters": {
@@ -106,7 +127,10 @@
       "name": "Build Call Payload",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
-      "position": [1120, 0]
+      "position": [
+        1120,
+        0
+      ]
     },
     {
       "parameters": {
@@ -121,7 +145,10 @@
       "name": "Retell Create Call",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [1360, 0]
+      "position": [
+        1360,
+        0
+      ]
     },
     {
       "parameters": {
@@ -131,7 +158,10 @@
       "name": "Extract Call ID",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
-      "position": [1560, 0]
+      "position": [
+        1560,
+        0
+      ]
     },
     {
       "parameters": {
@@ -146,7 +176,10 @@
       "name": "Insert Call Session",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [1760, -80]
+      "position": [
+        1760,
+        -80
+      ]
     },
     {
       "parameters": {
@@ -161,78 +194,184 @@
       "name": "Update Lead Status",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [1760, 80]
+      "position": [
+        1760,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/call_sessions?select=id&created_at=gte.{{$moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('YYYY-MM-DD')}}T00:00:00.000Z",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+      },
+      "id": "13",
+      "name": "Fetch Daily Calls",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        20,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$items('Fetch Daily Calls').length < Number($env.MAX_CALLS_PER_DAY || 50)}}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "14",
+      "name": "Under Daily Cap?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        220,
+        -140
+      ]
     }
   ],
   "connections": {
     "Webhook Trigger": {
       "main": [
         [
-          { "node": "Within Call Window?", "type": "main", "index": 0 }
+          {
+            "node": "Within Call Window?",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Within Call Window?": {
       "main": [
         [
-          { "node": "Fetch Leads", "type": "main", "index": 0 }
+          {
+            "node": "Fetch Daily Calls",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Fetch Leads": {
       "main": [
         [
-          { "node": "Split Leads", "type": "main", "index": 0 }
+          {
+            "node": "Split Leads",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Split Leads": {
       "main": [
         [
-          { "node": "Filter Leads", "type": "main", "index": 0 }
+          {
+            "node": "Filter Leads",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Filter Leads": {
       "main": [
         [
-          { "node": "Check Stoplist", "type": "main", "index": 0 }
+          {
+            "node": "Check Stoplist",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Check Stoplist": {
       "main": [
         [
-          { "node": "Not In Stoplist?", "type": "main", "index": 0 }
+          {
+            "node": "Not In Stoplist?",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Not In Stoplist?": {
       "main": [
         [
-          { "node": "Build Call Payload", "type": "main", "index": 0 }
+          {
+            "node": "Build Call Payload",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Build Call Payload": {
       "main": [
         [
-          { "node": "Retell Create Call", "type": "main", "index": 0 }
+          {
+            "node": "Retell Create Call",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Retell Create Call": {
       "main": [
         [
-          { "node": "Extract Call ID", "type": "main", "index": 0 }
+          {
+            "node": "Extract Call ID",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Extract Call ID": {
       "main": [
         [
-          { "node": "Insert Call Session", "type": "main", "index": 0 },
-          { "node": "Update Lead Status", "type": "main", "index": 0 }
+          {
+            "node": "Insert Call Session",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Lead Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Daily Calls": {
+      "main": [
+        [
+          {
+            "node": "Under Daily Cap?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Under Daily Cap?": {
+      "main": [
+        [
+          {
+            "node": "Fetch Leads",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }

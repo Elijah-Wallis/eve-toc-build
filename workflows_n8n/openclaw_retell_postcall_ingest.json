@@ -13,7 +13,10 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [-320, 0]
+      "position": [
+        -320,
+        0
+      ]
     },
     {
       "parameters": {
@@ -23,7 +26,10 @@
       "name": "Normalize Outcome",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
-      "position": [-80, 0]
+      "position": [
+        -80,
+        0
+      ]
     },
     {
       "parameters": {
@@ -37,7 +43,10 @@
       "name": "Lookup Lead",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [160, 0]
+      "position": [
+        160,
+        0
+      ]
     },
     {
       "parameters": {
@@ -47,7 +56,10 @@
       "name": "Build Updates",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
-      "position": [400, 0]
+      "position": [
+        400,
+        0
+      ]
     },
     {
       "parameters": {
@@ -62,7 +74,10 @@
       "name": "Update Call Session",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [640, -120]
+      "position": [
+        640,
+        -120
+      ]
     },
     {
       "parameters": {
@@ -77,7 +92,10 @@
       "name": "Update Lead",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [640, 0]
+      "position": [
+        640,
+        0
+      ]
     },
     {
       "parameters": {
@@ -92,7 +110,10 @@
       "name": "Upsert Segment",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [640, 120]
+      "position": [
+        640,
+        120
+      ]
     },
     {
       "parameters": {
@@ -107,7 +128,10 @@
       "name": "Insert Lead Event",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [640, 240]
+      "position": [
+        640,
+        240
+      ]
     },
     {
       "parameters": {
@@ -125,7 +149,10 @@
       "name": "Outcome REVOKED?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [880, 0]
+      "position": [
+        880,
+        0
+      ]
     },
     {
       "parameters": {
@@ -140,46 +167,145 @@
       "name": "Insert Stoplist",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [1120, 0]
+      "position": [
+        1120,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "{{$env.SUPABASE_URL}}/rest/v1/lead_events?select=id&idempotency_key=eq.{{$node['Normalize Outcome'].json.call_id}}-postcall&limit=1",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+      },
+      "id": "11",
+      "name": "Check Postcall Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        140,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$json.length || 0}}",
+              "operation": "equal",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "id": "12",
+      "name": "Is New Event?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        360,
+        -140
+      ]
     }
   ],
   "connections": {
     "Webhook Trigger": {
       "main": [
         [
-          { "node": "Normalize Outcome", "type": "main", "index": 0 }
+          {
+            "node": "Normalize Outcome",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Normalize Outcome": {
       "main": [
         [
-          { "node": "Lookup Lead", "type": "main", "index": 0 }
+          {
+            "node": "Check Postcall Event",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Lookup Lead": {
       "main": [
         [
-          { "node": "Build Updates", "type": "main", "index": 0 }
+          {
+            "node": "Build Updates",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Build Updates": {
       "main": [
         [
-          { "node": "Update Call Session", "type": "main", "index": 0 },
-          { "node": "Update Lead", "type": "main", "index": 0 },
-          { "node": "Upsert Segment", "type": "main", "index": 0 },
-          { "node": "Insert Lead Event", "type": "main", "index": 0 },
-          { "node": "Outcome REVOKED?", "type": "main", "index": 0 }
+          {
+            "node": "Update Call Session",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Lead",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upsert Segment",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Insert Lead Event",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Outcome REVOKED?",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Outcome REVOKED?": {
       "main": [
         [
-          { "node": "Insert Stoplist", "type": "main", "index": 0 }
+          {
+            "node": "Insert Stoplist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Postcall Event": {
+      "main": [
+        [
+          {
+            "node": "Is New Event?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is New Event?": {
+      "main": [
+        [
+          {
+            "node": "Lookup Lead",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }

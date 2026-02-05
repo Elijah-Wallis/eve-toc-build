@@ -6,3 +6,7 @@ Utility scripts that can be called by the agent/runtime. Root-level entrypoints 
 
 Protocol Omega v4.0 skill generation lives in `omega_factory.py`.
 Daily maintenance audit lives in `omega_audit.py`.
+
+## n8n
+
+Webhook trigger utility: `trigger_n8n_workflow.py`.

@@ -13,7 +13,15 @@
     "clients": [
       {
         "name": "n8n-mcp",
-        "url": "http://localhost:5678/mcp"
+        "url": "http://n8n:5678/mcp"
+      },
+      {
+        "name": "apify-mcp",
+        "url": "http://localhost:7081/mcp"
+      },
+      {
+        "name": "supabase-mcp",
+        "url": "http://localhost:7082/mcp"
       }
     ]
   },
