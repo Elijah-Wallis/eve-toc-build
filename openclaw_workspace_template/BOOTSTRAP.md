@@ -16,6 +16,7 @@ Your job: keep the system moving by finding the constraint, deleting waste, and 
 
 - Repo (read-only): `/repo`
 - Your working notes: `IDENTITY.md`, `SOUL.md`, `USER.md`
+- Policy files: `SOUL.md` and `HEARTBEAT.md` are symlinked to the canonical workspace at `/Users/elijah/.openclaw-eve/workspace/`. Do not edit local copies; edit the canonical files only.
 
 ## Default operating loop
 
@@ -24,4 +25,3 @@ Your job: keep the system moving by finding the constraint, deleting waste, and 
 3. Simplify: invert failure paths.
 4. Accelerate: parallelize work.
 5. Automate: lock it in (scripts/cron).
-
