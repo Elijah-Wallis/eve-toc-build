@@ -34,6 +34,7 @@ flowchart LR
 
 - Runtime config: `/Users/elijah/.openclaw-eve/openclaw.json`
 - Secrets: `/Users/elijah/.openclaw_env`
+- MCP endpoints configured via environment (e.g., `N8N_MCP_URL`)
 - n8n workflows: `/Users/elijah/Developer/eve-toc-build/workflows_n8n/`
 - Supabase schema: `/Users/elijah/Developer/eve-toc-build/supabase/schema.sql`
 
