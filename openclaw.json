@@ -24,10 +24,10 @@
     }
   },
   "paths": {
-    "rootDirectory": "/Users/e/Developer/eve-toc-build",
-    "knowledgeBaseDirectory": "/Users/e/Developer/eve-toc-build/knowledge_base",
-    "ontologyDirectory": "/Users/e/Developer/eve-toc-build/ontology",
-    "commandQueueFile": "/Users/e/eve_godmode/command_queue.txt",
-    "dashboardFile": "/Users/e/eve_godmode/eve-toc-build/eve_dashboard.py"
+    "rootDirectory": "/Users/elijah/Developer/eve-toc-build",
+    "knowledgeBaseDirectory": "/Users/elijah/Developer/eve-toc-build/knowledge_base",
+    "ontologyDirectory": "/Users/elijah/Developer/eve-toc-build/ontology",
+    "commandQueueFile": "/Users/elijah/eve_godmode/command_queue.txt",
+    "dashboardFile": "/Users/elijah/eve_godmode/eve-toc-build/eve_dashboard.py"
   }
 }
