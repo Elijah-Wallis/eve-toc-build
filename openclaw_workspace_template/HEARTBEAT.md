@@ -1,10 +1,1 @@
-# HEARTBEAT.md
-
-When heartbeating, report:
-
-- Current constraint
-- One action in progress
-- One next action
-
-Keep it under 10 lines.
-
+/Users/elijah/.openclaw-eve/workspace/HEARTBEAT.md
