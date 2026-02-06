@@ -20,6 +20,8 @@ This is the single master file that lists all key system files.
 
 ## CLI
 - `openclaw_cli.py`
+- `scripts/compile_mcp_from_traffic.py`
+- `scripts/run_traffic_to_mcp_pipeline.py`
 
 ## Protocol Omega
 - `src/omega/`
@@ -54,3 +56,8 @@ This is the single master file that lists all key system files.
 
 ## IP Protection
 - `Business_Code/SOP_IP.md`
+- `Business_Code/SOP_TRAFFIC_TO_MCP_COMPILER.md`
+
+## Generated MCP Artifacts
+- `generated/mcp_from_traffic/manifest.json`
+- `SKILLS.md` (Auto-Generated MCP Skills section)

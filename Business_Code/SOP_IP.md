@@ -44,6 +44,8 @@ Elijah (OpenClaw)
 - Git history for code
 - `Business_Code/REFERENCE_INDEX.md` for asset inventory
 - `supabase/` migration history
+- `Business_Code/SOP_TRAFFIC_TO_MCP_COMPILER.md` for deterministic API-to-MCP process IP
 
 ## Notes
 - Add any IP‑relevant incidents, disclosures, or exceptions here.
+- Deterministic compiler logic and generated manifests are protected operational IP.
