@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const payload = items[0].json || {};\nconst callId = payload.call_id || payload.callId || payload.id || null;\nconst toNumber = payload.to_number || payload.customer_number || payload.to || payload.customerNumber || null;\nconst analysis = payload.call_analysis || payload.analysis || {};\nconst cad = analysis.custom_analysis_data || {};\nconst rawOutcome = cad.call_outcome || analysis.call_outcome || analysis.disposition || payload.call_outcome || '';\nconst rawText = `${rawOutcome} ${(analysis.call_summary || payload.call_summary || '')}`.toLowerCase();\nlet outcome = rawOutcome ? String(rawOutcome).toUpperCase() : '';\nif (!['GRANTED','STALLED','REVOKED','VOICEMAIL','GATEKEEPER'].includes(outcome)) {\n  if (rawText.includes('voicemail')) outcome = 'VOICEMAIL';\n  else if (rawText.includes('gatekeeper') || rawText.includes('reception')) outcome = 'GATEKEEPER';\n  else if (rawText.includes('stop') || rawText.includes('not interested') || rawText.includes('do not call')) outcome = 'REVOKED';\n  else if (rawText.includes('grant') || rawText.includes('email') || rawText.includes('demo')) outcome = 'GRANTED';\n  else outcome = 'STALLED';\n}\nconst summary = analysis.call_summary || payload.call_summary || '';\nconst duration = payload.call_duration || payload.duration || null;\nconst email = cad.email || analysis.email || payload.email || null;\nreturn [{ json: { call_id: callId, to_number: toNumber, outcome, summary, duration, email, raw: payload } }];"
+        "functionCode": "const root = items[0].json || {};\nconst payload = root.body || root;\nconst callId = payload.call_id || payload.callId || payload.id || null;\nconst toNumber = payload.to_number || payload.customer_number || payload.to || payload.customerNumber || null;\nconst analysis = payload.call_analysis || payload.analysis || {};\nconst cad = analysis.custom_analysis_data || {};\nconst rawOutcome = cad.call_outcome || analysis.call_outcome || analysis.disposition || payload.call_outcome || '';\nconst rawText = `${rawOutcome} ${(analysis.call_summary || payload.call_summary || '')}`.toLowerCase();\nlet outcome = rawOutcome ? String(rawOutcome).toUpperCase() : '';\nif (!['GRANTED','STALLED','REVOKED','VOICEMAIL','GATEKEEPER'].includes(outcome)) {\n  if (rawText.includes('voicemail')) outcome = 'VOICEMAIL';\n  else if (rawText.includes('gatekeeper') || rawText.includes('reception')) outcome = 'GATEKEEPER';\n  else if (rawText.includes('stop') || rawText.includes('not interested') || rawText.includes('do not call')) outcome = 'REVOKED';\n  else if (rawText.includes('grant') || rawText.includes('email') || rawText.includes('demo')) outcome = 'GRANTED';\n  else outcome = 'STALLED';\n}\nconst summary = analysis.call_summary || payload.call_summary || '';\nconst duration = payload.call_duration || payload.duration || null;\nconst email = cad.email || analysis.email || payload.email || null;\nreturn [{ json: { call_id: callId, to_number: toNumber, outcome, summary, duration, email, raw: payload } }];"
       },
       "id": "2",
       "name": "Normalize Outcome",
@@ -33,11 +33,14 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,status&phone=eq.{{$json.to_number}}&limit=1",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,status&phone=eq.{{$json.to_number}}&limit=1",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}"
       },
       "id": "3",
       "name": "Lookup Lead",
@@ -63,12 +66,18 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/call_sessions?retell_call_id=eq.{{$json.call_id}}",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/call_sessions?retell_call_id=eq.{{$json.call_id}}",
         "method": "PATCH",
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={{JSON.stringify({outcome: $json.outcome, summary: $json.summary, duration: $json.duration})}}",
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"return=minimal\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"return=minimal\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({outcome: $json.outcome, summary: $json.summary, duration: $json.duration})}}"
       },
       "id": "5",
       "name": "Update Call Session",
@@ -81,12 +90,18 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?id=eq.{{$json.lead_id}}",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?id=eq.{{$json.lead_id}}",
         "method": "PATCH",
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={{JSON.stringify({status: $json.status, last_contacted_at: new Date().toISOString(), positive_signal: $json.positive_signal, decision_maker_confirmed: $json.decision_maker_confirmed, dm_email: $json.dm_email})}}",
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"return=minimal\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"return=minimal\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({status: $json.status, last_contacted_at: new Date().toISOString(), positive_signal: $json.positive_signal, decision_maker_confirmed: $json.decision_maker_confirmed, dm_email: $json.dm_email})}}"
       },
       "id": "6",
       "name": "Update Lead",
@@ -99,12 +114,18 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/segments?on_conflict=lead_id",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/segments?on_conflict=lead_id",
         "method": "POST",
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={{JSON.stringify({lead_id: $json.lead_id, segment: $json.outcome, last_updated: new Date().toISOString()})}}",
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"resolution=merge-duplicates,return=minimal\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=minimal\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=minimal\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({lead_id: $json.lead_id, segment: $json.outcome, last_updated: new Date().toISOString()})}}"
       },
       "id": "7",
       "name": "Upsert Segment",
@@ -117,12 +138,18 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
         "method": "POST",
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={{JSON.stringify({lead_id: $json.lead_id, place_id: $json.place_id, event_type: 'retell_postcall', idempotency_key: ($json.call_id || 'unknown') + '-postcall', payload_json: $json.raw})}}",
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"resolution=merge-duplicates,return=minimal\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=ignore-duplicates,return=representation\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=ignore-duplicates,return=representation\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({lead_id: $json.lead_id, place_id: $json.place_id, event_type: 'retell_postcall', idempotency_key: ($json.call_id || 'unknown') + '-postcall', payload_json: $json.raw})}}"
       },
       "id": "8",
       "name": "Insert Lead Event",
@@ -156,12 +183,18 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/stoplist",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/stoplist",
         "method": "POST",
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={{JSON.stringify({phone: $node['Normalize Outcome'].json.to_number, reason: 'REVOKED', source: 'retell'})}}",
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"return=minimal\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"return=minimal\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({phone: $node['Normalize Outcome'].json.to_number, reason: 'REVOKED', source: 'retell'})}}"
       },
       "id": "10",
       "name": "Insert Stoplist",
@@ -174,28 +207,11 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/lead_events?select=id&idempotency_key=eq.{{$node['Normalize Outcome'].json.call_id}}-postcall&limit=1",
-        "method": "GET",
-        "jsonParameters": true,
-        "options": {},
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
-      },
-      "id": "11",
-      "name": "Check Postcall Event",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4,
-      "position": [
-        140,
-        -140
-      ]
-    },
-    {
-      "parameters": {
         "conditions": {
           "number": [
             {
               "value1": "={{$json.length || 0}}",
-              "operation": "equal",
+              "operation": "larger",
               "value2": 0
             }
           ]
@@ -209,6 +225,47 @@
         360,
         -140
       ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "SUPABASE_URL",
+              "value": "https://gfazwukgloydihkejrhw.supabase.co"
+            }
+          ],
+          "number": [],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "1000",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const upd = ($items('Build Updates')[0] && $items('Build Updates')[0].json) || {};\nreturn [{ json: upd }];"
+      },
+      "id": "2000",
+      "name": "Pass Updates",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        820,
+        240
+      ]
     }
   ],
   "connections": {
@@ -216,7 +273,7 @@
       "main": [
         [
           {
-            "node": "Normalize Outcome",
+            "node": "Config",
             "type": "main",
             "index": 0
           }
@@ -227,7 +284,7 @@
       "main": [
         [
           {
-            "node": "Check Postcall Event",
+            "node": "Lookup Lead",
             "type": "main",
             "index": 0
           }
@@ -249,27 +306,7 @@
       "main": [
         [
           {
-            "node": "Update Call Session",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Update Lead",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Upsert Segment",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "Insert Lead Event",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Outcome REVOKED?",
             "type": "main",
             "index": 0
           }
@@ -287,7 +324,30 @@
         ]
       ]
     },
-    "Check Postcall Event": {
+    "Is New Event?": {
+      "main": [
+        [
+          {
+            "node": "Pass Updates",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Normalize Outcome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Lead Event": {
       "main": [
         [
           {
@@ -298,16 +358,34 @@
         ]
       ]
     },
-    "Is New Event?": {
+    "Pass Updates": {
       "main": [
         [
           {
-            "node": "Lookup Lead",
+            "node": "Update Call Session",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Lead",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upsert Segment",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Outcome REVOKED?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     }
+  },
+  "settings": {
+    "availableInMCP": true
   }
 }

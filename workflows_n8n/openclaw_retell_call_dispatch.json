@@ -23,7 +23,7 @@
         "conditions": {
           "boolean": [
             {
-              "value1": "={{ ($env.CALL_WINDOW_DAYS || 'Mon,Tue,Wed,Thu,Fri,Sat').split(',').includes($moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('ddd')) && $moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('HH:mm') >= ($env.CALL_WINDOW_START || '09:00') && $moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('HH:mm') <= ($env.CALL_WINDOW_END || '18:00') }}",
+              "value1": "={{ ($node[\"Config\"].json.CALL_WINDOW_DAYS || 'Mon,Tue,Wed,Thu,Fri,Sat').split(',').includes($moment.tz($node[\"Config\"].json.CALL_WINDOW_TZ || 'America/Chicago').format('ddd')) && $moment.tz($node[\"Config\"].json.CALL_WINDOW_TZ || 'America/Chicago').format('HH:mm') >= ($node[\"Config\"].json.CALL_WINDOW_START || '09:00') && $moment.tz($node[\"Config\"].json.CALL_WINDOW_TZ || 'America/Chicago').format('HH:mm') <= ($node[\"Config\"].json.CALL_WINDOW_END || '18:00') }}",
               "operation": "isTrue"
             }
           ]
@@ -40,11 +40,14 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD)&phone=not.is.null&order=created_at.asc&limit=25",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD)&phone=not.is.null&order=created_at.asc&limit=25",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}"
       },
       "id": "3",
       "name": "Fetch Leads",
@@ -70,7 +73,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const lead = item.json || {};\nconst now = new Date();\nconst minHours = Number($env.MIN_HOURS_BETWEEN_TOUCHES || 72);\nif (!lead.phone) return [];\nif (lead.paused_until && new Date(lead.paused_until) > now) return [];\nconst touches = lead.touch_count || 0;\nif (touches >= 8) return [];\nif (lead.last_contacted_at) {\n  const diffMs = now - new Date(lead.last_contacted_at);\n  if (diffMs < minHours * 3600 * 1000) return [];\n}\nreturn [item];"
+        "functionCode": "const lead = item.json || {};\nconst now = new Date();\nconst minHours = Number($node[\"Config\"].json.MIN_HOURS_BETWEEN_TOUCHES || 72);\nif (!lead.phone) return [];\nif (lead.paused_until && new Date(lead.paused_until) > now) return [];\nconst touches = lead.touch_count || 0;\nif (touches >= 8) return [];\nif (lead.last_contacted_at) {\n  const diffMs = now - new Date(lead.last_contacted_at);\n  if (diffMs < minHours * 3600 * 1000) return [];\n}\nreturn [item];"
       },
       "id": "5",
       "name": "Filter Leads",
@@ -83,11 +86,14 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/stoplist?phone=eq.{{$json.phone}}&limit=1",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/stoplist?phone=eq.{{$json.phone}}&limit=1",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}"
       },
       "id": "6",
       "name": "Check Stoplist",
@@ -121,7 +127,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const lead = $node[\"Filter Leads\"].json || {};\nconst agentType = lead.decision_maker_confirmed ? 'B2C' : 'B2B';\nconst agentId = agentType === 'B2C' ? $env.RETELL_AGENT_B2C_ID : $env.RETELL_AGENT_B2B_ID;\nconst fromNumber = $env.RETELL_FROM_NUMBER;\nif (!fromNumber || !lead.phone) return [];\nreturn [{ json: { lead, agent_id: agentId, agent_type: agentType, from_number: fromNumber } }];"
+        "functionCode": "const lead = $node[\"Filter Leads\"].json || {};\nconst agentType = lead.decision_maker_confirmed ? 'B2C' : 'B2B';\nconst agentId = agentType === 'B2C' ? $node[\"Config\"].json.RETELL_AGENT_B2C_ID : $node[\"Config\"].json.RETELL_AGENT_B2B_ID;\nconst fromNumber = $node[\"Config\"].json.RETELL_FROM_NUMBER;\nif (!fromNumber || !lead.phone) return [];\nreturn [{ json: { lead, agent_id: agentId, agent_type: agentType, from_number: fromNumber } }];"
       },
       "id": "8",
       "name": "Build Call Payload",
@@ -139,7 +145,13 @@
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={{JSON.stringify({from_number: $json.from_number, to_number: $json.lead.phone, override_agent_id: $json.agent_id, retell_llm_dynamic_variables: { lead_first_name: $json.lead.first_name || '', business_name: $json.lead.business_name || '', city: $json.lead.city || '' }})}}",
-        "headerParametersJson": "{\"Authorization\":\"Bearer {{$env.RETELL_AI_KEY}}\"}"
+        "headerParametersJson": "={{JSON.stringify({Authorization: \"Bearer \" + $node[\"Config\"].json.RETELL_AI_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({Authorization: \"Bearer \" + $node[\"Config\"].json.RETELL_AI_KEY})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({from_number: $json.from_number, to_number: $json.lead.phone, override_agent_id: $json.agent_id, retell_llm_dynamic_variables: { lead_first_name: $json.lead.first_name || '', business_name: $json.lead.business_name || '', city: $json.lead.city || '' }})}}"
       },
       "id": "9",
       "name": "Retell Create Call",
@@ -165,12 +177,18 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/call_sessions",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/call_sessions",
         "method": "POST",
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={{JSON.stringify({lead_id: $json.lead.id, retell_call_id: $json.call_id, agent_type: $json.agent_type})}}",
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"return=minimal\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"return=minimal\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({lead_id: $json.lead.id, retell_call_id: $json.call_id, agent_type: $json.agent_type})}}"
       },
       "id": "11",
       "name": "Insert Call Session",
@@ -183,12 +201,18 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?id=eq.{{$json.lead.id}}",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?id=eq.{{$json.lead.id}}",
         "method": "PATCH",
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={{JSON.stringify({status: 'CALLING', last_contacted_at: new Date().toISOString(), first_contacted_at: $json.lead.first_contacted_at || new Date().toISOString(), touch_count: ($json.lead.touch_count || 0) + 1})}}",
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"return=minimal\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"return=minimal\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"return=minimal\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({status: 'CALLING', last_contacted_at: new Date().toISOString(), first_contacted_at: $json.lead.first_contacted_at || new Date().toISOString(), touch_count: ($json.lead.touch_count || 0) + 1})}}"
       },
       "id": "12",
       "name": "Update Lead Status",
@@ -201,11 +225,14 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/call_sessions?select=id&created_at=gte.{{$moment.tz($env.CALL_WINDOW_TZ || 'America/Chicago').format('YYYY-MM-DD')}}T00:00:00.000Z",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/call_sessions?select=id&created_at=gte.{{$moment.tz($node[\"Config\"].json.CALL_WINDOW_TZ || 'America/Chicago').format('YYYY-MM-DD')}}T00:00:00.000Z",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}"
       },
       "id": "13",
       "name": "Fetch Daily Calls",
@@ -221,7 +248,7 @@
         "conditions": {
           "boolean": [
             {
-              "value1": "={{$items('Fetch Daily Calls').length < Number($env.MAX_CALLS_PER_DAY || 50)}}",
+              "value1": "={{$items('Fetch Daily Calls').length < Number($node[\"Config\"].json.MAX_CALLS_PER_DAY || 50)}}",
               "operation": "isTrue"
             }
           ]
@@ -235,6 +262,75 @@
         220,
         -140
       ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "CALL_WINDOW_DAYS",
+              "value": "Mon,Tue,Wed,Thu,Fri,Sat"
+            },
+            {
+              "name": "CALL_WINDOW_END",
+              "value": "18:00"
+            },
+            {
+              "name": "CALL_WINDOW_START",
+              "value": "09:00"
+            },
+            {
+              "name": "CALL_WINDOW_TZ",
+              "value": "America/Chicago"
+            },
+            {
+              "name": "RETELL_AGENT_B2B_ID",
+              "value": "agent_5d6f2744acfc79e26ddce13af2"
+            },
+            {
+              "name": "RETELL_AGENT_B2C_ID",
+              "value": "agent_c42767020a829346090a7af687"
+            },
+            {
+              "name": "RETELL_AI_KEY",
+              "value": "={{$env.RETELL_AI_KEY}}"
+            },
+            {
+              "name": "RETELL_FROM_NUMBER",
+              "value": ""
+            },
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "SUPABASE_URL",
+              "value": "https://gfazwukgloydihkejrhw.supabase.co"
+            }
+          ],
+          "number": [
+            {
+              "name": "MAX_CALLS_PER_DAY",
+              "value": 50
+            },
+            {
+              "name": "MIN_HOURS_BETWEEN_TOUCHES",
+              "value": 72
+            }
+          ],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "1000",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        -200
+      ]
     }
   ],
   "connections": {
@@ -242,7 +338,7 @@
       "main": [
         [
           {
-            "node": "Within Call Window?",
+            "node": "Config",
             "type": "main",
             "index": 0
           }
@@ -374,6 +470,20 @@
           }
         ]
       ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Within Call Window?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
+  },
+  "settings": {
+    "availableInMCP": true
   }
 }

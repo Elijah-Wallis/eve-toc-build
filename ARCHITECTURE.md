@@ -11,6 +11,8 @@ flowchart LR
   OC --> TG["Telegram"]
   OC --> WH["WhatsApp"]
   MCP --> AP["Apify"]
+  OC --> RTM["Runtime Control Plane"]
+  RTM --> SB
 ```
 
 ## Protocol Omega v4.0 (Phases 0-4)
@@ -20,6 +22,16 @@ flowchart LR
 3. **Forge**: OpenAPI + test_event replay validation
 4. **Lazarus**: Vision fallback via Playwright
 5. **Triad**: Class A consensus + ledger (JSONL)
+
+## Runtime Control Plane (Order-of-Magnitude Upgrade)
+
+- **Model Router**: `src/runtime/model_router.py`
+- **Task Engine**: `src/runtime/task_engine.py`
+- **Context Store**: `src/runtime/context_store.py`
+- **Skill Graph**: `src/runtime/skill_graph.py`
+- **Skill Executor**: `src/runtime/skill_executor.py`
+- **Telemetry**: `src/runtime/telemetry.py`
+- **CLI**: `openclaw_cli.py`
 
 ## Lead-Gen Data Flow
 
@@ -37,6 +49,7 @@ flowchart LR
 - MCP endpoints configured via environment (e.g., `N8N_MCP_URL`)
 - n8n workflows: `/Users/elijah/Developer/eve-toc-build/workflows_n8n/`
 - Supabase schema: `/Users/elijah/Developer/eve-toc-build/supabase/schema.sql`
+- Supabase runtime upgrade: `/Users/elijah/Developer/eve-toc-build/supabase/upgrade_runtime.sql`
 
 ## Hard Constraints
 

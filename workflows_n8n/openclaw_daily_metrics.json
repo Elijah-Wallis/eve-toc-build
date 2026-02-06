@@ -19,35 +19,50 @@
       "name": "Daily Cron",
       "type": "n8n-nodes-base.cron",
       "typeVersion": 1,
-      "position": [-420, 0]
+      "position": [
+        -420,
+        0
+      ]
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?select=id,status,created_at",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,status,created_at",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}"
       },
       "id": "2",
       "name": "Leads",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [-160, -120]
+      "position": [
+        -160,
+        -120
+      ]
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/call_sessions?select=id,outcome,created_at",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/call_sessions?select=id,outcome,created_at",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}"
       },
       "id": "3",
       "name": "Calls",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [-160, 80]
+      "position": [
+        -160,
+        80
+      ]
     },
     {
       "parameters": {
@@ -57,40 +72,128 @@
       "name": "Compute Metrics",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
-      "position": [120, -20]
+      "position": [
+        120,
+        -20
+      ]
     },
     {
       "parameters": {
-        "url": "https://api.telegram.org/bot{{$env.OPENCLAW_TELEGRAM_BOT_TOKEN}}/sendMessage",
+        "url": "=https://api.telegram.org/bot{{$node[\"Config\"].json.OPENCLAW_TELEGRAM_BOT_TOKEN}}/sendMessage",
         "method": "POST",
         "jsonParameters": true,
         "options": {},
-        "bodyParametersJson": "={{JSON.stringify({chat_id: $env.OPENCLAW_TELEGRAM_CHAT_ID, text: `Daily Metrics\\nLeads: ${$json.totalLeads} (+${$json.newLeads24h}/24h)\\nCalls: ${$json.calls24h}/24h\\n7d Conversion: ${( ($json.conversion7d*100).toFixed(1) )}%\\nOutcomes: ${Object.entries($json.outcomeCounts).map(([k,v])=>`${k}:${v}`).join(', ')}`})}}"
+        "bodyParametersJson": "={{JSON.stringify({chat_id: $node[\"Config\"].json.OPENCLAW_TELEGRAM_CHAT_ID, text: `Daily Metrics\\nLeads: ${$json.totalLeads} (+${$json.newLeads24h}/24h)\\nCalls: ${$json.calls24h}/24h\\n7d Conversion: ${( ($json.conversion7d*100).toFixed(1) )}%\\nOutcomes: ${Object.entries($json.outcomeCounts).map(([k,v])=>`${k}:${v}`).join(', ')}`})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({chat_id: $node[\"Config\"].json.OPENCLAW_TELEGRAM_CHAT_ID, text: `Daily Metrics\\nLeads: ${$json.totalLeads} (+${$json.newLeads24h}/24h)\\nCalls: ${$json.calls24h}/24h\\n7d Conversion: ${( ($json.conversion7d*100).toFixed(1) )}%\\nOutcomes: ${Object.entries($json.outcomeCounts).map(([k,v])=>`${k}:${v}`).join(', ')}`})}}"
       },
       "id": "5",
       "name": "Send Telegram Metrics",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [360, -20]
+      "position": [
+        360,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "OPENCLAW_TELEGRAM_BOT_TOKEN",
+              "value": "={{$env.OPENCLAW_TELEGRAM_BOT_TOKEN}}"
+            },
+            {
+              "name": "OPENCLAW_TELEGRAM_CHAT_ID",
+              "value": "OPTIONAL"
+            },
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "SUPABASE_URL",
+              "value": "https://gfazwukgloydihkejrhw.supabase.co"
+            }
+          ],
+          "number": [],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "3000",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        -200
+      ]
     }
   ],
   "connections": {
     "Daily Cron": {
       "main": [
         [
-          { "node": "Leads", "type": "main", "index": 0 },
-          { "node": "Calls", "type": "main", "index": 0 }
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Leads": {
-      "main": [[{ "node": "Compute Metrics", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Compute Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Calls": {
-      "main": [[{ "node": "Compute Metrics", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Compute Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Compute Metrics": {
-      "main": [[{ "node": "Send Telegram Metrics", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Send Telegram Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Leads",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Calls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   }
 }

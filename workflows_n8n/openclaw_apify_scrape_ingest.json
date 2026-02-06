@@ -20,14 +20,17 @@
     },
     {
       "parameters": {
-        "url": "https://api.apify.com/v2/acts/{{$env.APIFY_ACTOR_ID || 'compass/crawler-google-places'}}/run-sync-get-dataset-items?token={{$env.APIFY_API_TOKEN}}&timeout=300&clean=true",
+        "url": "=https://api.apify.com/v2/acts/{{$node[\"Config\"].json.APIFY_ACTOR_ID || 'compass/crawler-google-places'}}/run-sync-get-dataset-items?token={{$node[\"Config\"].json.APIFY_API_TOKEN}}&timeout=300&clean=true",
         "method": "POST",
         "jsonParameters": true,
         "options": {
           "bodyContentType": "json",
           "timeout": 300000
         },
-        "bodyParametersJson": "={{JSON.stringify($json.apify_input || {includeWebResults:false,language:'en',maxCrawledPlacesPerSearch:30,maxImages:0,maximumLeadsEnrichmentRecords:0,scrapeContacts:false,scrapeDirectories:false,scrapeImageAuthors:false,scrapePlaceDetailPage:false,scrapeReviewsPersonalData:true,scrapeSocialMediaProfiles:{facebooks:false,instagrams:false,tiktoks:false,twitters:false,youtubes:false},scrapeTableReservationProvider:false,searchStringsArray:($json.searchStringsArray || [\"Medical Spa 78746 -CVS -Walgreens -Hotel\", \"Medical Spa 78701 -CVS -Walgreens -Hotel\", \"Medical Spa 78703 -CVS -Walgreens -Hotel\", \"Medical Spa 78704 -CVS -Walgreens -Hotel\", \"Medical Spa 78731 -CVS -Walgreens -Hotel\", \"Medical Spa 78735 -CVS -Walgreens -Hotel\", \"Medical Spa 78739 -CVS -Walgreens -Hotel\", \"Medical Spa 78756 -CVS -Walgreens -Hotel\", \"Medical Spa 78613 -CVS -Walgreens -Hotel\", \"Medical Spa 75205 -CVS -Walgreens -Hotel\", \"Medical Spa 75225 -CVS -Walgreens -Hotel\", \"Medical Spa 75201 -CVS -Walgreens -Hotel\", \"Medical Spa 75219 -CVS -Walgreens -Hotel\", \"Medical Spa 75204 -CVS -Walgreens -Hotel\", \"Medical Spa 75093 -CVS -Walgreens -Hotel\", \"Medical Spa 76092 -CVS -Walgreens -Hotel\", \"Medical Spa 75024 -CVS -Walgreens -Hotel\", \"Medical Spa 75034 -CVS -Walgreens -Hotel\", \"Medical Spa 75230 -CVS -Walgreens -Hotel\", \"Medical Spa 77019 -CVS -Walgreens -Hotel\", \"Medical Spa 77027 -CVS -Walgreens -Hotel\", \"Medical Spa 77056 -CVS -Walgreens -Hotel\", \"Medical Spa 77005 -CVS -Walgreens -Hotel\", \"Medical Spa 77479 -CVS -Walgreens -Hotel\", \"Medical Spa 77494 -CVS -Walgreens -Hotel\", \"Medical Spa 77077 -CVS -Walgreens -Hotel\", \"Medical Spa 77094 -CVS -Walgreens -Hotel\", \"Medical Spa 78209 -CVS -Walgreens -Hotel\", \"Medical Spa 78232 -CVS -Walgreens -Hotel\", \"Medical Spa 78258 -CVS -Walgreens -Hotel\"]),skipClosedPlaces:true})}}"
+        "bodyParametersJson": "={{JSON.stringify(($json.apify_input || ($json.body && $json.body.apify_input)) || {includeWebResults:false,language:'en',maxCrawledPlacesPerSearch:30,maxImages:0,maximumLeadsEnrichmentRecords:0,scrapeContacts:false,scrapeDirectories:false,scrapeImageAuthors:false,scrapePlaceDetailPage:false,scrapeReviewsPersonalData:true,scrapeSocialMediaProfiles:{facebooks:false,instagrams:false,tiktoks:false,twitters:false,youtubes:false},scrapeTableReservationProvider:false,searchStringsArray:(($json.searchStringsArray || ($json.body && $json.body.searchStringsArray)) || [\"Medical Spa 78746 -CVS -Walgreens -Hotel\", \"Medical Spa 78701 -CVS -Walgreens -Hotel\", \"Medical Spa 78703 -CVS -Walgreens -Hotel\", \"Medical Spa 78704 -CVS -Walgreens -Hotel\", \"Medical Spa 78731 -CVS -Walgreens -Hotel\", \"Medical Spa 78735 -CVS -Walgreens -Hotel\", \"Medical Spa 78739 -CVS -Walgreens -Hotel\", \"Medical Spa 78756 -CVS -Walgreens -Hotel\", \"Medical Spa 78613 -CVS -Walgreens -Hotel\", \"Medical Spa 75205 -CVS -Walgreens -Hotel\", \"Medical Spa 75225 -CVS -Walgreens -Hotel\", \"Medical Spa 75201 -CVS -Walgreens -Hotel\", \"Medical Spa 75219 -CVS -Walgreens -Hotel\", \"Medical Spa 75204 -CVS -Walgreens -Hotel\", \"Medical Spa 75093 -CVS -Walgreens -Hotel\", \"Medical Spa 76092 -CVS -Walgreens -Hotel\", \"Medical Spa 75024 -CVS -Walgreens -Hotel\", \"Medical Spa 75034 -CVS -Walgreens -Hotel\", \"Medical Spa 75230 -CVS -Walgreens -Hotel\", \"Medical Spa 77019 -CVS -Walgreens -Hotel\", \"Medical Spa 77027 -CVS -Walgreens -Hotel\", \"Medical Spa 77056 -CVS -Walgreens -Hotel\", \"Medical Spa 77005 -CVS -Walgreens -Hotel\", \"Medical Spa 77479 -CVS -Walgreens -Hotel\", \"Medical Spa 77494 -CVS -Walgreens -Hotel\", \"Medical Spa 77077 -CVS -Walgreens -Hotel\", \"Medical Spa 77094 -CVS -Walgreens -Hotel\", \"Medical Spa 78209 -CVS -Walgreens -Hotel\", \"Medical Spa 78232 -CVS -Walgreens -Hotel\", \"Medical Spa 78258 -CVS -Walgreens -Hotel\"]),skipClosedPlaces:true})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify(($json.apify_input || ($json.body && $json.body.apify_input)) || {includeWebResults:false,language:'en',maxCrawledPlacesPerSearch:30,maxImages:0,maximumLeadsEnrichmentRecords:0,scrapeContacts:false,scrapeDirectories:false,scrapeImageAuthors:false,scrapePlaceDetailPage:false,scrapeReviewsPersonalData:true,scrapeSocialMediaProfiles:{facebooks:false,instagrams:false,tiktoks:false,twitters:false,youtubes:false},scrapeTableReservationProvider:false,searchStringsArray:(($json.searchStringsArray || ($json.body && $json.body.searchStringsArray)) || [\"Medical Spa 78746 -CVS -Walgreens -Hotel\", \"Medical Spa 78701 -CVS -Walgreens -Hotel\", \"Medical Spa 78703 -CVS -Walgreens -Hotel\", \"Medical Spa 78704 -CVS -Walgreens -Hotel\", \"Medical Spa 78731 -CVS -Walgreens -Hotel\", \"Medical Spa 78735 -CVS -Walgreens -Hotel\", \"Medical Spa 78739 -CVS -Walgreens -Hotel\", \"Medical Spa 78756 -CVS -Walgreens -Hotel\", \"Medical Spa 78613 -CVS -Walgreens -Hotel\", \"Medical Spa 75205 -CVS -Walgreens -Hotel\", \"Medical Spa 75225 -CVS -Walgreens -Hotel\", \"Medical Spa 75201 -CVS -Walgreens -Hotel\", \"Medical Spa 75219 -CVS -Walgreens -Hotel\", \"Medical Spa 75204 -CVS -Walgreens -Hotel\", \"Medical Spa 75093 -CVS -Walgreens -Hotel\", \"Medical Spa 76092 -CVS -Walgreens -Hotel\", \"Medical Spa 75024 -CVS -Walgreens -Hotel\", \"Medical Spa 75034 -CVS -Walgreens -Hotel\", \"Medical Spa 75230 -CVS -Walgreens -Hotel\", \"Medical Spa 77019 -CVS -Walgreens -Hotel\", \"Medical Spa 77027 -CVS -Walgreens -Hotel\", \"Medical Spa 77056 -CVS -Walgreens -Hotel\", \"Medical Spa 77005 -CVS -Walgreens -Hotel\", \"Medical Spa 77479 -CVS -Walgreens -Hotel\", \"Medical Spa 77494 -CVS -Walgreens -Hotel\", \"Medical Spa 77077 -CVS -Walgreens -Hotel\", \"Medical Spa 77094 -CVS -Walgreens -Hotel\", \"Medical Spa 78209 -CVS -Walgreens -Hotel\", \"Medical Spa 78232 -CVS -Walgreens -Hotel\", \"Medical Spa 78258 -CVS -Walgreens -Hotel\"]),skipClosedPlaces:true})}}"
       },
       "id": "2",
       "name": "Apify Run+Fetch",
@@ -53,12 +56,18 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/leads?on_conflict=place_id",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?on_conflict=place_id",
         "method": "POST",
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={{JSON.stringify($json.lead)}}",
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"resolution=merge-duplicates,return=minimal\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=minimal\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=minimal\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($json.lead)}}"
       },
       "id": "4",
       "name": "Upsert Lead",
@@ -71,12 +80,18 @@
     },
     {
       "parameters": {
-        "url": "{{$env.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
         "method": "POST",
         "jsonParameters": true,
         "options": {},
         "bodyParametersJson": "={{JSON.stringify($json.event)}}",
-        "headerParametersJson": "{\"apikey\":\"{{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Authorization\":\"Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}\",\"Prefer\":\"resolution=merge-duplicates,return=minimal\"}"
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=minimal\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=minimal\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($json.event)}}"
       },
       "id": "5",
       "name": "Insert Lead Event",
@@ -86,6 +101,42 @@
         560,
         80
       ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "APIFY_ACTOR_ID",
+              "value": "compass~crawler-google-places"
+            },
+            {
+              "name": "APIFY_API_TOKEN",
+              "value": "={{$env.APIFY_API_TOKEN}}"
+            },
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "SUPABASE_URL",
+              "value": "https://gfazwukgloydihkejrhw.supabase.co"
+            }
+          ],
+          "number": [],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "1000",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        -200
+      ]
     }
   ],
   "connections": {
@@ -93,7 +144,7 @@
       "main": [
         [
           {
-            "node": "Apify Run+Fetch",
+            "node": "Config",
             "type": "main",
             "index": 0
           }
@@ -126,6 +177,20 @@
           }
         ]
       ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Apify Run+Fetch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
+  },
+  "settings": {
+    "availableInMCP": true
   }
 }

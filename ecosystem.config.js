@@ -1,16 +1,28 @@
 module.exports = {
   apps: [
     {
-      name: "n8n",
-      script: "n8n",
-      args: "start",
+      name: "openclaw-runtime",
+      script: "python3",
+      args: "-m src.runtime.orchestrator_runtime",
       env: {
         NODE_ENV: "production",
-        N8N_PORT: "5678",
-        N8N_MCP_ENABLED: "true"
+        OPENCLAW_CONFIG_PATH: "./openclaw.json",
+        PATH: "/opt/homebrew/opt/python@3.14/bin:/opt/homebrew/bin:/usr/bin:/bin"
       },
       autorestart: true,
-      max_memory_restart: "1G"
+      max_memory_restart: "512M"
+    },
+    {
+      name: "openclaw-telegram",
+      script: "python3",
+      args: "-m src.runtime.telegram_listener",
+      env: {
+        NODE_ENV: "production",
+        OPENCLAW_CONFIG_PATH: "./openclaw.json",
+        PATH: "/opt/homebrew/opt/python@3.14/bin:/opt/homebrew/bin:/usr/bin:/bin"
+      },
+      autorestart: true,
+      max_memory_restart: "256M"
     },
     {
       name: "openclaw",
@@ -18,7 +30,8 @@ module.exports = {
       args: "gateway start",
       env: {
         NODE_ENV: "production",
-        OPENCLAW_CONFIG_PATH: "./openclaw.json"
+        OPENCLAW_CONFIG_PATH: "./openclaw.json",
+        PATH: "/opt/homebrew/opt/python@3.14/bin:/opt/homebrew/bin:/usr/bin:/bin"
       },
       autorestart: true,
       max_memory_restart: "1G"
