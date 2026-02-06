@@ -3,4 +3,7 @@ __pycache__/
 .DS_Store
 .env
 vault_context.md
-
+generated/mcp_from_traffic/**/node_modules/
+generated/mcp_from_traffic/**/dist/
+generated/mcp_from_traffic/.venv/
+generated/mcp_from_traffic/pipeline_report.json

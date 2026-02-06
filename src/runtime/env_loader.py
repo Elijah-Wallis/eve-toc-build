@@ -4,6 +4,8 @@ import os
 from pathlib import Path
 from typing import Optional
 
+from .http_traffic import install_requests_traffic_recorder
+
 
 def load_env_file(path: Optional[str] = None) -> None:
     target = Path(os.path.expanduser(path or "~/.openclaw_env"))
@@ -18,3 +20,6 @@ def load_env_file(path: Optional[str] = None) -> None:
         value = value.strip().strip('"')
         if key and key not in os.environ:
             os.environ[key] = value
+
+    if os.environ.get("OPENCLAW_CAPTURE_TRAFFIC", "1") != "0":
+        install_requests_traffic_recorder()
