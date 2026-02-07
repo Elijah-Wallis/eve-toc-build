@@ -135,7 +135,8 @@ class TelegramRouter:
                 "workflow": workflow,
                 "error": str(exc),
             }
-        if preflight.get("overall") == "ok":
+        preflight_color = str(((preflight.get("overall_spatial") or {}).get("color") or "")).upper()
+        if preflight_color == "GREEN" or preflight.get("overall") == "ok":
             return None
         return {
             "status": "blocked",

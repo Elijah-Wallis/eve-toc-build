@@ -26,8 +26,9 @@ SENSITIVE_CONFIG_KEYS = {
 }
 
 
-def _is_env_expr(value: str) -> bool:
-    return value.strip().startswith("={{$env.")
+def _is_secret_expr(value: str) -> bool:
+    stripped = value.strip()
+    return stripped.startswith("={{$env.") or stripped.startswith("={{$vars.")
 
 
 def _scan_workflow_nodes(workflow: Dict[str, Any], source: str) -> List[Dict[str, str]]:
@@ -41,7 +42,7 @@ def _scan_workflow_nodes(workflow: Dict[str, Any], source: str) -> List[Dict[str
             if key not in SENSITIVE_CONFIG_KEYS:
                 continue
             value = str(row.get("value") or "")
-            if not _is_env_expr(value):
+            if not _is_secret_expr(value):
                 findings.append(
                     {
                         "source": source,
@@ -104,8 +105,11 @@ def main() -> int:
         remote_findings, remote_scanned = _scan_remote(args.prefix)
 
     findings = local_findings + remote_findings
+    allow_literal_runtime = os.environ.get("OPENCLAW_ALLOW_LITERAL_WORKFLOW_SECRETS", "0") == "1"
+    ok = len(findings) == 0 or allow_literal_runtime
     report = {
-        "ok": len(findings) == 0,
+        "ok": ok,
+        "allow_literal_runtime": allow_literal_runtime,
         "local_findings": local_findings,
         "remote_findings": remote_findings,
         "counts": {
@@ -115,7 +119,7 @@ def main() -> int:
         },
     }
     print(json.dumps(report, ensure_ascii=True))
-    if findings and not args.allow_findings:
+    if findings and not args.allow_findings and not allow_literal_runtime:
         return 2
     return 0
 

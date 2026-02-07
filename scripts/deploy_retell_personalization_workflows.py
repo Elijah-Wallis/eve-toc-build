@@ -102,14 +102,16 @@ def _if_bool_node(node_id: str, name: str, value_expr: str, position: List[int])
         inner = inner[3:-2]
     elif inner.startswith("={") and inner.endswith("}"):
         inner = inner[2:-1]
-    value1 = "={{(" + inner + ") === true || (" + inner + ") === 'true'}}"
+    # Coerce boolean into numeric 1/0 for deterministic IF behavior via API.
+    value1 = "={{(((" + inner + ") === true || (" + inner + ") === 'true') ? 1 : 0)}}"
     return {
         "parameters": {
             "conditions": {
-                "boolean": [
+                "number": [
                     {
                         "value1": value1,
-                        "operation": "isTrue",
+                        "operation": "equal",
+                        "value2": 1,
                     }
                 ]
             }

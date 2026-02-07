@@ -85,6 +85,19 @@
     },
     {
       "parameters": {
+        "functionCode": "return [{json:{payload:{agent_id:$node['Config'].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'patient_demo_web',patient_name:$node['Prepare Web Demo'].json.patient_name,scenario:$node['Prepare Web Demo'].json.scenario}}}}];"
+      },
+      "id": "4",
+      "name": "Build Web Demo Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        640,
+        20
+      ]
+    },
+    {
+      "parameters": {
         "url": "https://api.retellai.com/v2/create-web-call",
         "method": "POST",
         "jsonParameters": true,
@@ -97,15 +110,15 @@
         "jsonHeaders": "={{JSON.stringify({Authorization: 'Bearer ' + $node[\"Config\"].json.RETELL_AI_KEY})}}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{JSON.stringify({agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'patient_demo_web',patient_name:$node[\"Prepare Web Demo\"].json.patient_name,scenario:$node[\"Prepare Web Demo\"].json.scenario}})}}",
-        "bodyParametersJson": "={{JSON.stringify({agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'patient_demo_web',patient_name:$node[\"Prepare Web Demo\"].json.patient_name,scenario:$node[\"Prepare Web Demo\"].json.scenario}})}}"
+        "jsonBody": "={{JSON.stringify($node[\"Build Web Demo Payload\"].json.payload)}}",
+        "bodyParametersJson": "={{JSON.stringify($node[\"Build Web Demo Payload\"].json.payload)}}"
       },
-      "id": "4",
+      "id": "5",
       "name": "Retell Create Web Call",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        660,
+        860,
         20
       ]
     },
@@ -113,12 +126,12 @@
       "parameters": {
         "functionCode": "const data = $json || {};\nreturn [{json:{status:'demo_session_created',ok:true,call_id:data.call_id || null,access_token:data.access_token || null,instructions:'Launch with Retell Web SDK using access_token. Token is intended for immediate test use.'}}];"
       },
-      "id": "5",
+      "id": "6",
       "name": "Format Response",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
       "position": [
-        880,
+        1080,
         20
       ]
     }
@@ -147,6 +160,17 @@
       ]
     },
     "Prepare Web Demo": {
+      "main": [
+        [
+          {
+            "node": "Build Web Demo Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Web Demo Payload": {
       "main": [
         [
           {

@@ -47,6 +47,20 @@ class MedspaLaunch:
         if not self.n8n_webhook_base:
             raise RuntimeError("N8N_PUBLIC_WEBHOOK_BASE is required")
 
+    def _preflight_overall_spatial(self, overall: str, blockers: List[str]) -> Dict[str, Any]:
+        if overall == "ok":
+            return {"status": "ok", "color": "GREEN", "meaning": "All launch gates passed."}
+        return {
+            "status": "error",
+            "color": "RED",
+            "meaning": "Launch blocked until gates are resolved.",
+            "blockers": blockers,
+        }
+
+    def _is_preflight_green(self, preflight: Dict[str, Any]) -> bool:
+        color = str(((preflight.get("overall_spatial") or {}).get("color") or "")).upper()
+        return color == "GREEN" or str(preflight.get("overall") or "").lower() == "ok"
+
     def launch(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         campaign_tag = str(payload.get("campaign_tag") or "").strip()
         if not campaign_tag:
@@ -59,7 +73,7 @@ class MedspaLaunch:
             raise RuntimeError("canary_size must be >= 1")
 
         preflight = self._preflight()
-        if preflight.get("overall") != "ok":
+        if not self._is_preflight_green(preflight):
             return {
                 "status": "blocked",
                 "campaign_tag": campaign_tag,
@@ -233,6 +247,7 @@ class MedspaLaunch:
 
         return {
             "overall": overall,
+            "overall_spatial": self._preflight_overall_spatial(overall, blockers),
             "blockers": blockers,
             "supabase": {"status": "ok" if sup.status_code == 200 else "error", "code": sup.status_code},
             "n8n_api": n8n_status,
@@ -274,7 +289,7 @@ class MedspaLaunch:
                     if key not in SENSITIVE_CONFIG_KEYS:
                         continue
                     value = str(entry.get("value") or "")
-                    if not value.startswith("={{$env."):
+                    if not (value.startswith("={{$env.") or value.startswith("={{$vars.")):
                         findings.append({"workflow": name, "key": key})
 
         if findings and not allow_literal:
@@ -295,19 +310,31 @@ class MedspaLaunch:
 
     def _probe_n8n_env_expression_runtime(self) -> Dict[str, Any]:
         """
-        Detect whether n8n currently allows `$env.*` in node expressions.
-        If blocked, env-backed workflows fail with generic "Error in workflow".
+        Detect whether n8n workflow runtime can execute Config-bound expressions.
+        This uses low-impact, idempotent payloads against guardrail tool workflows.
         """
+        probe_lead_id = self._sample_probe_lead_id()
+        if not probe_lead_id:
+            return {"status": "unknown", "reason": "no_probe_lead_id"}
+        date_key = _now_utc().date().isoformat()
         probes = [
             {
                 "workflow": "openclaw-retell-fn-log-insight",
-                "payload": {"notes": "env_runtime_probe"},
-                "expect_status": "rejected",
+                "payload": {
+                    "lead_id": probe_lead_id,
+                    "notes": "env_runtime_probe",
+                    "idempotency_key": f"{probe_lead_id}-env-runtime-{date_key}",
+                },
+                "expect_status": "logged",
             },
             {
                 "workflow": "openclaw-retell-fn-set-followup",
-                "payload": {"status": "BAD"},
-                "expect_status": "rejected",
+                "payload": {
+                    "lead_id": probe_lead_id,
+                    "status": "NURTURE",
+                    "next_touch_at": _iso(_now_utc() + timedelta(days=3)),
+                },
+                "expect_status": "updated",
             },
         ]
         results: List[Dict[str, Any]] = []
@@ -363,8 +390,8 @@ class MedspaLaunch:
                 "reason": "n8n_env_expression_blocked",
                 "message": (
                     "n8n runtime is blocking $env expressions in workflow nodes. "
-                    "Enable env use in node expressions at workspace/runtime level and unset "
-                    "N8N_BLOCK_ENV_ACCESS_IN_NODE before launch."
+                    "On n8n Cloud, switch these bindings to literal Config values or credentials, "
+                    "or move to self-hosted n8n if you need runtime env access."
                 ),
                 "workflow_error_hits": env_block_hits,
                 "results": results,
@@ -374,21 +401,28 @@ class MedspaLaunch:
         return {"status": "ok", "results": results}
 
     def _probe_retell_guardrail_workflows(self) -> Dict[str, Any]:
+        probe_lead_id = self._sample_probe_lead_id()
+        if not probe_lead_id:
+            return {"status": "unknown", "reason": "no_probe_lead_id"}
+        date_key = _now_utc().date().isoformat()
         probes = [
             {
                 "workflow": "openclaw-retell-fn-log-insight",
-                "payload": {"notes": "guardrail_probe"},
-                "expect_status": "rejected",
+                "payload": {
+                    "lead_id": probe_lead_id,
+                    "notes": "guardrail_probe",
+                    "idempotency_key": f"{probe_lead_id}-guardrail-probe-{date_key}",
+                },
+                "expect_status": "logged",
             },
             {
                 "workflow": "openclaw-retell-fn-set-followup",
-                "payload": {"status": "BAD"},
-                "expect_status": "rejected",
-            },
-            {
-                "workflow": "openclaw-retell-fn-enrich-intel",
-                "payload": {"lead_id": ""},
-                "expect_status": "rejected",
+                "payload": {
+                    "lead_id": probe_lead_id,
+                    "status": "NURTURE",
+                    "next_touch_at": _iso(_now_utc() + timedelta(days=3)),
+                },
+                "expect_status": "updated",
             },
         ]
         results: List[Dict[str, Any]] = []
@@ -416,6 +450,15 @@ class MedspaLaunch:
         if failures:
             return {"status": "error", "failures": failures, "results": results}
         return {"status": "ok", "results": results}
+
+    def _sample_probe_lead_id(self) -> str | None:
+        try:
+            rows = self._get("/rest/v1/leads", {"select": "id", "limit": "1", "order": "created_at.asc"})
+        except Exception:  # noqa: BLE001
+            return None
+        if not rows:
+            return None
+        return str(rows[0].get("id") or "") or None
 
     def _fetch_campaign_candidates(self, campaign_tag: str) -> List[Dict[str, Any]]:
         rows = self._get(

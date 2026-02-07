@@ -86,10 +86,11 @@
     {
       "parameters": {
         "conditions": {
-          "boolean": [
+          "number": [
             {
-              "value1": "={{($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true'}}",
-              "operation": "isTrue"
+              "value1": "={{((($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true') ? 1 : 0)}}",
+              "operation": "equal",
+              "value2": 1
             }
           ]
         }
@@ -118,6 +119,19 @@
     },
     {
       "parameters": {
+        "functionCode": "return [{json:{payload:{from_number:$node['Config'].json.RETELL_FROM_NUMBER,to_number:$node['Normalize Demo Request'].json.phone,override_agent_id:$node['Config'].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'patient_demo',patient_name:$node['Normalize Demo Request'].json.patient_name,scenario:$node['Normalize Demo Request'].json.scenario}}}}];"
+      },
+      "id": "6",
+      "name": "Build Demo Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        880,
+        20
+      ]
+    },
+    {
+      "parameters": {
         "url": "https://api.retellai.com/v2/create-phone-call",
         "method": "POST",
         "jsonParameters": true,
@@ -130,28 +144,29 @@
         "jsonHeaders": "={{JSON.stringify({Authorization: 'Bearer ' + $node[\"Config\"].json.RETELL_AI_KEY})}}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{JSON.stringify({from_number:$node[\"Config\"].json.RETELL_FROM_NUMBER,to_number:$node[\"Normalize Demo Request\"].json.phone,override_agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'patient_demo',patient_name:$node[\"Normalize Demo Request\"].json.patient_name,scenario:$node[\"Normalize Demo Request\"].json.scenario}})}}",
-        "bodyParametersJson": "={{JSON.stringify({from_number:$node[\"Config\"].json.RETELL_FROM_NUMBER,to_number:$node[\"Normalize Demo Request\"].json.phone,override_agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'patient_demo',patient_name:$node[\"Normalize Demo Request\"].json.patient_name,scenario:$node[\"Normalize Demo Request\"].json.scenario}})}}"
+        "jsonBody": "={{JSON.stringify($node[\"Build Demo Payload\"].json.payload)}}",
+        "bodyParametersJson": "={{JSON.stringify($node[\"Build Demo Payload\"].json.payload)}}"
       },
-      "id": "6",
+      "id": "7",
       "name": "Retell Demo Call",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        880,
+        1100,
         20
-      ]
+      ],
+      "continueOnFail": true
     },
     {
       "parameters": {
-        "functionCode": "const data = $json || {};\nreturn [{json:{status:'demo_started',ok:true,call_id:data.call_id || data.id || null,call_status:data.call_status || null}}];"
+        "functionCode": "const data = $json || {};\nconst callId = data.call_id || data.id || null;\nif (!callId) {\n  return [{json:{status:'rejected',ok:false,reason_code:'demo_call_failed',reason_detail:data.message || data.error || 'unable to start demo call'}}];\n}\nreturn [{json:{status:'demo_started',ok:true,call_id:callId,call_status:data.call_status || null}}];"
       },
-      "id": "7",
+      "id": "8",
       "name": "Acknowledge",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
       "position": [
-        1100,
+        1320,
         20
       ]
     }
@@ -194,7 +209,7 @@
       "main": [
         [
           {
-            "node": "Retell Demo Call",
+            "node": "Build Demo Payload",
             "type": "main",
             "index": 0
           }
@@ -202,6 +217,17 @@
         [
           {
             "node": "Reject Invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Demo Payload": {
+      "main": [
+        [
+          {
+            "node": "Retell Demo Call",
             "type": "main",
             "index": 0
           }

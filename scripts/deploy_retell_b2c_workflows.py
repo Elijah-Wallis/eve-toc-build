@@ -110,9 +110,10 @@ def _if_bool_node(node_id: str, name: str, value_expr: str, position: List[int])
         inner = inner[3:-2]
     elif inner.startswith("={") and inner.endswith("}"):
         inner = inner[2:-1]
-    value1 = "={{(" + inner + ") === true || (" + inner + ") === 'true'}}"
+    # Coerce boolean into numeric 1/0 for deterministic IF behavior via API.
+    value1 = "={{(((" + inner + ") === true || (" + inner + ") === 'true') ? 1 : 0)}}"
     return {
-        "parameters": {"conditions": {"boolean": [{"value1": value1, "operation": "isTrue"}]}},
+        "parameters": {"conditions": {"number": [{"value1": value1, "operation": "equal", "value2": 1}]}},
         "id": node_id,
         "name": name,
         "type": "n8n-nodes-base.if",
@@ -476,9 +477,25 @@ def _workflow_b2c_demo_call() -> Dict[str, Any]:
     reject = (
         "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'invalid_payload',reason_detail:$json.reason_detail || 'guardrail_reject'}}];"
     )
+    build_payload = (
+        "return [{json:{payload:{"
+        "from_number:$node['Config'].json.RETELL_FROM_NUMBER,"
+        "to_number:$node['Normalize Demo Request'].json.phone,"
+        "override_agent_id:$node['Config'].json.RETELL_AGENT_B2C_ID,"
+        "retell_llm_dynamic_variables:{"
+        "mode:'patient_demo',"
+        "patient_name:$node['Normalize Demo Request'].json.patient_name,"
+        "scenario:$node['Normalize Demo Request'].json.scenario"
+        "}"
+        "}}}];"
+    )
     ack = (
         "const data = $json || {};\n"
-        "return [{json:{status:'demo_started',ok:true,call_id:data.call_id || data.id || null,call_status:data.call_status || null}}];"
+        "const callId = data.call_id || data.id || null;\n"
+        "if (!callId) {\n"
+        "  return [{json:{status:'rejected',ok:false,reason_code:'demo_call_failed',reason_detail:data.message || data.error || 'unable to start demo call'}}];\n"
+        "}\n"
+        "return [{json:{status:'demo_started',ok:true,call_id:callId,call_status:data.call_status || null}}];"
     )
     return {
         "name": "openclaw_retell_fn_b2c_demo_call",
@@ -488,17 +505,19 @@ def _workflow_b2c_demo_call() -> Dict[str, Any]:
             _function_node("3", "Normalize Demo Request", normalize, [440, 20]),
             _if_bool_node("4", "Guardrail OK?", "={{$json.guardrail_ok}}", [660, 20]),
             _function_node("5", "Reject Invalid", reject, [880, -80]),
+            _function_node("6", "Build Demo Payload", build_payload, [880, 20]),
             _http_node(
-                "6",
+                "7",
                 "Retell Demo Call",
                 "https://api.retellai.com/v2/create-phone-call",
                 "POST",
-                [880, 20],
-                json_body_expr="={{JSON.stringify({from_number:$node[\"Config\"].json.RETELL_FROM_NUMBER,to_number:$node[\"Normalize Demo Request\"].json.phone,override_agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'patient_demo',patient_name:$node[\"Normalize Demo Request\"].json.patient_name,scenario:$node[\"Normalize Demo Request\"].json.scenario}})}}",
+                [1100, 20],
+                json_body_expr="={{JSON.stringify($node[\"Build Demo Payload\"].json.payload)}}",
                 headers_expr=_retell_headers_expr(),
                 send_body=True,
+                continue_on_fail=True,
             ),
-            _function_node("7", "Acknowledge", ack, [1100, 20]),
+            _function_node("8", "Acknowledge", ack, [1320, 20]),
         ],
         "connections": {
             "Webhook Trigger": {"main": [[{"node": "Config", "type": "main", "index": 0}]]},
@@ -506,10 +525,11 @@ def _workflow_b2c_demo_call() -> Dict[str, Any]:
             "Normalize Demo Request": {"main": [[{"node": "Guardrail OK?", "type": "main", "index": 0}]]},
             "Guardrail OK?": {
                 "main": [
-                    [{"node": "Retell Demo Call", "type": "main", "index": 0}],
+                    [{"node": "Build Demo Payload", "type": "main", "index": 0}],
                     [{"node": "Reject Invalid", "type": "main", "index": 0}],
                 ]
             },
+            "Build Demo Payload": {"main": [[{"node": "Retell Demo Call", "type": "main", "index": 0}]]},
             "Retell Demo Call": {"main": [[{"node": "Acknowledge", "type": "main", "index": 0}]]},
         },
         "settings": {},
@@ -528,28 +548,40 @@ def _workflow_b2c_web_demo() -> Dict[str, Any]:
         "const data = $json || {};\n"
         "return [{json:{status:'demo_session_created',ok:true,call_id:data.call_id || null,access_token:data.access_token || null,instructions:'Launch with Retell Web SDK using access_token. Token is intended for immediate test use.'}}];"
     )
+    build_payload = (
+        "return [{json:{payload:{"
+        "agent_id:$node['Config'].json.RETELL_AGENT_B2C_ID,"
+        "retell_llm_dynamic_variables:{"
+        "mode:'patient_demo_web',"
+        "patient_name:$node['Prepare Web Demo'].json.patient_name,"
+        "scenario:$node['Prepare Web Demo'].json.scenario"
+        "}"
+        "}}}];"
+    )
     return {
         "name": "openclaw_retell_fn_b2c_web_demo",
         "nodes": [
             _webhook_node("1", "Webhook Trigger", "openclaw-retell-fn-b2c-web-demo", [20, 20]),
             _cfg_node("2", [220, 20], include_supabase=False, include_retell=True),
             _function_node("3", "Prepare Web Demo", prep, [440, 20]),
+            _function_node("4", "Build Web Demo Payload", build_payload, [640, 20]),
             _http_node(
-                "4",
+                "5",
                 "Retell Create Web Call",
                 "https://api.retellai.com/v2/create-web-call",
                 "POST",
-                [660, 20],
-                json_body_expr="={{JSON.stringify({agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'patient_demo_web',patient_name:$node[\"Prepare Web Demo\"].json.patient_name,scenario:$node[\"Prepare Web Demo\"].json.scenario}})}}",
+                [860, 20],
+                json_body_expr="={{JSON.stringify($node[\"Build Web Demo Payload\"].json.payload)}}",
                 headers_expr=_retell_headers_expr(),
                 send_body=True,
             ),
-            _function_node("5", "Format Response", format_out, [880, 20]),
+            _function_node("6", "Format Response", format_out, [1080, 20]),
         ],
         "connections": {
             "Webhook Trigger": {"main": [[{"node": "Config", "type": "main", "index": 0}]]},
             "Config": {"main": [[{"node": "Prepare Web Demo", "type": "main", "index": 0}]]},
-            "Prepare Web Demo": {"main": [[{"node": "Retell Create Web Call", "type": "main", "index": 0}]]},
+            "Prepare Web Demo": {"main": [[{"node": "Build Web Demo Payload", "type": "main", "index": 0}]]},
+            "Build Web Demo Payload": {"main": [[{"node": "Retell Create Web Call", "type": "main", "index": 0}]]},
             "Retell Create Web Call": {"main": [[{"node": "Format Response", "type": "main", "index": 0}]]},
         },
         "settings": {},
@@ -609,7 +641,7 @@ def _workflow_b2c_showrate_nudge() -> Dict[str, Any]:
                 "https://api.retellai.com/v2/create-phone-call",
                 "POST",
                 [1540, 20],
-                json_body_expr="={{JSON.stringify({from_number:$node[\"Config\"].json.RETELL_FROM_NUMBER,to_number:$node[\"Build Reminder Candidates\"].json.lead.phone,override_agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'appointment_reminder',window:$node[\"Build Reminder Candidates\"].json.window,appointment_at_iso:$node[\"Build Reminder Candidates\"].json.appointment_at_iso,business_name:$node[\"Build Reminder Candidates\"].json.lead.business_name || ''}})}}",
+                json_body_expr="={{JSON.stringify({\"from_number\":$node[\"Config\"].json.RETELL_FROM_NUMBER,\"to_number\":$node[\"Build Reminder Candidates\"].json.lead.phone,\"override_agent_id\":$node[\"Config\"].json.RETELL_AGENT_B2C_ID,\"retell_llm_dynamic_variables\":{\"mode\":\"appointment_reminder\",\"window\":$node[\"Build Reminder Candidates\"].json.window,\"appointment_at_iso\":$node[\"Build Reminder Candidates\"].json.appointment_at_iso,\"business_name\":$node[\"Build Reminder Candidates\"].json.lead.business_name || \"\"}})}}",
                 headers_expr=_retell_headers_expr(),
                 send_body=True,
                 continue_on_fail=True,

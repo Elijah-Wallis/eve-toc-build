@@ -87,10 +87,11 @@
     {
       "parameters": {
         "conditions": {
-          "boolean": [
+          "number": [
             {
-              "value1": "={{($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true'}}",
-              "operation": "isTrue"
+              "value1": "={{((($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true') ? 1 : 0)}}",
+              "operation": "equal",
+              "value2": 1
             }
           ]
         }
