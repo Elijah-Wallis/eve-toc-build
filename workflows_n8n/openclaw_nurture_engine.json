@@ -26,7 +26,7 @@
     },
     {
       "parameters": {
-        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,next_touch_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD,QUALIFIED)&order=created_at.asc&limit=200",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,source,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,next_touch_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD,QUALIFIED){{$node[\"Manual Webhook\"].json.source_filter ? '&source=eq.' + encodeURIComponent($node[\"Manual Webhook\"].json.source_filter) : ''}}&order=created_at.asc&limit={{$node[\"Manual Webhook\"].json.lead_limit || 200}}",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
@@ -238,11 +238,11 @@
             },
             {
               "name": "RETELL_AGENT_B2B_ID",
-              "value": "agent_5d6f2744acfc79e26ddce13af2"
+              "value": "={{$env.RETELL_AGENT_B2B_ID}}"
             },
             {
               "name": "RETELL_AGENT_B2C_ID",
-              "value": "agent_c42767020a829346090a7af687"
+              "value": "={{$env.RETELL_AGENT_B2C_ID}}"
             },
             {
               "name": "RETELL_AI_KEY",
@@ -250,7 +250,7 @@
             },
             {
               "name": "RETELL_FROM_NUMBER",
-              "value": ""
+              "value": "={{$env.RETELL_FROM_NUMBER}}"
             },
             {
               "name": "SUPABASE_SERVICE_ROLE_KEY",
@@ -258,7 +258,7 @@
             },
             {
               "name": "SUPABASE_URL",
-              "value": "https://gfazwukgloydihkejrhw.supabase.co"
+              "value": "={{$env.SUPABASE_URL}}"
             },
             {
               "name": "TWILIO_ACCOUNT_SID",
@@ -270,7 +270,7 @@
             },
             {
               "name": "TWILIO_FROM_NUMBER",
-              "value": ""
+              "value": "={{$env.TWILIO_FROM_NUMBER}}"
             }
           ],
           "number": [

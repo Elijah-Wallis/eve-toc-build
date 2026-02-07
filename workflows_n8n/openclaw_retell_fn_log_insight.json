@@ -1,0 +1,300 @@
+{
+  "name": "openclaw_retell_fn_log_insight",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-fn-log-insight",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "87BC13C12187E127B12332FA0C7F1299"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "SUPABASE_URL",
+              "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "RATE_LIMIT_LOG_INSIGHT_30M",
+              "value": 6
+            },
+            {
+              "name": "RATE_LIMIT_SET_FOLLOWUP_60M",
+              "value": 4
+            },
+            {
+              "name": "RATE_LIMIT_ENRICH_6H",
+              "value": 3
+            }
+          ],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        220,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = items[0]?.json || {};\nconst a = (req.body && typeof req.body === 'object') ? req.body : req;\nif (!a.lead_id) {\n  return [{json:{guardrail_ok:false,reason_code:'missing_lead_id',reason_detail:'lead_id is required'}}];\n}\nif (!a.notes && !a.outcome && !a.next_step && !a.objection) {\n  return [{json:{guardrail_ok:false,reason_code:'missing_signal_payload',reason_detail:'Provide at least notes, outcome, next_step, or objection'}}];\n}\nconst now = new Date().toISOString();\nconst eventType = a.event_type || 'retell_call_insight';\nconst idem = a.idempotency_key || `${a.call_id || a.lead_id || a.phone || 'unknown'}-${eventType}-${now}`;\nconst outcome = a.outcome || null;\nif (outcome && !['GRANTED','STALLED','REVOKED','VOICEMAIL','GATEKEEPER'].includes(String(outcome).toUpperCase())) {\n  return [{json:{guardrail_ok:false,reason_code:'invalid_outcome',reason_detail:'outcome must be one of GRANTED/STALLED/REVOKED/VOICEMAIL/GATEKEEPER'}}];\n}\nconst payload = {\n  call_id: a.call_id || null,\n  business_name: a.business_name || null,\n  phone: a.phone || null,\n  outcome,\n  objection: a.objection || null,\n  dm_name: a.dm_name || null,\n  dm_email: a.dm_email || null,\n  notes: a.notes || null,\n  next_step: a.next_step || null,\n  source: 'retell_tool'\n};\nconst rateWindowStart = new Date(Date.now() - 30*60*1000).toISOString();\nreturn [{json:{guardrail_ok:true,lead_id:a.lead_id||null,place_id:a.place_id||null,event_type:eventType,idempotency_key:idem,payload_json:payload,rate_window_start:rateWindowStart}}];"
+      },
+      "id": "3",
+      "name": "Prepare Insight Event",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        440,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true'}}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "Guardrail OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        660,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'invalid_payload',reason_detail:$json.reason_detail || 'guardrail_reject'}}];"
+      },
+      "id": "5",
+      "name": "Reject Invalid",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?select=count&lead_id=eq.{{$node[\"Prepare Insight Event\"].json.lead_id}}&event_type=eq.retell_call_insight&created_at=gte.{{$node[\"Prepare Insight Event\"].json.rate_window_start}}",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendBody": false,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "bodyParametersJson": "{}"
+      },
+      "id": "6",
+      "name": "Fetch Recent Insight Count",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        880,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={Number($json.count || 0)}",
+              "operation": "largerEqual",
+              "value2": 6
+            }
+          ]
+        }
+      },
+      "id": "7",
+      "name": "Rate Limited?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const limit = Number($node[\"Config\"].json.RATE_LIMIT_LOG_INSIGHT_30M || 6);\nreturn [{json:{status:'rejected',ok:false,reason_code:'rate_limited_log_insight',reason_detail:`Exceeded ${limit} writes in 30m window`}}];"
+      },
+      "id": "8",
+      "name": "Reject Rate Limit",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({lead_id:$node[\"Prepare Insight Event\"].json.lead_id,place_id:$node[\"Prepare Insight Event\"].json.place_id,event_type:$node[\"Prepare Insight Event\"].json.event_type,idempotency_key:$node[\"Prepare Insight Event\"].json.idempotency_key,payload_json:$node[\"Prepare Insight Event\"].json.payload_json})}}",
+        "bodyParametersJson": "={{JSON.stringify({lead_id:$node[\"Prepare Insight Event\"].json.lead_id,place_id:$node[\"Prepare Insight Event\"].json.place_id,event_type:$node[\"Prepare Insight Event\"].json.event_type,idempotency_key:$node[\"Prepare Insight Event\"].json.idempotency_key,payload_json:$node[\"Prepare Insight Event\"].json.payload_json})}}"
+      },
+      "id": "9",
+      "name": "Insert Lead Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1320,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'logged',ok:true,event:items[0]?.json||{}}}];"
+      },
+      "id": "10",
+      "name": "Acknowledge",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        20
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Prepare Insight Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Insight Event": {
+      "main": [
+        [
+          {
+            "node": "Guardrail OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrail OK?": {
+      "main": [
+        [
+          {
+            "node": "Fetch Recent Insight Count",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Recent Insight Count": {
+      "main": [
+        [
+          {
+            "node": "Rate Limited?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Limited?": {
+      "main": [
+        [
+          {
+            "node": "Insert Lead Event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Rate Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Lead Event": {
+      "main": [
+        [
+          {
+            "node": "Acknowledge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

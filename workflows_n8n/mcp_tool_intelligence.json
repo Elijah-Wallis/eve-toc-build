@@ -1,5 +1,5 @@
 {
-  "name": "MCP Tool - Intelligence (Clay+Xano)",
+  "name": "MCP Tool - Intelligence (Deprecated)",
   "nodes": [
     {
       "parameters": {},
@@ -7,68 +7,37 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
       "parameters": {
-        "values": {
-          "string": [
-            {"name": "email", "value": "={{$json.email}}"}
-          ]
-        },
-        "options": {}
+        "functionCode": "return [{json:{status:'deprecated',message:'Clay and Xano integrations were removed. Use openclaw_retell_fn_enrich_intel (Apify + Supabase).'}}];"
       },
-      "id": "input_map",
-      "name": "Input Map",
-      "type": "n8n-nodes-base.set",
+      "id": "deprecated_notice",
+      "name": "Deprecated Notice",
+      "type": "n8n-nodes-base.function",
       "typeVersion": 2,
-      "position": [220, 0]
-    },
-    {
-      "parameters": {
-        "method": "GET",
-        "url": "={{$env.CLAY_ENRICH_URL}}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "sendQuery": true,
-        "queryParametersUi": {
-          "parameter": [
-            {"name": "email", "value": "={{$json.email}}"}
-          ]
-        },
-        "options": {}
-      },
-      "id": "clay_enrich",
-      "name": "Clay Enrich",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4,
-      "position": [460, 0]
-    },
-    {
-      "parameters": {
-        "method": "GET",
-        "url": "={{$env.XANO_METADATA_URL}}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "httpHeaderAuth",
-        "sendQuery": true,
-        "queryParametersUi": {
-          "parameter": [
-            {"name": "email", "value": "={{$json.email}}"}
-          ]
-        },
-        "options": {}
-      },
-      "id": "xano_metadata",
-      "name": "Xano Metadata",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4,
-      "position": [700, 0]
+      "position": [
+        260,
+        0
+      ]
     }
   ],
   "connections": {
-    "Manual Trigger": {"main": [[{"node": "Input Map", "type": "main", "index": 0}]]},
-    "Input Map": {"main": [[{"node": "Clay Enrich", "type": "main", "index": 0}]]},
-    "Clay Enrich": {"main": [[{"node": "Xano Metadata", "type": "main", "index": 0}]]}
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Deprecated Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
   "settings": {
     "executionOrder": "v1"
@@ -76,8 +45,16 @@
   "meta": {
     "mcpTool": {
       "name": "intelligence",
-      "description": "Fetch lead metadata via Clay and Xano",
-      "inputSchema": {"type": "object", "properties": {"email": {"type": "string"}}, "required": ["email"]}
+      "description": "Deprecated wrapper: use openclaw_retell_fn_enrich_intel (Apify + Supabase)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": []
+      }
     }
   }
 }

@@ -16,6 +16,9 @@
 - Runtime entrypoints must catch `KeyboardInterrupt` and exit `0` so PM2 restarts do not pollute error logs with expected shutdown traces.
 - n8n workflow dispatch must try compatible webhook URL shapes before failing (`/{workflow}`, `/webhook/{workflow}`, `/webhook-test/{workflow}`).
 - Supabase cron registration must be idempotent (`on_conflict=name` with conflict-safe fallback update).
+- Campaign launch automation must hard-scope lead selection by `source_filter` and enforce canary caps before full ramp.
+- n8n Set-node environment expressions can be blocked by workspace policy (`N8N_BLOCK_ENV_ACCESS_IN_NODE`); validate workflow executions after config edits and avoid `$env` expressions in blocked nodes.
+- Launch preflight must include guardrail webhook probes (`openclaw-retell-fn-log-insight`, `openclaw-retell-fn-set-followup`, `openclaw-retell-fn-enrich-intel`) and hard-block if any probe returns `Error in workflow` or unexpected response.
 
 ## Secret-Handling Rules
 - Never commit raw credentials/tokens in code, workflow JSON, docs, or tests.
@@ -39,3 +42,4 @@
 - `notes/2026-02-06_telegram-longpoll-stability.md`
 - `notes/2026-02-06_scope-split-governance.md`
 - `notes/2026-02-06_traffic-to-mcp-compiler.md`
+- `notes/2026-02-07_medspa-launch-leak-seal.md`

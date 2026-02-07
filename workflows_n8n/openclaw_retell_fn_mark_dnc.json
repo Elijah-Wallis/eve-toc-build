@@ -1,0 +1,359 @@
+{
+  "name": "openclaw_retell_fn_mark_dnc",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-fn-mark-dnc",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "A17BA9ADDC12B4C8BD974F1053E23B03"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "SUPABASE_URL",
+              "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "RATE_LIMIT_LOG_INSIGHT_30M",
+              "value": 6
+            },
+            {
+              "name": "RATE_LIMIT_SET_FOLLOWUP_60M",
+              "value": 4
+            },
+            {
+              "name": "RATE_LIMIT_ENRICH_6H",
+              "value": 3
+            }
+          ],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        220,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = items[0]?.json || {};\nconst a = (req.body && typeof req.body === 'object') ? req.body : req;\nconst digits = String(a.phone || '').replace(/\\D/g, '');\nlet phone = null;\nif (digits.length === 10) phone = '+1' + digits;\nif (digits.length === 11 && digits[0] === '1') phone = '+' + digits;\nif (!phone) {\n  return [{json:{guardrail_ok:false,reason_code:'invalid_phone',reason_detail:'valid US phone is required'}}];\n}\nreturn [{json:{guardrail_ok:true,phone,reason:a.reason || 'user_request',source:'retell_tool',lead_id:a.lead_id || null,idempotency_key:`${phone}-retell_dnc`}}];"
+      },
+      "id": "3",
+      "name": "Normalize Phone",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        440,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true'}}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "Guardrail OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        660,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'invalid_payload',reason_detail:$json.reason_detail || 'guardrail_reject'}}];"
+      },
+      "id": "5",
+      "name": "Reject Invalid",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/stoplist?select=count&phone=eq.{{$node[\"Normalize Phone\"].json.phone}}",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendBody": false,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "bodyParametersJson": "{}"
+      },
+      "id": "6",
+      "name": "Check Existing Stoplist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        880,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={Number($json.count || 0)}",
+              "operation": "largerEqual",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "7",
+      "name": "Already DNC?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'rejected',ok:false,reason_code:'already_dnc',reason_detail:'phone already in stoplist'}}];"
+      },
+      "id": "8",
+      "name": "Reject Existing",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/stoplist?on_conflict=phone",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({phone:$node[\"Normalize Phone\"].json.phone,reason:$node[\"Normalize Phone\"].json.reason,source:'retell_tool'})}}",
+        "bodyParametersJson": "={{JSON.stringify({phone:$node[\"Normalize Phone\"].json.phone,reason:$node[\"Normalize Phone\"].json.reason,source:'retell_tool'})}}"
+      },
+      "id": "9",
+      "name": "Upsert Stoplist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1320,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const src = $node[\"Normalize Phone\"].json;\nreturn [{json:{lead_id:src.lead_id || null,place_id:null,event_type:'retell_dnc',idempotency_key:src.idempotency_key,payload_json:{phone:src.phone,reason:src.reason,source:'retell_tool'}}}];"
+      },
+      "id": "10",
+      "name": "Prepare DNC Event",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($json)}}",
+        "bodyParametersJson": "={{JSON.stringify($json)}}"
+      },
+      "id": "11",
+      "name": "Insert DNC Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1760,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'blocked',ok:true,phone:$node[\"Normalize Phone\"].json.phone}}];"
+      },
+      "id": "12",
+      "name": "Acknowledge",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        20
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Normalize Phone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Phone": {
+      "main": [
+        [
+          {
+            "node": "Guardrail OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrail OK?": {
+      "main": [
+        [
+          {
+            "node": "Check Existing Stoplist",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existing Stoplist": {
+      "main": [
+        [
+          {
+            "node": "Already DNC?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Already DNC?": {
+      "main": [
+        [
+          {
+            "node": "Reject Existing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Upsert Stoplist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert Stoplist": {
+      "main": [
+        [
+          {
+            "node": "Prepare DNC Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare DNC Event": {
+      "main": [
+        [
+          {
+            "node": "Insert DNC Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert DNC Event": {
+      "main": [
+        [
+          {
+            "node": "Acknowledge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

@@ -1,0 +1,436 @@
+{
+  "name": "openclaw_retell_fn_enrich_intel",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-fn-enrich-intel",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "94814E6BC4C542CAC821CCD9F2B05AE9"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "SUPABASE_URL",
+              "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "N8N_PUBLIC_WEBHOOK_BASE",
+              "value": "={{$env.N8N_PUBLIC_WEBHOOK_BASE || 'https://elijah-wallis.app.n8n.cloud'}}"
+            },
+            {
+              "name": "APIFY_API_TOKEN",
+              "value": "={{$env.APIFY_API_TOKEN}}"
+            },
+            {
+              "name": "APIFY_ACTOR_ID",
+              "value": "={{$env.APIFY_ACTOR_ID || 'compass/crawler-google-places'}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "RATE_LIMIT_LOG_INSIGHT_30M",
+              "value": 6
+            },
+            {
+              "name": "RATE_LIMIT_SET_FOLLOWUP_60M",
+              "value": 4
+            },
+            {
+              "name": "RATE_LIMIT_ENRICH_6H",
+              "value": 3
+            }
+          ],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        220,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = items[0]?.json || {};\nconst a = (req.body && typeof req.body === 'object') ? req.body : req;\nif (!a.lead_id) {\n  return [{json:{guardrail_ok:false,reason_code:'missing_lead_id',reason_detail:'lead_id is required for enrichment'}}];\n}\nconst business = String(a.business_name || '').trim();\nconst city = String(a.city || '').trim();\nconst state = String(a.state || '').trim();\nconst website = String(a.website || '').trim();\nconst email = String(a.email || '').trim();\nconst query = [business, city, state].filter(Boolean).join(' ').trim();\nif (!query && !website && !email) {\n  return [{json:{guardrail_ok:false,reason_code:'missing_enrichment_inputs',reason_detail:'provide business_name/city/state or website/email'}}];\n}\nconst rateWindowStart = new Date(Date.now() - 6*3600*1000).toISOString();\nreturn [{json:{guardrail_ok:true,lead_id:a.lead_id,business_name:business,city,state,website,email,search_query:query,rate_window_start:rateWindowStart}}];"
+      },
+      "id": "3",
+      "name": "Normalize Enrichment Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        440,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true'}}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "Guardrail OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        660,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'invalid_payload',reason_detail:$json.reason_detail || 'guardrail_reject'}}];"
+      },
+      "id": "5",
+      "name": "Reject Invalid",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?select=count&lead_id=eq.{{$node[\"Normalize Enrichment Request\"].json.lead_id}}&event_type=eq.retell_enrichment&created_at=gte.{{$node[\"Normalize Enrichment Request\"].json.rate_window_start}}",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendBody": false,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "bodyParametersJson": "{}"
+      },
+      "id": "6",
+      "name": "Fetch Recent Enrichment Count",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        880,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={Number($json.count || 0)}",
+              "operation": "largerEqual",
+              "value2": 3
+            }
+          ]
+        }
+      },
+      "id": "7",
+      "name": "Rate Limited?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const limit = Number($node[\"Config\"].json.RATE_LIMIT_ENRICH_6H || 3);\nreturn [{json:{status:'rejected',ok:false,reason_code:'rate_limited_enrichment',reason_detail:`Exceeded ${limit} enrich requests in 6h window`}}];"
+      },
+      "id": "8",
+      "name": "Reject Rate Limit",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{($node[\"Config\"].json.N8N_PUBLIC_WEBHOOK_BASE || 'https://elijah-wallis.app.n8n.cloud') + '/webhook/openclaw-apify-ingest'}}",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({'Content-Type':'application/json'})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({'Content-Type':'application/json'})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({searchStringsArray:[($node[\"Normalize Enrichment Request\"].json.search_query || '')], apify_input:{includeWebResults:false,language:'en',maxCrawledPlacesPerSearch:1,maxImages:0,maximumLeadsEnrichmentRecords:0,scrapeContacts:false,scrapeDirectories:false,scrapeImageAuthors:false,scrapePlaceDetailPage:false,scrapeReviewsPersonalData:true,scrapeSocialMediaProfiles:{facebooks:false,instagrams:false,tiktoks:false,twitters:false,youtubes:false},scrapeTableReservationProvider:false,searchStringsArray:[($node[\"Normalize Enrichment Request\"].json.search_query || '')],skipClosedPlaces:true}})}}",
+        "bodyParametersJson": "={{JSON.stringify({searchStringsArray:[($node[\"Normalize Enrichment Request\"].json.search_query || '')], apify_input:{includeWebResults:false,language:'en',maxCrawledPlacesPerSearch:1,maxImages:0,maximumLeadsEnrichmentRecords:0,scrapeContacts:false,scrapeDirectories:false,scrapeImageAuthors:false,scrapePlaceDetailPage:false,scrapeReviewsPersonalData:true,scrapeSocialMediaProfiles:{facebooks:false,instagrams:false,tiktoks:false,twitters:false,youtubes:false},scrapeTableReservationProvider:false,searchStringsArray:[($node[\"Normalize Enrichment Request\"].json.search_query || '')],skipClosedPlaces:true}})}}"
+      },
+      "id": "9",
+      "name": "Trigger Apify Enrichment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1320,
+        20
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,business_name,city,state,website,rating,reviews_count,categories,status,touch_count&id=eq.{{$node[\"Normalize Enrichment Request\"].json.lead_id}}&limit=1",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendBody": false,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "bodyParametersJson": "{}"
+      },
+      "id": "10",
+      "name": "Fetch Lead Snapshot",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1540,
+        20
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "functionCode": "const base = ($items('Fetch Lead Snapshot', 0, 0)?.[0]?.json) || null;\nconst apify = $node['Trigger Apify Enrichment'].json || {};\nconst req = $node['Normalize Enrichment Request'].json;\nconst summary = {\n  status: 'ok',\n  lead_id: req.lead_id,\n  profile: {\n    business_name: req.business_name || base?.business_name || '',\n    city: req.city || base?.city || '',\n    state: req.state || base?.state || '',\n    website: req.website || base?.website || '',\n    rating: base?.rating ?? null,\n    reviews_count: base?.reviews_count ?? null,\n    categories: base?.categories || []\n  },\n  providers: {\n    apify: {triggered: true, response: apify},\n    supabase: {configured: true, response: base}\n  },\n  intel: {\n    demand_signal: (base?.reviews_count || 0) >= 50 ? 'strong' : 'developing',\n    trust_signal: (base?.rating || 0) >= 4.5 ? 'high' : 'normal',\n    recommended_focus: (base?.rating || 0) >= 4.6 ? 'premium_conversion' : 'speed_to_lead'\n  }\n};\nreturn [{json:summary}];"
+      },
+      "id": "13",
+      "name": "Build Enrichment Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = $node['Normalize Enrichment Request'].json;\nconst body = $node['Build Enrichment Response'].json;\nconst now = new Date().toISOString();\nreturn [{json:{lead_id:req.lead_id,place_id:null,event_type:'retell_enrichment',idempotency_key:`${req.lead_id}-retell_enrichment-${now}`,payload_json:body}}];"
+      },
+      "id": "14",
+      "name": "Prepare Enrichment Event",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($json)}}",
+        "bodyParametersJson": "={{JSON.stringify($json)}}"
+      },
+      "id": "15",
+      "name": "Insert Enrichment Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2200,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{...$node['Build Enrichment Response'].json,logged:true}}];"
+      },
+      "id": "16",
+      "name": "Acknowledge",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        2420,
+        20
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Normalize Enrichment Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Enrichment Request": {
+      "main": [
+        [
+          {
+            "node": "Guardrail OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrail OK?": {
+      "main": [
+        [
+          {
+            "node": "Fetch Recent Enrichment Count",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Recent Enrichment Count": {
+      "main": [
+        [
+          {
+            "node": "Rate Limited?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Limited?": {
+      "main": [
+        [
+          {
+            "node": "Reject Rate Limit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Trigger Apify Enrichment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Apify Enrichment": {
+      "main": [
+        [
+          {
+            "node": "Fetch Lead Snapshot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Lead Snapshot": {
+      "main": [
+        [
+          {
+            "node": "Build Enrichment Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Enrichment Response": {
+      "main": [
+        [
+          {
+            "node": "Prepare Enrichment Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Enrichment Event": {
+      "main": [
+        [
+          {
+            "node": "Insert Enrichment Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Enrichment Event": {
+      "main": [
+        [
+          {
+            "node": "Acknowledge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

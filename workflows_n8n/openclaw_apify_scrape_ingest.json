@@ -108,7 +108,7 @@
           "string": [
             {
               "name": "APIFY_ACTOR_ID",
-              "value": "compass~crawler-google-places"
+              "value": "={{$env.APIFY_ACTOR_ID || 'compass/crawler-google-places'}}"
             },
             {
               "name": "APIFY_API_TOKEN",
@@ -120,7 +120,7 @@
             },
             {
               "name": "SUPABASE_URL",
-              "value": "https://gfazwukgloydihkejrhw.supabase.co"
+              "value": "={{$env.SUPABASE_URL}}"
             }
           ],
           "number": [],

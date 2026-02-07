@@ -8,6 +8,7 @@ from typing import Any, Dict
 import requests
 
 from .task_registry import TaskHandler, TaskRegistry
+from .medspa_launch import MedspaLaunch
 
 
 def _is_http_url(value: str) -> bool:
@@ -96,11 +97,17 @@ def handler_graph_run(payload: Dict[str, Any]) -> Dict[str, Any]:
     return run_graph(graph, context, thread_name, ledger_path)
 
 
+def handler_medspa_launch(payload: Dict[str, Any]) -> Dict[str, Any]:
+    launcher = MedspaLaunch()
+    return launcher.launch(payload)
+
+
 def build_registry() -> TaskRegistry:
     registry = TaskRegistry()
     registry.register("n8n.trigger", TaskHandler("n8n.trigger", handler_n8n_trigger))
     registry.register("reports.daily", TaskHandler("reports.daily", handler_reports_daily))
     registry.register("graph.run", TaskHandler("graph.run", handler_graph_run))
+    registry.register("medspa.launch", TaskHandler("medspa.launch", handler_medspa_launch))
     return registry
 
 
@@ -109,4 +116,5 @@ def handler_map() -> Dict[str, Any]:
         "n8n.trigger": handler_n8n_trigger,
         "reports.daily": handler_reports_daily,
         "graph.run": handler_graph_run,
+        "medspa.launch": handler_medspa_launch,
     }

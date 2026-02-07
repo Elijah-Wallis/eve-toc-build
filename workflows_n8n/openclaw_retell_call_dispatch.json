@@ -40,7 +40,7 @@
     },
     {
       "parameters": {
-        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD)&phone=not.is.null&order=created_at.asc&limit=25",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,source,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD)&phone=not.is.null{{$node[\"Webhook Trigger\"].json.source_filter ? '&source=eq.' + encodeURIComponent($node[\"Webhook Trigger\"].json.source_filter) : ''}}&order=created_at.asc&limit={{$node[\"Webhook Trigger\"].json.lead_limit || 25}}",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
@@ -73,7 +73,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const lead = item.json || {};\nconst now = new Date();\nconst minHours = Number($node[\"Config\"].json.MIN_HOURS_BETWEEN_TOUCHES || 72);\nif (!lead.phone) return [];\nif (lead.paused_until && new Date(lead.paused_until) > now) return [];\nconst touches = lead.touch_count || 0;\nif (touches >= 8) return [];\nif (lead.last_contacted_at) {\n  const diffMs = now - new Date(lead.last_contacted_at);\n  if (diffMs < minHours * 3600 * 1000) return [];\n}\nreturn [item];"
+        "functionCode": "const now = new Date();\nconst minHours = Number($node[\"Config\"].json.MIN_HOURS_BETWEEN_TOUCHES || 72);\nreturn items.filter((item) => {\n  const lead = item.json || {};\n  if (!lead.phone) return false;\n  if (lead.paused_until && new Date(lead.paused_until) > now) return false;\n  const touches = lead.touch_count || 0;\n  if (touches >= 8) return false;\n  if (lead.last_contacted_at) {\n    const diffMs = now - new Date(lead.last_contacted_at);\n    if (diffMs < minHours * 3600 * 1000) return false;\n  }\n  return true;\n});"
       },
       "id": "5",
       "name": "Filter Leads",
@@ -86,7 +86,7 @@
     },
     {
       "parameters": {
-        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/stoplist?phone=eq.{{$json.phone}}&limit=1",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/stoplist?select=count&phone=eq.{{$json.phone}}&limit=1",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
@@ -109,7 +109,7 @@
         "conditions": {
           "number": [
             {
-              "value1": "={{$json.length || 0}}",
+              "value1": "={{Number($json.count || 0)}}",
               "operation": "equal",
               "value2": 0
             }
@@ -127,7 +127,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const lead = $node[\"Filter Leads\"].json || {};\nconst agentType = lead.decision_maker_confirmed ? 'B2C' : 'B2B';\nconst agentId = agentType === 'B2C' ? $node[\"Config\"].json.RETELL_AGENT_B2C_ID : $node[\"Config\"].json.RETELL_AGENT_B2B_ID;\nconst fromNumber = $node[\"Config\"].json.RETELL_FROM_NUMBER;\nif (!fromNumber || !lead.phone) return [];\nreturn [{ json: { lead, agent_id: agentId, agent_type: agentType, from_number: fromNumber } }];"
+        "functionCode": "const lead = $node[\"Filter Leads\"].json || {};\nconst agentType = lead.decision_maker_confirmed ? 'B2C' : 'B2B';\nconst agentId = agentType === 'B2C' ? $node[\"Config\"].json.RETELL_AGENT_B2C_ID : $node[\"Config\"].json.RETELL_AGENT_B2B_ID;\nconst fromNumber = $node[\"Config\"].json.RETELL_FROM_NUMBER;\nif (!fromNumber || !lead.phone) return [];\nreturn [{ json: {\n  lead,\n  agent_id: agentId,\n  agent_type: agentType,\n  from_number: fromNumber,\n  request_body: {\n    from_number: fromNumber,\n    to_number: lead.phone,\n    override_agent_id: agentId,\n    retell_llm_dynamic_variables: {\n      business_name: lead.business_name || '',\n      city: lead.city || '',\n      state: lead.state || '',\n      website: lead.website || '',\n      category: Array.isArray(lead.categories) ? (lead.categories[0] || '') : '',\n      rating: String(lead.rating ?? ''),\n      reviews_count: String(lead.reviews_count ?? ''),\n      touch_count: String(lead.touch_count ?? 0),\n      lead_id: lead.id || '',\n      source: lead.source || ''\n    }\n  }\n} }];"
       },
       "id": "8",
       "name": "Build Call Payload",
@@ -144,14 +144,14 @@
         "method": "POST",
         "jsonParameters": true,
         "options": {},
-        "bodyParametersJson": "={{JSON.stringify({from_number: $json.from_number, to_number: $json.lead.phone, override_agent_id: $json.agent_id, retell_llm_dynamic_variables: { lead_first_name: $json.lead.first_name || '', business_name: $json.lead.business_name || '', city: $json.lead.city || '' }})}}",
+        "bodyParametersJson": "{}",
         "headerParametersJson": "={{JSON.stringify({Authorization: \"Bearer \" + $node[\"Config\"].json.RETELL_AI_KEY})}}",
         "sendHeaders": true,
         "specifyHeaders": "json",
         "jsonHeaders": "={{JSON.stringify({Authorization: \"Bearer \" + $node[\"Config\"].json.RETELL_AI_KEY})}}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{JSON.stringify({from_number: $json.from_number, to_number: $json.lead.phone, override_agent_id: $json.agent_id, retell_llm_dynamic_variables: { lead_first_name: $json.lead.first_name || '', business_name: $json.lead.business_name || '', city: $json.lead.city || '' }})}}"
+        "jsonBody": "={{$json.request_body}}"
       },
       "id": "9",
       "name": "Retell Create Call",
@@ -225,7 +225,7 @@
     },
     {
       "parameters": {
-        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/call_sessions?select=id&created_at=gte.{{$moment.tz($node[\"Config\"].json.CALL_WINDOW_TZ || 'America/Chicago').format('YYYY-MM-DD')}}T00:00:00.000Z",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/call_sessions?select=count&created_at=gte.{{new Date().toISOString().slice(0,10)}}T00:00:00.000Z",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
@@ -248,7 +248,7 @@
         "conditions": {
           "boolean": [
             {
-              "value1": "={{$items('Fetch Daily Calls').length < Number($node[\"Config\"].json.MAX_CALLS_PER_DAY || 50)}}",
+              "value1": "={{Number($json.count || 0) < Number($node[\"Webhook Trigger\"].json.max_calls || $node[\"Config\"].json.MAX_CALLS_PER_DAY || 50)}}",
               "operation": "isTrue"
             }
           ]
@@ -285,11 +285,11 @@
             },
             {
               "name": "RETELL_AGENT_B2B_ID",
-              "value": "agent_5d6f2744acfc79e26ddce13af2"
+              "value": "={{$env.RETELL_AGENT_B2B_ID}}"
             },
             {
               "name": "RETELL_AGENT_B2C_ID",
-              "value": "agent_c42767020a829346090a7af687"
+              "value": "={{$env.RETELL_AGENT_B2C_ID}}"
             },
             {
               "name": "RETELL_AI_KEY",
@@ -297,7 +297,7 @@
             },
             {
               "name": "RETELL_FROM_NUMBER",
-              "value": ""
+              "value": "={{$env.RETELL_FROM_NUMBER}}"
             },
             {
               "name": "SUPABASE_SERVICE_ROLE_KEY",
@@ -305,7 +305,7 @@
             },
             {
               "name": "SUPABASE_URL",
-              "value": "https://gfazwukgloydihkejrhw.supabase.co"
+              "value": "={{$env.SUPABASE_URL}}"
             }
           ],
           "number": [

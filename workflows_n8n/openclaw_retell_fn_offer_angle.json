@@ -1,0 +1,49 @@
+{
+  "name": "openclaw_retell_fn_offer_angle",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-fn-offer-angle",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "51B7F10A17E25A88B8F14FD953042AE3"
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = items[0]?.json || {};\nconst a = (req.body && typeof req.body === 'object') ? req.body : req;\nconst rating = Number(a.rating || 0);\nconst reviews = Number(a.reviews_count || 0);\nconst touch = Number(a.touch_count || 0);\nconst positive = !!a.positive_signal;\nlet angle = 'speed_to_lead';\nif (positive && touch <= 2) angle = 'capacity_expansion';\nelse if (rating > 4.6 && reviews > 120) angle = 'premium_conversion';\nelse if (touch >= 4) angle = 'reactivation';\nconst script = {\n  speed_to_lead: 'If a lead waits more than a minute, intent decays fast. We can close that gap.',\n  capacity_expansion: 'You already have demand. We focus on routing and follow-up to unlock more booked consults.',\n  premium_conversion: 'Strong reputation deserves premium conversion scripts and tighter callback SLAs.',\n  reactivation: 'We can recover stalled inquiries with a structured 4:1 value-to-ask sequence.'\n}[angle];\nreturn [{json:{status:'ok',angle,script}}];"
+      },
+      "id": "2",
+      "name": "Build Offer Angle",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        260,
+        20
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build Offer Angle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

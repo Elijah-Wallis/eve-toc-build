@@ -236,7 +236,7 @@
             },
             {
               "name": "SUPABASE_URL",
-              "value": "https://gfazwukgloydihkejrhw.supabase.co"
+              "value": "={{$env.SUPABASE_URL}}"
             }
           ],
           "number": [],

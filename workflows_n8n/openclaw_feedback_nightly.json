@@ -1,0 +1,283 @@
+{
+  "name": "openclaw_feedback_nightly",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-feedback-nightly",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "C60747D4BFAC7ABA3252D6C11D508633"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "SUPABASE_URL",
+              "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "RATE_LIMIT_LOG_INSIGHT_30M",
+              "value": 6
+            },
+            {
+              "name": "RATE_LIMIT_SET_FOLLOWUP_60M",
+              "value": 4
+            },
+            {
+              "name": "RATE_LIMIT_ENRICH_6H",
+              "value": 3
+            }
+          ],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        220,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/call_sessions?select=lead_id,outcome,created_at&lead_id=not.is.null&created_at=gte.{{new Date(Date.now()-((($json.lookback_hours || ($json.body && $json.body.lookback_hours)) || 24) * 3600 * 1000)).toISOString()}}&order=created_at.desc&limit=2000",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendBody": false,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "bodyParametersJson": "{}"
+      },
+      "id": "3",
+      "name": "Fetch Recent Calls",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        440,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const rows = items.map(i => i.json || {}).filter(r => r.lead_id);\nif (!rows.length) return [{json:{status:'no_updates',segments:[],events:[],lead_count:0}}];\nconst scoreMap = {GRANTED:3, STALLED:1, VOICEMAIL:-1, GATEKEEPER:-1, REVOKED:-3};\nconst grouped = new Map();\nfor (const r of rows) {\n  const leadId = r.lead_id;\n  if (!grouped.has(leadId)) grouped.set(leadId, {score:0,latest:r.outcome || 'STALLED'});\n  const g = grouped.get(leadId);\n  const o = String(r.outcome || 'STALLED').toUpperCase();\n  g.score += (scoreMap[o] ?? 0);\n  if (!g.latest) g.latest = o;\n}\nconst now = new Date().toISOString();\nconst segments = [];\nconst events = [];\nfor (const [lead_id, g] of grouped.entries()) {\n  const latest = String(g.latest || 'STALLED').toUpperCase();\n  const segment = ['GRANTED','STALLED','REVOKED','VOICEMAIL','GATEKEEPER'].includes(latest) ? latest : 'STALLED';\n  let next_best_action = 'retry_call_time_shift';\n  if (segment === 'GRANTED') next_best_action = 'handoff_email_and_schedule';\n  else if (segment === 'STALLED') next_best_action = 'send_value_report_and_retry';\n  else if (segment === 'GATEKEEPER') next_best_action = 'obtain_direct_ops_contact';\n  else if (segment === 'VOICEMAIL') next_best_action = 'leave_value_voicemail_and_retry';\n  else if (segment === 'REVOKED') next_best_action = 'suppress_and_hold';\n  segments.push({lead_id, segment, last_updated: now});\n  events.push({lead_id, place_id:null, event_type:'nightly_feedback_loop', idempotency_key:`${lead_id}-nightly_feedback_loop-${now.slice(0,10)}`, payload_json:{score:g.score, latest_outcome:segment, next_best_action, source:'nightly_feedback'}});\n}\nreturn [{json:{status:'ok',segments,events,lead_count:grouped.size}}];"
+      },
+      "id": "4",
+      "name": "Build Segment+NBA Payloads",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        660,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{($json.status === 'ok' && Number($json.lead_count || 0) > 0) === true || ($json.status === 'ok' && Number($json.lead_count || 0) > 0) === 'true'}}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "5",
+      "name": "Has Updates?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        880,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'no_updates',lead_count:0,segment_updates:0,nba_updates:0}}];"
+      },
+      "id": "6",
+      "name": "No Updates",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/segments?on_conflict=lead_id",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($node[\"Build Segment+NBA Payloads\"].json.segments || [])}}",
+        "bodyParametersJson": "={{JSON.stringify($node[\"Build Segment+NBA Payloads\"].json.segments || [])}}"
+      },
+      "id": "7",
+      "name": "Upsert Segments",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1100,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($node[\"Build Segment+NBA Payloads\"].json.events || [])}}",
+        "bodyParametersJson": "={{JSON.stringify($node[\"Build Segment+NBA Payloads\"].json.events || [])}}"
+      },
+      "id": "8",
+      "name": "Insert NBA Events",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1320,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const src = $node['Build Segment+NBA Payloads'].json;\nreturn [{json:{status:'ok',lead_count:src.lead_count || 0,segment_updates:(src.segments || []).length,nba_updates:(src.events || []).length}}];"
+      },
+      "id": "9",
+      "name": "Acknowledge",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        20
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Fetch Recent Calls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Recent Calls": {
+      "main": [
+        [
+          {
+            "node": "Build Segment+NBA Payloads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Segment+NBA Payloads": {
+      "main": [
+        [
+          {
+            "node": "Has Updates?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Updates?": {
+      "main": [
+        [
+          {
+            "node": "Upsert Segments",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upsert Segments": {
+      "main": [
+        [
+          {
+            "node": "Insert NBA Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert NBA Events": {
+      "main": [
+        [
+          {
+            "node": "Acknowledge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

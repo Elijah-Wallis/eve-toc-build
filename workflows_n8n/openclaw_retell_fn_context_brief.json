@@ -1,0 +1,49 @@
+{
+  "name": "openclaw_retell_fn_context_brief",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-fn-context-brief",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "85C39D74A7B260853F6962A31722CA11"
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = items[0]?.json || {};\nconst a = (req.body && typeof req.body === 'object') ? req.body : req;\nconst business = a.business_name || a.lead_business_name || 'your practice';\nconst city = a.city || a.lead_city || '';\nconst state = a.state || a.lead_state || '';\nconst rating = a.rating ?? a.lead_rating ?? null;\nconst reviews = a.reviews_count ?? a.lead_reviews_count ?? null;\nconst touch = Number(a.touch_count || 0);\nconst segment = a.segment || a.last_outcome || 'UNKNOWN';\nconst website = a.website || '';\nconst location = [city, state].filter(Boolean).join(', ');\nconst trustLine = rating && reviews ? `${rating}/5 from ${reviews} reviews` : 'local reputation improving';\nconst opener = `Hi, this is Cassidy with an operations audit for ${business}${location ? ' in ' + location : ''}.`;\nconst value_prop = `We help medspas improve lead-speed-to-call and conversion. Current profile suggests ${trustLine}.`;\nconst discovery_questions = [\n  'How quickly are inbound leads called back right now?',\n  'Who owns first response during peak hours?',\n  'Do you track no-show recovery and reactivation?'\n];\nconst risk_flags = [];\nif (!website) risk_flags.push('No website captured');\nif (touch >= 4) risk_flags.push('High touch count; use short CTA');\nif (segment === 'GATEKEEPER') risk_flags.push('Gatekeeper friction observed');\nreturn [{json:{status:'ok',opener,value_prop,discovery_questions,risk_flags,segment,touch_count:touch}}];"
+      },
+      "id": "2",
+      "name": "Build Context Brief",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        260,
+        20
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build Context Brief",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

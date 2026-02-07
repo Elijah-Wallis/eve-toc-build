@@ -1,5 +1,21 @@
 
 
+## Revenue MCP Registry
+
+- `n8n MCP` (remote): `https://elijah-wallis.app.n8n.cloud/mcp-server/http`
+  - Required header: `Authorization: Bearer <N8N_MCP_TOKEN>`
+  - Expected tools: `search_workflows`, `get_workflow_details`, `execute_workflow`
+- `supabase_mcp` (local): `python3 -m mcp_servers.supabase_mcp.server`
+  - Tool: `supabase.request`
+- `apify_mcp` (local): `python3 -m mcp_servers.apify_mcp.server`
+  - Tool: `apify.run_actor`
+- `retell_mcp` (local): `python3 -m mcp_servers.retell_mcp.server`
+  - Tools: `retell.create_phone_call`, `retell.get_call`
+- `twilio_mcp` (local): `python3 -m mcp_servers.twilio_mcp.server`
+  - Tools: `twilio.send_sms`, `twilio.create_call`
+- `intelligence_mcp` (local): `python3 -m mcp_servers.intelligence_mcp.server`
+  - Tools: `intelligence.lead_snapshot`, `intelligence.recent_events`
+
 ## Auto-Generated MCP Skills (Traffic Compiler)
 
 Generated from `~/.openclaw-eve/runtime/api_traffic.jsonl`.

@@ -7,6 +7,7 @@ import os
 import requests
 
 from .context_store import ContextStore
+from .medspa_launch import MedspaLaunch
 from .registry_defaults import build_registry
 from .task_engine import TaskEngine
 from .telemetry import Telemetry
@@ -34,6 +35,9 @@ class TelegramRouter:
             workflow = arg.strip()
             if not workflow:
                 return {"status": "error", "message": "workflow required"}
+            gate = self._launch_path_gate(workflow)
+            if gate is not None:
+                return gate
             cron = self._default_cron_for(workflow)
             job = self._upsert_cron_job(workflow, cron)
             record = self.engine.enqueue("n8n.trigger", {"workflow": workflow, "data": {}})
@@ -50,6 +54,30 @@ class TelegramRouter:
 
         if cmd == "/tasks":
             return {"tasks": self._recent_task_runs()}
+
+        if cmd == "/launch-medspa":
+            campaign_tag = arg.strip()
+            if not campaign_tag:
+                return {"status": "error", "message": "campaign tag required, e.g. /launch-medspa tx-medspa-2026-02-07"}
+            payload = {
+                "campaign_tag": campaign_tag,
+                "canary_size": 5,
+                "max_calls": 50,
+                "observation_seconds": 60,
+            }
+            task = self.engine.enqueue("medspa.launch", payload)
+            return {"status": "queued", "campaign_tag": campaign_tag, "task": task}
+
+        if cmd == "/launch-medspa-status":
+            campaign_tag = arg.strip()
+            if not campaign_tag:
+                return {
+                    "status": "error",
+                    "message": "campaign tag required, e.g. /launch-medspa-status tx-medspa-2026-02-07",
+                }
+            launcher = MedspaLaunch()
+            summary = launcher.campaign_status(campaign_tag)
+            return {"status": "ok", "summary": summary}
 
         if cmd == "/status":
             task_loop = self._task_loop_status()
@@ -82,8 +110,39 @@ class TelegramRouter:
             "openclaw-apify-ingest": "0 * * * *",
             "openclaw-retell-dispatch": "10 * * * *",
             "openclaw-nurture-run": "0 10 * * *",
+            "openclaw-feedback-nightly": "5 3 * * *",
         }
         return defaults.get(workflow, "0 * * * *")
+
+    def _is_launch_path_workflow(self, workflow: str) -> bool:
+        normalized = workflow.strip().lower().replace("_", "-")
+        return normalized in {
+            "openclaw-retell-dispatch",
+            "openclaw-nurture-run",
+            "openclaw-retell-postcall-ingest",
+            "openclaw-apify-ingest",
+        }
+
+    def _launch_path_gate(self, workflow: str) -> Optional[Dict[str, Any]]:
+        if not self._is_launch_path_workflow(workflow):
+            return None
+        try:
+            preflight = MedspaLaunch().preflight()
+        except Exception as exc:  # noqa: BLE001
+            return {
+                "status": "blocked",
+                "reason": "preflight_unavailable",
+                "workflow": workflow,
+                "error": str(exc),
+            }
+        if preflight.get("overall") == "ok":
+            return None
+        return {
+            "status": "blocked",
+            "reason": "preflight_failed",
+            "workflow": workflow,
+            "preflight": preflight,
+        }
 
     def _upsert_cron_job(self, workflow: str, cron: str) -> Dict[str, Any]:
         if not self.supabase_url or not self.supabase_key:

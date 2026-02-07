@@ -103,11 +103,11 @@
           "string": [
             {
               "name": "OPENCLAW_TELEGRAM_BOT_TOKEN",
-              "value": "={{$env.OPENCLAW_TELEGRAM_BOT_TOKEN}}"
+              "value": "={{$env.TELEGRAM_BOT_TOKEN || $env.OPENCLAW_TELEGRAM_BOT_TOKEN}}"
             },
             {
               "name": "OPENCLAW_TELEGRAM_CHAT_ID",
-              "value": "OPTIONAL"
+              "value": "={{$env.OPENCLAW_TELEGRAM_CHAT_ID || ''}}"
             },
             {
               "name": "SUPABASE_SERVICE_ROLE_KEY",
@@ -115,7 +115,7 @@
             },
             {
               "name": "SUPABASE_URL",
-              "value": "https://gfazwukgloydihkejrhw.supabase.co"
+              "value": "={{$env.SUPABASE_URL}}"
             }
           ],
           "number": [],
