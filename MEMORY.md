@@ -8,4 +8,4 @@ Always check n8n MCP tools first before attempting to write code.
 
 Kernel context links:
 - CODEX rules: `CODEX.md`
-- Task notes: `notes/2026-02-07_medspa-launch-leak-seal.md`
+- Task notes: `notes/2026-02-07_medspa-launch-leak-seal.md`, `notes/2026-02-07_b2c-chaos-launch.md`

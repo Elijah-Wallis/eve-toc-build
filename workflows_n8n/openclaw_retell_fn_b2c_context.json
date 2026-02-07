@@ -1,0 +1,100 @@
+{
+  "name": "openclaw_retell_fn_b2c_context",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-fn-b2c-context",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "E245B552B35CF0BB324F58A5D7A438DB"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "B2C_CLINIC_NAME",
+              "value": "={{$env.B2C_CLINIC_NAME || 'Your MedSpa'}}"
+            },
+            {
+              "name": "B2C_TIMEZONE",
+              "value": "={{$env.B2C_TIMEZONE || 'America/Chicago'}}"
+            },
+            {
+              "name": "B2C_OPEN_HOUR",
+              "value": "={{$env.B2C_OPEN_HOUR || '9'}}"
+            },
+            {
+              "name": "B2C_CLOSE_HOUR",
+              "value": "={{$env.B2C_CLOSE_HOUR || '18'}}"
+            },
+            {
+              "name": "B2C_CREDENTIALS_BLURB",
+              "value": "={{$env.B2C_CREDENTIALS_BLURB || 'Board-certified clinical team and medical director oversight'}}"
+            }
+          ],
+          "number": [],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        220,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = items[0]?.json || {};\nconst a = (req.body && typeof req.body === 'object') ? req.body : req;\nconst clinic = a.clinic_name || $node['Config'].json.B2C_CLINIC_NAME || 'the clinic';\nconst firstName = a.patient_name || a.first_name || 'there';\nconst concern = a.concern || a.service_interest || 'consultation';\nconst urgency = a.urgency || 'standard';\nconst credentials = $node['Config'].json.B2C_CREDENTIALS_BLURB || 'licensed clinical oversight';\nreturn [{json:{status:'ok',opening:`Hi ${firstName}, thanks for reaching out to ${clinic}.`,trust_anchor:`You would be working with a ${credentials}.`,intent_summary:`Primary concern: ${concern}. Urgency: ${urgency}.`,next_step:'I can share pricing range, check available times, and book in one flow.'}}];"
+      },
+      "id": "3",
+      "name": "Build B2C Context",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        460,
+        20
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Build B2C Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

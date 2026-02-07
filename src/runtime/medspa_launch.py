@@ -211,14 +211,23 @@ class MedspaLaunch:
             "message": "TWILIO_FROM_NUMBER set" if twilio_from else "TWILIO_FROM_NUMBER missing; SMS nurture disabled",
         }
 
+        env_expression_runtime = self._probe_n8n_env_expression_runtime()
         secret_guard = self._check_n8n_workflow_secret_hygiene(n8n_api_base, n8n_api_key)
-        guardrail_probe = self._probe_retell_guardrail_workflows()
+        if env_expression_runtime.get("status") == "ok":
+            guardrail_probe = self._probe_retell_guardrail_workflows()
+        else:
+            guardrail_probe = {
+                "status": "skipped",
+                "reason": "blocked_by_n8n_env_expression_runtime",
+            }
         blockers = []
         if (sup.status_code != 200) or (n8n_status.get("status") != "ok"):
             blockers.append("core_connectivity")
+        if env_expression_runtime.get("status") != "ok":
+            blockers.append("n8n_env_expression_runtime")
         if secret_guard.get("status") == "error":
             blockers.append("secret_hygiene")
-        if guardrail_probe.get("status") != "ok":
+        if guardrail_probe.get("status") == "error":
             blockers.append("guardrail_workflows")
         overall = "ok" if not blockers else "error"
 
@@ -227,6 +236,7 @@ class MedspaLaunch:
             "blockers": blockers,
             "supabase": {"status": "ok" if sup.status_code == 200 else "error", "code": sup.status_code},
             "n8n_api": n8n_status,
+            "n8n_env_expression_runtime": env_expression_runtime,
             "secret_hygiene": secret_guard,
             "guardrail_probe": guardrail_probe,
             "twilio_sms": twilio_sms,
@@ -282,6 +292,86 @@ class MedspaLaunch:
                 "sample": findings[:10],
             }
         return {"status": "ok", "finding_count": 0}
+
+    def _probe_n8n_env_expression_runtime(self) -> Dict[str, Any]:
+        """
+        Detect whether n8n currently allows `$env.*` in node expressions.
+        If blocked, env-backed workflows fail with generic "Error in workflow".
+        """
+        probes = [
+            {
+                "workflow": "openclaw-retell-fn-log-insight",
+                "payload": {"notes": "env_runtime_probe"},
+                "expect_status": "rejected",
+            },
+            {
+                "workflow": "openclaw-retell-fn-set-followup",
+                "payload": {"status": "BAD"},
+                "expect_status": "rejected",
+            },
+        ]
+        results: List[Dict[str, Any]] = []
+        failures: List[str] = []
+        env_block_hits = 0
+        for probe in probes:
+            workflow = str(probe["workflow"])
+            try:
+                res = self._post_webhook(workflow, probe["payload"], timeout=30)
+            except Exception as exc:  # noqa: BLE001
+                failures.append(f"{workflow}:transport_error")
+                results.append({"workflow": workflow, "status": "error", "error": str(exc)})
+                continue
+
+            status_code = int(res.get("status_code") or 0)
+            body = res.get("body")
+            observed = str(body.get("status") or "").lower() if isinstance(body, dict) else ""
+            expected = str(probe["expect_status"]).lower()
+            if observed == expected:
+                results.append({"workflow": workflow, "status": "ok", "observed": observed})
+                continue
+
+            workflow_error = (
+                status_code >= 500
+                and isinstance(body, dict)
+                and str(body.get("message") or "").lower() == "error in workflow"
+            )
+            if workflow_error:
+                env_block_hits += 1
+                results.append(
+                    {
+                        "workflow": workflow,
+                        "status": "error",
+                        "error": "workflow_error",
+                        "status_code": status_code,
+                    }
+                )
+                continue
+
+            failures.append(f"{workflow}:unexpected_response")
+            results.append(
+                {
+                    "workflow": workflow,
+                    "status": "error",
+                    "status_code": status_code,
+                    "response": body,
+                }
+            )
+
+        if env_block_hits > 0:
+            return {
+                "status": "error",
+                "reason": "n8n_env_expression_blocked",
+                "message": (
+                    "n8n runtime is blocking $env expressions in workflow nodes. "
+                    "Enable env use in node expressions at workspace/runtime level and unset "
+                    "N8N_BLOCK_ENV_ACCESS_IN_NODE before launch."
+                ),
+                "workflow_error_hits": env_block_hits,
+                "results": results,
+            }
+        if failures:
+            return {"status": "error", "reason": "probe_failed", "failures": failures, "results": results}
+        return {"status": "ok", "results": results}
 
     def _probe_retell_guardrail_workflows(self) -> Dict[str, Any]:
         probes = [

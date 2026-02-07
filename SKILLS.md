@@ -10,7 +10,7 @@
 - `apify_mcp` (local): `python3 -m mcp_servers.apify_mcp.server`
   - Tool: `apify.run_actor`
 - `retell_mcp` (local): `python3 -m mcp_servers.retell_mcp.server`
-  - Tools: `retell.create_phone_call`, `retell.get_call`
+  - Tools: `retell.create_phone_call`, `retell.create_web_call`, `retell.get_call`
 - `twilio_mcp` (local): `python3 -m mcp_servers.twilio_mcp.server`
   - Tools: `twilio.send_sms`, `twilio.create_call`
 - `intelligence_mcp` (local): `python3 -m mcp_servers.intelligence_mcp.server`

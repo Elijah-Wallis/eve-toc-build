@@ -1,0 +1,319 @@
+{
+  "name": "openclaw_b2c_showrate_nudge",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-b2c-showrate-nudge",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "359F0340C77DC3BABB9A2011643C17C2"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "SUPABASE_URL",
+              "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "RETELL_AI_KEY",
+              "value": "={{$env.RETELL_AI_KEY}}"
+            },
+            {
+              "name": "RETELL_FROM_NUMBER",
+              "value": "={{$env.RETELL_FROM_NUMBER}}"
+            },
+            {
+              "name": "RETELL_AGENT_B2C_ID",
+              "value": "={{$env.RETELL_AGENT_B2C_ID}}"
+            },
+            {
+              "name": "B2C_CLINIC_NAME",
+              "value": "={{$env.B2C_CLINIC_NAME || 'Your MedSpa'}}"
+            },
+            {
+              "name": "B2C_TIMEZONE",
+              "value": "={{$env.B2C_TIMEZONE || 'America/Chicago'}}"
+            },
+            {
+              "name": "B2C_OPEN_HOUR",
+              "value": "={{$env.B2C_OPEN_HOUR || '9'}}"
+            },
+            {
+              "name": "B2C_CLOSE_HOUR",
+              "value": "={{$env.B2C_CLOSE_HOUR || '18'}}"
+            },
+            {
+              "name": "B2C_CREDENTIALS_BLURB",
+              "value": "={{$env.B2C_CREDENTIALS_BLURB || 'Board-certified clinical team and medical director oversight'}}"
+            }
+          ],
+          "number": [],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        220,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,business_name,phone,email,next_touch_at,status&status=eq.QUALIFIED&phone=not.is.null&next_touch_at=not.is.null&limit=500",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendBody": false,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "bodyParametersJson": "{}"
+      },
+      "id": "3",
+      "name": "Fetch Qualified Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        440,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const rows = Array.isArray(items[0]?.json) ? items[0].json : [];\nconst now = Date.now();\nconst out = [];\nfor (const lead of rows) {\n  if (!lead || !lead.id || !lead.phone || !lead.next_touch_at) continue;\n  const appt = new Date(lead.next_touch_at).getTime();\n  if (!Number.isFinite(appt) || appt <= now) continue;\n  const hours = (appt - now) / 3600000;\n  let window = null;\n  if (hours >= 22 && hours <= 26) window = 'H24';\n  else if (hours >= 1 && hours <= 3) window = 'H2';\n  if (!window) continue;\n  const dateKey = new Date(appt).toISOString().slice(0,10);\n  const idem = `${lead.id}-showrate-${window}-${dateKey}`;\n  out.push({json:{lead,window,appointment_at_iso:new Date(appt).toISOString(),idempotency_key:idem}});\n}\nreturn out;"
+      },
+      "id": "4",
+      "name": "Build Reminder Candidates",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        660,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1
+      },
+      "id": "5",
+      "name": "Split Candidates",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        880,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: 'resolution=ignore-duplicates,return=representation'})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: 'resolution=ignore-duplicates,return=representation'})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({lead_id:$json.lead.id,place_id:null,event_type:'b2c_showrate_reminder_sent',idempotency_key:$json.idempotency_key,payload_json:{window:$json.window,appointment_at_iso:$json.appointment_at_iso,channel_order:['email','voice']}})}}",
+        "bodyParametersJson": "={{JSON.stringify({lead_id:$json.lead.id,place_id:null,event_type:'b2c_showrate_reminder_sent',idempotency_key:$json.idempotency_key,payload_json:{window:$json.window,appointment_at_iso:$json.appointment_at_iso,channel_order:['email','voice']}})}}"
+      },
+      "id": "6",
+      "name": "Insert Reminder Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1100,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={$json.length || 0}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "id": "7",
+      "name": "Is New Event?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.retellai.com/v2/create-phone-call",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({Authorization: 'Bearer ' + $node[\"Config\"].json.RETELL_AI_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({Authorization: 'Bearer ' + $node[\"Config\"].json.RETELL_AI_KEY})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({from_number:$node[\"Config\"].json.RETELL_FROM_NUMBER,to_number:$node[\"Build Reminder Candidates\"].json.lead.phone,override_agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'appointment_reminder',window:$node[\"Build Reminder Candidates\"].json.window,appointment_at_iso:$node[\"Build Reminder Candidates\"].json.appointment_at_iso,business_name:$node[\"Build Reminder Candidates\"].json.lead.business_name || ''}})}}",
+        "bodyParametersJson": "={{JSON.stringify({from_number:$node[\"Config\"].json.RETELL_FROM_NUMBER,to_number:$node[\"Build Reminder Candidates\"].json.lead.phone,override_agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'appointment_reminder',window:$node[\"Build Reminder Candidates\"].json.window,appointment_at_iso:$node[\"Build Reminder Candidates\"].json.appointment_at_iso,business_name:$node[\"Build Reminder Candidates\"].json.lead.business_name || ''}})}}"
+      },
+      "id": "8",
+      "name": "Retell Reminder Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1540,
+        20
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'ok'}}];"
+      },
+      "id": "9",
+      "name": "Done",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        20
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Fetch Qualified Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Qualified Leads": {
+      "main": [
+        [
+          {
+            "node": "Build Reminder Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Reminder Candidates": {
+      "main": [
+        [
+          {
+            "node": "Split Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Candidates": {
+      "main": [
+        [
+          {
+            "node": "Insert Reminder Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Reminder Event": {
+      "main": [
+        [
+          {
+            "node": "Is New Event?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is New Event?": {
+      "main": [
+        [
+          {
+            "node": "Retell Reminder Call",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retell Reminder Call": {
+      "main": [
+        [
+          {
+            "node": "Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

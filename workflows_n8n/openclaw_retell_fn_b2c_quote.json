@@ -1,0 +1,49 @@
+{
+  "name": "openclaw_retell_fn_b2c_quote",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-fn-b2c-quote",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "D11435EB92C7026D9206883186220654"
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = items[0]?.json || {};\nconst a = (req.body && typeof req.body === 'object') ? req.body : req;\nconst service = String(a.service_interest || a.concern || 'consultation').toLowerCase();\nconst ranges = [\n  {k:'botox', label:'Neurotoxin treatment', min:350, max:900},\n  {k:'filler', label:'Dermal filler', min:700, max:2400},\n  {k:'laser', label:'Laser package', min:450, max:1800},\n  {k:'facial', label:'Medical facial', min:150, max:450},\n  {k:'body', label:'Body contouring session', min:600, max:3200}\n];\nlet match = ranges.find(r => service.includes(r.k));\nif (!match) match = {label:'Consultation-first care plan', min:100, max:350};\nreturn [{json:{status:'ok',service_label:match.label,price_range_usd:{min:match.min,max:match.max},disclaimer:'Final pricing depends on clinician assessment, candidacy, and treatment plan.'}}];"
+      },
+      "id": "2",
+      "name": "Build Quote Range",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        260,
+        20
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build Quote Range",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

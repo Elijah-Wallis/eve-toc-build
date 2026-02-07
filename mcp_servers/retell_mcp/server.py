@@ -46,6 +46,18 @@ def _mcp_tools_list() -> Dict[str, Any]:
                 },
             },
             {
+                "name": "retell.create_web_call",
+                "description": "Create web demo call session via Retell and return access_token",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "agent_id": {"type": "string"},
+                        "retell_llm_dynamic_variables": {"type": "object"},
+                    },
+                    "required": ["agent_id"],
+                },
+            },
+            {
                 "name": "retell.get_call",
                 "description": "Fetch Retell call by call_id",
                 "inputSchema": {
@@ -88,6 +100,21 @@ def _get_call(params: Dict[str, Any]) -> Dict[str, Any]:
     return {"data": resp.json()}
 
 
+def _create_web_call(params: Dict[str, Any]) -> Dict[str, Any]:
+    payload = {
+        "agent_id": params.get("agent_id"),
+        "retell_llm_dynamic_variables": params.get("retell_llm_dynamic_variables") or {},
+    }
+    resp = requests.post(
+        f"{_retell_base()}/v2/create-web-call",
+        headers=_retell_headers(),
+        data=json.dumps(payload),
+        timeout=60,
+    )
+    resp.raise_for_status()
+    return {"data": resp.json()}
+
+
 class MCPHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> None:  # noqa: N802
         if self.path != "/mcp":
@@ -112,6 +139,8 @@ class MCPHandler(BaseHTTPRequestHandler):
             try:
                 if tool == "retell.create_phone_call":
                     result = _create_phone_call(args)
+                elif tool == "retell.create_web_call":
+                    result = _create_web_call(args)
                 elif tool == "retell.get_call":
                     result = _get_call(args)
                 else:

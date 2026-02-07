@@ -1,0 +1,224 @@
+{
+  "name": "openclaw_retell_fn_b2c_demo_call",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-fn-b2c-demo-call",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "8BA4107A6105DC2F2A36E9868EF631B9"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "RETELL_AI_KEY",
+              "value": "={{$env.RETELL_AI_KEY}}"
+            },
+            {
+              "name": "RETELL_FROM_NUMBER",
+              "value": "={{$env.RETELL_FROM_NUMBER}}"
+            },
+            {
+              "name": "RETELL_AGENT_B2C_ID",
+              "value": "={{$env.RETELL_AGENT_B2C_ID}}"
+            },
+            {
+              "name": "B2C_CLINIC_NAME",
+              "value": "={{$env.B2C_CLINIC_NAME || 'Your MedSpa'}}"
+            },
+            {
+              "name": "B2C_TIMEZONE",
+              "value": "={{$env.B2C_TIMEZONE || 'America/Chicago'}}"
+            },
+            {
+              "name": "B2C_OPEN_HOUR",
+              "value": "={{$env.B2C_OPEN_HOUR || '9'}}"
+            },
+            {
+              "name": "B2C_CLOSE_HOUR",
+              "value": "={{$env.B2C_CLOSE_HOUR || '18'}}"
+            },
+            {
+              "name": "B2C_CREDENTIALS_BLURB",
+              "value": "={{$env.B2C_CREDENTIALS_BLURB || 'Board-certified clinical team and medical director oversight'}}"
+            }
+          ],
+          "number": [],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        220,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = items[0]?.json || {};\nconst a = (req.body && typeof req.body === 'object') ? req.body : req;\nconst digits = String(a.phone || '').replace(/\\D/g, '');\nlet phone = null;\nif (digits.length === 10) phone = '+1' + digits;\nif (digits.length === 11 && digits[0] === '1') phone = '+' + digits;\nif (!phone) return [{json:{guardrail_ok:false,reason_code:'invalid_phone',reason_detail:'valid US phone required'}}];\nreturn [{json:{guardrail_ok:true,phone,patient_name:a.patient_name || 'Guest',scenario:a.scenario || 'general_inquiry'}}];"
+      },
+      "id": "3",
+      "name": "Normalize Demo Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        440,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true'}}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "Guardrail OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        660,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'invalid_payload',reason_detail:$json.reason_detail || 'guardrail_reject'}}];"
+      },
+      "id": "5",
+      "name": "Reject Invalid",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.retellai.com/v2/create-phone-call",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({Authorization: 'Bearer ' + $node[\"Config\"].json.RETELL_AI_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({Authorization: 'Bearer ' + $node[\"Config\"].json.RETELL_AI_KEY})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({from_number:$node[\"Config\"].json.RETELL_FROM_NUMBER,to_number:$node[\"Normalize Demo Request\"].json.phone,override_agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'patient_demo',patient_name:$node[\"Normalize Demo Request\"].json.patient_name,scenario:$node[\"Normalize Demo Request\"].json.scenario}})}}",
+        "bodyParametersJson": "={{JSON.stringify({from_number:$node[\"Config\"].json.RETELL_FROM_NUMBER,to_number:$node[\"Normalize Demo Request\"].json.phone,override_agent_id:$node[\"Config\"].json.RETELL_AGENT_B2C_ID,retell_llm_dynamic_variables:{mode:'patient_demo',patient_name:$node[\"Normalize Demo Request\"].json.patient_name,scenario:$node[\"Normalize Demo Request\"].json.scenario}})}}"
+      },
+      "id": "6",
+      "name": "Retell Demo Call",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        880,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const data = $json || {};\nreturn [{json:{status:'demo_started',ok:true,call_id:data.call_id || data.id || null,call_status:data.call_status || null}}];"
+      },
+      "id": "7",
+      "name": "Acknowledge",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        20
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Normalize Demo Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Demo Request": {
+      "main": [
+        [
+          {
+            "node": "Guardrail OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrail OK?": {
+      "main": [
+        [
+          {
+            "node": "Retell Demo Call",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retell Demo Call": {
+      "main": [
+        [
+          {
+            "node": "Acknowledge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

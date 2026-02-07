@@ -1,0 +1,505 @@
+{
+  "name": "openclaw_retell_fn_b2c_book_appointment",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-fn-b2c-book-appointment",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "BEA5367E1AF3B4AD7A290D14C7220472"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "SUPABASE_URL",
+              "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "B2C_CLINIC_NAME",
+              "value": "={{$env.B2C_CLINIC_NAME || 'Your MedSpa'}}"
+            },
+            {
+              "name": "B2C_TIMEZONE",
+              "value": "={{$env.B2C_TIMEZONE || 'America/Chicago'}}"
+            },
+            {
+              "name": "B2C_OPEN_HOUR",
+              "value": "={{$env.B2C_OPEN_HOUR || '9'}}"
+            },
+            {
+              "name": "B2C_CLOSE_HOUR",
+              "value": "={{$env.B2C_CLOSE_HOUR || '18'}}"
+            },
+            {
+              "name": "B2C_CREDENTIALS_BLURB",
+              "value": "={{$env.B2C_CREDENTIALS_BLURB || 'Board-certified clinical team and medical director oversight'}}"
+            }
+          ],
+          "number": [],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        220,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = items[0]?.json || {};\nconst a = (req.body && typeof req.body === 'object') ? req.body : req;\nconst leadId = String(a.lead_id || '').trim();\nconst patientName = String(a.patient_name || '').trim();\nconst email = String(a.email || '').trim() || null;\nconst timezone = String(a.timezone || $node['Config'].json.B2C_TIMEZONE || 'America/Chicago').trim();\nconst serviceInterest = String(a.service_interest || '').trim() || null;\nconst appointmentRaw = String(a.appointment_at_iso || a.appointment_time || '').trim();\nconst digits = String(a.phone || '').replace(/\\D/g, '');\nlet phone = null;\nif (digits.length === 10) phone = '+1' + digits;\nif (digits.length === 11 && digits[0] === '1') phone = '+' + digits;\nif (!patientName) return [{json:{guardrail_ok:false,reason_code:'missing_patient_name',reason_detail:'patient_name is required'}}];\nif (!appointmentRaw) return [{json:{guardrail_ok:false,reason_code:'missing_appointment_time',reason_detail:'appointment_at_iso is required'}}];\nconst appt = new Date(appointmentRaw);\nif (Number.isNaN(appt.getTime())) return [{json:{guardrail_ok:false,reason_code:'invalid_appointment_time',reason_detail:'appointment_at_iso must be ISO-8601'}}];\nif (appt.getTime() < Date.now() - 5*60*1000) return [{json:{guardrail_ok:false,reason_code:'appointment_in_past',reason_detail:'appointment time must be in the future'}}];\nif (!leadId && !phone) return [{json:{guardrail_ok:false,reason_code:'missing_identity',reason_detail:'lead_id or phone is required'}}];\nconst reminder24 = new Date(appt.getTime() - 24 * 3600 * 1000).toISOString();\nconst reminder2 = new Date(appt.getTime() - 2 * 3600 * 1000).toISOString();\nconst idBase = `${leadId || phone}-${appt.toISOString()}`;\nreturn [{json:{guardrail_ok:true,lead_id:leadId || null,phone,patient_name:patientName,email,timezone,service_interest:serviceInterest,appointment_at_iso:appt.toISOString(),reminder_24_iso:reminder24,reminder_2_iso:reminder2,id_base:idBase}}];"
+      },
+      "id": "3",
+      "name": "Normalize Appointment Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        440,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true'}}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "Guardrail OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        660,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'invalid_payload',reason_detail:$json.reason_detail || 'guardrail_reject'}}];"
+      },
+      "id": "5",
+      "name": "Reject Invalid",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,phone,email,status,lead_type,business_name&limit=1{{$node[\"Normalize Appointment Request\"].json.lead_id ? '&id=eq.' + encodeURIComponent($node[\"Normalize Appointment Request\"].json.lead_id) : '&phone=eq.' + encodeURIComponent($node[\"Normalize Appointment Request\"].json.phone || '')}}",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendBody": false,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "bodyParametersJson": "{}"
+      },
+      "id": "6",
+      "name": "Lookup Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        880,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = $node['Normalize Appointment Request'].json;\nconst raw = $node['Lookup Lead'].json;\nconst row = Array.isArray(raw) ? (raw[0] || null) : (raw && raw.id ? raw : null);\nconst shouldCreate = !row;\nconst createBody = {\n  source: 'retell.b2c.demo',\n  place_id: null,\n  business_name: req.patient_name,\n  phone: req.phone,\n  email: req.email,\n  status: 'NEW',\n  lead_type: 'B2C',\n  decision_maker_confirmed: true,\n  positive_signal: true,\n  touch_count: 0\n};\nreturn [{json:{...req,resolved_lead:row,should_create:shouldCreate,create_body:createBody}}];"
+      },
+      "id": "7",
+      "name": "Resolve Lead",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{($json.should_create) === true || ($json.should_create) === 'true'}}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "8",
+      "name": "Need Create?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: 'return=representation'})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: 'return=representation'})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($node[\"Resolve Lead\"].json.create_body)}}",
+        "bodyParametersJson": "={{JSON.stringify($node[\"Resolve Lead\"].json.create_body)}}"
+      },
+      "id": "9",
+      "name": "Create Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1540,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const src = $node['Resolve Lead'].json;\nlet leadId = src.resolved_lead?.id || null;\nif (!leadId) {\n  const created = $node['Create Lead'].json;\n  const row = Array.isArray(created) ? (created[0] || null) : (created && created.id ? created : null);\n  leadId = row?.id || null;\n}\nif (!leadId) return [{json:{guardrail_ok:false,reason_code:'lead_resolution_failed',reason_detail:'could not resolve or create lead'}}];\nconst reminderEvents = [\n  {lead_id: leadId, place_id: null, event_type: 'b2c_showrate_reminder', idempotency_key: `${src.id_base}-h24`, payload_json: {window:'H24', remind_at: src.reminder_24_iso, timezone: src.timezone, appointment_at_iso: src.appointment_at_iso}},\n  {lead_id: leadId, place_id: null, event_type: 'b2c_showrate_reminder', idempotency_key: `${src.id_base}-h2`, payload_json: {window:'H2', remind_at: src.reminder_2_iso, timezone: src.timezone, appointment_at_iso: src.appointment_at_iso}}\n];\nreturn [{json:{guardrail_ok:true,lead_id:leadId,patient_name:src.patient_name,email:src.email,phone:src.phone,timezone:src.timezone,service_interest:src.service_interest,appointment_at_iso:src.appointment_at_iso,id_base:src.id_base,reminder_events:reminderEvents}}];"
+      },
+      "id": "10",
+      "name": "Finalize Lead Resolution",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true'}}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "11",
+      "name": "Lead Resolved?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'invalid_payload',reason_detail:$json.reason_detail || 'guardrail_reject'}}];"
+      },
+      "id": "12",
+      "name": "Reject Unresolved",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?id=eq.{{$json.lead_id}}",
+        "method": "PATCH",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: 'return=minimal'})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: 'return=minimal'})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({status:'QUALIFIED',lead_type:'B2C',decision_maker_confirmed:true,positive_signal:true,next_touch_at:$json.appointment_at_iso,dm_email:$json.email,last_contacted_at:new Date().toISOString()})}}",
+        "bodyParametersJson": "={{JSON.stringify({status:'QUALIFIED',lead_type:'B2C',decision_maker_confirmed:true,positive_signal:true,next_touch_at:$json.appointment_at_iso,dm_email:$json.email,last_contacted_at:new Date().toISOString()})}}"
+      },
+      "id": "13",
+      "name": "Patch Lead Appointment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1980,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: 'resolution=ignore-duplicates,return=minimal'})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: 'resolution=ignore-duplicates,return=minimal'})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({lead_id:$json.lead_id,place_id:null,event_type:'b2c_appointment_booked',idempotency_key:$json.id_base + '-booked',payload_json:{appointment_at_iso:$json.appointment_at_iso,timezone:$json.timezone,service_interest:$json.service_interest,phone:$json.phone,email:$json.email,source:'retell_b2c'}})}}",
+        "bodyParametersJson": "={{JSON.stringify({lead_id:$json.lead_id,place_id:null,event_type:'b2c_appointment_booked',idempotency_key:$json.id_base + '-booked',payload_json:{appointment_at_iso:$json.appointment_at_iso,timezone:$json.timezone,service_interest:$json.service_interest,phone:$json.phone,email:$json.email,source:'retell_b2c'}})}}"
+      },
+      "id": "14",
+      "name": "Insert Appointment Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2200,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: 'resolution=ignore-duplicates,return=minimal'})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: 'resolution=ignore-duplicates,return=minimal'})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($json.reminder_events)}}",
+        "bodyParametersJson": "={{JSON.stringify($json.reminder_events)}}"
+      },
+      "id": "15",
+      "name": "Insert Reminder Events",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2420,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'booked',ok:true,lead_id:$json.lead_id,appointment_at_iso:$json.appointment_at_iso,timezone:$json.timezone,confirmation_text:`Booked ${$json.patient_name} for ${$json.appointment_at_iso} (${ $json.timezone }).`}}];"
+      },
+      "id": "16",
+      "name": "Acknowledge",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        80
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Normalize Appointment Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Appointment Request": {
+      "main": [
+        [
+          {
+            "node": "Guardrail OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrail OK?": {
+      "main": [
+        [
+          {
+            "node": "Lookup Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup Lead": {
+      "main": [
+        [
+          {
+            "node": "Resolve Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resolve Lead": {
+      "main": [
+        [
+          {
+            "node": "Need Create?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Need Create?": {
+      "main": [
+        [
+          {
+            "node": "Create Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Finalize Lead Resolution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Lead": {
+      "main": [
+        [
+          {
+            "node": "Finalize Lead Resolution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Finalize Lead Resolution": {
+      "main": [
+        [
+          {
+            "node": "Lead Resolved?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Resolved?": {
+      "main": [
+        [
+          {
+            "node": "Patch Lead Appointment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Unresolved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Patch Lead Appointment": {
+      "main": [
+        [
+          {
+            "node": "Insert Appointment Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Appointment Event": {
+      "main": [
+        [
+          {
+            "node": "Insert Reminder Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Reminder Events": {
+      "main": [
+        [
+          {
+            "node": "Acknowledge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}
