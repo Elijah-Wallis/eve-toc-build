@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import json
+import os
 import subprocess
 import sys
 import shutil
@@ -127,15 +129,84 @@ def _resolve_manifest_path(value: str) -> Path:
         return (ROOT / rel).resolve()
     if text.startswith("${OPENCLAW_STATE_DIR}/"):
         rel = text.replace("${OPENCLAW_STATE_DIR}/", "", 1)
-        return (state_path() / rel).resolve()
+        state_dir = state_path()
+        return (state_dir / rel).resolve()
     return Path(text).expanduser().resolve()
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Run traffic capture -> MCP compile -> verification pipeline.")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--offline", action="store_true", help="Run deterministic local smoke path without Supabase-backed traffic.")
+    mode.add_argument("--online", action="store_true", help="Run full online path requiring Supabase credentials.")
+    return parser.parse_args()
+
+
+def _supabase_env_ready() -> bool:
+    return bool(str(os.environ.get("SUPABASE_URL", "")).strip()) and bool(
+        str(os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")).strip()
+    )
+
+
+def _prepare_offline_traffic_file() -> Dict[str, Any]:
+    TRAFFIC_FILE.parent.mkdir(parents=True, exist_ok=True)
+    seed = {
+        "event": "http_traffic",
+        "method": "GET",
+        "url": "https://example.com/rest/v1/tasks?select=id",
+        "path": "/rest/v1/tasks",
+        "query": {"select": "id"},
+        "request": {"headers": {}, "json": None, "data": None},
+    }
+    TRAFFIC_FILE.write_text(json.dumps(seed, ensure_ascii=True) + "\n", encoding="utf-8")
+    return {"offline_seeded": True, "traffic_lines": 1}
+
+
+def _compile_for_mode(offline: bool) -> Dict[str, Any]:
+    if not offline:
+        return compile_from_traffic()
+    offline_skills = state_path("generated", "offline_skills.md")
+    proc = run(
+        [
+            "python3",
+            str(ROOT / "scripts" / "compile_mcp_from_traffic.py"),
+            "--traffic-file",
+            str(TRAFFIC_FILE),
+            "--output-root",
+            str(OUTPUT_ROOT),
+            "--skills-file",
+            str(offline_skills),
+            "--manifest-file",
+            str(MANIFEST_FILE),
+        ]
+    )
+    return {"returncode": proc.returncode, "stdout": proc.stdout, "stderr": proc.stderr, "skills_file": str(offline_skills)}
+
+
 def main() -> int:
-    traffic = generate_traffic()
-    compile_result = compile_from_traffic()
+    args = parse_args()
+    offline = bool(args.offline)
+    if not args.offline and not args.online:
+        offline = False
+
+    if not offline and not _supabase_env_ready():
+        print(
+            json.dumps(
+                {
+                    "status": "skipped",
+                    "reason": "missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY for --online mode",
+                    "hint": "use --offline for deterministic smoke without Supabase",
+                },
+                ensure_ascii=True,
+            )
+        )
+        return 0
+
+    traffic = _prepare_offline_traffic_file() if offline else generate_traffic()
+    compile_result = _compile_for_mode(offline)
     verify_result = verify_generated_tools()
     report = {
+        "mode": "offline" if offline else "online",
         "traffic": traffic,
         "compile": compile_result,
         "verify": verify_result,
