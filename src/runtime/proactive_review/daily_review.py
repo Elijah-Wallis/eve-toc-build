@@ -25,6 +25,8 @@ from src.runtime.runtime_paths import resolve_state_dir
 from src.runtime.revenueops.gate_rev_001 import run_gate as run_revenueops_gate
 
 from . import analyzers
+from .analyzers import schema_drift
+from .analyzers import workflow_drift
 from .memory import ProactiveMemory
 from .proposal_engine import ProposalEngine
 from .redaction import env_presence
@@ -165,6 +167,8 @@ def _validation_ids_for_category(category: str) -> List[str]:
         "security_hygiene": ["AT-011", "AT-013B"],
         "gate_coverage": ["AT-001", "AT-002", "AT-003", "AT-007", "AT-009", "AT-011", "AT-012"],
         "architecture_drift": ["AT-021A"],
+        "workflow_drift": ["AT-LEDGER-001"],
+        "schema_drift": ["AT-ING-001"],
         "performance_heuristics": ["AT-021B"],
         "docs_drift": ["AT-009"],
         "code_quality": ["AT-009"],
@@ -180,6 +184,55 @@ def _score_pass1(candidate: ProposalCandidate) -> float:
         - candidate.effort * 0.10
         - candidate.risk * 0.10
     )
+
+
+def load_execution_profiles(path: Path = Path("config/execution_profiles.yaml")) -> Dict[str, Dict[str, Any]]:
+    if not path.exists():
+        return {
+            "canary": {"max_top_proposals": 10, "proposal_selftest_default": "none", "allow_online_checks": False},
+            "prod": {"max_top_proposals": 20, "proposal_selftest_default": "tiers_ab", "allow_online_checks": True},
+        }
+    current: str | None = None
+    output: Dict[str, Dict[str, Any]] = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.rstrip()
+        if not line or line.lstrip().startswith("#"):
+            continue
+        if not line.startswith(" ") and line.endswith(":"):
+            current = line[:-1].strip()
+            output[current] = {}
+            continue
+        if current and ":" in line:
+            key, value = line.split(":", 1)
+            key = key.strip()
+            value = value.strip()
+            if value.lower() in {"true", "false"}:
+                parsed: Any = value.lower() == "true"
+            else:
+                try:
+                    parsed = int(value)
+                except ValueError:
+                    parsed = value
+            output[current][key] = parsed
+    return output
+
+
+def evaluate_proposal_quality(candidate: ProposalCandidate) -> float:
+    issues: List[str] = []
+    if not candidate.validation_ids:
+        issues.append("missing_validation_ids")
+    if not str(candidate.rollback_plan).strip():
+        issues.append("missing_rollback_plan")
+    if not candidate.blast_radius_files:
+        issues.append("missing_blast_radius")
+    if float(candidate.confidence) <= 0:
+        issues.append("missing_confidence")
+    candidate.quality_issues = issues
+    if issues:
+        candidate.quality_label = "INCOMPLETE — NOT READY"
+        return -2.5
+    candidate.quality_label = "READY"
+    return 0.0
 
 
 def _rank_with_dependencies(candidates: List[ProposalCandidate], limit: int) -> tuple[list[ProposalCandidate], list[ProposalCandidate]]:
@@ -246,12 +299,7 @@ def _build_candidates(findings: List[Finding], memory: ProactiveMemory) -> List[
         candidate.score_pass1 = _score_pass1(candidate)
         evidence_hash = _sha(json.dumps(asdict(finding), sort_keys=True))
         candidate.score_pass2 = memory.adjust_score(candidate, evidence_hash)
-        if not candidate.validation_ids:
-            candidate.score_pass2 -= 2.0
-        if not candidate.rollback_plan.strip():
-            candidate.score_pass2 -= 1.0
-        if not candidate.blast_radius_files:
-            candidate.score_pass2 -= 0.5
+        candidate.score_pass2 += evaluate_proposal_quality(candidate)
         output.append(candidate)
     return output
 
@@ -330,6 +378,9 @@ def _render_markdown_report(
                 f"{idx}. `{proposal.proposal_id}` ({proposal.risk_tier}/{proposal.category}) "
                 f"score={proposal.score_pass2:.2f} - {proposal.title}"
             )
+            lines.append(f"   - quality: {proposal.quality_label}")
+            if proposal.quality_issues:
+                lines.append(f"   - quality_issues: {', '.join(proposal.quality_issues)}")
             lines.append(f"   - validation: {', '.join(proposal.validation_ids) if proposal.validation_ids else 'none'}")
             lines.append(f"   - rollback: {proposal.rollback_plan}")
     else:
@@ -567,7 +618,14 @@ def _run_review(args: argparse.Namespace) -> int:
         pre_status = RepoIndexer.status_signature(ctx.snapshot.dirty_status)
 
         mode_profile = args.profile
-        analyzer_set = analyzers.ANALYZERS_DEEP if mode_profile == "deep" else analyzers.ANALYZERS_FAST
+        analyzer_set = list(analyzers.ANALYZERS_DEEP if mode_profile == "deep" else analyzers.ANALYZERS_FAST)
+        if schema_drift not in analyzer_set:
+            analyzer_set.append(schema_drift)
+        if workflow_drift not in analyzer_set:
+            analyzer_set.append(workflow_drift)
+
+        execution_profiles = load_execution_profiles(repo_root / "config" / "execution_profiles.yaml")
+        selected_execution = execution_profiles.get(args.execution_profile) or execution_profiles.get("canary", {})
 
         findings: List[Finding] = []
         deferred: List[str] = []
@@ -604,10 +662,12 @@ def _run_review(args: argparse.Namespace) -> int:
         memory_applied = memory.ingest_feedback_file(feedback_path)
 
         candidates = _build_candidates(findings, memory)
-        top, backlog = _rank_with_dependencies(candidates, MAX_TOP_PROPOSALS[mode_profile])
+        max_top = int(selected_execution.get("max_top_proposals", MAX_TOP_PROPOSALS[mode_profile]))
+        top, backlog = _rank_with_dependencies(candidates, max_top)
         bundles = _bundle_recommendations(top)
 
-        proposal_selftest = args.proposal_selftest or DEFAULT_SELFTEST[mode_profile]
+        profile_default_selftest = selected_execution.get("proposal_selftest_default", DEFAULT_SELFTEST[mode_profile])
+        proposal_selftest = args.proposal_selftest or str(profile_default_selftest)
 
         today = datetime.now(CHICAGO_TZ).date().isoformat()
         reports_daily = reports_root / "daily"
@@ -646,6 +706,7 @@ def _run_review(args: argparse.Namespace) -> int:
             "run_id": run_id,
             "mode": args.mode,
             "profile": args.profile,
+            "execution_profile": args.execution_profile,
             "proposal_selftest": proposal_selftest,
             "repo_commit": pre_head,
             "repo": {
@@ -668,6 +729,7 @@ def _run_review(args: argparse.Namespace) -> int:
             "deferred": deferred,
             "feedback_applied": memory_applied,
             "analyzer_sections": ctx.report_sections,
+            "execution_profiles": execution_profiles,
             "revenueops_gate": revenueops_gate,
             "acceptance_trends": ctx.report_sections["acceptance_trends"],
             "env_presence": env_status,
@@ -758,6 +820,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     parser.add_argument("--mode", choices=["offline", "online"], default="offline")
     parser.add_argument("--profile", choices=["fast", "deep"], default="fast")
+    parser.add_argument("--execution-profile", choices=["canary", "prod"], default="canary")
     parser.add_argument("--once", action="store_true", help="run once and exit")
     parser.add_argument("--heartbeat-only", action="store_true")
     parser.add_argument("--proposal-selftest", choices=["none", "tiers_ab", "all"], default="")

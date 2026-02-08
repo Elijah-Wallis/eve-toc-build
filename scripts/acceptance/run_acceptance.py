@@ -229,6 +229,14 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         )
         return run_cmd(cmd, timeout=240)
 
+    def atpro004() -> CheckResult:
+        cmd = (
+            f"{shlex.quote(PYTHON)} -m pytest -q "
+            "tests/test_proactive_review_proposal_quality.py "
+            "tests/test_proactive_execution_profiles.py"
+        )
+        return run_cmd(cmd, timeout=240)
+
     def atrev001() -> CheckResult:
         return pytest_check("tests/test_revenueops_gate.py")
 
@@ -271,6 +279,7 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         "AT-PRO-001": atpro001,
         "AT-PRO-002": atpro002,
         "AT-PRO-003": atpro003,
+        "AT-PRO-004": atpro004,
         "AT-REV-001": atrev001,
         "AT-ING-001": ating001,
         "AT-LEDGER-001": atledger001,
