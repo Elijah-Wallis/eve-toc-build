@@ -59,5 +59,5 @@ This is the single master file that lists all key system files.
 - `Business_Code/SOP_TRAFFIC_TO_MCP_COMPILER.md`
 
 ## Generated MCP Artifacts
-- `generated/mcp_from_traffic/manifest.json`
+- `${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic/manifest.json`
 - `SKILLS.md` (Auto-Generated MCP Skills section)

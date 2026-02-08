@@ -17,7 +17,7 @@ Elijah (OpenClaw)
 - Runtime integration: `src/runtime/env_loader.py`
 - Compiler: `scripts/compile_mcp_from_traffic.py`
 - End-to-end runner: `scripts/run_traffic_to_mcp_pipeline.py`
-- Generated packages: `generated/mcp_from_traffic/`
+- Generated packages: `${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic/`
 - Generated skill index section: `SKILLS.md`
 
 ## Procedure
@@ -25,16 +25,16 @@ Elijah (OpenClaw)
 1. Ensure traffic capture is enabled:
    - `OPENCLAW_CAPTURE_TRAFFIC=1` (default on)
 2. Execute real runtime paths (Telegram/router/tasks).
-3. Confirm `~/.openclaw-eve/runtime/api_traffic.jsonl` contains records.
+3. Confirm `${OPENCLAW_STATE_DIR}/runtime/api_traffic.jsonl` contains records.
 
 ### 2) Compile MCP Packages
 Run:
 ```bash
 python3 scripts/compile_mcp_from_traffic.py \
-  --traffic-file ~/.openclaw-eve/runtime/api_traffic.jsonl \
-  --output-root generated/mcp_from_traffic \
+  --traffic-file ${OPENCLAW_STATE_DIR}/runtime/api_traffic.jsonl \
+  --output-root ${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic \
   --skills-file SKILLS.md \
-  --manifest-file generated/mcp_from_traffic/manifest.json
+  --manifest-file ${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic/manifest.json
 ```
 
 ### 3) Full Pipeline (Preferred)
@@ -46,12 +46,12 @@ This performs:
 - traffic generation
 - MCP generation
 - `npm install` and `npm run build` in each generated package
-- `client.py` harness execution in isolated venv (`generated/mcp_from_traffic/.venv`)
+- `client.py` harness execution in isolated venv (`${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic/.venv`)
 
 ### 4) Verify Success
 Check:
-- `generated/mcp_from_traffic/manifest.json`
-- `generated/mcp_from_traffic/pipeline_report.json`
+- `${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic/manifest.json`
+- `${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic/pipeline_report.json`
 - All tool rows show:
   - `npm_install.returncode = 0`
   - `npm_build.returncode = 0`

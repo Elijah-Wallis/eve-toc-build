@@ -3,8 +3,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Tuple
@@ -22,6 +24,14 @@ VAR_SEGMENT_PATTERNS = [
 RESERVED_ARG_NAMES = {"default", "function", "var", "const", "class", "new"}
 SENSITIVE_HEADERS = {"authorization", "apikey", "x-api-key", "x-n8n-api-key"}
 SENSITIVE_KEYS = {"token", "secret", "password", "apikey", "api_key", "authorization"}
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from src.runtime.runtime_paths import resolve_generated_dir, resolve_repo_root, resolve_state_dir
+
+REPO_ROOT = resolve_repo_root()
 
 
 @dataclass
@@ -487,7 +497,7 @@ def render_skills_section(entries: List[Dict[str, Any]]) -> str:
     lines = [
         "## Auto-Generated MCP Skills (Traffic Compiler)",
         "",
-        "Generated from `~/.openclaw-eve/runtime/api_traffic.jsonl`.",
+        "Generated from `${OPENCLAW_STATE_DIR}/runtime/api_traffic.jsonl`.",
         "",
     ]
     for entry in entries:
@@ -512,26 +522,60 @@ def update_skills(skills_file: Path, entries: List[Dict[str, Any]]) -> None:
     skills_file.write_text(new_content, encoding="utf-8")
 
 
+def _default_traffic_file() -> Path:
+    override = str(os.environ.get("OPENCLAW_API_TRAFFIC_FILE", "")).strip()
+    if override:
+        return Path(override).expanduser().resolve()
+    return (resolve_state_dir() / "runtime" / "api_traffic.jsonl").resolve()
+
+
+def _repo_placeholder(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        rel = resolved.relative_to(REPO_ROOT)
+    except ValueError:
+        return str(resolved)
+    return "${REPO_ROOT}/" + str(rel).replace("\\", "/")
+
+
+def _state_placeholder(path: Path) -> str:
+    resolved = path.resolve()
+    state_root = resolve_state_dir()
+    try:
+        rel = resolved.relative_to(state_root)
+    except ValueError:
+        return _repo_placeholder(resolved)
+    return "${OPENCLAW_STATE_DIR}/" + str(rel).replace("\\", "/")
+
+
 def parse_args() -> argparse.Namespace:
+    default_output_root = resolve_generated_dir() / "mcp_from_traffic"
     parser = argparse.ArgumentParser(description="Compile MCP tool packages from recorded HTTP traffic.")
-    parser.add_argument("--traffic-file", default="~/.openclaw-eve/runtime/api_traffic.jsonl")
-    parser.add_argument("--output-root", default="generated/mcp_from_traffic")
-    parser.add_argument("--skills-file", default="SKILLS.md")
-    parser.add_argument("--manifest-file", default="generated/mcp_from_traffic/manifest.json")
+    parser.add_argument("--traffic-file", default=str(_default_traffic_file()))
+    parser.add_argument("--output-root", default=str(default_output_root))
+    parser.add_argument("--skills-file", default=str(resolve_repo_root() / "SKILLS.md"))
+    parser.add_argument("--manifest-file", default=str(default_output_root / "manifest.json"))
     parser.add_argument("--max-tools", type=int, default=0, help="Limit generated tools (0 = all).")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    traffic_file = Path(args.traffic_file).expanduser()
+    repo_root = resolve_repo_root()
+    traffic_file = Path(args.traffic_file).expanduser().resolve()
     if not traffic_file.exists():
         raise SystemExit(f"traffic file missing: {traffic_file}")
     lines = [json.loads(line) for line in traffic_file.read_text(encoding="utf-8").splitlines() if line.strip()]
     specs = build_endpoint_specs(lines)
     if args.max_tools > 0:
         specs = specs[: args.max_tools]
-    output_root = Path(args.output_root)
+    output_root = Path(args.output_root).expanduser().resolve()
+    repo_generated = (repo_root / "generated").resolve()
+    allow_repo_generated = str(os.environ.get("OPENCLAW_ALLOW_REPO_GENERATED", "")).strip() == "1"
+    if (output_root == repo_generated or repo_generated in output_root.parents) and not allow_repo_generated:
+        raise SystemExit(
+            "repo-local generated output is disabled; set OPENCLAW_ALLOW_REPO_GENERATED=1 to opt in explicitly"
+        )
     if output_root.exists():
         for child in output_root.iterdir():
             if child.is_dir():
@@ -540,12 +584,14 @@ def main() -> int:
                 child.unlink()
     output_root.mkdir(parents=True, exist_ok=True)
     entries = [write_package(spec, output_root) for spec in specs]
-    update_skills(Path(args.skills_file), entries)
+    for entry in entries:
+        entry["package_dir"] = _state_placeholder(Path(entry["package_dir"]))
+    update_skills(Path(args.skills_file).expanduser().resolve(), entries)
     manifest = {
-        "traffic_file": str(traffic_file),
+        "traffic_file": _state_placeholder(traffic_file),
         "generated_tools": entries,
     }
-    manifest_path = Path(args.manifest_file)
+    manifest_path = Path(args.manifest_file).expanduser().resolve()
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
     print(json.dumps({"generated": len(entries), "manifest": str(manifest_path)}, ensure_ascii=True))

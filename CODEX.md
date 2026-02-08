@@ -34,11 +34,11 @@
 - For MCP compiler changes: execute full pipeline (`scripts/run_traffic_to_mcp_pipeline.py`) and require zero non-zero codes for npm install/build/client checks across generated tools.
 
 ## Traffic Compiler Rules
-- Source of truth is observed traffic in `~/.openclaw-eve/runtime/api_traffic.jsonl`; do not fabricate endpoints.
+- Source of truth is observed traffic in `${OPENCLAW_STATE_DIR}/runtime/api_traffic.jsonl`; do not fabricate endpoints.
 - Runtime must auto-capture outbound HTTP via `src/runtime/http_traffic.py` when `OPENCLAW_CAPTURE_TRAFFIC != 0`.
 - Generated MCP packages must include exactly: `package.json`, `tsconfig.json`, `src/index.ts`, `client.py`, `.env.example`, `README.md`.
 - Regeneration must clear stale generated tool directories before emitting new packages.
-- Python harness execution must use an isolated venv under `generated/mcp_from_traffic/.venv` to avoid PEP 668 system package constraints.
+- Python harness execution must use an isolated venv under `${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic/.venv` to avoid PEP 668 system package constraints.
 
 ## Notes Index
 - `notes/2026-02-06_telegram-longpoll-stability.md`

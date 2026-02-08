@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import sys
 import shutil
@@ -15,13 +14,15 @@ if str(ROOT) not in sys.path:
 
 from src.runtime.env_loader import load_env_file
 from src.runtime.registry_defaults import build_registry
+from src.runtime.runtime_paths import resolve_generated_dir, resolve_repo_root, state_path
 from src.runtime.task_engine import TaskEngine
 from src.runtime.telemetry import Telemetry
 from src.runtime.telegram_router import TelegramRouter
 
 
-TRAFFIC_FILE = Path(os.path.expanduser("~/.openclaw-eve/runtime/api_traffic.jsonl"))
-OUTPUT_ROOT = ROOT / "generated" / "mcp_from_traffic"
+ROOT = resolve_repo_root()
+TRAFFIC_FILE = state_path("runtime", "api_traffic.jsonl")
+OUTPUT_ROOT = (resolve_generated_dir() / "mcp_from_traffic").resolve()
 MANIFEST_FILE = OUTPUT_ROOT / "manifest.json"
 REPORT_FILE = OUTPUT_ROOT / "pipeline_report.json"
 VENV_DIR = OUTPUT_ROOT / ".venv"
@@ -36,7 +37,7 @@ def generate_traffic() -> Dict[str, Any]:
     TRAFFIC_FILE.parent.mkdir(parents=True, exist_ok=True)
     TRAFFIC_FILE.write_text("", encoding="utf-8")
 
-    telemetry = Telemetry(os.path.expanduser("~/.openclaw-eve/runtime/telemetry.jsonl"))
+    telemetry = Telemetry(str(state_path("runtime", "telemetry.jsonl")))
     registry = build_registry()
     engine = TaskEngine(registry, telemetry=telemetry)
     router = TelegramRouter()
@@ -98,7 +99,7 @@ def verify_generated_tools() -> Dict[str, Any]:
     }
 
     for tool in tools:
-        package_dir = Path(tool["package_dir"])
+        package_dir = _resolve_manifest_path(str(tool["package_dir"]))
         npm_install = run(["npm", "install", "--no-fund", "--no-audit"], cwd=package_dir)
         npm_build = run(["npm", "run", "build"], cwd=package_dir)
         client = run([str(venv_python), "client.py"], cwd=package_dir)
@@ -117,6 +118,17 @@ def verify_generated_tools() -> Dict[str, Any]:
         )
 
     return {"pip_install_mcp": pip_result, "tool_results": results}
+
+
+def _resolve_manifest_path(value: str) -> Path:
+    text = str(value or "")
+    if text.startswith("${REPO_ROOT}/"):
+        rel = text.replace("${REPO_ROOT}/", "", 1)
+        return (ROOT / rel).resolve()
+    if text.startswith("${OPENCLAW_STATE_DIR}/"):
+        rel = text.replace("${OPENCLAW_STATE_DIR}/", "", 1)
+        return (state_path() / rel).resolve()
+    return Path(text).expanduser().resolve()
 
 
 def main() -> int:
