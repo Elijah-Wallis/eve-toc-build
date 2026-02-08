@@ -228,6 +228,9 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
     def atrev001() -> CheckResult:
         return pytest_check("tests/test_revenueops_gate.py")
 
+    def ating001() -> CheckResult:
+        return pytest_check("tests/test_postcall_ingestion_completeness.py")
+
     return {
         "AT-001": at001,
         "AT-002": at002,
@@ -258,6 +261,7 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         "AT-PRO-002": atpro002,
         "AT-PRO-003": atpro003,
         "AT-REV-001": atrev001,
+        "AT-ING-001": ating001,
     }
 
 

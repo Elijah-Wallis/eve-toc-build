@@ -1,0 +1,7 @@
+{
+  "outcome": "SENT_EVIDENCE",
+  "summary": "Manager requested package and accepted SMS alert.",
+  "evidence_type": "AUDIO",
+  "test_result": "Voicemail after 8 rings",
+  "test_timestamp": "2026-02-08T01:15:00Z"
+}
