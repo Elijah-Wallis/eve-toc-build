@@ -303,6 +303,18 @@ def _render_markdown_report(
         lines.append("- no revenueops gate data")
     lines.append("")
 
+    lines.append("## Acceptance Trends (7 runs)")
+    trends = ctx.report_sections.get("acceptance_trends", {})
+    if trends and trends.get("count"):
+        lines.append(f"- stored runs: `{trends.get('count')}`")
+        for item in trends.get("top_flaky", [])[:3]:
+            lines.append(
+                f"- flaky gate `{item.get('id')}` fail_rate={item.get('fail_rate')} last_failure={item.get('last_failure')}"
+            )
+    else:
+        lines.append("- no history yet")
+    lines.append("")
+
     lines.append("## Risk Signals")
     if findings:
         for finding in findings[:10]:
@@ -428,6 +440,34 @@ def _proposal_counts(proposals: Sequence[ProposalCandidate]) -> tuple[Dict[str, 
 def _save_heartbeat(path: Path, heartbeat: Heartbeat) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(redact_obj(asdict(heartbeat)), indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+
+
+def _load_acceptance_trends(state_dir: Path) -> Dict[str, Any]:
+    trends_path = state_dir / "acceptance" / "trends" / "last_7.json"
+    if not trends_path.exists():
+        return {"count": 0, "runs": []}
+    payload = json.loads(trends_path.read_text(encoding="utf-8"))
+    runs = payload.get("runs") if isinstance(payload.get("runs"), list) else []
+    gate_stats: Dict[str, Dict[str, Any]] = {}
+    for run in runs:
+        for result in run.get("results", []):
+            gate_id = str(result.get("id") or "")
+            if not gate_id:
+                continue
+            stats = gate_stats.setdefault(gate_id, {"id": gate_id, "runs": 0, "fails": 0, "last_failure": ""})
+            stats["runs"] += 1
+            if result.get("status") == "fail":
+                stats["fails"] += 1
+                stats["last_failure"] = run.get("generated_at") or run.get("started_at") or ""
+    flaky = []
+    for stats in gate_stats.values():
+        if stats["runs"] <= 0:
+            continue
+        fail_rate = round(stats["fails"] / stats["runs"], 4)
+        if fail_rate > 0:
+            flaky.append({"id": stats["id"], "fail_rate": fail_rate, "last_failure": stats["last_failure"]})
+    flaky.sort(key=lambda x: x["fail_rate"], reverse=True)
+    return {"count": len(runs), "path": str(trends_path), "top_flaky": flaky[:3]}
 
 
 def _run_feedback(args: argparse.Namespace) -> int:
@@ -557,6 +597,7 @@ def _run_review(args: argparse.Namespace) -> int:
                 "error": str(exc),
             }
         ctx.report_sections["revenueops_gate"] = revenueops_gate
+        ctx.report_sections["acceptance_trends"] = _load_acceptance_trends(state_dir)
 
         feedback_path = state_dir / "proposals" / "feedback.json"
         memory = ProactiveMemory(state_dir / "proactive_review" / "memory.json")
@@ -628,6 +669,7 @@ def _run_review(args: argparse.Namespace) -> int:
             "feedback_applied": memory_applied,
             "analyzer_sections": ctx.report_sections,
             "revenueops_gate": revenueops_gate,
+            "acceptance_trends": ctx.report_sections["acceptance_trends"],
             "env_presence": env_status,
             "notes": notes,
         }

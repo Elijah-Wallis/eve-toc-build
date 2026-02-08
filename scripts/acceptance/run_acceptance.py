@@ -11,8 +11,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Dict, List
 
-
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from src.runtime.acceptance.trends import update_trends
+
 PYTHON = os.environ.get("OPENCLAW_ACCEPTANCE_PYTHON") or os.environ.get("PYTHON", "python3")
 
 
@@ -231,6 +235,13 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
     def ating001() -> CheckResult:
         return pytest_check("tests/test_postcall_ingestion_completeness.py")
 
+    def atledger001() -> CheckResult:
+        return pytest_check("tests/test_event_chain_gate.py")
+
+    def atsec002() -> CheckResult:
+        cmd = "bash scripts/security/scan_secrets_strict.sh && " + f"{shlex.quote(PYTHON)} -m pytest -q tests/test_secret_hygiene_strict.py"
+        return run_cmd(cmd, timeout=240)
+
     return {
         "AT-001": at001,
         "AT-002": at002,
@@ -262,6 +273,8 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         "AT-PRO-003": atpro003,
         "AT-REV-001": atrev001,
         "AT-ING-001": ating001,
+        "AT-LEDGER-001": atledger001,
+        "AT-SEC-002": atsec002,
     }
 
 
@@ -305,6 +318,15 @@ def main() -> int:
             for r in results
         ],
     }
+    state_dir = Path(os.environ.get("OPENCLAW_STATE_DIR", str(Path.home() / ".openclaw-eve")))
+    try:
+        trend = update_trends(state_dir, output)
+        output["trends"] = {
+            "count": trend.get("count", 0),
+            "path": str(state_dir / "acceptance" / "trends" / "last_7.json"),
+        }
+    except Exception as exc:  # noqa: BLE001
+        output["trends"] = {"error": str(exc)}
     print(json.dumps(output, ensure_ascii=True, indent=2))
     return 0 if not failed else 2
 

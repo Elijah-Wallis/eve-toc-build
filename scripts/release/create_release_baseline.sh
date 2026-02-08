@@ -27,7 +27,7 @@ tag="baseline-$(date +%Y%m%d-%H%M)"
 snapshot_dir="${STATE_DIR}/release_snapshots/${tag}"
 mkdir -p "$snapshot_dir"
 
-ids="AT-PRO-001,AT-PRO-002,AT-PRO-003,AT-001,AT-002,AT-003,AT-007,AT-009,AT-011,AT-012,AT-013B,AT-018B,AT-021B,AT-024B,AT-034B,AT-035B"
+ids="AT-PRO-001,AT-PRO-002,AT-PRO-003,AT-001,AT-002,AT-003,AT-007,AT-009,AT-011,AT-012,AT-013B,AT-018B,AT-021B,AT-024B,AT-034B,AT-035B,AT-SEC-002"
 
 echo "Running baseline suite: $ids"
 python3 scripts/acceptance/run_acceptance.py --ids "$ids" | tee "${snapshot_dir}/gates_run.json" >/dev/null
