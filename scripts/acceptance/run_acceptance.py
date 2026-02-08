@@ -209,6 +209,25 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
             return docker_error
         return pytest_check("tests/integration/test_retell_brain_ws_integration.py")
 
+    def atpro001() -> CheckResult:
+        return pytest_check("tests/integration/test_proactive_review_offline.py::test_offline_run_writes_dated_and_latest_and_latest_proposals")
+
+    def atpro002() -> CheckResult:
+        return pytest_check("tests/integration/test_proposal_engine_patch_only.py::test_proposal_engine_emits_patch_with_meta_and_apply_script_without_repo_mutation")
+
+    def atpro003() -> CheckResult:
+        cmd = (
+            f"{shlex.quote(PYTHON)} -m pytest -q "
+            "tests/contracts/test_proactive_review_heartbeat_schema.py::test_heartbeat_includes_required_fields "
+            "tests/contracts/test_proactive_review_redaction.py::test_redaction_scrubs_secret_like_strings "
+            "tests/integration/test_proactive_review_locking.py::test_lock_contention_records_warning_and_skip "
+            "tests/integration/test_proactive_review_offline_network_block.py::test_offline_network_command_is_denied"
+        )
+        return run_cmd(cmd, timeout=240)
+
+    def atrev001() -> CheckResult:
+        return pytest_check("tests/test_revenueops_gate.py")
+
     return {
         "AT-001": at001,
         "AT-002": at002,
@@ -235,6 +254,10 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         "AT-034B": at034b,
         "AT-035A": at035a,
         "AT-035B": at035b,
+        "AT-PRO-001": atpro001,
+        "AT-PRO-002": atpro002,
+        "AT-PRO-003": atpro003,
+        "AT-REV-001": atrev001,
     }
 
 
