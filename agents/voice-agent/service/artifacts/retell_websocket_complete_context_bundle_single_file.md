@@ -1,189 +1,313 @@
 # Retell WebSocket + Agent Runtime Complete Context Bundle
 
-**Generated:** 2026-02-14T13:04:45Z
+This is a plain-text bundle intended for air-gapped review.
 
-## Scope
-- Websocket/Retell protocol runtime, tools, config, orchestration, scripts, tests, fixtures, and environment/runtime metadata.
-- Includes application code and all Retell/websocket-related non-app files referenced by the existing project manifest.
+## Metadata
+- Generated (UTC): `2026-02-14T17:59:29Z`
+- Git branch: `voice-agent`
+- Git commit: `67ad919643a8ce2230fcab7156c2e995f991bcc3`
 
-## File manifest (deduplicated)
-- /Users/elijah/Documents/New project/.env.cloudflare.local
-- /Users/elijah/Documents/New project/.env.retell.local
-- /Users/elijah/Documents/New project/README.md
-- /Users/elijah/Documents/New project/app/__init__.py
-- /Users/elijah/Documents/New project/app/backchannel.py
-- /Users/elijah/Documents/New project/app/bounded_queue.py
-- /Users/elijah/Documents/New project/app/canary.py
-- /Users/elijah/Documents/New project/app/clock.py
-- /Users/elijah/Documents/New project/app/config.py
-- /Users/elijah/Documents/New project/app/conversation_memory.py
-- /Users/elijah/Documents/New project/app/dashboard_data.py
-- /Users/elijah/Documents/New project/app/dialogue_policy.py
-- /Users/elijah/Documents/New project/app/eve_prompt.py
-- /Users/elijah/Documents/New project/app/fact_guard.py
-- /Users/elijah/Documents/New project/app/llm_client.py
-- /Users/elijah/Documents/New project/app/metrics.py
-- /Users/elijah/Documents/New project/app/objection_library.py
-- /Users/elijah/Documents/New project/app/orchestrator.py
-- /Users/elijah/Documents/New project/app/outcome_schema.py
-- /Users/elijah/Documents/New project/app/persona_prompt.py
-- /Users/elijah/Documents/New project/app/phrase_selector.py
-- /Users/elijah/Documents/New project/app/playbook_policy.py
-- /Users/elijah/Documents/New project/app/prom_export.py
-- /Users/elijah/Documents/New project/app/protocol.py
-- /Users/elijah/Documents/New project/app/provider.py
-- /Users/elijah/Documents/New project/app/safety_policy.py
-- /Users/elijah/Documents/New project/app/security.py
-- /Users/elijah/Documents/New project/app/server.py
-- /Users/elijah/Documents/New project/app/speech_planner.py
-- /Users/elijah/Documents/New project/app/tools.py
-- /Users/elijah/Documents/New project/app/trace.py
-- /Users/elijah/Documents/New project/app/transport_ws.py
-- /Users/elijah/Documents/New project/app/turn_handler.py
-- /Users/elijah/Documents/New project/app/voice_guard.py
-- /Users/elijah/Documents/New project/pyproject.toml
-- app/config.py
-- app/dashboard_data.py
-- app/eve_prompt.py
-- app/orchestrator.py
-- app/persona_prompt.py
-- app/protocol.py
-- app/server.py
-- app/speech_planner.py
-- app/tools.py
-- app/transport_ws.py
-- app/turn_handler.py
-- docs/lead_factory.md
-- docs/retell_ws_brain_contract.md
-- docs/retell_ws_brain_playbook.md
-- docs/revenue_ops_loop.md
-- docs/voice_interaction_contract.md
-- orchestration/eve-v7-harness-run.rb
-- orchestration/eve-v7-orchestrator.yaml
-- orchestration/eve-v7-runtime-harness.md
-- orchestration/eve-v7-test-cases.yaml
-- scripts/b2b_switch_to_ws_brain.sh
-- scripts/call_b2b.sh
-- scripts/call_status.sh
-- scripts/ci_hard_gates.sh
-- scripts/cloudflare_verify.sh
-- scripts/dogfood_scorecard.py
-- scripts/load_test.py
-- scripts/metrics_summary.py
-- scripts/prompts/b2b_fast_plain.generated.prompt.txt
-- scripts/prompts/b2b_fast_plain.prompt.txt
-- scripts/replay_session.py
-- scripts/retell_fast_recover.sh
-- scripts/retell_learning_loop.py
-- scripts/retell_restore_agent.sh
-- scripts/revenue_ops_loop.py
-- scripts/run_dashboard.sh
-- scripts/ws_brain_8099_prod.sh
-- scripts/ws_brain_dev_on.sh
-- scripts/ws_load_test.py
-- tests/acceptance/at_no_leak_30min.py
-- tests/acceptance/at_vic_100_sessions.py
-- tests/acceptance/at_voice_quality_regression.py
-- tests/acceptance/at_ws_torture_5min.py
-- tests/fixtures/in_call_details.json
-- tests/fixtures/in_response_required.json
-- tests/fixtures/in_update_only.json
-- tests/fixtures/out_config.json
-- tests/fixtures/retell_wire/inbound_response_required_missing_id_invalid.json
-- tests/fixtures/retell_wire/inbound_response_required_valid.json
-- tests/harness/transport_harness.py
-- tests/test_backchannel_vic.py
-- tests/test_epoch_barge_in.py
-- tests/test_fact_guard.py
-- tests/test_inbound_limits.py
-- tests/test_keepalive_priority.py
-- tests/test_latency_defaults.py
-- tests/test_latency_masking.py
-- tests/test_llm_stream_cancel_race.py
-- tests/test_llm_stream_empty_terminal_chunk.py
-- tests/test_micro_chunking.py
-- tests/test_phrase_variation_determinism.py
-- tests/test_playbook_policy.py
-- tests/test_protocol_parsing.py
-- tests/test_replay_determinism.py
-- tests/test_retell_learning_loop.py
-- tests/test_retell_mode_checklist.py
-- tests/test_retell_pause_formatting.py
-- tests/test_retell_wire_contract.py
-- tests/test_security_handshake_gating.py
-- tests/test_speculative_planning.py
-- tests/test_tool_grounding.py
-- tests/test_transcript_compaction.py
-- tests/test_vic_contract.py
-- tests/test_writer_backpressure_timeout.py
+## Contents
 
-## File contents
+- `README.md`
+- `pyproject.toml`
+- `Makefile`
+- `app/__init__.py`
+- `app/agent/__init__.py`
+- `app/agent/compaction.py`
+- `app/backchannel.py`
+- `app/bounded_queue.py`
+- `app/canary.py`
+- `app/clock.py`
+- `app/config.py`
+- `app/conversation_memory.py`
+- `app/dashboard_data.py`
+- `app/dialogue_policy.py`
+- `app/eve_prompt.py`
+- `app/fact_guard.py`
+- `app/llm_client.py`
+- `app/metrics.py`
+- `app/objection_library.py`
+- `app/orchestrator.py`
+- `app/outcome_schema.py`
+- `app/persona_prompt.py`
+- `app/phrase_selector.py`
+- `app/playbook_policy.py`
+- `app/prom_export.py`
+- `app/protocol.py`
+- `app/provider.py`
+- `app/safety_policy.py`
+- `app/security.py`
+- `app/server.py`
+- `app/shell/__init__.py`
+- `app/shell/executor.py`
+- `app/shell/policy.py`
+- `app/speech_planner.py`
+- `app/tools.py`
+- `app/trace.py`
+- `app/transport_ws.py`
+- `app/turn_handler.py`
+- `app/voice_guard.py`
+- `src/__init__.py`
+- `src/agent/__init__.py`
+- `src/agent/orchestrator.py`
+- `src/agent/turn_manager.py`
+- `src/interfaces/__init__.py`
+- `src/interfaces/adapters.py`
+- `src/interfaces/events.py`
+- `src/main.py`
+- `src/processing/__init__.py`
+- `src/processing/chunking.py`
+- `src/processing/prosody.py`
+- `src/processing/tag_parser.py`
+- `src/processing/vad.py`
+- `src/utils/__init__.py`
+- `src/utils/clock.py`
+- `src/utils/metrics.py`
+- `tests/acceptance/at_no_leak_30min.py`
+- `tests/acceptance/at_vic_100_sessions.py`
+- `tests/acceptance/at_voice_quality_regression.py`
+- `tests/acceptance/at_ws_torture_5min.py`
+- `tests/fixtures/in_call_details.json`
+- `tests/fixtures/in_clear.json`
+- `tests/fixtures/in_ping_pong.json`
+- `tests/fixtures/in_reminder_required.json`
+- `tests/fixtures/in_response_required.json`
+- `tests/fixtures/in_update_only.json`
+- `tests/fixtures/leads_seed.csv`
+- `tests/fixtures/out_agent_interrupt_chunk.json`
+- `tests/fixtures/out_agent_interrupt_terminal.json`
+- `tests/fixtures/out_config.json`
+- `tests/fixtures/out_metadata.json`
+- `tests/fixtures/out_ping_pong.json`
+- `tests/fixtures/out_response_chunk.json`
+- `tests/fixtures/out_response_terminal.json`
+- `tests/fixtures/out_tool_call_invocation.json`
+- `tests/fixtures/out_tool_call_result.json`
+- `tests/fixtures/out_update_agent.json`
+- `tests/fixtures/retell_wire/inbound_ping_pong_missing_timestamp_invalid.json`
+- `tests/fixtures/retell_wire/inbound_ping_pong_valid.json`
+- `tests/fixtures/retell_wire/inbound_reminder_required_valid.json`
+- `tests/fixtures/retell_wire/inbound_response_required_missing_id_invalid.json`
+- `tests/fixtures/retell_wire/inbound_response_required_valid.json`
+- `tests/fixtures/retell_wire/outbound_ping_pong_valid.json`
+- `tests/fixtures/retell_wire/outbound_response_chunk_valid.json`
+- `tests/fixtures/retell_wire/outbound_response_terminal_valid.json`
+- `tests/harness/transport_harness.py`
+- `tests/test_b2b_dialogue_policy_semantics.py`
+- `tests/test_backchannel_vic.py`
+- `tests/test_canary.py`
+- `tests/test_context_compaction.py`
+- `tests/test_dashboard_routes.py`
+- `tests/test_dialogue_policy_b2b.py`
+- `tests/test_dialogue_policy_shell_exec.py`
+- `tests/test_dnc_tool_invocation.py`
+- `tests/test_epoch_barge_in.py`
+- `tests/test_fact_guard.py`
+- `tests/test_inbound_limits.py`
+- `tests/test_keepalive_ping_pong.py`
+- `tests/test_keepalive_priority.py`
+- `tests/test_latency_defaults.py`
+- `tests/test_latency_masking.py`
+- `tests/test_lead_factory.py`
+- `tests/test_llm_openai_client.py`
+- `tests/test_llm_stream_cancel_race.py`
+- `tests/test_llm_stream_empty_terminal_chunk.py`
+- `tests/test_metrics_summary_script.py`
+- `tests/test_micro_chunking.py`
+- `tests/test_outcome_schema.py`
+- `tests/test_path_hygiene.py`
+- `tests/test_phrase_variation_determinism.py`
+- `tests/test_plain_language_policy.py`
+- `tests/test_playbook_policy.py`
+- `tests/test_prom_export_gauge.py`
+- `tests/test_protocol_parsing.py`
+- `tests/test_provider_selection.py`
+- `tests/test_replay_determinism.py`
+- `tests/test_retell_learning_loop.py`
+- `tests/test_retell_mode_checklist.py`
+- `tests/test_retell_pause_formatting.py`
+- `tests/test_retell_wire_contract.py`
+- `tests/test_revenue_ops_loop.py`
+- `tests/test_security_handshake_gating.py`
+- `tests/test_self_improve_no_apply_on_red.py`
+- `tests/test_self_improve_pipeline.py`
+- `tests/test_self_improve_red_team.py`
+- `tests/test_shell_executor_modes.py`
+- `tests/test_shell_policy.py`
+- `tests/test_skills_injection_limits.py`
+- `tests/test_skills_loader.py`
+- `tests/test_skills_retriever.py`
+- `tests/test_speculative_planning.py`
+- `tests/test_tool_grounding.py`
+- `tests/test_tools_shell_exec.py`
+- `tests/test_transcript_compaction.py`
+- `tests/test_vic_contract.py`
+- `tests/test_voice_guard.py`
+- `tests/test_writer_backpressure_timeout.py`
+- `orchestration/eve-v7-harness-run.rb`
+- `orchestration/eve-v7-orchestrator.yaml`
+- `orchestration/eve-v7-runtime-harness.md`
+- `orchestration/eve-v7-test-cases.yaml`
+- `tools/eval/fixtures/session_a.json`
+- `tools/eval/out/session_a_metrics.json`
+- `tools/eval/replay.py`
+- `tools/eval/report.py`
+- `docs/lead_factory.md`
+- `docs/retell_ws_brain_contract.md`
+- `docs/retell_ws_brain_playbook.md`
+- `docs/revenue_ops_loop.md`
+- `docs/self_improve/history/20260212T012144Z.json`
+- `docs/self_improve/history/20260212T012144Z.md`
+- `docs/self_improve/history/20260212T012153Z.json`
+- `docs/self_improve/history/20260212T012153Z.md`
+- `docs/self_improve/history/20260212T012946Z.json`
+- `docs/self_improve/history/20260212T012946Z.md`
+- `docs/self_improve/history/20260212T014043Z.json`
+- `docs/self_improve/history/20260212T014043Z.md`
+- `docs/self_improve/history/20260212T014044Z.json`
+- `docs/self_improve/history/20260212T014044Z.md`
+- `docs/self_improve/history/20260212T014114Z.json`
+- `docs/self_improve/history/20260212T014114Z.md`
+- `docs/self_improve/history/20260212T014430Z.json`
+- `docs/self_improve/history/20260212T014430Z.md`
+- `docs/self_improve/history/20260212T015152Z.json`
+- `docs/self_improve/history/20260212T015152Z.md`
+- `docs/self_improve/history/20260212T015349Z.json`
+- `docs/self_improve/history/20260212T015349Z.md`
+- `docs/self_improve/history/20260212T015521Z.json`
+- `docs/self_improve/history/20260212T015521Z.md`
+- `docs/self_improve/history/20260212T015532Z.json`
+- `docs/self_improve/history/20260212T015532Z.md`
+- `docs/self_improve/history/20260212T015624Z.json`
+- `docs/self_improve/history/20260212T015624Z.md`
+- `docs/self_improve/history/20260212T015659Z.json`
+- `docs/self_improve/history/20260212T015659Z.md`
+- `docs/self_improve/history/20260212T022125Z.json`
+- `docs/self_improve/history/20260212T022125Z.md`
+- `docs/self_improve/history/20260212T022158Z.json`
+- `docs/self_improve/history/20260212T022158Z.md`
+- `docs/self_improve/history/20260212T022239Z.json`
+- `docs/self_improve/history/20260212T022239Z.md`
+- `docs/self_improve/history/20260212T022304Z.json`
+- `docs/self_improve/history/20260212T022304Z.md`
+- `docs/self_improve/history/20260212T024907Z.json`
+- `docs/self_improve/history/20260212T024907Z.md`
+- `docs/self_improve/history/20260212T030417Z.json`
+- `docs/self_improve/history/20260212T030417Z.md`
+- `docs/self_improve/history/20260212T030442Z.json`
+- `docs/self_improve/history/20260212T030442Z.md`
+- `docs/self_improve/history/20260212T030752Z.json`
+- `docs/self_improve/history/20260212T030752Z.md`
+- `docs/self_improve/history/20260212T030809Z.json`
+- `docs/self_improve/history/20260212T030809Z.md`
+- `docs/self_improve/history/20260212T031033Z.json`
+- `docs/self_improve/history/20260212T031033Z.md`
+- `docs/self_improve/history/20260212T033426Z.json`
+- `docs/self_improve/history/20260212T033426Z.md`
+- `docs/self_improve/history/20260212T045806Z.json`
+- `docs/self_improve/history/20260212T045806Z.md`
+- `docs/self_improve/history/20260212T214228Z.json`
+- `docs/self_improve/history/20260212T214228Z.md`
+- `docs/self_improve/history/20260212T215257Z.json`
+- `docs/self_improve/history/20260212T215257Z.md`
+- `docs/self_improve/history/20260212T221535Z.json`
+- `docs/self_improve/history/20260212T221535Z.md`
+- `docs/self_improve/history/20260212T221536Z.json`
+- `docs/self_improve/history/20260212T221536Z.md`
+- `docs/self_improve/history/20260212T222539Z.json`
+- `docs/self_improve/history/20260212T222539Z.md`
+- `docs/self_improve/history/20260213T093626Z.json`
+- `docs/self_improve/history/20260213T093626Z.md`
+- `docs/self_improve/history/20260213T093628Z.json`
+- `docs/self_improve/history/20260213T093628Z.md`
+- `docs/self_improve/history/20260213T104617Z.json`
+- `docs/self_improve/history/20260213T104617Z.md`
+- `docs/self_improve/history/20260213T104818Z.json`
+- `docs/self_improve/history/20260213T104818Z.md`
+- `docs/self_improve/history/20260213T104831Z.json`
+- `docs/self_improve/history/20260213T104831Z.md`
+- `docs/self_improve/history/20260213T125410Z.json`
+- `docs/self_improve/history/20260213T125410Z.md`
+- `docs/self_improve/history/20260213T132216Z.json`
+- `docs/self_improve/history/20260213T132216Z.md`
+- `docs/self_improve/history/20260213T132830Z.json`
+- `docs/self_improve/history/20260213T132830Z.md`
+- `docs/self_improve/history/20260213T132945Z.json`
+- `docs/self_improve/history/20260213T132945Z.md`
+- `docs/self_improve/history/20260213T134816Z.json`
+- `docs/self_improve/history/20260213T134816Z.md`
+- `docs/self_improve/history/20260213T134842Z.json`
+- `docs/self_improve/history/20260213T134842Z.md`
+- `docs/self_improve/history/20260213T170217Z.json`
+- `docs/self_improve/history/20260213T170217Z.md`
+- `docs/self_improve/history/20260213T170218Z.json`
+- `docs/self_improve/history/20260213T170218Z.md`
+- `docs/self_improve/history/20260213T171003Z.json`
+- `docs/self_improve/history/20260213T171003Z.md`
+- `docs/self_improve/history/20260213T174049Z.json`
+- `docs/self_improve/history/20260213T174049Z.md`
+- `docs/self_improve/history/20260213T174141Z.json`
+- `docs/self_improve/history/20260213T174141Z.md`
+- `docs/self_improve/history/20260213T174142Z.json`
+- `docs/self_improve/history/20260213T174142Z.md`
+- `docs/self_improve/history/20260213T174806Z.json`
+- `docs/self_improve/history/20260213T174806Z.md`
+- `docs/self_improve/history/20260213T174852Z.json`
+- `docs/self_improve/history/20260213T174852Z.md`
+- `docs/self_improve/history/20260213T174914Z.json`
+- `docs/self_improve/history/20260213T174914Z.md`
+- `docs/self_improve/history/20260213T175036Z.json`
+- `docs/self_improve/history/20260213T175036Z.md`
+- `docs/self_improve/history/20260213T175151Z.json`
+- `docs/self_improve/history/20260213T175151Z.md`
+- `docs/self_improve/history/20260213T175234Z.json`
+- `docs/self_improve/history/20260213T175234Z.md`
+- `docs/self_improve/history/20260214T153148Z.json`
+- `docs/self_improve/history/20260214T153148Z.md`
+- `docs/self_improve/history/20260214T153739Z.json`
+- `docs/self_improve/history/20260214T153739Z.md`
+- `docs/self_improve/history/20260214T153740Z.json`
+- `docs/self_improve/history/20260214T153740Z.md`
+- `docs/self_improve/history/20260214T154001Z.json`
+- `docs/self_improve/history/20260214T154001Z.md`
+- `docs/self_improve/history/20260214T155205Z.json`
+- `docs/self_improve/history/20260214T155205Z.md`
+- `docs/self_improve/history/20260214T155830Z.json`
+- `docs/self_improve/history/20260214T155830Z.md`
+- `docs/self_improve/history/shell_exec.jsonl`
+- `docs/self_improve/last_run.md`
+- `docs/self_improve_sop.md`
+- `docs/voice_interaction_contract.md`
+- `scripts/b2b_switch_to_ws_brain.sh`
+- `scripts/build_context_bundle.py`
+- `scripts/call_b2b.sh`
+- `scripts/call_status.sh`
+- `scripts/ci_hard_gates.sh`
+- `scripts/cloudflare_verify.sh`
+- `scripts/dogfood_scorecard.py`
+- `scripts/lead_factory.py`
+- `scripts/load_test.py`
+- `scripts/metrics_summary.py`
+- `scripts/prompts/b2b_fast_plain.generated.prompt.txt`
+- `scripts/prompts/b2b_fast_plain.prompt.txt`
+- `scripts/replay_session.py`
+- `scripts/retell_fast_recover.sh`
+- `scripts/retell_learning_loop.py`
+- `scripts/retell_restore_agent.sh`
+- `scripts/revenue_ops_loop.py`
+- `scripts/run_dashboard.sh`
+- `scripts/self_improve_cycle.py`
+- `scripts/setup_shell_commands.sh`
+- `scripts/ws_brain_8099_prod.sh`
+- `scripts/ws_brain_8099_supervisor.sh`
+- `scripts/ws_brain_dev_on.sh`
+- `scripts/ws_load_test.py`
+- `artifacts/retell_ws_lessons_learned.md`
 
-### `/Users/elijah/Documents/New project/.env.cloudflare.local`
+## `README.md`
 
-```
-# Local Cloudflare secrets (git-ignored via .gitignore: .env*)
-# DO NOT COMMIT.
-
-CLOUDFLARE_ACCOUNT_ID=5b473c9bc55983e2f1e813669eb3b7a3
-CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN=qQJsu8fdkwfzoKJ5vDbLBFQe_R_NnWe_EluKalZY
-CLOUDFLARE_GLOBAL_API_KEY=ecbc1a40414323e5e91f4a236aac672058ae6
-CLOUDFLARE_ORIGIN_CA_KEY=v1.0-ea48d30e24275a9bd089f33f-501b130548309326ea74fda8118398fbca10b098ae734ccfe3c640f25f209f0b46840bf8a86456992a2dd8de903ac7081b0a7fab6ff0f1566e764066141a1c3b9ac9988c24b4e475cd
-
-```
-
-### `/Users/elijah/Documents/New project/.env.retell.local`
-
-```
-RETELL_API_KEY=key_3c5ee951698e6a58b2e908ca096c
-B2B_AGENT_ID=agent_7a0abb6b0df0e6352fbd236f3b
-RETELL_FROM_NUMBER=+14695998571
-DOGFOOD_TO_NUMBER=+19859914360
-
-CONVERSATION_PROFILE=b2b
-
-BRAIN_USE_LLM_NLG=false
-
-VOICE_PLAIN_LANGUAGE_MODE=true
-
-VOICE_NO_REASONING_LEAK=true
-
-VOICE_JARGON_BLOCKLIST_ENABLED=true
-
-VIC_TOOL_FILLER_THRESHOLD_MS=0
-
-VIC_MODEL_FILLER_THRESHOLD_MS=0
-
-RETELL_RESPONSIVENESS=1.0
-
-RETELL_INTERRUPTION_SENSITIVITY=1.0
-
-B2B_AGENT_NAME=Cassidy
-
-B2B_ORG_NAME=Eve
-
-RETELL_REMINDER_TRIGGER_MS=1
-
-RETELL_REMINDER_MAX_COUNT=1
-
-SPEECH_MARKUP_MODE=RAW_TEXT
-
-DASH_PAUSE_SCOPE=PROTECTED_ONLY
-
-BRAIN_SPEAK_FIRST=true
-
-B2B_AUTO_DISCLOSURE=false
-
-ULTRA_FAST_PRE_ACK_ENABLED=true
-
-B2B_AGENT_ID_BACKUP=agent_5d6f2744acfc79e26ddce13af2
-BRAIN_WSS_BASE_URL=wss://ws.evesystems.org/llm-websocket
-
-```
-
-### `/Users/elijah/Documents/New project/README.md`
-
-```
+```markdown
 # Retell WS Brain (Deterministic, Actor Model, VIC-Gated)
 
 This repo contains a production-grade "Brain" server for Retell's Custom LLM WebSocket integration.
@@ -291,8 +415,7 @@ Dashboard:
 
 WebSocket endpoints:
 
-- `ws://{host}/ws/{call_id}`
-- `ws://{host}/llm-websocket/{call_id}` (alias)
+- `ws://{host}/llm-websocket/{call_id}` (canonical)
 
 Retell pacing defaults:
 
@@ -315,8 +438,8 @@ Optional env flags:
 - `VOICE_NO_REASONING_LEAK=true`
 - `VOICE_JARGON_BLOCKLIST_ENABLED=true`
 - `RETELL_SEND_UPDATE_AGENT_ON_CONNECT=true`
-- `RETELL_RESPONSIVENESS=1.0`
-- `RETELL_INTERRUPTION_SENSITIVITY=1.0`
+- `RETELL_RESPONSIVENESS=0.8`
+- `RETELL_INTERRUPTION_SENSITIVITY=0.8`
 - `SKILLS_ENABLED=false`
 - `SKILLS_DIR=skills`
 - `SKILLS_MAX_INJECTED=3`
@@ -479,7 +602,7 @@ Backpressure policy:
 
 ## Real Retell Call Validation Checklist
 
-1. Configure Retell to connect to `wss://.../llm-websocket/{call_id}` (or `/ws/{call_id}`).
+1. Configure Retell to connect to `wss://.../llm-websocket/{call_id}`.
 2. On connect, confirm server sends:
    - `config`
    - BEGIN `response` stream for `response_id=0` (greeting or empty terminal)
@@ -502,20 +625,195 @@ Backpressure policy:
    - optional: query token mode (OFF by default)
    - if behind a proxy, trust `X-Forwarded-For` only when trusted-proxy mode is enabled and proxy CIDRs are configured
 ```
-
 ```
 
-### `/Users/elijah/Documents/New project/app/__init__.py`
+## `pyproject.toml`
+
+```toml
+[project]
+name = "retell-ws-brain"
+version = "0.1.0"
+description = "Production-grade Retell Custom LLM WebSocket brain with deterministic VIC gates"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.12.0",
+  "fastapi>=0.115.0",
+  "uvicorn>=0.30.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=9.0.0",
+]
+gemini = [
+  "google-genai>=1.62.0",
+]
+openai = [
+  "openai>=1.0.0",
+]
+ops = [
+  "websockets>=12.0",
+  "prometheus-client>=0.20.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "tests_expressive"]
+addopts = "-q"
+pythonpath = ["."]
+```
+
+## `Makefile`
 
 ```
+.PHONY: help call call-status retell-fast ws-on ws-restore ws-dev cloudflare-verify learn leads ops-loop money test ci ci-local metrics dashboard go self-improve skill-capture skill-validate
+
+help:
+	@echo "Simple commands:"
+	@echo "  make call                  # call default DOGFOOD_TO_NUMBER"
+	@echo "  make call TO=+19859914360  # call a specific number"
+	@echo "  make retell-fast           # patch live Retell B2B prompt + fastest reply settings"
+	@echo "  make ws-on                 # switch B2B agent to Custom LLM WebSocket brain (requires BRAIN_WSS_BASE_URL in .env)"
+	@echo "  make ws-restore BACKUP=...  # restore agent response engine from backup JSON"
+	@echo "  make ws-dev                # local dev: start server + cloudflared + switch agent"
+	@echo "  make cloudflare-verify     # verify Cloudflare API token from .env.cloudflare.local"
+	@echo "  make learn                 # sync calls + transcripts/recordings + auto-refine at threshold"
+	@echo "  make leads INPUT=...       # score/sort lead lists and optionally push to n8n"
+	@echo "  make ops-loop              # compute objective metrics from call corpus + next actions"
+	@echo "  make money                 # run learn + ops-loop + scorecard in one command"
+	@echo "  make go                    # start server in dogfood mode (loads .env.retell.local, B2B profile)"
+	@echo "  make call-status ID=call_x # fetch call status"
+	@echo "  make test                  # run pytest -q"
+	@echo "  make ci                    # run hard gate suite (backend + expressive + web)"
+	@echo "  make ci-local              # run local hard gates without dependency install"
+	@echo "  make metrics               # print key metric summary from /metrics"
+	@echo "  make dashboard             # open Eve dashboard URL"
+	@echo "  make self-improve          # run safe self-improvement cycle (propose)"
+	@echo "  make skill-capture ID=... INTENT=... [TESTS=...]"
+	@echo "  make skill-validate PATH=skills/<file>.md"
+
+call:
+	@./scripts/call_b2b.sh "$(TO)"
+
+call-status:
+	@./scripts/call_status.sh "$(ID)"
+
+retell-fast:
+	@./scripts/retell_fast_recover.sh
+
+ws-on:
+	@./scripts/b2b_switch_to_ws_brain.sh
+
+ws-restore:
+	@./scripts/retell_restore_agent.sh "$(BACKUP)"
+
+ws-dev:
+	@./scripts/ws_brain_dev_on.sh
+
+cloudflare-verify:
+	@./scripts/cloudflare_verify.sh
+
+learn:
+	@python3 scripts/retell_learning_loop.py --limit $${RETELL_LEARN_LIMIT:-100} --threshold $${RETELL_LEARN_THRESHOLD:-250}
+
+leads:
+	@python3 scripts/lead_factory.py --input "$(INPUT)" --out-dir $${LEAD_OUT_DIR:-data/leads} --min-score $${LEAD_MIN_SCORE:-60} --top-k $${LEAD_TOP_K:-500}
+
+ops-loop:
+	@python3 scripts/revenue_ops_loop.py --calls-dir $${OPS_CALLS_DIR:-data/retell_calls} --out-dir $${OPS_OUT_DIR:-data/revenue_ops}
+
+money:
+	@python3 scripts/retell_learning_loop.py --limit $${RETELL_LEARN_LIMIT:-100} --threshold $${RETELL_LEARN_THRESHOLD:-250}
+	@python3 scripts/revenue_ops_loop.py --calls-dir $${OPS_CALLS_DIR:-data/retell_calls} --out-dir $${OPS_OUT_DIR:-data/revenue_ops}
+	@URL=$${METRICS_URL:-http://127.0.0.1:8080/metrics}; \
+	if curl -fsS "$$URL" >/dev/null 2>&1; then \
+	  python3 scripts/dogfood_scorecard.py --metrics-url "$$URL"; \
+	else \
+	  echo "Skipping scorecard (metrics endpoint unreachable at $$URL)"; \
+	fi
+
+test:
+	@python3 -m pytest -q
+
+ci:
+	@bash scripts/ci_hard_gates.sh
+
+ci-local:
+	@PY=".venv/bin/python"; \
+	if [ ! -x "$$PY" ]; then PY="python3"; fi; \
+	$$PY -m pytest -q tests tests_expressive; \
+	$$PY -m pytest -q -k vic_contract; \
+	$$PY -m pytest -q tests/acceptance/at_vic_100_sessions.py; \
+	$$PY -m pytest -q tests/acceptance/at_no_leak_30min.py; \
+	$$PY -m pytest -q tests/acceptance/at_ws_torture_5min.py; \
+	if command -v npm >/dev/null 2>&1 && [ -f apps/web/package.json ]; then \
+	  (cd apps/web && npm run test && npm run build); \
+	else \
+	  echo "Skipping web gates: npm/apps/web not available"; \
+	fi
+
+metrics:
+	@python3 scripts/metrics_summary.py --metrics-url http://127.0.0.1:8080/metrics
+
+dashboard:
+	@bash scripts/run_dashboard.sh
+
+go:
+	@bash scripts/run_dashboard.sh
+
+self-improve:
+	@python3 scripts/self_improve_cycle.py --mode $${SELF_IMPROVE_MODE:-propose}
+
+skill-capture:
+	@python3 scripts/skills/capture_skill.py --id "$(ID)" --intent "$(INTENT)" --tests "$(TESTS)"
+
+skill-validate:
+	@python3 scripts/skills/validate_skill.py "$(PATH)"
+```
+
+## `app/__init__.py`
+
+```python
 # Intentionally empty: package marker.
-
-
 ```
 
-### `/Users/elijah/Documents/New project/app/backchannel.py`
+## `app/agent/__init__.py`
 
+```python
+from .compaction import CompactionContext, build_compaction_summary
+
+__all__ = ["CompactionContext", "build_compaction_summary"]
 ```
+
+## `app/agent/compaction.py`
+
+```python
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True, slots=True)
+class CompactionContext:
+    open_objectives: str
+    pending_failures: str
+    active_guardrails: str
+    last_green_baseline: str
+
+
+def build_compaction_summary(context: CompactionContext) -> str:
+    parts = [
+        f"open_objectives={context.open_objectives or 'unknown'}",
+        f"pending_failures={context.pending_failures or 'none'}",
+        f"active_guardrails={context.active_guardrails or 'default'}",
+        f"last_green_baseline={context.last_green_baseline or 'unknown'}",
+    ]
+    return "Compaction context: " + "; ".join(parts) + "."
+```
+
+## `app/backchannel.py`
+
+```python
 from __future__ import annotations
 
 import hashlib
@@ -605,13 +903,11 @@ class BackchannelClassifier:
         # Deterministic choice to avoid repetition without randomness.
         phrases = ["Mm-hmm.", "Okay.", "Got it."]
         return phrases[int(n) % len(phrases)]
-
-
 ```
 
-### `/Users/elijah/Documents/New project/app/bounded_queue.py`
+## `app/bounded_queue.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -758,12 +1054,11 @@ class BoundedDequeQueue(Generic[T]):
                     self._cv.notify_all()
                     return True
             return False
-
 ```
 
-### `/Users/elijah/Documents/New project/app/canary.py`
+## `app/canary.py`
 
-```
+```python
 from __future__ import annotations
 
 import hashlib
@@ -787,13 +1082,11 @@ def rollout_enabled(subject: str, percent: int) -> bool:
     h = hashlib.sha256(s).hexdigest()
     bucket = int(h[:8], 16) % 100
     return bucket < p
-
-
 ```
 
-### `/Users/elijah/Documents/New project/app/clock.py`
+## `app/clock.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -916,12 +1209,11 @@ class FakeClock(Clock):
         # Yield once after waking sleepers so resumed tasks can run without requiring
         # tests to sprinkle arbitrary extra yields.
         await asyncio.sleep(0)
-
 ```
 
-### `/Users/elijah/Documents/New project/app/config.py`
+## `app/config.py`
 
-```
+```python
 from __future__ import annotations
 
 import os
@@ -1060,23 +1352,25 @@ class BrainConfig:
 
     # Retell dynamic agent tuning on connect
     retell_send_update_agent_on_connect: bool = True
-    retell_responsiveness: float = 1.0
-    retell_interruption_sensitivity: float = 1.0
-    retell_reminder_trigger_ms: int = 450
+    retell_responsiveness: float = 0.8
+    retell_interruption_sensitivity: float = 0.8
+    retell_reminder_trigger_ms: int = 3000
     retell_reminder_max_count: int = 1
     # Pre-ACK behavior split:
     # - safe_pre_ack_on_response_required_enabled: emits a tiny response chunk only after response_required.
     # - interrupt_pre_ack_on_agent_turn_enabled: emits agent_interrupt on update_only.agent_turn (experimental).
-    safe_pre_ack_on_response_required_enabled: bool = True
+    # Forced OFF (production hardening): avoid speculative ACK/interrupt frames that can race with
+    # Retell-side interruption and create overlap/replay edge cases under backpressure.
+    safe_pre_ack_on_response_required_enabled: bool = False
     interrupt_pre_ack_on_agent_turn_enabled: bool = False
     # Back-compat: legacy flag that enabled both.
     ultra_fast_pre_ack_enabled: bool = False
 
     # VIC timing thresholds
     vic_ack_deadline_ms: int = 250
-    vic_tool_filler_threshold_ms: int = 45
+    vic_tool_filler_threshold_ms: int = 800
     vic_tool_timeout_ms: int = 1500
-    vic_model_filler_threshold_ms: int = 45
+    vic_model_filler_threshold_ms: int = 800
     vic_model_timeout_ms: int = 3800
     vic_max_fillers_per_tool: int = 1
     vic_max_segment_expected_ms: int = 650
@@ -1131,7 +1425,6 @@ class BrainConfig:
         if self_improve_mode not in {"off", "propose", "apply"}:
             self_improve_mode = "off"
 
-        legacy_ultra = _getenv_bool("ULTRA_FAST_PRE_ACK_ENABLED", False)
         return BrainConfig(
             conversation_profile=conversation_profile,
             retell_auto_reconnect=_getenv_bool("RETELL_AUTO_RECONNECT", True),
@@ -1209,23 +1502,20 @@ class BrainConfig:
             retell_send_update_agent_on_connect=_getenv_bool(
                 "RETELL_SEND_UPDATE_AGENT_ON_CONNECT", True
             ),
-            retell_responsiveness=_getenv_float("RETELL_RESPONSIVENESS", 1.0),
+            retell_responsiveness=_getenv_float("RETELL_RESPONSIVENESS", 0.8),
             retell_interruption_sensitivity=_getenv_float(
-                "RETELL_INTERRUPTION_SENSITIVITY", 1.0
+                "RETELL_INTERRUPTION_SENSITIVITY", 0.8
             ),
-            retell_reminder_trigger_ms=_getenv_int("RETELL_REMINDER_TRIGGER_MS", 450),
+            retell_reminder_trigger_ms=_getenv_int("RETELL_REMINDER_TRIGGER_MS", 3000),
             retell_reminder_max_count=_getenv_int("RETELL_REMINDER_MAX_COUNT", 1),
-            safe_pre_ack_on_response_required_enabled=_getenv_bool(
-                "SAFE_PRE_ACK_ON_RESPONSE_REQUIRED_ENABLED", True
-            ),
-            interrupt_pre_ack_on_agent_turn_enabled=_getenv_bool(
-                "INTERRUPT_PRE_ACK_ON_AGENT_TURN_ENABLED", legacy_ultra
-            ),
-            ultra_fast_pre_ack_enabled=legacy_ultra,
+            # Forced OFF (production hardening): see dataclass defaults.
+            safe_pre_ack_on_response_required_enabled=False,
+            interrupt_pre_ack_on_agent_turn_enabled=False,
+            ultra_fast_pre_ack_enabled=False,
             vic_ack_deadline_ms=_getenv_int("VIC_ACK_DEADLINE_MS", 250),
-            vic_tool_filler_threshold_ms=_getenv_int("VIC_TOOL_FILLER_THRESHOLD_MS", 45),
+            vic_tool_filler_threshold_ms=_getenv_int("VIC_TOOL_FILLER_THRESHOLD_MS", 800),
             vic_tool_timeout_ms=_getenv_int("VIC_TOOL_TIMEOUT_MS", 1500),
-            vic_model_filler_threshold_ms=_getenv_int("VIC_MODEL_FILLER_THRESHOLD_MS", 45),
+            vic_model_filler_threshold_ms=_getenv_int("VIC_MODEL_FILLER_THRESHOLD_MS", 800),
             vic_model_timeout_ms=_getenv_int("VIC_MODEL_TIMEOUT_MS", 3800),
             vic_max_fillers_per_tool=_getenv_int("VIC_MAX_FILLERS_PER_TOOL", 1),
             vic_max_segment_expected_ms=_getenv_int("VIC_MAX_SEGMENT_EXPECTED_MS", 650),
@@ -1253,12 +1543,11 @@ class BrainConfig:
             b2b_emr_system=_getenv_str("B2B_EMR_SYSTEM", "Zenoti, Boulevard, or MangoMint"),
             b2b_contact_number=_getenv_str("B2B_CONTACT_NUMBER", "+14695998571"),
         )
-
 ```
 
-### `/Users/elijah/Documents/New project/app/conversation_memory.py`
+## `app/conversation_memory.py`
 
-```
+```python
 from __future__ import annotations
 
 import re
@@ -1400,12 +1689,11 @@ class ConversationMemory:
             last_green_baseline="vic_contracts_green",
         )
         return base + " " + build_compaction_summary(context)
-
 ```
 
-### `/Users/elijah/Documents/New project/app/dashboard_data.py`
+## `app/dashboard_data.py`
 
-```
+```python
 from __future__ import annotations
 
 import math
@@ -1678,12 +1966,11 @@ def build_repo_map(repo_root: Path) -> dict[str, Any]:
         "top_level": top_level,
         "sop_docs": sop_docs,
     }
-
 ```
 
-### `/Users/elijah/Documents/New project/app/dialogue_policy.py`
+## `app/dialogue_policy.py`
 
-```
+```python
 from __future__ import annotations
 
 import re
@@ -1862,15 +2149,15 @@ def _normalize_b2b_noise_tokens(text: str) -> list[str]:
     return [w for w in re.sub(r"\s+", " ", compact_alpha).split(" ") if w]
 
 _B2B_ONTOLOGY: tuple[tuple[str, re.Pattern[str]], ...] = (
+    ("EXPLICIT_REJECTION", _DNC_PAT),
+    ("ADMIN_BLOCK", _NO_EMAIL_PAT),
+    ("ADMIN_BLOCK", _ADMIN_BLOCK_PAT),
     ("NOT_DECISION_MAKER", _NOT_DECISION_MAKER_PAT),
     ("NOT_INTERESTED", _NOT_INTERESTED_PAT),
     ("PRICE_PUSH", _PRICE_PUSH_PAT),
     ("TOO_BUSY", _TOO_BUSY_PAT),
     ("INTERNAL_ALIGNMENT", _INTERNAL_ALIGNMENT_PAT),
     ("ALREADY_USING_VENDOR", _ALREADY_USING_VENDOR_PAT),
-    ("EXPLICIT_REJECTION", _DNC_PAT),
-    ("ADMIN_BLOCK", _NO_EMAIL_PAT),
-    ("ADMIN_BLOCK", _ADMIN_BLOCK_PAT),
     ("BAD_TIME", _BAD_TIME_PAT),
     ("SOFT_REJECTION", _SOFT_REJECT_PAT),
     ("ACTIVE_INTEREST", _INTEREST_PAT),
@@ -2081,6 +2368,14 @@ def _classify_b2b_state(
     if not t:
         return "NO_SIGNAL"
 
+    if re.fullmatch(r"(?:hello|hi|hey)[.!?]*", t.lower()):
+        agent = (last_agent or "").lower()
+        # If the agent just asked the OPEN permission question, "hello" is a soft proceed signal.
+        if stage == "OPEN" and "bad time" in agent:
+            return "ACTIVE_INTEREST"
+        # Otherwise treat as a new-call greeting and deliver the permission opener next.
+        return "NEW_CALL"
+
     compact = re.sub(r"\s+", "", t)
     if not compact:
         return "NO_SIGNAL"
@@ -2169,6 +2464,9 @@ def _is_b2b_noise_only_input(text: str) -> bool:
     if not compact_with_spaces:
         return True
     compact_lower = compact_with_spaces
+    # A pure greeting is a valid start/continuation signal; do not treat it as noise-only.
+    if re.fullmatch(r"(?:hello|hi|hey)[.!?]*", compact_lower):
+        return False
     compact_noise_tokens = _normalize_b2b_noise_tokens(compact_with_spaces)
     if compact_noise_tokens and len(compact_noise_tokens) <= 8 and all(
         token in _B2B_ACK_NOISE_TOKENS for token in compact_noise_tokens
@@ -2534,7 +2832,7 @@ def decide_action(
                         "needs_apology": needs_apology,
                         "accepted": True,
                         "fast_path": True,
-                        "intent_signature": "b2b:generic_email:accept_generic",
+                        "intent_signature": f"b2b:{stage}:generic_email:accept_generic",
                     }
                 ),
             )
@@ -2622,6 +2920,9 @@ def decide_action(
                         "needs_apology": needs_apology,
                     }
                 ),
+                tool_requests=[
+                    ToolRequest(name="mark_dnc_compliant", arguments={"reason": "USER_REQUEST"})
+                ],
             )
 
         if b2b_state == "BAD_TIME":
@@ -2696,6 +2997,9 @@ def decide_action(
                         "needs_apology": needs_apology,
                     }
                 ),
+                tool_requests=[
+                    ToolRequest(name="mark_dnc_compliant", arguments={"reason": "USER_REQUEST"})
+                ],
             )
 
         if next_stage == "EMAIL":
@@ -2907,12 +3211,11 @@ def decide_action(
         action_type="Ask",
         payload=_p({"slots_needed": ["request"], "message": "How can I help today?", "needs_apology": needs_apology}),
     )
-
 ```
 
-### `/Users/elijah/Documents/New project/app/eve_prompt.py`
+## `app/eve_prompt.py`
 
-```
+```python
 from __future__ import annotations
 
 import re
@@ -2981,7 +3284,7 @@ def _validate_structure(script_text: str) -> None:
     if missing:
         raise ValueError(f"Missing required flow sections: {', '.join(missing)}")
 
-    missing_placeholders = [p for p in REQUIRED_PLACEHOLDERS if f"{{{{{p}}}}" not in script_text]
+    missing_placeholders = [p for p in REQUIRED_PLACEHOLDERS if f"{{{{{p}}}}}" not in script_text]
     if missing_placeholders:
         raise ValueError(f"Missing required placeholders: {', '.join(missing_placeholders)}")
 
@@ -3085,12 +3388,11 @@ def load_eve_v7_opener(
         placeholders=placeholders or {},
     ).sections
     return sections.get("opener", "").strip()
-
 ```
 
-### `/Users/elijah/Documents/New project/app/fact_guard.py`
+## `app/fact_guard.py`
 
-```
+```python
 from __future__ import annotations
 
 import re
@@ -3133,12 +3435,11 @@ def validate_rewrite(*, rewritten: str, required_tokens: list[str]) -> bool:
     if re.search(r"\d", scrubbed):
         return False
     return True
-
 ```
 
-### `/Users/elijah/Documents/New project/app/llm_client.py`
+## `app/llm_client.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -3398,12 +3699,11 @@ class OpenAILLMClient:
                     await res
             self._client = None
         return
-
 ```
 
-### `/Users/elijah/Documents/New project/app/metrics.py`
+## `app/metrics.py`
 
-```
+```python
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -3544,12 +3844,11 @@ VIC = {
     "moat_playbook_hit_total": "moat.playbook_hit_total",
     "moat_objection_pattern_total": "moat.objection_pattern_total",
 }
-
 ```
 
-### `/Users/elijah/Documents/New project/app/objection_library.py`
+## `app/objection_library.py`
 
-```
+```python
 from __future__ import annotations
 
 import re
@@ -3591,12 +3890,11 @@ def _slot_weight(slot: str) -> float:
 
 def sort_slots_by_acceptance(slots: list[str]) -> list[str]:
     return sorted(list(slots), key=lambda s: (-_slot_weight(s), s))
-
 ```
 
-### `/Users/elijah/Documents/New project/app/orchestrator.py`
+## `app/orchestrator.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -3622,6 +3920,7 @@ from .eve_prompt import load_eve_v7_opener
 from .protocol import (
     AgentConfig,
     InboundCallDetails,
+    InboundClear,
     InboundPingPong,
     InboundReminderRequired,
     InboundResponseRequired,
@@ -3787,6 +4086,10 @@ class Orchestrator:
         self._epoch = 0
 
         self._slot_state = SlotState()
+        # SlotState is mutated during policy decisions. Keep a per-epoch snapshot so we can
+        # roll back when the epoch is interrupted/canceled before its terminal response.
+        self._slot_state_backup: Optional[SlotState] = None
+        self._slot_state_backup_epoch: int = -1
         self._memory = ConversationMemory(
             max_utterances=self._config.transcript_max_utterances,
             max_chars=self._config.transcript_max_chars,
@@ -3797,6 +4100,7 @@ class Orchestrator:
         self._turn_task: Optional[asyncio.Task[None]] = None
         self._turn_output_q: Optional[asyncio.Queue[TurnOutput]] = None
         self._turn_rt: Optional[TurnRuntime] = None
+        self._terminal_sent_for_epoch: int = -1
         self._needs_apology = False
         self._disclosure_sent = False
 
@@ -3897,79 +4201,93 @@ class Orchestrator:
 
     async def run(self) -> None:
         await self.start()
-        while not self._shutdown_evt.is_set():
-            if self._conv_state == ConvState.ENDED:
-                break
+        inbound_task: asyncio.Task[InboundItem] = asyncio.create_task(
+            self._inbound_q.get_prefer(self._is_control_inbound)
+        )
+        spec_task: asyncio.Task[SpeculativeResult] = asyncio.create_task(self._spec_out_q.get())
 
-            # Deterministic priority: always process inbound socket events before turn outputs.
-            if self._inbound_q.qsize() > 0:
-                try:
-                    item = await self._inbound_q.get_prefer(self._is_control_inbound)
-                except QueueClosed:
-                    await self.end_session(reason="queue_closed")
+        # Persistent turn-output waiter (bounded to a single `.get()` task at a time).
+        active_turn_q: Optional[asyncio.Queue[TurnOutput]] = None
+        turn_task: Optional[asyncio.Task[TurnOutput]] = None
+
+        try:
+            while not self._shutdown_evt.is_set():
+                if self._conv_state == ConvState.ENDED:
+                    break
+
+                # REQUIRED caveat: if the turn output queue object changes, the old waiter can hang
+                # forever on an orphaned queue. Swap it immediately.
+                if self._turn_output_q is not active_turn_q:
+                    if turn_task is not None:
+                        turn_task.cancel()
+                        await asyncio.gather(turn_task, return_exceptions=True)
+                    turn_task = None
+                    active_turn_q = self._turn_output_q
+                    if active_turn_q is not None:
+                        turn_task = asyncio.create_task(active_turn_q.get())
+
+                wait_set: set[asyncio.Task[Any]] = {inbound_task, spec_task}
+                if turn_task is not None:
+                    wait_set.add(turn_task)
+
+                done, _ = await asyncio.wait(wait_set, return_when=asyncio.FIRST_COMPLETED)
+
+                inbound_item: Any | None = None
+                spec_item: Optional[SpeculativeResult] = None
+                turn_item: Optional[TurnOutput] = None
+
+                if inbound_task in done:
+                    exc = inbound_task.exception()
+                    if exc is not None:
+                        if isinstance(exc, QueueClosed):
+                            await self.end_session(reason="queue_closed")
+                            return
+                        raise exc
+                    inbound_item = inbound_task.result()
+                    inbound_task = asyncio.create_task(
+                        self._inbound_q.get_prefer(self._is_control_inbound)
+                    )
+
+                if spec_task in done:
+                    exc = spec_task.exception()
+                    if exc is not None:
+                        raise exc
+                    spec_item = spec_task.result()
+                    spec_task = asyncio.create_task(self._spec_out_q.get())
+
+                if turn_task is not None and turn_task in done:
+                    exc = turn_task.exception()
+                    if exc is not None:
+                        raise exc
+                    turn_item = turn_task.result()
+                    # Re-arm the waiter on the current active queue (may be swapped next loop).
+                    if active_turn_q is not None:
+                        turn_task = asyncio.create_task(active_turn_q.get())
+                    else:
+                        turn_task = None
+
+                # Stable ordering: TransportClosed > inbound events > speculative > turn outputs.
+                if isinstance(inbound_item, TransportClosed):
+                    await self.end_session(reason=inbound_item.reason)
                     return
-                await self._dispatch_item(item)
-                continue
-
-            if self._turn_output_q is not None and self._turn_output_q.qsize() > 0:
-                try:
-                    out = self._turn_output_q.get_nowait()
-                except asyncio.QueueEmpty:
-                    out = None
-                if out is not None:
-                    await self._handle_turn_output(out)
+                if inbound_item is not None:
+                    await self._dispatch_item(inbound_item)
+                if spec_item is not None:
+                    self._spec_result = spec_item
+                if turn_item is not None:
+                    await self._handle_turn_output(turn_item)
+        finally:
+            for t in (inbound_task, spec_task, turn_task):
+                if t is None:
                     continue
-            if self._spec_out_q.qsize() > 0:
-                try:
-                    res = self._spec_out_q.get_nowait()
-                except asyncio.QueueEmpty:
-                    res = None
-                if res is not None:
-                    self._spec_result = res
-                    continue
-
-            # Both empty: wait for either.
-            inbound_task = asyncio.create_task(self._inbound_q.get_prefer(self._is_control_inbound))
-            turn_task: Optional[asyncio.Task[TurnOutput]] = None
-            if self._turn_output_q is not None:
-                turn_task = asyncio.create_task(self._turn_output_q.get())
-            spec_task = asyncio.create_task(self._spec_out_q.get())
-
-            done, pending = await asyncio.wait(
-                {t for t in [inbound_task, turn_task, spec_task] if t is not None},
-                return_when=asyncio.FIRST_COMPLETED,
+                if not t.done():
+                    t.cancel()
+            await asyncio.gather(
+                inbound_task,
+                spec_task,
+                *( [turn_task] if turn_task is not None else [] ),
+                return_exceptions=True,
             )
-            for p in pending:
-                p.cancel()
-            if pending:
-                # Prevent "Task exception was never retrieved" warnings during shutdown races.
-                await asyncio.gather(*pending, return_exceptions=True)
-
-            # If multiple complete simultaneously, dispatch inbound first deterministically.
-            items: list[Any] = []
-            for t in done:
-                exc = t.exception()
-                if exc is not None:
-                    if isinstance(exc, QueueClosed):
-                        await self.end_session(reason="queue_closed")
-                        return
-                    raise exc
-                items.append(t.result())
-
-            # Stable ordering: TransportClosed > inbound events > turn outputs.
-            for item in items:
-                if isinstance(item, TransportClosed):
-                    await self.end_session(reason=item.reason)
-                    return
-            for item in items:
-                if not isinstance(item, TurnOutput):
-                    if isinstance(item, SpeculativeResult):
-                        self._spec_result = item
-                        continue
-                    await self._dispatch_item(item)
-            for item in items:
-                if isinstance(item, TurnOutput):
-                    await self._handle_turn_output(item)
 
     async def _dispatch_item(self, item: Any) -> None:
         if isinstance(item, TransportClosed):
@@ -4010,6 +4328,122 @@ class Orchestrator:
         await self._set_ws_state(WSState.CLOSED, reason=reason)
 
     # ---------------------------------------------------------------------
+    # Turn rollback / slot-state backup
+    # ---------------------------------------------------------------------
+
+    def _snapshot_slot_state(self) -> SlotState:
+        s = self._slot_state
+        return SlotState(
+            intent=s.intent,
+            patient_name=s.patient_name,
+            phone=s.phone,
+            phone_confirmed=bool(s.phone_confirmed),
+            requested_dt=s.requested_dt,
+            requested_dt_confirmed=bool(s.requested_dt_confirmed),
+            b2b_funnel_stage=str(s.b2b_funnel_stage or "OPEN"),
+            manager_email=s.manager_email,
+            b2b_last_stage=str(s.b2b_last_stage or "OPEN"),
+            b2b_last_signal=str(s.b2b_last_signal or ""),
+            b2b_no_signal_streak=int(s.b2b_no_signal_streak or 0),
+            b2b_last_user_signature=str(s.b2b_last_user_signature or ""),
+            reprompts=dict(getattr(s, "reprompts", {}) or {}),
+            b2b_autonomy_mode=str(s.b2b_autonomy_mode or "baseline"),
+            question_depth=int(s.question_depth or 1),
+            objection_pressure=int(s.objection_pressure or 0),
+        )
+
+    def _restore_slot_state(self, snap: SlotState) -> None:
+        s = self._slot_state
+        s.intent = snap.intent
+        s.patient_name = snap.patient_name
+        s.phone = snap.phone
+        s.phone_confirmed = bool(snap.phone_confirmed)
+        s.requested_dt = snap.requested_dt
+        s.requested_dt_confirmed = bool(snap.requested_dt_confirmed)
+        s.b2b_funnel_stage = str(snap.b2b_funnel_stage or "OPEN")
+        s.manager_email = snap.manager_email
+        s.b2b_last_stage = str(snap.b2b_last_stage or "OPEN")
+        s.b2b_last_signal = str(snap.b2b_last_signal or "")
+        s.b2b_no_signal_streak = int(snap.b2b_no_signal_streak or 0)
+        s.b2b_last_user_signature = str(snap.b2b_last_user_signature or "")
+        s.reprompts = dict(getattr(snap, "reprompts", {}) or {})
+        s.b2b_autonomy_mode = str(snap.b2b_autonomy_mode or "baseline")
+        s.question_depth = int(snap.question_depth or 1)
+        s.objection_pressure = int(snap.objection_pressure or 0)
+
+    def _arm_turn_state_backup(self, *, epoch: int) -> None:
+        # Overwrite any prior backup; callers must rollback/commit the previous epoch first.
+        self._slot_state_backup = self._snapshot_slot_state()
+        self._slot_state_backup_epoch = int(epoch)
+
+    def _commit_turn_state_backup(self, *, epoch: int) -> None:
+        if self._slot_state_backup is None:
+            return
+        if int(self._slot_state_backup_epoch) != int(epoch):
+            return
+        self._slot_state_backup = None
+        self._slot_state_backup_epoch = -1
+
+    def _rollback_turn_state_backup(self, *, epoch: int, reason: str) -> None:
+        if self._slot_state_backup is None:
+            return
+        if int(self._slot_state_backup_epoch) != int(epoch):
+            return
+        snap = self._slot_state_backup
+        self._restore_slot_state(snap)
+        self._slot_state_backup = None
+        self._slot_state_backup_epoch = -1
+        self._metrics.inc("turn.rollback_total", 1)
+
+    async def _has_pending_speech(self) -> bool:
+        return await self._outbound_q.any_where(
+            lambda env: env.epoch == self._epoch
+            and str(getattr(env.msg, "response_type", "")) == "response"
+            and not bool(getattr(env.msg, "content_complete", False))
+        )
+
+    async def _barge_in_cancel(self, *, reason: str) -> bool:
+        """
+        Stop speaking immediately and close the current epoch with an empty terminal chunk.
+        Also roll back SlotState mutations for the interrupted epoch.
+        """
+        has_pending_speech = await self._has_pending_speech()
+        if self._conv_state != ConvState.SPEAKING and not has_pending_speech:
+            return False
+
+        t0 = self._clock.now_ms()
+
+        # Speak-generation gate: invalidate any already-queued chunks for this epoch.
+        new_speak_gen = self._gate_ref.bump_speak_gen()
+        dropped = await self._outbound_q.drop_where(
+            lambda env: env.epoch == self._epoch
+            and env.speak_gen is not None
+            and env.speak_gen != int(new_speak_gen)
+        )
+        if dropped > 0:
+            self._metrics.inc(VIC["stale_segment_dropped_total"], int(dropped))
+
+        # Roll back any SlotState mutations that were made for this epoch before it terminally completed.
+        self._rollback_turn_state_backup(epoch=self._epoch, reason=reason)
+
+        await self._cancel_turn(reason=reason)
+        await self._enqueue_outbound(
+            OutboundResponse(
+                response_type="response",
+                response_id=self._epoch,
+                content="",
+                content_complete=True,
+            ),
+            epoch=self._epoch,
+            speak_gen=int(new_speak_gen),
+            priority=100,
+        )
+        await self._set_conv_state(ConvState.LISTENING, reason=reason)
+        self._needs_apology = True
+        self._metrics.observe(VIC["barge_in_cancel_latency_ms"], self._clock.now_ms() - t0)
+        return True
+
+    # ---------------------------------------------------------------------
     # Inbound handlers
     # ---------------------------------------------------------------------
 
@@ -4042,9 +4476,13 @@ class Orchestrator:
             # No-op for now; call details are for tools/policy enrichment.
             return
 
+        if isinstance(ev, InboundClear):
+            # Retell "clear" is an explicit interruption signal; treat it like a barge-in hint.
+            _ = await self._barge_in_cancel(reason="clear")
+            return
+
         if isinstance(ev, InboundUpdateOnly):
             self._update_transcript(ev.transcript)
-            has_pending_speech = False
 
             if (
                 ev.turntaking == "agent_turn"
@@ -4069,40 +4507,8 @@ class Orchestrator:
                 # Under transport backpressure the writer may still have queued speech even if the
                 # conversation FSM has already transitioned back to LISTENING. Treat "user_turn"
                 # as a barge-in hint whenever there are pending non-terminal response frames.
-                has_pending_speech = await self._outbound_q.any_where(
-                    lambda env: env.epoch == self._epoch
-                    and str(getattr(env.msg, "response_type", "")) == "response"
-                    and not bool(getattr(env.msg, "content_complete", False))
-                )
-
-            if ev.turntaking == "user_turn" and (self._conv_state == ConvState.SPEAKING or has_pending_speech):
-                # Barge-in hint: stop speaking immediately, close current stream with terminal.
-                t0 = self._clock.now_ms()
-                # Speak-generation gate: invalidate any already-queued chunks for this epoch.
-                new_speak_gen = self._gate_ref.bump_speak_gen()
-                dropped = await self._outbound_q.drop_where(
-                    lambda env: env.epoch == self._epoch
-                    and env.speak_gen is not None
-                    and env.speak_gen != int(new_speak_gen)
-                )
-                if dropped > 0:
-                    self._metrics.inc(VIC["stale_segment_dropped_total"], int(dropped))
-                await self._cancel_turn(reason="barge_in_hint")
-                await self._enqueue_outbound(
-                    OutboundResponse(
-                        response_type="response",
-                        response_id=self._epoch,
-                        content="",
-                        content_complete=True,
-                    ),
-                    epoch=self._epoch,
-                    speak_gen=int(new_speak_gen),
-                    priority=100,
-                )
-                await self._set_conv_state(ConvState.LISTENING, reason="barge_in_hint")
-                self._needs_apology = True
-                self._metrics.observe(VIC["barge_in_cancel_latency_ms"], self._clock.now_ms() - t0)
-                return
+                if await self._barge_in_cancel(reason="barge_in_hint"):
+                    return
 
             # Backchannel note:
             # Retell's recommended backchanneling is configured at the agent level
@@ -4135,17 +4541,36 @@ class Orchestrator:
             return
 
     async def _on_response_required(self, ev: InboundResponseRequired | InboundReminderRequired) -> None:
-        last_stage = str(self._slot_state.b2b_funnel_stage or "OPEN")
-
         await self._cancel_speculative_planning(keep_result=True)
         new_epoch = int(ev.response_id)
         was_speaking = self._conv_state == ConvState.SPEAKING
+        old_epoch = int(self._epoch)
+        old_turn_rt = self._turn_rt
+
+        # If the previous epoch was interrupted before its terminal response, roll back any
+        # SlotState mutations so the next turn re-derives state from transcript deterministically.
+        #
+        # Practical note: if we've already emitted at least one response chunk for the old epoch,
+        # keep its SlotState mutations. That allows confirmation-style flows (VIC) to accept fast
+        # user replies that arrive before the terminal frame without losing progress.
+        if new_epoch != old_epoch:
+            spoke_any = (
+                old_turn_rt is not None
+                and int(old_turn_rt.epoch) == int(old_epoch)
+                and old_turn_rt.first_segment_ms is not None
+            )
+            if not spoke_any:
+                self._rollback_turn_state_backup(epoch=old_epoch, reason="new_epoch")
+            else:
+                self._commit_turn_state_backup(epoch=old_epoch)
 
         # Atomically bump epoch.
         self._epoch = new_epoch
         self._pre_ack_sent_for_epoch = -1
+        self._terminal_sent_for_epoch = -1
         self._gate_ref.set_epoch(new_epoch)
         self._turn_rt = TurnRuntime(epoch=new_epoch, finalized_ms=self._clock.now_ms())
+        self._arm_turn_state_backup(epoch=new_epoch)
 
         if was_speaking:
             self._needs_apology = True
@@ -4161,6 +4586,21 @@ class Orchestrator:
 
         # Update transcript snapshot (bounded).
         self._update_transcript(ev.transcript)
+
+        # B2B route sync: Retell transcript snapshots can arrive duplicated/reordered during
+        # reconnects. If the last agent utterance is the canonical opener, treat this as the OPEN
+        # stage regardless of internal stage drift so fast-path caching remains stable.
+        if self._config.conversation_profile == "b2b":
+            last_agent = ""
+            for u in reversed(ev.transcript or []):
+                if getattr(u, "role", "") == "agent":
+                    last_agent = getattr(u, "content", "") or ""
+                    break
+            la = (last_agent or "").lower()
+            if "bad time" in la and "quick question" in la:
+                self._slot_state.b2b_funnel_stage = "OPEN"
+
+        last_stage = str(self._slot_state.b2b_funnel_stage or "OPEN")
 
         await self._set_conv_state(ConvState.PROCESSING, reason="response_required")
 
@@ -4203,6 +4643,7 @@ class Orchestrator:
                 ),
                 priority=95,
             )
+            self._commit_turn_state_backup(epoch=self._epoch)
             await self._set_conv_state(ConvState.LISTENING, reason="reminder_no_user_silence")
             return
 
@@ -4225,6 +4666,7 @@ class Orchestrator:
                 ),
                 priority=95,
             )
+            self._commit_turn_state_backup(epoch=self._epoch)
             await self._set_conv_state(ConvState.LISTENING, reason="low_signal_noop")
             return
 
@@ -4243,6 +4685,7 @@ class Orchestrator:
                 ),
                 priority=95,
             )
+            self._commit_turn_state_backup(epoch=self._epoch)
             await self._set_conv_state(ConvState.LISTENING, reason="low_signal_noop")
             return
 
@@ -4298,6 +4741,7 @@ class Orchestrator:
                 ),
                 priority=95,
             )
+            self._commit_turn_state_backup(epoch=self._epoch)
             await self._set_conv_state(ConvState.LISTENING, reason="no_progress_noop")
             return
 
@@ -4313,6 +4757,7 @@ class Orchestrator:
                 ),
                 priority=95,
             )
+            self._commit_turn_state_backup(epoch=self._epoch)
             await self._set_conv_state(ConvState.LISTENING, reason="no_progress_noop")
             return
 
@@ -4451,6 +4896,7 @@ class Orchestrator:
             epoch=self._epoch,
             turn_id=self._epoch,
             action=action,
+            transcript=list(self._transcript),
             config=self._config,
             clock=self._clock,
             metrics=self._metrics,
@@ -4823,6 +5269,12 @@ class Orchestrator:
 
         if out.kind == "outbound_msg":
             await self._enqueue_outbound(out.payload)
+            if (
+                isinstance(out.payload, OutboundResponse)
+                and bool(getattr(out.payload, "content_complete", False))
+                and int(getattr(out.payload, "response_id", -1)) == int(self._epoch)
+            ):
+                self._terminal_sent_for_epoch = int(self._epoch)
             return
 
         if out.kind == "speech_plan":
@@ -4830,14 +5282,16 @@ class Orchestrator:
             return
 
         if out.kind == "turn_complete":
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    content="",
-                    content_complete=True,
+            self._commit_turn_state_backup(epoch=self._epoch)
+            if int(self._terminal_sent_for_epoch) != int(self._epoch):
+                await self._enqueue_outbound(
+                    OutboundResponse(
+                        response_type="response",
+                        response_id=self._epoch,
+                        content="",
+                        content_complete=True,
+                    )
                 )
-            )
             await self._set_conv_state(ConvState.LISTENING, reason="turn_complete")
             return
 
@@ -4883,6 +5337,7 @@ class Orchestrator:
         )
         await self._emit_speech_plan(plan=plan)
 
+        self._commit_turn_state_backup(epoch=self._epoch)
         if action.action_type == "EndCall" and bool(action.payload.get("end_call", False)):
             await self._enqueue_outbound(
                 OutboundResponse(
@@ -5014,7 +5469,13 @@ class Orchestrator:
     def _is_control_inbound(self, item: InboundItem) -> bool:
         return isinstance(
             item,
-            (TransportClosed, InboundPingPong, InboundResponseRequired, InboundReminderRequired),
+            (
+                TransportClosed,
+                InboundPingPong,
+                InboundClear,
+                InboundResponseRequired,
+                InboundReminderRequired,
+            ),
         )
 
     def _outbound_plane(self, msg: OutboundEvent) -> str:
@@ -5311,12 +5772,11 @@ class Orchestrator:
                 )
         except asyncio.CancelledError:
             return
-
 ```
 
-### `/Users/elijah/Documents/New project/app/outcome_schema.py`
+## `app/outcome_schema.py`
 
-```
+```python
 from __future__ import annotations
 
 import re
@@ -5362,12 +5822,11 @@ def detect_objection(user_text: str) -> Optional[ObjectionKind]:
     if _URGENCY_OBJECTION.search(txt):
         return "urgency_pressure"
     return None
-
 ```
 
-### `/Users/elijah/Documents/New project/app/persona_prompt.py`
+## `app/persona_prompt.py`
 
-```
+```python
 from __future__ import annotations
 
 
@@ -5393,12 +5852,11 @@ Retell pacing and "read slowly":
 - When reading phone numbers or confirmation codes, separate digits with spaced dashes:
   Example: 2 - 1 - 3 - 4
 """
-
 ```
 
-### `/Users/elijah/Documents/New project/app/phrase_selector.py`
+## `app/phrase_selector.py`
 
-```
+```python
 from __future__ import annotations
 
 import hashlib
@@ -5421,12 +5879,11 @@ def select_phrase(
     seed = f"{call_id}|{int(turn_id)}|{segment_kind}|{int(segment_index)}".encode("utf-8")
     idx = int.from_bytes(hashlib.sha256(seed).digest()[:8], "big") % len(options)
     return str(options[idx])
-
 ```
 
-### `/Users/elijah/Documents/New project/app/playbook_policy.py`
+## `app/playbook_policy.py`
 
-```
+```python
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -5490,12 +5947,11 @@ def apply_playbook(
         )
 
     return PlaybookResult(action=action, matched_pattern=objection, applied=False)
-
 ```
 
-### `/Users/elijah/Documents/New project/app/prom_export.py`
+## `app/prom_export.py`
 
-```
+```python
 from __future__ import annotations
 
 import threading
@@ -5617,105 +6073,69 @@ class PromExporter:
 
 
 GLOBAL_PROM = PromExporter()
-
 ```
 
-### `/Users/elijah/Documents/New project/app/protocol.py`
+## `app/protocol.py`
 
-```
+```python
 from __future__ import annotations
-
 import json
 from typing import Annotated, Any, Literal, Optional, Union
-
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
 
-
-# =============================================================================
-# Retell LLM WebSocket Protocol (STRICT)
-#
-# Contract: do not invent message types. All WS frames are JSON text.
-# Inbound discriminator: interaction_type
-# Outbound discriminator: response_type
-# =============================================================================
-
-
-# -----------------------------
-# Shared leaf models
-# -----------------------------
-
-
 class TranscriptUtterance(BaseModel):
-    # Retell may include additional fields beyond role/content; ignore them.
     model_config = ConfigDict(extra="ignore")
-
     role: Literal["user", "agent"]
     content: str
 
-
 class RetellConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     auto_reconnect: bool
     call_details: bool
     transcript_with_tool_calls: bool
 
-
 class AgentConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     responsiveness: Optional[float] = None
     interruption_sensitivity: Optional[float] = None
     reminder_trigger_ms: Optional[int] = None
     reminder_max_count: Optional[int] = None
 
-
-# -----------------------------
-# Inbound (Retell -> Server)
-# Discriminator: interaction_type
-# -----------------------------
-
-
 class InboundPingPong(BaseModel):
     model_config = ConfigDict(extra="ignore")
-
     interaction_type: Literal["ping_pong"]
     timestamp: int
 
-
 class InboundCallDetails(BaseModel):
     model_config = ConfigDict(extra="ignore")
-
     interaction_type: Literal["call_details"]
     call: dict[str, Any]
 
-
 class InboundUpdateOnly(BaseModel):
     model_config = ConfigDict(extra="ignore")
-
     interaction_type: Literal["update_only"]
     transcript: list[TranscriptUtterance]
     transcript_with_tool_calls: Optional[list[Any]] = None
     turntaking: Optional[Literal["agent_turn", "user_turn"]] = None
 
-
 class InboundResponseRequired(BaseModel):
     model_config = ConfigDict(extra="ignore")
-
     interaction_type: Literal["response_required"]
     response_id: int
     transcript: list[TranscriptUtterance]
     transcript_with_tool_calls: Optional[list[Any]] = None
 
-
 class InboundReminderRequired(BaseModel):
     model_config = ConfigDict(extra="ignore")
-
     interaction_type: Literal["reminder_required"]
     response_id: int
     transcript: list[TranscriptUtterance]
     transcript_with_tool_calls: Optional[list[Any]] = None
 
+# Clear events are emitted by Retell during interruption handling; treat as a first-class inbound type.
+class InboundClear(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    interaction_type: Literal["clear"]
 
 InboundEvent = Annotated[
     Union[
@@ -5724,61 +6144,39 @@ InboundEvent = Annotated[
         InboundUpdateOnly,
         InboundResponseRequired,
         InboundReminderRequired,
+        InboundClear,
     ],
     Field(discriminator="interaction_type"),
 ]
 
 _inbound_adapter = TypeAdapter(InboundEvent)
 
-
-# -----------------------------
-# Outbound (Server -> Retell)
-# Discriminator: response_type
-# -----------------------------
-
-TIMING_MARKER_PHASES = frozenset(
-    {
-        "policy_decision_start_ms",
-        "policy_decision_ms",
-        "speech_plan_build_start_ms",
-        "speech_plan_build_ms",
-        "speech_plan_ack_ms",
-        "pre_ack_enqueued",
-        "outbound_enqueue_start_ms",
-        "outbound_enqueue_ms",
-        "first_response_latency_ms",
-    }
-)
-
+TIMING_MARKER_PHASES = frozenset({
+    "policy_decision_start_ms", "policy_decision_ms", "speech_plan_build_start_ms",
+    "speech_plan_build_ms", "speech_plan_ack_ms", "pre_ack_enqueued",
+    "outbound_enqueue_start_ms", "outbound_enqueue_ms", "first_response_latency_ms",
+})
 
 def is_timing_marker_phase(phase: str) -> bool:
     return str(phase) in TIMING_MARKER_PHASES
 
-
 class OutboundConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     response_type: Literal["config"]
     config: RetellConfig
 
-
 class OutboundUpdateAgent(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     response_type: Literal["update_agent"]
     agent_config: AgentConfig
 
-
 class OutboundPingPong(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     response_type: Literal["ping_pong"]
     timestamp: int
 
-
 class OutboundResponse(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     response_type: Literal["response"]
     response_id: int
     content: str
@@ -5788,10 +6186,8 @@ class OutboundResponse(BaseModel):
     transfer_number: Optional[str] = None
     digit_to_press: Optional[str] = None
 
-
 class OutboundAgentInterrupt(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     response_type: Literal["agent_interrupt"]
     interrupt_id: int
     content: str
@@ -5801,31 +6197,23 @@ class OutboundAgentInterrupt(BaseModel):
     transfer_number: Optional[str] = None
     digit_to_press: Optional[str] = None
 
-
 class OutboundToolCallInvocation(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     response_type: Literal["tool_call_invocation"]
     tool_call_id: str
     name: str
-    # Contract: must be a stringified JSON object.
     arguments: str
-
 
 class OutboundToolCallResult(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     response_type: Literal["tool_call_result"]
     tool_call_id: str
     content: str
 
-
 class OutboundMetadata(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
     response_type: Literal["metadata"]
     metadata: Any
-
 
 OutboundEvent = Annotated[
     Union[
@@ -5843,36 +6231,22 @@ OutboundEvent = Annotated[
 
 _outbound_adapter = TypeAdapter(OutboundEvent)
 
-
-# -----------------------------
-# Parsing / serialization helpers
-# -----------------------------
-
-
 def parse_inbound_json(raw_text: str) -> InboundEvent:
-    obj = json.loads(raw_text)
-    return parse_inbound_obj(obj)
-
+    return parse_inbound_obj(json.loads(raw_text))
 
 def parse_inbound_obj(obj: Any) -> InboundEvent:
     return _inbound_adapter.validate_python(obj)
 
-
 def parse_outbound_json(raw_text: str) -> OutboundEvent:
-    obj = json.loads(raw_text)
-    return _outbound_adapter.validate_python(obj)
-
+    return _outbound_adapter.validate_python(json.loads(raw_text))
 
 def dumps_outbound(event: OutboundEvent) -> str:
-    # Canonical JSON for deterministic hashing/tests.
-    payload = event.model_dump(exclude_none=True)
-    return json.dumps(payload, separators=(",", ":"), sort_keys=True)
-
+    return json.dumps(event.model_dump(exclude_none=True), separators=(",", ":"), sort_keys=True)
 ```
 
-### `/Users/elijah/Documents/New project/app/provider.py`
+## `app/provider.py`
 
-```
+```python
 from __future__ import annotations
 
 import os
@@ -5904,12 +6278,11 @@ def build_llm_client(cfg: BrainConfig, *, session_id: str = "") -> LLMClient | N
             timeout_ms=cfg.openai_timeout_ms,
         )
     return None
-
 ```
 
-### `/Users/elijah/Documents/New project/app/safety_policy.py`
+## `app/safety_policy.py`
 
-```
+```python
 from __future__ import annotations
 
 import re
@@ -5983,12 +6356,11 @@ def evaluate_user_text(
         )
 
     return SafetyResult(kind="ok")
-
 ```
 
-### `/Users/elijah/Documents/New project/app/security.py`
+## `app/security.py`
 
-```
+```python
 from __future__ import annotations
 
 import hmac
@@ -6115,12 +6487,11 @@ def verify_query_token(
         return False
     actual = str((query_params or {}).get(param, ""))
     return hmac.compare_digest(actual, expected)
-
 ```
 
-### `/Users/elijah/Documents/New project/app/server.py`
+## `app/server.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -6225,12 +6596,6 @@ async def dashboard_readme() -> JSONResponse:
         }
     )
 
-
-@app.websocket("/ws/{call_id}")
-async def ws_brain(ws: WebSocket, call_id: str) -> None:
-    await _run_session(ws, call_id, route_name="ws")
-
-
 @app.websocket("/llm-websocket/{call_id}")
 async def llm_websocket(ws: WebSocket, call_id: str) -> None:
     await _run_session(ws, call_id, route_name="llm-websocket")
@@ -6256,8 +6621,9 @@ def _log_ws_event(cfg: "BrainConfig", *, route_name: str, call_id: str, event: s
 async def _run_session(ws: WebSocket, call_id: str, route_name: str) -> None:
     cfg = BrainConfig.from_env()
     route = _normalize_route(route_name)
-    canonical_route = _normalize_route(cfg.websocket_canonical_route)
-    if cfg.websocket_enforce_canonical_route and route != canonical_route:
+    # Canonical contract: production route is fixed and must not drift.
+    canonical_route = "llm-websocket"
+    if route != canonical_route:
         await ws.accept()
         _log_ws_event(
             cfg,
@@ -6396,12 +6762,255 @@ async def _run_session(ws: WebSocket, call_id: str, route_name: str) -> None:
         if llm is not None:
             await llm.aclose()
         await transport.close(code=1000, reason="session_end")
-
 ```
 
-### `/Users/elijah/Documents/New project/app/speech_planner.py`
+## `app/shell/__init__.py`
 
+```python
+from .executor import ShellExecutor, ShellResult
+from .policy import ShellPolicyDecision, command_name, parse_allowed_commands, validate_command
+
+__all__ = [
+    "ShellExecutor",
+    "ShellResult",
+    "ShellPolicyDecision",
+    "command_name",
+    "parse_allowed_commands",
+    "validate_command",
+]
 ```
+
+## `app/shell/executor.py`
+
+```python
+from __future__ import annotations
+
+import asyncio
+import hashlib
+import json
+import os
+import subprocess
+import time
+from dataclasses import dataclass
+from pathlib import Path
+
+from .policy import parse_allowed_commands, validate_command
+
+
+@dataclass(frozen=True, slots=True)
+class ShellResult:
+    ok: bool
+    runtime: str
+    command: str
+    returncode: int
+    stdout: str
+    stderr: str
+    duration_ms: int
+    reason: str
+    output_sha256: str
+
+
+class ShellExecutor:
+    def __init__(
+        self,
+        *,
+        mode: str = "local",
+        enable_hosted: bool = False,
+        allowed_commands: str = "",
+        workdir: str | None = None,
+        log_path: str = "docs/self_improve/history/shell_exec.jsonl",
+    ) -> None:
+        m = str(mode or "local").strip().lower()
+        self.mode = m if m in {"local", "hosted", "hybrid"} else "local"
+        self.enable_hosted = bool(enable_hosted)
+        self.allowed_commands = parse_allowed_commands(allowed_commands)
+        self.workdir = workdir or os.getcwd()
+        self.log_path = Path(log_path)
+
+    def _sha(self, text: str) -> str:
+        return hashlib.sha256(text.encode("utf-8", errors="replace")).hexdigest()
+
+    def _record(self, result: ShellResult) -> None:
+        self.log_path.parent.mkdir(parents=True, exist_ok=True)
+        row = {
+            "ts": int(time.time()),
+            "ok": result.ok,
+            "runtime": result.runtime,
+            "command": result.command,
+            "returncode": result.returncode,
+            "duration_ms": result.duration_ms,
+            "reason": result.reason,
+            "output_sha256": result.output_sha256,
+        }
+        with self.log_path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(row, sort_keys=True) + "\n")
+
+    async def execute(self, command: str, *, timeout_s: int = 20, prefer_hosted: bool = False) -> ShellResult:
+        decision = validate_command(command, allowed_commands=self.allowed_commands)
+        if not decision.allowed:
+            res = ShellResult(
+                ok=False,
+                runtime="policy",
+                command=command,
+                returncode=126,
+                stdout="",
+                stderr="",
+                duration_ms=0,
+                reason=decision.reason,
+                output_sha256=self._sha(""),
+            )
+            self._record(res)
+            return res
+
+        runtime = "local"
+        if self.mode == "hosted":
+            runtime = "hosted"
+        elif self.mode == "hybrid":
+            runtime = "hosted" if prefer_hosted else "local"
+
+        if runtime == "hosted":
+            if not self.enable_hosted:
+                res = ShellResult(
+                    ok=False,
+                    runtime="hosted",
+                    command=command,
+                    returncode=125,
+                    stdout="",
+                    stderr="",
+                    duration_ms=0,
+                    reason="hosted_disabled",
+                    output_sha256=self._sha(""),
+                )
+                self._record(res)
+                return res
+            # Hosted integration stub: safe by default; can be replaced with real remote runner.
+            res = ShellResult(
+                ok=False,
+                runtime="hosted",
+                command=command,
+                returncode=125,
+                stdout="",
+                stderr="",
+                duration_ms=0,
+                reason="hosted_not_configured",
+                output_sha256=self._sha(""),
+            )
+            self._record(res)
+            return res
+
+        t0 = time.monotonic()
+
+        def _run() -> subprocess.CompletedProcess[str]:
+            return subprocess.run(
+                ["bash", "-lc", command],
+                cwd=self.workdir,
+                text=True,
+                capture_output=True,
+                timeout=max(1, int(timeout_s)),
+                check=False,
+            )
+
+        try:
+            cp = await asyncio.to_thread(_run)
+            out = cp.stdout or ""
+            err = cp.stderr or ""
+            dur = int((time.monotonic() - t0) * 1000)
+            res = ShellResult(
+                ok=(cp.returncode == 0),
+                runtime="local",
+                command=command,
+                returncode=int(cp.returncode),
+                stdout=out,
+                stderr=err,
+                duration_ms=dur,
+                reason="ok" if cp.returncode == 0 else "nonzero_exit",
+                output_sha256=self._sha(out + "\n" + err),
+            )
+            self._record(res)
+            return res
+        except subprocess.TimeoutExpired:
+            dur = int((time.monotonic() - t0) * 1000)
+            res = ShellResult(
+                ok=False,
+                runtime="local",
+                command=command,
+                returncode=124,
+                stdout="",
+                stderr="",
+                duration_ms=dur,
+                reason="timeout",
+                output_sha256=self._sha(""),
+            )
+            self._record(res)
+            return res
+```
+
+## `app/shell/policy.py`
+
+```python
+from __future__ import annotations
+
+from dataclasses import dataclass
+
+
+_DENY_PATTERNS = (
+    "rm -rf /",
+    "rm -rf ~",
+    "mkfs",
+    "shutdown",
+    "reboot",
+    "git reset --hard",
+    "git clean -fd",
+    "dd if=",
+    "chmod -r 777 /",
+)
+
+
+@dataclass(frozen=True, slots=True)
+class ShellPolicyDecision:
+    allowed: bool
+    reason: str
+
+
+def parse_allowed_commands(raw: str) -> set[str]:
+    out: set[str] = set()
+    for item in str(raw or "").split(","):
+        v = item.strip()
+        if v:
+            out.add(v)
+    return out
+
+
+def command_name(command: str) -> str:
+    chunks = [x for x in str(command or "").strip().split() if x]
+    return chunks[0] if chunks else ""
+
+
+def validate_command(command: str, *, allowed_commands: set[str] | None = None) -> ShellPolicyDecision:
+    cmd = str(command or "").strip()
+    if not cmd:
+        return ShellPolicyDecision(False, "empty_command")
+
+    low = cmd.lower()
+    for pat in _DENY_PATTERNS:
+        if pat in low:
+            return ShellPolicyDecision(False, f"denied_pattern:{pat}")
+
+    name = command_name(cmd)
+    if allowed_commands and name not in allowed_commands:
+        return ShellPolicyDecision(False, f"not_in_allowlist:{name}")
+
+    # Avoid interactive shells/tools by default in automation lanes.
+    interactive_like = {"vim", "vi", "nano", "less", "more", "top", "htop"}
+    if name in interactive_like:
+        return ShellPolicyDecision(False, f"interactive_command:{name}")
+
+    return ShellPolicyDecision(True, "ok")
+```
+
+## `app/speech_planner.py`
+
+```python
 from __future__ import annotations
 
 import hashlib
@@ -7159,12 +7768,11 @@ def enforce_vic_tool_grounding_or_fallback(
             )
 
     return plan
-
 ```
 
-### `/Users/elijah/Documents/New project/app/tools.py`
+## `app/tools.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -7497,12 +8105,11 @@ class ToolRegistry:
             sort_keys=True,
             separators=(",", ":"),
         )
-
 ```
 
-### `/Users/elijah/Documents/New project/app/trace.py`
+## `app/trace.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -7637,12 +8244,11 @@ class TraceSink:
         if ev.segment_hash is not None and not ev.segment_hash:
             return False
         return True
-
 ```
 
-### `/Users/elijah/Documents/New project/app/transport_ws.py`
+## `app/transport_ws.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -7657,6 +8263,7 @@ from .clock import Clock
 from .metrics import Metrics, VIC
 from .protocol import (
     InboundCallDetails,
+    InboundClear,
     InboundEvent,
     InboundPingPong,
     InboundReminderRequired,
@@ -7760,8 +8367,9 @@ async def socket_reader(
                 if isinstance(obj, dict):
                     interaction_type = str(obj.get("interaction_type", ""))
                 _log("frame_dropped", reason="BAD_SCHEMA", interaction_type=interaction_type)
-                await inbound_q.put(TransportClosed(reason="BAD_SCHEMA"))
-                return
+                metrics.inc("inbound.bad_schema_total", 1)
+                # Future schema drift / unknown interaction_type must not tear down the session.
+                continue
 
             _log(
                 "frame_accepted",
@@ -7798,6 +8406,15 @@ async def socket_reader(
                     if evicted:
                         metrics.inc(VIC["inbound_queue_evictions_total"], 1)
                         metrics.inc("inbound.queue_evictions.drop_update_only_for_ping_total", 1)
+                        ok = await inbound_q.put(ev)
+            elif isinstance(ev, InboundClear):
+                # Clear must be delivered promptly to stop/rollback the current speak stream.
+                ok = await inbound_q.put(ev)
+                if not ok:
+                    evicted = await inbound_q.evict_one_where(lambda x: isinstance(x, InboundUpdateOnly))
+                    if evicted:
+                        metrics.inc(VIC["inbound_queue_evictions_total"], 1)
+                        metrics.inc("inbound.queue_evictions.drop_update_only_for_clear_total", 1)
                         ok = await inbound_q.put(ev)
             else:
                 # call_details: drop if queue is full.
@@ -7993,12 +8610,11 @@ async def socket_writer(
     except Exception:
         # Writer errors end the session by exiting; orchestrator watchdog should close.
         return
-
 ```
 
-### `/Users/elijah/Documents/New project/app/turn_handler.py`
+## `app/turn_handler.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -8024,6 +8640,7 @@ from .protocol import (
     OutboundResponse,
     OutboundToolCallInvocation,
     OutboundToolCallResult,
+    TranscriptUtterance,
 )
 from .speech_planner import (
     SourceRef,
@@ -8202,6 +8819,7 @@ class TurnHandler:
         epoch: int,
         turn_id: int,
         action: DialogueAction,
+        transcript: list[TranscriptUtterance],
         config: BrainConfig,
         clock: Clock,
         metrics: Metrics,
@@ -8216,6 +8834,7 @@ class TurnHandler:
         self._epoch = int(epoch)
         self._turn_id = int(turn_id)
         self._action = action
+        self._transcript = list(transcript or [])
         self._config = config
         self._clock = clock
         self._metrics = metrics
@@ -8335,7 +8954,6 @@ class TurnHandler:
             and not no_progress
             and not is_no_signal_no_speech
             and not is_no_progress_with_no_message
-            and bool(self._action.payload.get("message", ""))
         ):
             ack_segs = micro_chunk_text(
                 text=self._guard_text(
@@ -8479,6 +9097,11 @@ class TurnHandler:
         # by default (Ask/Repair). Tool-grounded factual responses remain deterministic unless you
         # explicitly extend this integration.
         payload = json.dumps(self._action.payload or {}, separators=(",", ":"), sort_keys=True)
+        transcript_json = json.dumps(
+            [{"role": u.role, "content": u.content} for u in (self._transcript or [])],
+            separators=(",", ":"),
+            sort_keys=True,
+        )
         tool_summary = json.dumps(
             [{"name": r.name, "ok": r.ok, "content": r.content} for r in tool_records],
             separators=(",", ":"),
@@ -8519,6 +9142,7 @@ class TurnHandler:
             "- Use Retell dash pauses for pacing (spaced dashes: ' - ').\n\n"
             f"action_type={self._action.action_type}\n"
             f"action_payload={payload}\n"
+            f"transcript={transcript_json}\n"
             f"tool_records={tool_summary}\n\n"
             f"{skills_block}"
             "Return only the text to say."
@@ -8538,11 +9162,9 @@ class TurnHandler:
                     # Always drain to completion; consumer controls whether/when to forward.
                     await token_q.put(self._guard_text(str(delta)))
             finally:
-                await token_q.put(None)  # sentinel
-
-        producer_task = asyncio.create_task(produce())
-        filler_task = asyncio.create_task(self._clock.sleep_ms(self._config.vic_model_filler_threshold_ms))
-        timeout_task = asyncio.create_task(self._clock.sleep_ms(self._config.vic_model_timeout_ms))
+                # Sentinel. If the turn is cancelled, don't block trying to deliver it.
+                with contextlib.suppress(asyncio.CancelledError):
+                    await token_q.put(None)
 
         chunker = StreamingChunker(
             max_expected_ms=self._config.vic_max_segment_expected_ms,
@@ -8554,7 +9176,7 @@ class TurnHandler:
             markup_mode=self._config.speech_markup_mode,
             dash_pause_unit_ms=self._config.dash_pause_unit_ms,
             digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
+            dash_pause_scope=self._config.dash_pause_scope,
         )
 
         filler_sent = False
@@ -8562,27 +9184,96 @@ class TurnHandler:
         digit_violation = False
         timed_out = False
 
-        try:
-            while True:
-                get_task = asyncio.create_task(token_q.get())
-                wait_set: set[asyncio.Task[Any]] = {get_task, timeout_task}
-                if not filler_sent and not content_emitted:
-                    wait_set.add(filler_task)
+        async with asyncio.TaskGroup() as tg:
+            producer_task = tg.create_task(produce())
+            filler_task = tg.create_task(self._clock.sleep_ms(self._config.vic_model_filler_threshold_ms))
+            timeout_task = tg.create_task(self._clock.sleep_ms(self._config.vic_model_timeout_ms))
 
-                done, _ = await asyncio.wait(wait_set, return_when=asyncio.FIRST_COMPLETED)
+            get_task: Optional[asyncio.Task[Optional[str]]] = None
+            try:
+                while True:
+                    get_task = asyncio.create_task(token_q.get())
+                    wait_set: set[asyncio.Task[Any]] = {get_task, timeout_task}
+                    if not filler_sent and not content_emitted:
+                        wait_set.add(filler_task)
 
-                # Prefer tokens over filler if both complete "at the same time".
-                if get_task in done:
-                    delta = get_task.result()
-                    if delta is None:
+                    done, _ = await asyncio.wait(wait_set, return_when=asyncio.FIRST_COMPLETED)
+
+                    # Prefer tokens over filler if both complete "at the same time".
+                    if get_task in done:
+                        delta = get_task.result()
+                        if delta is None:
+                            break
+                        if not delta:
+                            continue
+                        if any(ch.isdigit() for ch in delta):
+                            digit_violation = True
+                            break
+                        segs = chunker.push(delta=delta)
+                        if segs:
+                            content_emitted = True
+                            plan = build_plan(
+                                session_id=self._session_id,
+                                call_id=self._call_id,
+                                turn_id=self._turn_id,
+                                epoch=self._epoch,
+                                created_at_ms=self._clock.now_ms(),
+                                reason="CONTENT",
+                                segments=segs,
+                                source_refs=[],
+                                metrics=self._metrics,
+                            )
+                            await self._emit_plan(plan)
+                    else:
+                        # We didn't consume a token; avoid leaking this per-iteration task.
+                        get_task.cancel()
+                        await asyncio.gather(get_task, return_exceptions=True)
+                        get_task = None
+
+                    if timeout_task in done:
+                        # Hard timeout: stop consuming and fall back.
+                        self._metrics.inc(VIC["fallback_used_total"], 1)
+                        timed_out = True
                         break
-                    if not delta:
-                        continue
-                    if any(ch.isdigit() for ch in delta):
-                        digit_violation = True
-                        break
-                    segs = chunker.push(delta=delta)
-                    if segs:
+
+                    if filler_task in done and not filler_sent and not content_emitted:
+                        filler_sent = True
+                        filler_plan = build_plan(
+                            session_id=self._session_id,
+                            call_id=self._call_id,
+                            turn_id=self._turn_id,
+                            epoch=self._epoch,
+                            created_at_ms=self._clock.now_ms(),
+                            reason="FILLER",
+                            segments=micro_chunk_text(
+                                text=self._guard_text(
+                                    _filler_text(
+                                        call_id=self._call_id,
+                                        turn_id=self._turn_id,
+                                        filler_index=0,
+                                        used_phrases=self._used_phrases,
+                                    )
+                                ),
+                                max_expected_ms=self._config.vic_max_segment_expected_ms,
+                                pace_ms_per_char=self._config.pace_ms_per_char,
+                                purpose="FILLER",
+                                interruptible=True,
+                                requires_tool_evidence=False,
+                                tool_evidence_ids=[],
+                                markup_mode=self._config.speech_markup_mode,
+                                dash_pause_unit_ms=self._config.dash_pause_unit_ms,
+                                digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
+                                dash_pause_scope=self._config.dash_pause_scope,
+                            ),
+                            source_refs=[],
+                            metrics=self._metrics,
+                        )
+                        await self._emit_plan(filler_plan)
+
+                # Final flush of any remaining buffered content.
+                if not digit_violation and not timed_out:
+                    final_segs = chunker.flush_final()
+                    if final_segs:
                         content_emitted = True
                         plan = build_plan(
                             session_id=self._session_id,
@@ -8591,108 +9282,48 @@ class TurnHandler:
                             epoch=self._epoch,
                             created_at_ms=self._clock.now_ms(),
                             reason="CONTENT",
-                            segments=segs,
+                            segments=final_segs,
                             source_refs=[],
                             metrics=self._metrics,
                         )
                         await self._emit_plan(plan)
-                else:
-                    # We didn't consume a token; avoid leaking this per-iteration task.
-                    get_task.cancel()
-                    await asyncio.gather(get_task, return_exceptions=True)
 
-                if timeout_task in done:
-                    # Hard timeout: stop consuming and fall back.
+                if (digit_violation or timed_out) and not content_emitted:
+                    # If we failed before emitting meaningful content, fall back deterministically.
                     self._metrics.inc(VIC["fallback_used_total"], 1)
-                    timed_out = True
-                    break
-
-                if filler_task in done and not filler_sent and not content_emitted:
-                    filler_sent = True
-                    filler_plan = build_plan(
-                        session_id=self._session_id,
-                        call_id=self._call_id,
-                        turn_id=self._turn_id,
-                        epoch=self._epoch,
-                        created_at_ms=self._clock.now_ms(),
-                        reason="FILLER",
-                        segments=micro_chunk_text(
-                            text=self._guard_text(_filler_text(
-                                call_id=self._call_id,
-                                turn_id=self._turn_id,
-                                filler_index=0,
-                                used_phrases=self._used_phrases,
-                            )),
-                            max_expected_ms=self._config.vic_max_segment_expected_ms,
-                            pace_ms_per_char=self._config.pace_ms_per_char,
-                            purpose="FILLER",
-                            interruptible=True,
-                            requires_tool_evidence=False,
-                            tool_evidence_ids=[],
-                            markup_mode=self._config.speech_markup_mode,
-                            dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                            digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-                        ),
-                        source_refs=[],
-                        metrics=self._metrics,
+                    msg = "Sorry-one moment. Could you say that again?"
+                    segs = micro_chunk_text(
+                        text=self._guard_text(msg),
+                        max_expected_ms=self._config.vic_max_segment_expected_ms,
+                        pace_ms_per_char=self._config.pace_ms_per_char,
+                        purpose="CLARIFY",
+                        interruptible=True,
+                        requires_tool_evidence=False,
+                        tool_evidence_ids=[],
+                        markup_mode=self._config.speech_markup_mode,
+                        dash_pause_unit_ms=self._config.dash_pause_unit_ms,
+                        digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
+                        dash_pause_scope=self._config.dash_pause_scope,
                     )
-                    await self._emit_plan(filler_plan)
-
-            # Final flush of any remaining buffered content.
-            if not digit_violation and not timed_out:
-                final_segs = chunker.flush_final()
-                if final_segs:
-                    content_emitted = True
                     plan = build_plan(
                         session_id=self._session_id,
                         call_id=self._call_id,
                         turn_id=self._turn_id,
                         epoch=self._epoch,
                         created_at_ms=self._clock.now_ms(),
-                        reason="CONTENT",
-                        segments=final_segs,
+                        reason="CLARIFY",
+                        segments=segs,
                         source_refs=[],
                         metrics=self._metrics,
                     )
                     await self._emit_plan(plan)
-
-            if (digit_violation or timed_out) and not content_emitted:
-                # If we failed before emitting meaningful content, fall back deterministically.
-                self._metrics.inc(VIC["fallback_used_total"], 1)
-                msg = "Sorry-one moment. Could you say that again?"
-                segs = micro_chunk_text(
-                    text=self._guard_text(msg),
-                    max_expected_ms=self._config.vic_max_segment_expected_ms,
-                    pace_ms_per_char=self._config.pace_ms_per_char,
-                    purpose="CLARIFY",
-                    interruptible=True,
-                    requires_tool_evidence=False,
-                    tool_evidence_ids=[],
-                    markup_mode=self._config.speech_markup_mode,
-                    dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                    digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-                )
-                plan = build_plan(
-                    session_id=self._session_id,
-                    call_id=self._call_id,
-                    turn_id=self._turn_id,
-                    epoch=self._epoch,
-                    created_at_ms=self._clock.now_ms(),
-                    reason="CLARIFY",
-                    segments=segs,
-                    source_refs=[],
-                    metrics=self._metrics,
-                )
-                await self._emit_plan(plan)
-        finally:
-            for t in (producer_task, filler_task, timeout_task):
-                if t is not None and not t.done():
-                    t.cancel()
-            await asyncio.shield(
-                asyncio.gather(producer_task, filler_task, timeout_task, return_exceptions=True)
-            )
+            finally:
+                if get_task is not None and not get_task.done():
+                    get_task.cancel()
+                    await asyncio.gather(get_task, return_exceptions=True)
+                for t in (producer_task, filler_task, timeout_task):
+                    if not t.done():
+                        t.cancel()
 
     async def _execute_tools_with_latency_masking(self, requests: list[ToolRequest]) -> list[ToolCallRecord]:
         records: list[ToolCallRecord] = []
@@ -9347,12 +9978,11 @@ class TurnHandler:
             source_refs=source_refs,
             metrics=self._metrics,
         )
-
 ```
 
-### `/Users/elijah/Documents/New project/app/voice_guard.py`
+## `app/voice_guard.py`
 
-```
+```python
 from __future__ import annotations
 
 import re
@@ -9511,2891 +10141,876 @@ def guard_user_text(
     grade = readability_grade(out)
     metrics.observe(VIC["voice_readability_grade"], grade)
     return _normalize_spaces(out)
+```
+
+## `src/__init__.py`
+
+```python
 
 ```
 
-### `/Users/elijah/Documents/New project/pyproject.toml`
+## `src/agent/__init__.py`
 
-```
-[project]
-name = "retell-ws-brain"
-version = "0.1.0"
-description = "Production-grade Retell Custom LLM WebSocket brain with deterministic VIC gates"
-readme = "README.md"
-requires-python = ">=3.11"
-dependencies = [
-  "pydantic>=2.12.0",
-  "fastapi>=0.115.0",
-  "uvicorn>=0.30.0",
-]
-
-[project.optional-dependencies]
-dev = [
-  "pytest>=9.0.0",
-]
-gemini = [
-  "google-genai>=1.62.0",
-]
-openai = [
-  "openai>=1.0.0",
-]
-ops = [
-  "websockets>=12.0",
-  "prometheus-client>=0.20.0",
-]
-
-[tool.pytest.ini_options]
-testpaths = ["tests", "tests_expressive"]
-addopts = "-q"
-pythonpath = ["."]
+```python
 
 ```
 
-### `app/config.py`
+## `src/agent/orchestrator.py`
 
-```
-from __future__ import annotations
-
-import os
-from dataclasses import dataclass
-
-
-def _getenv_bool(name: str, default: bool) -> bool:
-    raw = os.getenv(name)
-    if raw is None:
-        return default
-    return raw.strip().lower() in {"1", "true", "t", "yes", "y", "on"}
-
-
-def _getenv_int(name: str, default: int) -> int:
-    raw = os.getenv(name)
-    if raw is None:
-        return default
-    try:
-        return int(raw.strip())
-    except ValueError:
-        return default
-
-
-def _getenv_str(name: str, default: str) -> str:
-    raw = os.getenv(name)
-    if raw is None or raw.strip() == "":
-        return default
-    return raw
-
-
-def _getenv_float(name: str, default: float) -> float:
-    raw = os.getenv(name)
-    if raw is None:
-        return default
-    try:
-        return float(raw.strip())
-    except ValueError:
-        return default
-
-
-@dataclass(frozen=True, slots=True)
-class BrainConfig:
-    # Conversation profile
-    conversation_profile: str = "clinic"  # clinic | b2b
-
-    # Retell config response
-    retell_auto_reconnect: bool = True
-    retell_call_details: bool = True
-    retell_transcript_with_tool_calls: bool = True
-
-    # Websocket route policy
-    websocket_canonical_route: str = "llm-websocket"
-    websocket_enforce_canonical_route: bool = True
-    ws_structured_logging: bool = False
-
-    # Brain behavior
-    speak_first: bool = True
-    backchannel_enabled: bool = False
-    inbound_queue_max: int = 256
-    outbound_queue_max: int = 256
-    turn_queue_max: int = 64
-    idle_timeout_ms: int = 5000
-    ping_interval_ms: int = 2000
-    keepalive_ping_write_deadline_ms: int = 100
-    ws_write_timeout_ms: int = 400
-    ws_close_on_write_timeout: bool = True
-    ws_max_consecutive_write_timeouts: int = 2
-    ws_max_frame_bytes: int = 262_144
-    transcript_max_utterances: int = 200
-    transcript_max_chars: int = 50_000
-
-    # Speech markup / pacing primitives (Retell-accurate defaults)
-    # - DASH_PAUSE: spaced dashes (" - ") are the pause primitive for Retell.
-    # - RAW_TEXT: no pauses inserted.
-    # - SSML: experimental; inserts <break time="...ms"/> tags.
-    speech_markup_mode: str = "DASH_PAUSE"  # DASH_PAUSE | RAW_TEXT | SSML
-    dash_pause_scope: str = "PROTECTED_ONLY"  # PROTECTED_ONLY | SEGMENT_BOUNDARY
-    dash_pause_unit_ms: int = 200
-    digit_dash_pause_unit_ms: int = 150
-    retell_normalize_for_speech: bool = False  # optional platform-side setting (doc surfaced)
-
-    # LLM integration (provider-agnostic; tests default to deterministic fakes)
-    llm_provider: str = "fake"  # fake | gemini | openai
-    use_llm_nlg: bool = False
-    llm_phrasing_for_facts_enabled: bool = False
-    openai_api_key: str = ""
-    openai_model: str = "gpt-5-mini"
-    openai_reasoning_effort: str = "minimal"
-    openai_timeout_ms: int = 8000
-    openai_canary_enabled: bool = False
-    openai_canary_percent: int = 0
-    gemini_api_key: str = ""
-    gemini_vertexai: bool = False
-    gemini_project: str = ""
-    gemini_location: str = "global"
-    gemini_model: str = "gemini-3-flash-preview"
-    gemini_thinking_level: str = "minimal"
-
-    # WS security hardening (optional; prefer enforcing at reverse proxy)
-    ws_allowlist_enabled: bool = False
-    ws_allowlist_cidrs: str = ""  # comma-separated CIDRs; empty allows all
-    ws_trusted_proxy_enabled: bool = False
-    ws_trusted_proxy_cidrs: str = ""  # comma-separated CIDRs allowed to set X-Forwarded-For
-    ws_shared_secret_enabled: bool = False
-    ws_shared_secret: str = ""  # if set, require matching header
-    ws_shared_secret_header: str = "X-RETELL-SIGNATURE"
-    ws_query_token: str = ""  # optional query token for WS URL
-    ws_query_token_param: str = "token"
-
-    # Voice quality guardrails (plain-language deterministic mode)
-    voice_plain_language_mode: bool = True
-    voice_no_reasoning_leak: bool = True
-    voice_jargon_blocklist_enabled: bool = True
-
-    # Skills runtime (default OFF for stability)
-    skills_enabled: bool = False
-    skills_dir: str = "skills"
-    skills_max_injected: int = 3
-
-    # Shell runtime policy (default local-only; hosted OFF)
-    shell_mode: str = "local"  # local | hosted | hybrid
-    shell_enable_hosted: bool = False
-    shell_allowed_commands: str = ""
-    shell_tool_enabled: bool = False
-    shell_tool_canary_enabled: bool = False
-    shell_tool_canary_percent: int = 0
-
-    # Self-improvement runtime (default OFF)
-    self_improve_mode: str = "off"  # off | propose | apply
-
-    # Speculative planning (uses update_only to compute early, emits only after response_required)
-    speculative_planning_enabled: bool = True
-    speculative_debounce_ms: int = 0
-    speculative_tool_prefetch_enabled: bool = True
-    speculative_tool_prefetch_timeout_ms: int = 100
-
-    # Retell dynamic agent tuning on connect
-    retell_send_update_agent_on_connect: bool = True
-    retell_responsiveness: float = 1.0
-    retell_interruption_sensitivity: float = 1.0
-    retell_reminder_trigger_ms: int = 450
-    retell_reminder_max_count: int = 1
-    # Pre-ACK behavior split:
-    # - safe_pre_ack_on_response_required_enabled: emits a tiny response chunk only after response_required.
-    # - interrupt_pre_ack_on_agent_turn_enabled: emits agent_interrupt on update_only.agent_turn (experimental).
-    safe_pre_ack_on_response_required_enabled: bool = True
-    interrupt_pre_ack_on_agent_turn_enabled: bool = False
-    # Back-compat: legacy flag that enabled both.
-    ultra_fast_pre_ack_enabled: bool = False
-
-    # VIC timing thresholds
-    vic_ack_deadline_ms: int = 250
-    vic_tool_filler_threshold_ms: int = 45
-    vic_tool_timeout_ms: int = 1500
-    vic_model_filler_threshold_ms: int = 45
-    vic_model_timeout_ms: int = 3800
-    vic_max_fillers_per_tool: int = 1
-    vic_max_segment_expected_ms: int = 650
-    vic_max_monologue_expected_ms: int = 12000
-    vic_max_reprompts: int = 2
-    vic_barge_in_cancel_p95_ms: int = 250
-
-    # Speech pacing estimator
-    pace_ms_per_char: int = 12
-
-    # Persona/runtime metadata
-    clinic_name: str = "Clinic"
-    clinic_city: str = "Plano"
-    clinic_state: str = "Texas"
-    b2b_agent_name: str = "Cassidy"
-    b2b_org_name: str = "Eve"
-    b2b_auto_disclosure: bool = False
-    eve_v7_enabled: bool = True
-    eve_v7_script_path: str = "/Users/elijah/Documents/New project/orchestration/eve-v7-orchestrator.yaml"
-    b2b_business_name: str = "Clinic"
-    b2b_city: str = "Plano"
-    b2b_test_timestamp: str = "Saturday at 6:30 PM"
-    b2b_evidence_type: str = "AUDIO"
-    b2b_emr_system: str = "Zenoti, Boulevard, or MangoMint"
-    b2b_contact_number: str = "+14695998571"
-
-    @staticmethod
-    def from_env() -> "BrainConfig":
-        conversation_profile = _getenv_str("CONVERSATION_PROFILE", "clinic").strip().lower()
-        if conversation_profile not in {"clinic", "b2b"}:
-            conversation_profile = "clinic"
-        clinic_name = _getenv_str("CLINIC_NAME", "Clinic")
-        clinic_city = _getenv_str("CLINIC_CITY", "Plano")
-        clinic_state = _getenv_str("CLINIC_STATE", "Texas")
-        raw_ws_route = _getenv_str("WEBSOCKET_CANONICAL_ROUTE", "llm-websocket").strip().lower()
-        raw_ws_route = raw_ws_route.strip().strip("/")
-        if not raw_ws_route:
-            raw_ws_route = "llm-websocket"
-        raw_mode = _getenv_str("SPEECH_MARKUP_MODE", "DASH_PAUSE").strip().upper()
-        if raw_mode not in {"DASH_PAUSE", "RAW_TEXT", "SSML"}:
-            raw_mode = "DASH_PAUSE"
-        raw_pause_scope = _getenv_str("DASH_PAUSE_SCOPE", "PROTECTED_ONLY").strip().upper()
-        if raw_pause_scope not in {"PROTECTED_ONLY", "SEGMENT_BOUNDARY"}:
-            raw_pause_scope = "PROTECTED_ONLY"
-        llm_provider = _getenv_str("LLM_PROVIDER", "fake").strip().lower()
-        if llm_provider not in {"fake", "gemini", "openai"}:
-            llm_provider = "fake"
-        shell_mode = _getenv_str("SHELL_MODE", "local").strip().lower()
-        if shell_mode not in {"local", "hosted", "hybrid"}:
-            shell_mode = "local"
-        self_improve_mode = _getenv_str("SELF_IMPROVE_MODE", "off").strip().lower()
-        if self_improve_mode not in {"off", "propose", "apply"}:
-            self_improve_mode = "off"
-
-        legacy_ultra = _getenv_bool("ULTRA_FAST_PRE_ACK_ENABLED", False)
-        return BrainConfig(
-            conversation_profile=conversation_profile,
-            retell_auto_reconnect=_getenv_bool("RETELL_AUTO_RECONNECT", True),
-            retell_call_details=_getenv_bool("RETELL_CALL_DETAILS", True),
-            retell_transcript_with_tool_calls=_getenv_bool(
-                "RETELL_TRANSCRIPT_WITH_TOOL_CALLS", True
-            ),
-            websocket_canonical_route=raw_ws_route,
-            websocket_enforce_canonical_route=_getenv_bool(
-                "WEBSOCKET_ENFORCE_CANONICAL_ROUTE", True
-            ),
-            ws_structured_logging=_getenv_bool("WEBSOCKET_STRUCTURED_LOGGING", False),
-            speak_first=_getenv_bool("BRAIN_SPEAK_FIRST", True),
-            backchannel_enabled=_getenv_bool("BRAIN_BACKCHANNEL_ENABLED", False),
-            inbound_queue_max=_getenv_int("BRAIN_INBOUND_QUEUE_MAX", 256),
-            outbound_queue_max=_getenv_int("BRAIN_OUTBOUND_QUEUE_MAX", 256),
-            turn_queue_max=_getenv_int("BRAIN_TURN_QUEUE_MAX", 64),
-            idle_timeout_ms=_getenv_int("BRAIN_IDLE_TIMEOUT_MS", 5000),
-            ping_interval_ms=_getenv_int("BRAIN_PING_INTERVAL_MS", 2000),
-            keepalive_ping_write_deadline_ms=_getenv_int("KEEPALIVE_PING_WRITE_DEADLINE_MS", 100),
-            ws_write_timeout_ms=_getenv_int("WS_WRITE_TIMEOUT_MS", 400),
-            ws_close_on_write_timeout=_getenv_bool("WS_CLOSE_ON_WRITE_TIMEOUT", True),
-            ws_max_consecutive_write_timeouts=_getenv_int("WS_MAX_CONSECUTIVE_WRITE_TIMEOUTS", 2),
-            ws_max_frame_bytes=_getenv_int("WS_MAX_FRAME_BYTES", 262_144),
-            transcript_max_utterances=_getenv_int("TRANSCRIPT_MAX_UTTERANCES", 200),
-            transcript_max_chars=_getenv_int("TRANSCRIPT_MAX_CHARS", 50_000),
-            speech_markup_mode=raw_mode,
-            dash_pause_scope=raw_pause_scope,
-            dash_pause_unit_ms=_getenv_int("DASH_PAUSE_UNIT_MS", 200),
-            digit_dash_pause_unit_ms=_getenv_int("DIGIT_DASH_PAUSE_UNIT_MS", 150),
-            retell_normalize_for_speech=_getenv_bool("RETELL_NORMALIZE_FOR_SPEECH", False),
-            llm_provider=llm_provider,
-            use_llm_nlg=_getenv_bool("BRAIN_USE_LLM_NLG", False),
-            llm_phrasing_for_facts_enabled=_getenv_bool("LLM_PHRASING_FOR_FACTS_ENABLED", False),
-            openai_api_key=_getenv_str("OPENAI_API_KEY", ""),
-            openai_model=_getenv_str("OPENAI_MODEL", "gpt-5-mini"),
-            openai_reasoning_effort=_getenv_str("OPENAI_REASONING_EFFORT", "minimal"),
-            openai_timeout_ms=_getenv_int("OPENAI_TIMEOUT_MS", 8000),
-            openai_canary_enabled=_getenv_bool("OPENAI_CANARY_ENABLED", False),
-            openai_canary_percent=max(0, min(100, _getenv_int("OPENAI_CANARY_PERCENT", 0))),
-            gemini_api_key=_getenv_str("GEMINI_API_KEY", ""),
-            gemini_vertexai=_getenv_bool("GEMINI_VERTEXAI", False),
-            gemini_project=_getenv_str("GEMINI_PROJECT", ""),
-            gemini_location=_getenv_str("GEMINI_LOCATION", "global"),
-            gemini_model=_getenv_str("GEMINI_MODEL", "gemini-3-flash-preview"),
-            gemini_thinking_level=_getenv_str("GEMINI_THINKING_LEVEL", "minimal"),
-            ws_allowlist_enabled=_getenv_bool("WS_ALLOWLIST_ENABLED", False),
-            ws_allowlist_cidrs=_getenv_str("WS_ALLOWLIST_CIDRS", ""),
-            ws_trusted_proxy_enabled=_getenv_bool("WS_TRUSTED_PROXY_ENABLED", False),
-            ws_trusted_proxy_cidrs=_getenv_str("WS_TRUSTED_PROXY_CIDRS", ""),
-            ws_shared_secret_enabled=_getenv_bool("WS_SHARED_SECRET_ENABLED", False),
-            ws_shared_secret=_getenv_str("WS_SHARED_SECRET", ""),
-            ws_shared_secret_header=_getenv_str("WS_SHARED_SECRET_HEADER", "X-RETELL-SIGNATURE"),
-            ws_query_token=_getenv_str("WS_QUERY_TOKEN", ""),
-            ws_query_token_param=_getenv_str("WS_QUERY_TOKEN_PARAM", "token"),
-            voice_plain_language_mode=_getenv_bool("VOICE_PLAIN_LANGUAGE_MODE", True),
-            voice_no_reasoning_leak=_getenv_bool("VOICE_NO_REASONING_LEAK", True),
-            voice_jargon_blocklist_enabled=_getenv_bool("VOICE_JARGON_BLOCKLIST_ENABLED", True),
-            skills_enabled=_getenv_bool("SKILLS_ENABLED", False),
-            skills_dir=_getenv_str("SKILLS_DIR", "skills"),
-            skills_max_injected=_getenv_int("SKILLS_MAX_INJECTED", 3),
-            shell_mode=shell_mode,
-            shell_enable_hosted=_getenv_bool("SHELL_ENABLE_HOSTED", False),
-            shell_allowed_commands=_getenv_str("SHELL_ALLOWED_COMMANDS", ""),
-            shell_tool_enabled=_getenv_bool("SHELL_TOOL_ENABLED", False),
-            shell_tool_canary_enabled=_getenv_bool("SHELL_TOOL_CANARY_ENABLED", False),
-            shell_tool_canary_percent=max(0, min(100, _getenv_int("SHELL_TOOL_CANARY_PERCENT", 0))),
-            self_improve_mode=self_improve_mode,
-            speculative_planning_enabled=_getenv_bool("SPECULATIVE_PLANNING_ENABLED", True),
-            speculative_debounce_ms=_getenv_int("SPECULATIVE_DEBOUNCE_MS", 0),
-            speculative_tool_prefetch_enabled=_getenv_bool("SPECULATIVE_TOOL_PREFETCH_ENABLED", True),
-            speculative_tool_prefetch_timeout_ms=_getenv_int(
-                "SPECULATIVE_TOOL_PREFETCH_TIMEOUT_MS", 100
-            ),
-            retell_send_update_agent_on_connect=_getenv_bool(
-                "RETELL_SEND_UPDATE_AGENT_ON_CONNECT", True
-            ),
-            retell_responsiveness=_getenv_float("RETELL_RESPONSIVENESS", 1.0),
-            retell_interruption_sensitivity=_getenv_float(
-                "RETELL_INTERRUPTION_SENSITIVITY", 1.0
-            ),
-            retell_reminder_trigger_ms=_getenv_int("RETELL_REMINDER_TRIGGER_MS", 450),
-            retell_reminder_max_count=_getenv_int("RETELL_REMINDER_MAX_COUNT", 1),
-            safe_pre_ack_on_response_required_enabled=_getenv_bool(
-                "SAFE_PRE_ACK_ON_RESPONSE_REQUIRED_ENABLED", True
-            ),
-            interrupt_pre_ack_on_agent_turn_enabled=_getenv_bool(
-                "INTERRUPT_PRE_ACK_ON_AGENT_TURN_ENABLED", legacy_ultra
-            ),
-            ultra_fast_pre_ack_enabled=legacy_ultra,
-            vic_ack_deadline_ms=_getenv_int("VIC_ACK_DEADLINE_MS", 250),
-            vic_tool_filler_threshold_ms=_getenv_int("VIC_TOOL_FILLER_THRESHOLD_MS", 45),
-            vic_tool_timeout_ms=_getenv_int("VIC_TOOL_TIMEOUT_MS", 1500),
-            vic_model_filler_threshold_ms=_getenv_int("VIC_MODEL_FILLER_THRESHOLD_MS", 45),
-            vic_model_timeout_ms=_getenv_int("VIC_MODEL_TIMEOUT_MS", 3800),
-            vic_max_fillers_per_tool=_getenv_int("VIC_MAX_FILLERS_PER_TOOL", 1),
-            vic_max_segment_expected_ms=_getenv_int("VIC_MAX_SEGMENT_EXPECTED_MS", 650),
-            vic_max_monologue_expected_ms=_getenv_int(
-                "VIC_MAX_MONOLOGUE_EXPECTED_MS", 12000
-            ),
-            vic_max_reprompts=_getenv_int("VIC_MAX_REPROMPTS", 2),
-            vic_barge_in_cancel_p95_ms=_getenv_int("VIC_BARGE_IN_CANCEL_P95_MS", 250),
-            pace_ms_per_char=_getenv_int("PACE_MS_PER_CHAR", 12),
-            clinic_name=clinic_name,
-            clinic_city=clinic_city,
-            clinic_state=clinic_state,
-            b2b_agent_name=_getenv_str("B2B_AGENT_NAME", "Cassidy"),
-            b2b_org_name=_getenv_str("B2B_ORG_NAME", "Eve"),
-            b2b_auto_disclosure=_getenv_bool("B2B_AUTO_DISCLOSURE", False),
-            eve_v7_enabled=_getenv_bool("EVE_V7_ENABLED", True),
-            eve_v7_script_path=_getenv_str(
-                "EVE_V7_SCRIPT_PATH",
-                "/Users/elijah/Documents/New project/orchestration/eve-v7-orchestrator.yaml",
-            ),
-            b2b_business_name=_getenv_str("B2B_BUSINESS_NAME", clinic_name),
-            b2b_city=_getenv_str("B2B_CITY", clinic_city),
-            b2b_test_timestamp=_getenv_str("B2B_TEST_TIMESTAMP", "Saturday at 6:30 PM"),
-            b2b_evidence_type=_getenv_str("B2B_EVIDENCE_TYPE", "AUDIO"),
-            b2b_emr_system=_getenv_str("B2B_EMR_SYSTEM", "Zenoti, Boulevard, or MangoMint"),
-            b2b_contact_number=_getenv_str("B2B_CONTACT_NUMBER", "+14695998571"),
-        )
-
-```
-
-### `app/dashboard_data.py`
-
-```
-from __future__ import annotations
-
-import math
-import re
-from pathlib import Path
-from typing import Any
-
-
-_TYPE_RE = re.compile(r"^#\s*TYPE\s+([a-zA-Z_:][a-zA-Z0-9_:]*)\s+(counter|gauge|histogram)\s*$")
-_SAMPLE_RE = re.compile(r"^([a-zA-Z_:][a-zA-Z0-9_:]*)(\{[^}]*\})?\s+([-+]?[0-9]+(?:\.[0-9]+)?)$")
-_LE_RE = re.compile(r'le="([^"]+)"')
-
-
-def parse_prometheus_text(text: str) -> tuple[dict[str, float], dict[str, float], dict[str, dict[str, float]]]:
-    types: dict[str, str] = {}
-    counters: dict[str, float] = {}
-    gauges: dict[str, float] = {}
-    hist_buckets: dict[str, dict[str, float]] = {}
-
-    for raw in text.splitlines():
-        line = raw.strip()
-        if not line:
-            continue
-        m_type = _TYPE_RE.match(line)
-        if m_type:
-            types[m_type.group(1)] = m_type.group(2)
-            continue
-        if line.startswith("#"):
-            continue
-
-        m_sample = _SAMPLE_RE.match(line)
-        if not m_sample:
-            continue
-        name = m_sample.group(1)
-        labels = m_sample.group(2) or ""
-        value = float(m_sample.group(3))
-
-        if name.endswith("_bucket"):
-            base = name[: -len("_bucket")]
-            m_le = _LE_RE.search(labels)
-            if m_le is None:
-                continue
-            le = m_le.group(1)
-            hist_buckets.setdefault(base, {})[le] = value
-            continue
-
-        t = types.get(name, "")
-        if t == "counter":
-            counters[name] = value
-        elif t == "gauge":
-            gauges[name] = value
-
-    return counters, gauges, hist_buckets
-
-
-def histogram_quantile_from_buckets(buckets: dict[str, float], q: float) -> float | None:
-    if not buckets:
-        return None
-    items: list[tuple[float, float]] = []
-    inf_count: float | None = None
-    for le_str, count in buckets.items():
-        if le_str == "+Inf":
-            inf_count = float(count)
-            continue
-        try:
-            items.append((float(le_str), float(count)))
-        except Exception:
-            continue
-    items.sort(key=lambda x: x[0])
-    if inf_count is None:
-        if not items:
-            return None
-        inf_count = items[-1][1]
-    if inf_count <= 0:
-        return None
-
-    target = max(1.0, math.ceil(float(q) * float(inf_count)))
-    for le, cumulative in items:
-        if cumulative >= target:
-            return le
-    if items:
-        return items[-1][0]
-    return None
-
-
-def _state_for_threshold(value: float | None, *, target: float, op: str) -> str:
-    if value is None:
-        return "unknown"
-    if op == "lte":
-        return "pass" if value <= target else "fail"
-    if op == "eq":
-        return "pass" if value == target else "fail"
-    return "unknown"
-
-
-def build_dashboard_summary(metrics_text: str) -> dict[str, Any]:
-    counters, gauges, hists = parse_prometheus_text(metrics_text)
-
-    ack_p95 = histogram_quantile_from_buckets(hists.get("vic_turn_final_to_ack_segment_ms", {}), 0.95)
-    first_p95 = histogram_quantile_from_buckets(hists.get("vic_turn_final_to_first_segment_ms", {}), 0.95)
-    cancel_p95 = histogram_quantile_from_buckets(hists.get("vic_barge_in_cancel_latency_ms", {}), 0.95)
-
-    checks = [
-        {
-            "id": "ack_p95",
-            "title": "ACK latency p95",
-            "target": "<=300ms",
-            "value": ack_p95,
-            "state": _state_for_threshold(ack_p95, target=300, op="lte"),
-            "laymen": "How fast Eve acknowledges users.",
-            "technical": "vic_turn_final_to_ack_segment_ms p95",
-            "fix": "Inspect queue pressure and writer backpressure timeout metrics.",
-        },
-        {
-            "id": "first_content_p95",
-            "title": "First response p95",
-            "target": "<=700ms",
-            "value": first_p95,
-            "state": _state_for_threshold(first_p95, target=700, op="lte"),
-            "laymen": "How fast Eve starts giving real content.",
-            "technical": "vic_turn_final_to_first_segment_ms p95",
-            "fix": "Reduce tool latency and model timeout/filler thresholds.",
-        },
-        {
-            "id": "barge_cancel_p95",
-            "title": "Barge-in cancel p95",
-            "target": "<=250ms",
-            "value": cancel_p95,
-            "state": _state_for_threshold(cancel_p95, target=250, op="lte"),
-            "laymen": "How fast Eve stops talking when user interrupts.",
-            "technical": "vic_barge_in_cancel_latency_ms p95",
-            "fix": "Tune interruption sensitivity and cancel path latency.",
-        },
-        {
-            "id": "reasoning_leak",
-            "title": "Reasoning leakage",
-            "target": "==0",
-            "value": int(counters.get("voice_reasoning_leak_total", 0)),
-            "state": _state_for_threshold(float(counters.get("voice_reasoning_leak_total", 0)), target=0, op="eq"),
-            "laymen": "Internal chain-of-thought is not exposed to users.",
-            "technical": "voice_reasoning_leak_total",
-            "fix": "Keep plain-language policy and guardrail transforms enabled.",
-        },
-        {
-            "id": "jargon_violation",
-            "title": "Jargon violations",
-            "target": "==0",
-            "value": int(counters.get("voice_jargon_violation_total", 0)),
-            "state": _state_for_threshold(float(counters.get("voice_jargon_violation_total", 0)), target=0, op="eq"),
-            "laymen": "Eve responses stay understandable.",
-            "technical": "voice_jargon_violation_total",
-            "fix": "Adjust readability filters and phrasing templates.",
-        },
-    ]
-
-    failing = sum(1 for c in checks if c["state"] == "fail")
-    passing = sum(1 for c in checks if c["state"] == "pass")
-    unknown = sum(1 for c in checks if c["state"] == "unknown")
-
-    status = "green"
-    if failing > 0:
-        status = "red"
-    elif passing == 0:
-        status = "gray"
-
-    skills_inv = int(counters.get("skills_invocations_total", 0))
-    skills_hit = int(counters.get("skills_hit_total", 0))
-    skills_hit_rate_pct = round((skills_hit / skills_inv) * 100.0, 1) if skills_inv > 0 else None
-
-    return {
-        "status": status,
-        "checks": checks,
-        "totals": {
-            "passing": passing,
-            "failing": failing,
-            "unknown": unknown,
-        },
-        "memory": {
-            "transcript_chars_current": int(gauges.get("memory_transcript_chars_current", 0)),
-            "transcript_utterances_current": int(gauges.get("memory_transcript_utterances_current", 0)),
-        },
-        "skills": {
-            "invocations_total": skills_inv,
-            "hit_total": skills_hit,
-            "hit_rate_pct": skills_hit_rate_pct,
-            "error_total": int(counters.get("skills_error_total", 0)),
-        },
-        "shell": {
-            "exec_total": int(counters.get("shell_exec_total", 0)),
-            "exec_denied_total": int(counters.get("shell_exec_denied_total", 0)),
-            "exec_timeout_total": int(counters.get("shell_exec_timeout_total", 0)),
-        },
-        "self_improve": {
-            "cycles_total": int(counters.get("self_improve_cycles_total", 0)),
-            "proposals_total": int(counters.get("self_improve_proposals_total", 0)),
-            "applies_total": int(counters.get("self_improve_applies_total", 0)),
-            "blocked_on_gates_total": int(counters.get("self_improve_blocked_on_gates_total", 0)),
-        },
-        "context": {
-            "compactions_total": int(counters.get("context_compactions_total", 0)),
-            "compaction_tokens_saved_total": int(counters.get("context_compaction_tokens_saved_total", 0)),
-        },
-    }
-
-
-def build_repo_map(repo_root: Path) -> dict[str, Any]:
-    components = [
-        {
-            "id": "runtime_core",
-            "title": "Runtime Core",
-            "path": "app/",
-            "laymen": "The live brain that takes calls and responds.",
-            "technical": "FastAPI server, orchestrator, policy, tool routing, metrics.",
-        },
-        {
-            "id": "automation_scripts",
-            "title": "Automation Scripts",
-            "path": "scripts/",
-            "laymen": "Operational commands that keep Eve healthy.",
-            "technical": "Acceptance runners, scorecards, self-improve cycle, metrics tools.",
-        },
-        {
-            "id": "tests_contracts",
-            "title": "Tests and Contracts",
-            "path": "tests/",
-            "laymen": "Proof that behavior is stable and safe.",
-            "technical": "Unit, contract, replay, latency, policy, and regression tests.",
-        },
-        {
-            "id": "skills_library",
-            "title": "Skills Library",
-            "path": "skills/",
-            "laymen": "Reusable methods Eve can apply to solve tasks faster.",
-            "technical": "Markdown skill artifacts loaded and injected by retriever.",
-        },
-        {
-            "id": "knowledge_docs",
-            "title": "Knowledge and SOP",
-            "path": "docs/",
-            "laymen": "How the system is operated and improved safely.",
-            "technical": "Runbooks, self-improve SOP, and operational references.",
-        },
-    ]
-
-    for c in components:
-        p = repo_root / c["path"]
-        c["exists"] = p.exists()
-        c["files"] = sum(1 for _ in p.rglob("*") if _.is_file()) if p.exists() else 0
-
-    top_level = []
-    for p in sorted(repo_root.iterdir(), key=lambda x: x.name.lower()):
-        if p.name.startswith("."):
-            continue
-        if p.name in {".venv", "retell_ws_brain.egg-info", "__pycache__"}:
-            continue
-        top_level.append({
-            "name": p.name,
-            "type": "dir" if p.is_dir() else "file",
-        })
-
-    sop_docs = [
-        "docs/self_improve_sop.md",
-        "README.md",
-        "soul.md",
-    ]
-
-    return {
-        "repo_root": str(repo_root),
-        "components": components,
-        "top_level": top_level,
-        "sop_docs": sop_docs,
-    }
-
-```
-
-### `app/eve_prompt.py`
-
-```
-from __future__ import annotations
-
-import re
-import textwrap
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Mapping
-
-
-REQUIRED_SECTIONS = ("opener", "diagnosis", "hook", "objections", "closing")
-SECTION_ALIASES = {
-    "diagnosis": ("discovery",),
-    "hook": ("pain_admitted", "pain_denied", "send_package_prompt"),
-    "objections": (
-        "objection_answering_service",
-        "objection_info_email",
-        "objection_sales",
-    ),
-    "closing": ("done",),
-}
-REQUIRED_PLACEHOLDERS = {
-    "business_name",
-    "city",
-    "clinic_name",
-    "test_timestamp",
-    "evidence_type",
-    "emr_system",
-    "contact_number",
-}
-REQUIRED_TOOLS = {"send_evidence_package", "mark_dnc_compliant"}
-
-
-@dataclass(frozen=True, slots=True)
-class EVEV7PromptBundle:
-    path: str
-    rendered_script: str
-    sections: dict[str, str]
-
-
-def _read_file(script_path: str) -> str:
-    p = Path(script_path)
-    if not p.exists():
-        raise FileNotFoundError(f"EVE v7 script not found: {script_path}")
-    return p.read_text(encoding="utf-8")
-
-
-def _state_exists(script_text: str, state: str) -> bool:
-    return re.search(rf"(?m)^[ \t]*{re.escape(state)}:\s*$", script_text) is not None
-
-
-def _resolve_state_name(script_text: str, canonical: str) -> str:
-    candidates = (canonical, *SECTION_ALIASES.get(canonical, ()))
-    for candidate in candidates:
-        if _state_exists(script_text, candidate):
-            return candidate
-    raise ValueError(f"Missing required flow section: {canonical} (checked aliases: {', '.join(candidates)})")
-
-
-def _validate_structure(script_text: str) -> None:
-    missing = []
-    for section in REQUIRED_SECTIONS:
-        try:
-            _resolve_state_name(script_text, section)
-        except ValueError:
-            missing.append(section)
-    if missing:
-        raise ValueError(f"Missing required flow sections: {', '.join(missing)}")
-
-    missing_placeholders = [p for p in REQUIRED_PLACEHOLDERS if f"{{{{{p}}}}" not in script_text]
-    if missing_placeholders:
-        raise ValueError(f"Missing required placeholders: {', '.join(missing_placeholders)}")
-
-    # Canonical tool names.
-    for tool in REQUIRED_TOOLS:
-        if f"name: {tool}" not in script_text:
-            raise ValueError(f"Missing required tool contract definition: {tool}")
-    if "name: mark_dnc" in script_text:
-        # Legacy fallback must be normalized at orchestration layer.
-        pass
-
-
-def _render_placeholders(script_text: str, placeholders: Mapping[str, str]) -> str:
-    rendered = script_text
-    for key, value in placeholders.items():
-        rendered = rendered.replace(f"{{{{{key}}}}}", str(value))
-    return rendered
-
-
-def _extract_state_block(script_text: str, state: str) -> str:
-    # Capture indented body until next top-level key.
-    pattern = rf"(?ms)^[ \\t]*{re.escape(state)}:\\n(?P<body>(?:^[ \\t]+.*\\n?)*)"
-    match = re.search(pattern, script_text)
-    if not match:
-        return ""
-    body = match.group("body") or ""
-
-    # Prefer literal spoken blocks first.
-    say_match = re.search(r"(?ms)^\\s*say:\\s*\\|\\n(?P<say>.*?)(?:\\n^\\s*\\w|\\Z)", body)
-    if say_match:
-        return textwrap.dedent(say_match.group("say")).strip("\n")
-
-    ask_match = re.search(r"(?ms)^\\s*ask:\\s*\\|\\n(?P<ask>.*?)(?:\\n^\\s*\\w|\\Z)", body)
-    if ask_match:
-        return textwrap.dedent(ask_match.group("ask")).strip("\n")
-
-    return textwrap.dedent(body).strip("\n")
-
-
-def _build_section_payload(sections: dict[str, str]) -> str:
-    rendered = []
-    for name in REQUIRED_SECTIONS:
-        rendered.append(f"{name}:\\n{textwrap.indent(sections[name], '  ')}")
-    return "\\n\\n".join(rendered)
-
-
-def load_eve_v7_prompt_bundle(
-    *,
-    script_path: str,
-    placeholders: Mapping[str, str] | None = None,
-) -> EVEV7PromptBundle:
-    raw = _read_file(script_path)
-    _validate_structure(raw)
-
-    rendered = _render_placeholders(raw, placeholders or {})
-    sections: dict[str, str] = {}
-    for canonical in REQUIRED_SECTIONS:
-        resolved = _resolve_state_name(rendered, canonical)
-        sections[canonical] = _extract_state_block(rendered, resolved)
-        if not sections[canonical].strip():
-            raise ValueError(f"Flow section '{canonical}' is empty after parse/render in {script_path}")
-
-    prompt = (
-        "You are Cassidy, the MedSpa EVE v7 outbound voice workflow orchestrator.\\n"
-        "Run the script exactly as authored with strict interruption control and no out-of-flow improvisation.\\n\\n"
-        "SYSTEM FLOW:\\n"
-        f"{_build_section_payload(sections)}\\n\\n"
-        "Tool contracts:\\n"
-        "  - send_evidence_package\\n"
-        "  - mark_dnc_compliant\\n"
-        "Never emit or request tool name `mark_dnc`; rewrite that branch to `mark_dnc_compliant` "
-        "(reasons: USER_REQUEST, WRONG_NUMBER, HOSTILE).\\n"
-        "Keep script variables intact and only fill observed placeholders."
-    )
-
-    return EVEV7PromptBundle(
-        path=str(script_path),
-        rendered_script=prompt,
-        sections=sections,
-    )
-
-
-def load_eve_v7_system_prompt(
-    *,
-    script_path: str,
-    placeholders: Mapping[str, str] | None = None,
-) -> str:
-    return load_eve_v7_prompt_bundle(
-        script_path=script_path,
-        placeholders=placeholders or {},
-    ).rendered_script
-
-
-def load_eve_v7_opener(
-    *,
-    script_path: str,
-    placeholders: Mapping[str, str] | None = None,
-) -> str:
-    sections = load_eve_v7_prompt_bundle(
-        script_path=script_path,
-        placeholders=placeholders or {},
-    ).sections
-    return sections.get("opener", "").strip()
-
-```
-
-### `app/orchestrator.py`
-
-```
+```python
 from __future__ import annotations
 
 import asyncio
-import hashlib
-import json
-import re
-from collections import OrderedDict, deque
+from collections import deque
 from dataclasses import dataclass
-from enum import Enum
 from typing import Any, Optional
 
-from .bounded_queue import BoundedDequeQueue, QueueClosed
-from .backchannel import BackchannelClassifier
-from .clock import Clock
-from .config import BrainConfig
-from .conversation_memory import ConversationMemory
-from .dialogue_policy import DialogueAction, SlotState, decide_action
-from .llm_client import LLMClient
-from .metrics import Metrics, VIC
-from .outcome_schema import CallOutcome, detect_objection
-from .playbook_policy import apply_playbook
-from .eve_prompt import load_eve_v7_opener
-from .protocol import (
-    AgentConfig,
-    InboundCallDetails,
-    InboundPingPong,
-    InboundReminderRequired,
-    InboundResponseRequired,
-    InboundUpdateOnly,
-    OutboundAgentInterrupt,
-    OutboundConfig,
-    OutboundEvent,
-    OutboundPingPong,
-    OutboundResponse,
-    OutboundUpdateAgent,
-    RetellConfig,
-)
-from .safety_policy import evaluate_user_text
-from .speech_planner import (
-    PlanReason,
-    SpeechPlan,
+from pydantic import ValidationError
+
+from src.agent.turn_manager import TurnManager
+from src.interfaces.adapters import ASRAdapter, LLMAdapter, MockASRAdapter, MockLLMAdapter, MockTTSAdapter, TTSAdapter
+from src.interfaces.events import (
+    FLAG_BARGE_FLUSH,
+    FLAG_END_OF_TURN,
+    ConfigUpdate,
+    Ping,
+    RuntimeConfig,
+    SessionStart,
     SpeechSegment,
-    build_plan,
-    micro_chunk_text,
-    micro_chunk_text_cached,
+    TurnState,
+    UserTurnEnd,
+    build_audio_packet,
+    parse_client_control,
 )
-from .tools import ToolCallRecord, ToolRegistry
-from .trace import TraceSink
-from .transport_ws import GateRef, InboundItem, OutboundEnvelope, TransportClosed
-from .turn_handler import TurnHandler, TurnOutput
+from src.processing.chunking import SpeakableChunker
+from src.processing.prosody import ProsodyTracker
+from src.processing.tag_parser import parse_tagged_text
+from src.processing.vad import VAD, VADConfig
+from src.utils.clock import Clock, RealClock
+from src.utils.metrics import METRIC_KEYS, MetricsStore
 
 
-_NO_SIGNAL_CHAR_PAT = re.compile(r"^[\W_]+$", re.I)
-_NO_SIGNAL_REPEAT_PUNCT = re.compile(r"^(.)\1+$")
-_NO_SIGNAL_ACK_PAT = re.compile(
-    r"^(?:got\s*it|gotcha|i\s+got\s+it|yep\s+got\s+it|yup\s+got\s+it|ya\s+got\s+it|"
-    r"understand\b|understood\b|"
-    r"yep\b|yup\b|ok\b|okay\b|right\b|alright\b|all\s+right)$",
-    re.I,
-)
-_NO_SIGNAL_NOISE_TOKENS = {
-    "got",
-    "it",
-    "gotcha",
-    "yep",
-    "yup",
-    "ya",
-    "understand",
-    "understood",
-    "ok",
-    "okay",
-    "right",
-    "alright",
-    "hey",
-    "hi",
-    "hello",
-    "this",
-    "is",
-    "from",
-    "cassidy",
-    "eve",
-    "sarah",
-    "agent",
-    "with",
-    "the",
-    "a",
-    "an",
-    "and",
-    "to",
-    "all",
-}
-_NO_SIGNAL_NOISE_PREFIX_TOKENS = {
-    "hey",
-    "hi",
-    "hello",
-    "cassidy",
-    "sarah",
-    "agent",
-    "eve",
-    "this",
-    "is",
-    "from",
-    "with",
-}
+@dataclass(frozen=True, slots=True)
+class OutboundEvent:
+    kind: str  # "json" | "audio"
+    payload: dict[str, Any] | bytes
 
 
-def _is_intro_noise_like(text: str) -> bool:
-    compact_alpha = re.sub(r"[^a-z0-9\s]", " ", (text or "").strip().lower())
-    compact_words = [w for w in re.sub(r"\s+", " ", compact_alpha).split(" ") if w]
-    if not compact_words:
-        return False
-    has_prefix = any(w in _NO_SIGNAL_NOISE_PREFIX_TOKENS for w in compact_words)
-    has_ack = any(w in {"got", "gotcha", "it", "yep", "yup", "yes", "okay", "ok"} for w in compact_words)
-    if has_prefix and has_ack and all(w in _NO_SIGNAL_NOISE_TOKENS for w in compact_words):
-        return True
-    if len(compact_words) <= 14 and has_prefix and has_ack and compact_words[0] in {"hey", "hi", "hello"}:
-        return True
-    return False
-
-
-class WSState(str, Enum):
-    CONNECTING = "CONNECTING"
-    OPEN = "OPEN"
-    CLOSING = "CLOSING"
-    CLOSED = "CLOSED"
-
-
-class ConvState(str, Enum):
-    LISTENING = "LISTENING"
-    PROCESSING = "PROCESSING"
-    SPEAKING = "SPEAKING"
-    ENDED = "ENDED"
-
-
-@dataclass(slots=True)
-class TurnRuntime:
-    epoch: int
-    finalized_ms: int
-    first_segment_ms: Optional[int] = None
-    ack_segment_ms: Optional[int] = None
-
-
-@dataclass(slots=True)
-class SpeculativeResult:
-    transcript_key: str
-    tool_req_key: str
-    tool_records: list[ToolCallRecord]
-    created_at_ms: int
-
-
-class Orchestrator:
-    """
-    Single Source of Truth / Actor.
-    Owns: epoch, FSMs, transcript memory, turn controller.
-    """
-
+class SessionOrchestrator:
     def __init__(
         self,
         *,
         session_id: str,
-        call_id: str,
-        config: BrainConfig,
-        clock: Clock,
-        metrics: Metrics,
-        trace: TraceSink,
-        inbound_q: BoundedDequeQueue[InboundItem],
-        outbound_q: BoundedDequeQueue[OutboundEnvelope],
-        shutdown_evt: asyncio.Event,
-        gate: GateRef,
-        tools: ToolRegistry,
-        llm: Optional[LLMClient] = None,
+        clock: Clock | None = None,
+        config: RuntimeConfig | None = None,
+        asr: ASRAdapter | None = None,
+        llm: LLMAdapter | None = None,
+        tts: TTSAdapter | None = None,
+        metrics: MetricsStore | None = None,
     ) -> None:
-        self._session_id = session_id
-        self._call_id = call_id
-        self._config = config
-        self._clock = clock
-        self._metrics = metrics
-        self._trace = trace
-        self._inbound_q = inbound_q
-        self._outbound_q = outbound_q
-        self._shutdown_evt = shutdown_evt
-        self._gate_ref = gate
-        self._tools = tools
-        self._llm = llm
+        self.session_id = session_id
+        self.clock = clock or RealClock()
+        self.config = config or RuntimeConfig()
+        self.metrics = metrics or MetricsStore()
 
-        self._ws_state = WSState.CONNECTING
-        self._conv_state = ConvState.LISTENING
-        self._epoch = 0
+        self.asr = asr or MockASRAdapter()
+        self.llm = llm or MockLLMAdapter()
+        self.tts = tts or MockTTSAdapter()
 
-        self._slot_state = SlotState()
-        self._memory = ConversationMemory(
-            max_utterances=self._config.transcript_max_utterances,
-            max_chars=self._config.transcript_max_chars,
-        )
-        self._transcript = []  # bounded list[TranscriptUtterance]
-        self._memory_summary = ""
+        self.vad = VAD(VADConfig(interruptions_enabled=self.config.interruptions_enabled, interruption_sensitivity=self.config.interruption_sensitivity))
+        self.prosody = ProsodyTracker()
+        self.turn_manager = TurnManager(config=self.config)
 
-        self._turn_task: Optional[asyncio.Task[None]] = None
-        self._turn_output_q: Optional[asyncio.Queue[TurnOutput]] = None
-        self._turn_rt: Optional[TurnRuntime] = None
-        self._needs_apology = False
-        self._disclosure_sent = False
+        self._control_in_q: asyncio.Queue[dict[str, Any]] = asyncio.Queue(maxsize=256)
+        self._audio_in_q: deque[bytes] = deque(maxlen=200)
 
-        # Speculative planning: compute early on update_only, emit only after response_required.
-        self._spec_task: Optional[asyncio.Task[None]] = None
-        self._spec_out_q: asyncio.Queue[SpeculativeResult] = asyncio.Queue(maxsize=1)
-        self._spec_transcript_key: str = ""
-        self._spec_result: Optional[SpeculativeResult] = None
-        self._fast_plan_cache: OrderedDict[
-            tuple[str, str, str, str], tuple[PlanReason, tuple[SpeechSegment, ...], bool]
-        ] = OrderedDict()
-        self._fast_plan_cache_max = 256
+        self._control_out_q: asyncio.Queue[dict[str, Any]] = asyncio.Queue(maxsize=256)
+        self._audio_out_q: deque[bytes] = deque(maxlen=200)
 
-        self._idle_task: Optional[asyncio.Task[None]] = None
-        self._ping_task: Optional[asyncio.Task[None]] = None
+        self._state = TurnState.IDLE
+        self._running = False
+        self._loop_task: Optional[asyncio.Task[None]] = None
+        self._agent_task: Optional[asyncio.Task[None]] = None
 
-        self._speech_plans = deque(maxlen=512)
-        self._outcomes = deque(maxlen=1024)
-        self._interrupt_id = 0
-        self._pre_ack_sent_for_epoch = -1
-        self._backchannel: Optional[BackchannelClassifier] = None
-        if self._config.backchannel_enabled:
-            self._backchannel = BackchannelClassifier(session_id=self._session_id)
+        self._turn_id = 0
+        self._audio_out_seq = 0
+        self._cancel_agent = asyncio.Event()
+        self._soft_filler_spoken_turn: Optional[int] = None
+        self._pending_final_text: str = ""
+        self._last_agent_audio_seq_at_barge = 0
+        self._audio_out_drop_streak = 0
 
     @property
-    def speech_plans(self) -> list[SpeechPlan]:
-        return list(self._speech_plans)
-
-    @property
-    def outcomes(self) -> list[CallOutcome]:
-        return list(self._outcomes)
-
-    # ---------------------------------------------------------------------
-    # FSM transitions (centralized)
-    # ---------------------------------------------------------------------
-
-    async def _set_ws_state(self, new_state: WSState, *, reason: str) -> None:
-        if self._ws_state == new_state:
-            return
-        self._ws_state = new_state
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="ws_state_transition",
-            payload_obj={"new": new_state.value, "reason": reason},
-        )
-
-    async def _set_conv_state(self, new_state: ConvState, *, reason: str) -> None:
-        if self._conv_state == new_state:
-            return
-        self._conv_state = new_state
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="conv_state_transition",
-            payload_obj={"new": new_state.value, "reason": reason},
-        )
-
-    # ---------------------------------------------------------------------
-    # Session lifecycle
-    # ---------------------------------------------------------------------
+    def state(self) -> TurnState:
+        return self._state
 
     async def start(self) -> None:
-        await self._set_ws_state(WSState.OPEN, reason="ws_accepted")
-        await self._send_config()
-        await self._send_update_agent()
-
-        # Keepalive ping loop is optional, but enabled for auto_reconnect.
-        if self._config.retell_auto_reconnect:
-            self._ping_task = asyncio.create_task(self._ping_loop())
-
-        # Idle watchdog (no inbound traffic).
-        self._reset_idle_watchdog()
-
-        # BEGIN response_id=0.
-        if self._config.speak_first:
-            await self._send_begin_greeting()
-        else:
-            # Empty terminal response: wait for user.
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=0,
-                    content="",
-                    content_complete=True,
-                )
-            )
-
-    async def run(self) -> None:
-        await self.start()
-        while not self._shutdown_evt.is_set():
-            if self._conv_state == ConvState.ENDED:
-                break
-
-            # Deterministic priority: always process inbound socket events before turn outputs.
-            if self._inbound_q.qsize() > 0:
-                try:
-                    item = await self._inbound_q.get_prefer(self._is_control_inbound)
-                except QueueClosed:
-                    await self.end_session(reason="queue_closed")
-                    return
-                await self._dispatch_item(item)
-                continue
-
-            if self._turn_output_q is not None and self._turn_output_q.qsize() > 0:
-                try:
-                    out = self._turn_output_q.get_nowait()
-                except asyncio.QueueEmpty:
-                    out = None
-                if out is not None:
-                    await self._handle_turn_output(out)
-                    continue
-            if self._spec_out_q.qsize() > 0:
-                try:
-                    res = self._spec_out_q.get_nowait()
-                except asyncio.QueueEmpty:
-                    res = None
-                if res is not None:
-                    self._spec_result = res
-                    continue
-
-            # Both empty: wait for either.
-            inbound_task = asyncio.create_task(self._inbound_q.get_prefer(self._is_control_inbound))
-            turn_task: Optional[asyncio.Task[TurnOutput]] = None
-            if self._turn_output_q is not None:
-                turn_task = asyncio.create_task(self._turn_output_q.get())
-            spec_task = asyncio.create_task(self._spec_out_q.get())
-
-            done, pending = await asyncio.wait(
-                {t for t in [inbound_task, turn_task, spec_task] if t is not None},
-                return_when=asyncio.FIRST_COMPLETED,
-            )
-            for p in pending:
-                p.cancel()
-            if pending:
-                # Prevent "Task exception was never retrieved" warnings during shutdown races.
-                await asyncio.gather(*pending, return_exceptions=True)
-
-            # If multiple complete simultaneously, dispatch inbound first deterministically.
-            items: list[Any] = []
-            for t in done:
-                exc = t.exception()
-                if exc is not None:
-                    if isinstance(exc, QueueClosed):
-                        await self.end_session(reason="queue_closed")
-                        return
-                    raise exc
-                items.append(t.result())
-
-            # Stable ordering: TransportClosed > inbound events > turn outputs.
-            for item in items:
-                if isinstance(item, TransportClosed):
-                    await self.end_session(reason=item.reason)
-                    return
-            for item in items:
-                if not isinstance(item, TurnOutput):
-                    if isinstance(item, SpeculativeResult):
-                        self._spec_result = item
-                        continue
-                    await self._dispatch_item(item)
-            for item in items:
-                if isinstance(item, TurnOutput):
-                    await self._handle_turn_output(item)
-
-    async def _dispatch_item(self, item: Any) -> None:
-        if isinstance(item, TransportClosed):
-            await self.end_session(reason=item.reason)
+        if self._running:
             return
-        await self._handle_inbound_event(item)
+        self._running = True
+        self._loop_task = asyncio.create_task(self._run())
+        await self._emit_json(
+            {
+                "type": "session.started",
+                "session_id": self.session_id,
+                "effective_config": self.config.model_dump(),
+            }
+        )
+        await self._set_state(TurnState.IDLE, reason="session_start")
 
-    async def end_session(self, *, reason: str) -> None:
-        if self._conv_state == ConvState.ENDED:
+    async def stop(self) -> None:
+        if not self._running:
             return
-        safe_reason = "".join(ch if (ch.isalnum() or ch in "._-") else "_" for ch in str(reason))
-        self._metrics.inc(f"{VIC['ws_close_reason_total']}.{safe_reason}", 1)
+        self._running = False
+        if self._agent_task is not None:
+            self._cancel_agent.set()
+            self._agent_task.cancel()
+        if self._loop_task is not None:
+            self._loop_task.cancel()
+            await asyncio.gather(self._loop_task, return_exceptions=True)
+        await self._set_state(TurnState.ENDED, reason="session_end")
 
-        await self._set_conv_state(ConvState.ENDED, reason=reason)
-        await self._set_ws_state(WSState.CLOSING, reason=reason)
-
-        # Cancel turn handler.
-        if self._turn_task is not None:
-            self._turn_task.cancel()
-            self._turn_task = None
-        self._turn_output_q = None
-
-        await self._cancel_speculative_planning()
-
-        # Stop watchdogs.
-        if self._idle_task is not None:
-            self._idle_task.cancel()
-            self._idle_task = None
-        if self._ping_task is not None:
-            self._ping_task.cancel()
-            self._ping_task = None
-
-        # Close queues (unblock reader/writer).
-        await self._inbound_q.close()
-        await self._outbound_q.close()
-
-        self._shutdown_evt.set()
-        await self._set_ws_state(WSState.CLOSED, reason=reason)
-
-    # ---------------------------------------------------------------------
-    # Inbound handlers
-    # ---------------------------------------------------------------------
-
-    async def _handle_inbound_event(self, ev: Any) -> None:
-        # Terminal means terminal.
-        if self._conv_state == ConvState.ENDED:
-            return
-
-        self._reset_idle_watchdog()
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="inbound_event",
-            payload_obj=getattr(ev, "model_dump", lambda: {"type": type(ev).__name__})(),
-        )
-
-        if isinstance(ev, InboundPingPong):
-            if self._config.retell_auto_reconnect:
-                await self._enqueue_outbound(
-                    OutboundPingPong(response_type="ping_pong", timestamp=ev.timestamp)
-                )
-            return
-
-        if isinstance(ev, InboundCallDetails):
-            # No-op for now; call details are for tools/policy enrichment.
-            return
-
-        if isinstance(ev, InboundUpdateOnly):
-            self._update_transcript(ev.transcript)
-            has_pending_speech = False
-
-            if (
-                ev.turntaking == "agent_turn"
-                and self._config.interrupt_pre_ack_on_agent_turn_enabled
-                and self._config.conversation_profile == "b2b"
-                and self._conv_state == ConvState.LISTENING
-                and self._pre_ack_sent_for_epoch != self._epoch
-            ):
-                self._interrupt_id += 1
-                self._pre_ack_sent_for_epoch = self._epoch
-                await self._enqueue_outbound(
-                    OutboundAgentInterrupt(
-                        response_type="agent_interrupt",
-                        interrupt_id=self._interrupt_id,
-                        content="",
-                        content_complete=True,
-                        no_interruption_allowed=False,
-                    ),
-                    priority=95,
-                )
-            if ev.turntaking == "user_turn":
-                # Under transport backpressure the writer may still have queued speech even if the
-                # conversation FSM has already transitioned back to LISTENING. Treat "user_turn"
-                # as a barge-in hint whenever there are pending non-terminal response frames.
-                has_pending_speech = await self._outbound_q.any_where(
-                    lambda env: env.epoch == self._epoch
-                    and str(getattr(env.msg, "response_type", "")) == "response"
-                    and not bool(getattr(env.msg, "content_complete", False))
-                )
-
-            if ev.turntaking == "user_turn" and (self._conv_state == ConvState.SPEAKING or has_pending_speech):
-                # Barge-in hint: stop speaking immediately, close current stream with terminal.
-                t0 = self._clock.now_ms()
-                # Speak-generation gate: invalidate any already-queued chunks for this epoch.
-                new_speak_gen = self._gate_ref.bump_speak_gen()
-                dropped = await self._outbound_q.drop_where(
-                    lambda env: env.epoch == self._epoch
-                    and env.speak_gen is not None
-                    and env.speak_gen != int(new_speak_gen)
-                )
-                if dropped > 0:
-                    self._metrics.inc(VIC["stale_segment_dropped_total"], int(dropped))
-                await self._cancel_turn(reason="barge_in_hint")
-                await self._enqueue_outbound(
-                    OutboundResponse(
-                        response_type="response",
-                        response_id=self._epoch,
-                        content="",
-                        content_complete=True,
-                    ),
-                    epoch=self._epoch,
-                    speak_gen=int(new_speak_gen),
-                    priority=100,
-                )
-                await self._set_conv_state(ConvState.LISTENING, reason="barge_in_hint")
-                self._needs_apology = True
-                self._metrics.observe(VIC["barge_in_cancel_latency_ms"], self._clock.now_ms() - t0)
-                return
-
-            # Backchannel note:
-            # Retell's recommended backchanneling is configured at the agent level
-            # (enable_backchannel/backchannel_frequency/backchannel_words). Server-generated
-            # backchannels via `agent_interrupt` are experimental and OFF by default because
-            # `agent_interrupt` is an explicit interruption mechanism.
-            #
-            # Even if enabled, we do not emit `agent_interrupt` while turntaking == user_turn
-            # or during sensitive capture, to avoid overtalk.
-            if self._backchannel is not None and self._conv_state == ConvState.LISTENING:
-                # Maintain classifier state deterministically, but do not emit.
-                last_user = ""
-                for u in reversed(ev.transcript):
-                    if getattr(u, "role", "") == "user":
-                        last_user = getattr(u, "content", "") or ""
-                        break
-                _ = self._backchannel.consider(
-                    now_ms=self._clock.now_ms(),
-                    user_text=last_user,
-                    user_turn=bool(ev.turntaking == "user_turn"),
-                    sensitive_capture=self._is_sensitive_capture(),
-                )
-
-            if self._config.speculative_planning_enabled:
-                await self._maybe_start_speculative_planning(ev)
-            return
-
-        if isinstance(ev, (InboundResponseRequired, InboundReminderRequired)):
-            await self._on_response_required(ev)
-            return
-
-    async def _on_response_required(self, ev: InboundResponseRequired | InboundReminderRequired) -> None:
-        last_stage = str(self._slot_state.b2b_funnel_stage or "OPEN")
-
-        await self._cancel_speculative_planning(keep_result=True)
-        new_epoch = int(ev.response_id)
-        was_speaking = self._conv_state == ConvState.SPEAKING
-
-        # Atomically bump epoch.
-        self._epoch = new_epoch
-        self._pre_ack_sent_for_epoch = -1
-        self._gate_ref.set_epoch(new_epoch)
-        self._turn_rt = TurnRuntime(epoch=new_epoch, finalized_ms=self._clock.now_ms())
-
-        if was_speaking:
-            self._needs_apology = True
-
-        await self._cancel_turn(reason="new_epoch")
-
-        # Drop stale turn-bound messages queued for older epochs.
-        dropped = await self._outbound_q.drop_where(
-            lambda env: env.epoch is not None and env.epoch != self._epoch
-        )
-        if dropped > 0:
-            self._metrics.inc(VIC["stale_segment_dropped_total"], int(dropped))
-
-        # Update transcript snapshot (bounded).
-        self._update_transcript(ev.transcript)
-
-        await self._set_conv_state(ConvState.PROCESSING, reason="response_required")
-
-        # Compute safety + dialogue action (mutates slot state inside orchestrator only).
-        last_user = ""
-        for u in reversed(ev.transcript):
-            if u.role == "user":
-                last_user = u.content or ""
-                break
-        normalized_last_user = self._normalized_b2b_user_signature(last_user)
-        low_signal = self._looks_like_low_signal(last_user)
-        b2b_repeated_low_signal = False
-        b2b_repeated_empty_or_noise = False
-        if self._config.conversation_profile == "b2b":
-            same_stage = str(self._slot_state.b2b_last_stage or "OPEN") == last_stage
-            last_signal = str(self._slot_state.b2b_last_signal or "")
-            last_signature = str(self._slot_state.b2b_last_user_signature or "")
-            b2b_repeated_low_signal = (
-                bool(normalized_last_user)
-                and normalized_last_user == str(self._slot_state.b2b_last_user_signature or "")
-                and str(self._slot_state.b2b_last_signal or "") in {"NO_SIGNAL", "NEW_CALL"}
-                and str(self._slot_state.b2b_last_stage or "OPEN") == last_stage
-            )
-            b2b_repeated_empty_or_noise = (
-                not bool((last_user or "").strip())
-                and same_stage
-                and last_signal in {"NO_SIGNAL", "NEW_CALL", ""}
-                and (not last_signature or normalized_last_user == last_signature)
-            )
-
-        # Reminder handling: if Retell asks for a reminder but we have no user utterance yet,
-        # do not speak. Complete the epoch with an empty terminal chunk to avoid accidental overtalk.
-        if isinstance(ev, InboundReminderRequired) and not (last_user or "").strip():
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    content="",
-                    content_complete=True,
-                ),
-                priority=95,
-            )
-            await self._set_conv_state(ConvState.LISTENING, reason="reminder_no_user_silence")
-            return
-
-        # Fast-path silence/noise handling for B2B:
-        # ambient turns do not progress the state and should never emit opener/ack.
-        if self._config.conversation_profile == "b2b" and low_signal and (
-            b2b_repeated_low_signal or b2b_repeated_empty_or_noise
-        ):
-            self._slot_state.b2b_last_stage = last_stage
-            self._slot_state.b2b_last_signal = "NO_SIGNAL"
-            self._slot_state.b2b_last_user_signature = normalized_last_user
-            self._slot_state.b2b_no_signal_streak = int(self._slot_state.b2b_no_signal_streak or 0) + 1
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    content="",
-                    content_complete=True,
-                    no_interruption_allowed=False,
-                ),
-                priority=95,
-            )
-            await self._set_conv_state(ConvState.LISTENING, reason="low_signal_noop")
-            return
-
-        if self._config.conversation_profile == "b2b" and low_signal:
-            self._slot_state.b2b_last_stage = last_stage
-            self._slot_state.b2b_last_signal = "NO_SIGNAL"
-            self._slot_state.b2b_last_user_signature = normalized_last_user
-            self._slot_state.b2b_no_signal_streak = int(self._slot_state.b2b_no_signal_streak or 0) + 1
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    content="",
-                    content_complete=True,
-                    no_interruption_allowed=False,
-                ),
-                priority=95,
-            )
-            await self._set_conv_state(ConvState.LISTENING, reason="low_signal_noop")
-            return
-
-        await self._trace.emit(
-            event_type="timing_marker",
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            payload_obj={"phase": "policy_decision_start_ms"},
-        )
-        decision_start_ms = self._clock.now_ms()
-        safety = evaluate_user_text(
-            last_user,
-            clinic_name=self._config.clinic_name,
-            profile=self._config.conversation_profile,
-            b2b_org_name=self._config.b2b_org_name,
-        )
-        action = decide_action(
-            state=self._slot_state,
-            transcript=ev.transcript,
-            needs_apology=self._needs_apology,
-            safety_kind=safety.kind,
-            safety_message=safety.message,
-            profile=self._config.conversation_profile,
-        )
-
-        no_progress = bool(action.action_type == "Noop" and action.payload.get("no_progress", False))
-        stage_unchanged = (
-            self._config.conversation_profile == "b2b"
-            and str(self._slot_state.b2b_funnel_stage or "OPEN") == last_stage
-        )
-        is_low_signal_input = low_signal
-        is_noise_noop = (
-            no_progress
-            and bool(action.payload.get("message", "") == "")
-            and bool(action.payload.get("no_signal", False))
-        )
-
-        # Additional hard short-circuit to suppress repeated ambient/noise turns quickly.
-        if self._config.conversation_profile == "b2b" and is_low_signal_input and no_progress:
-            action.payload["skip_ack"] = True
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    content="",
-                    content_complete=True,
-                    no_interruption_allowed=False,
-                ),
-                priority=95,
-            )
-            await self._set_conv_state(ConvState.LISTENING, reason="no_progress_noop")
-            return
-
-        if no_progress and (is_noise_noop or is_low_signal_input or stage_unchanged or not (last_user or "").strip()):
-            action.payload["skip_ack"] = True
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    content="",
-                    content_complete=True,
-                    no_interruption_allowed=False,
-                ),
-                priority=95,
-            )
-            await self._set_conv_state(ConvState.LISTENING, reason="no_progress_noop")
-            return
-
-        if action.action_type == "Noop":
-            action.payload["skip_ack"] = True
-
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="timing_marker",
-            payload_obj={
-                "phase": "policy_decision_ms",
-                "duration_ms": self._clock.now_ms() - int(decision_start_ms),
-            },
-        )
-
-        # Ultra-fast pre-ack: emit only for turns that should advance the conversation.
-        pre_ack_sent = False
-        has_meaningful_message = bool(str(action.payload.get("message", "") or "").strip())
-        if (
-            isinstance(ev, InboundResponseRequired)
-            and action.action_type != "Noop"
-            and not bool(action.payload.get("no_progress", False))
-            and not bool(action.payload.get("no_signal", False))
-            and has_meaningful_message
-            and self._config.safe_pre_ack_on_response_required_enabled
-            and self._config.conversation_profile == "clinic"
-            and (last_user or "").strip()
-            and self._pre_ack_sent_for_epoch != self._epoch
-        ):
-            self._pre_ack_sent_for_epoch = self._epoch
-            pre_ack_sent = True
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    # Minimal pre-ack to keep latency low without repeated ack loop patterns.
-                    content="",
-                    content_complete=False,
-                    no_interruption_allowed=False,
-                ),
-                priority=96,
-            )
-            await self._trace.emit(
-                t_ms=self._clock.now_ms(),
-                session_id=self._session_id,
-                call_id=self._call_id,
-                turn_id=self._epoch,
-                epoch=self._epoch,
-                ws_state=self._ws_state.value,
-                conv_state=self._conv_state.value,
-                event_type="timing_marker",
-                payload_obj={"phase": "pre_ack_enqueued"},
-            )
-        if pre_ack_sent:
-            # Avoid sending two ACK-style chunks back-to-back (pre-ack + TurnHandler ACK).
-            action.payload["skip_ack"] = True
-
-        objection = detect_objection(last_user)
-        if objection is not None:
-            self._metrics.inc(VIC["moat_objection_pattern_total"], 1)
-        playbook = apply_playbook(
-            action=action,
-            objection=objection,
-            prior_attempts=int(self._slot_state.reprompts.get("dt", 0)),
-            profile=self._config.conversation_profile,
-        )
-        action = playbook.action
-        if playbook.applied:
-            self._metrics.inc(VIC["moat_playbook_hit_total"], 1)
-        if self._memory_summary:
-            action.payload["memory_summary"] = self._memory_summary
-        if safety.kind == "identity":
-            # Identity responses disclose what we are; do not double-disclose in the ACK.
-            self._disclosure_sent = True
-        elif (
-            self._config.conversation_profile == "clinic"
-            or self._config.b2b_auto_disclosure
-        ) and not self._disclosure_sent:
-            action.payload["disclosure_required"] = True
-            self._disclosure_sent = True
-        reprompt_count = action.payload.get("reprompt_count")
-        if isinstance(reprompt_count, int) and reprompt_count > 1:
-            self._metrics.inc(VIC["reprompts_total"], 1)
-
-        outcome = CallOutcome(
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            intent=str(self._slot_state.intent or "unknown"),
-            action_type=str(action.action_type),
-            objection=objection,
-            offered_slots_count=int(len(action.payload.get("offered_slots", []) or [])),
-            accepted=bool(action.payload.get("accepted", False)),
-            escalated=bool(action.action_type in {"EscalateSafety", "Transfer"}),
-            drop_off_point=str(action.payload.get("drop_off_point", "")),
-            t_ms=self._clock.now_ms(),
-        )
-        self._outcomes.append(outcome)
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="call_outcome",
-            payload_obj=outcome.to_payload(),
-        )
-        if await self._emit_fast_path_plan(action=action):
-            await self._set_conv_state(ConvState.LISTENING, reason="fast_path_complete")
-            return
-        # Apology is one-shot.
-        self._needs_apology = False
-
-        prefetched_tool_records: list[ToolCallRecord] = []
-        if self._spec_result is not None:
-            tkey = self._transcript_key(ev.transcript)
-            req_key = self._tool_req_key(action.tool_requests)
-            if self._spec_result.transcript_key == tkey and self._spec_result.tool_req_key == req_key:
-                prefetched_tool_records = list(self._spec_result.tool_records or [])
-                self._metrics.inc("speculative.used_total", 1)
-            self._spec_result = None
-
-        # Start turn handler for this epoch.
-        self._turn_output_q = asyncio.Queue(maxsize=self._config.turn_queue_max)
-        handler = TurnHandler(
-            session_id=self._session_id,
-            call_id=self._call_id,
-            epoch=self._epoch,
-            turn_id=self._epoch,
-            action=action,
-            config=self._config,
-            clock=self._clock,
-            metrics=self._metrics,
-            tools=self._tools,
-            llm=(self._llm if self._config.use_llm_nlg else None),
-            output_q=self._turn_output_q,
-            prefetched_tool_records=prefetched_tool_records,
-            trace=self._trace,
-        )
-        self._turn_task = asyncio.create_task(handler.run())
-        # Yield once to allow the newly spawned turn handler to enqueue an early ACK plan promptly.
-        await asyncio.sleep(0)
-
-    def _b2b_state_signature(self) -> str:
-        s = self._slot_state
-        return "|".join(
-            [
-                str(s.b2b_funnel_stage),
-                str(s.b2b_last_stage),
-                str(s.b2b_last_signal),
-                str(s.b2b_no_signal_streak),
-                str(s.b2b_autonomy_mode),
-                str(s.question_depth),
-                str(s.objection_pressure),
-                str(s.reprompts.get("b2b_close_request", 0)),
-                str(s.reprompts.get("b2b_bad_time", 0)),
-                str(int(self._disclosure_sent)),
-            ]
-        )
-
-    def _b2b_slot_signature(self) -> str:
-        s = self._slot_state
-        payload = "|".join(
-            [
-                str(s.b2b_funnel_stage),
-                str(s.b2b_last_stage),
-                str(s.b2b_autonomy_mode),
-                str(s.question_depth),
-                str(s.objection_pressure),
-                str(s.reprompts.get("b2b_close_request", 0)),
-                str(s.reprompts.get("b2b_bad_time", 0)),
-                str(s.b2b_last_signal),
-                str(s.b2b_no_signal_streak),
-                str(bool(s.manager_email)),
-                str(int(self._disclosure_sent)),
-            ]
-        )
-        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
-
-    async def _emit_fast_path_plan(self, *, action: DialogueAction) -> bool:
-        if self._config.conversation_profile != "b2b":
-            return False
-        if action.action_type == "Noop":
-            return False
-        if action.tool_requests:
-            return False
-        if not bool(action.payload.get("fast_path", False)):
-            return False
-        if action.payload.get("message") is None:
-            return False
-
-        stage = str(self._slot_state.b2b_funnel_stage)
-        state_id = self._b2b_state_signature()
-        slot_signature = self._b2b_slot_signature()
-        intent_sig = str(action.payload.get("intent_signature", ""))
-        if not intent_sig:
-            return False
-
-        msg = str(action.payload.get("message") or "").strip()
-        if not msg:
-            return False
-
-        if action.action_type == "EndCall":
-            reason: PlanReason = "CONTENT"
-        elif action.action_type == "Inform":
-            reason = "CONTENT"
-        elif action.action_type == "Ask":
-            reason = "CLARIFY"
-        elif action.action_type == "Confirm":
-            reason = "CONFIRM"
-        elif action.action_type == "Repair":
-            reason = "REPAIR"
-        elif action.action_type == "Transfer":
-            reason = "ERROR"
-        elif action.action_type == "EscalateSafety":
-            reason = "ERROR"
-        else:
-            reason = "CONTENT"
-
-        cache_key = (stage, state_id, slot_signature, intent_sig)
-        cached = self._fast_plan_cache.get(cache_key)
-        plan_build_start_ms = self._clock.now_ms()
-        await self._trace.emit(
-            event_type="timing_marker",
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            payload_obj={
-                "phase": "speech_plan_build_start_ms",
-                "intent_signature": intent_sig,
-                "slot_signature": slot_signature,
-            },
-        )
-        segments: tuple[SpeechSegment, ...]
-        cache_hit = False
-        if cached is not None and cached[0] == reason:
-            _, cached_segments, cached_disclosure = cached
-            self._fast_plan_cache.move_to_end(cache_key)
-            segments = cached_segments
-            disclosure_included = cached_disclosure
-            cache_hit = True
-        else:
-            purpose = reason
-            segments = tuple(
-                micro_chunk_text_cached(
-                    text=msg,
-                    max_expected_ms=self._config.vic_max_segment_expected_ms,
-                    pace_ms_per_char=self._config.pace_ms_per_char,
-                    purpose=purpose,
-                    interruptible=True,
-                    requires_tool_evidence=False,
-                    tool_evidence_ids=[],
-                    max_monologue_expected_ms=self._config.vic_max_monologue_expected_ms,
-                    markup_mode=self._config.speech_markup_mode,
-                    dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                    digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                    dash_pause_scope=self._config.dash_pause_scope,
-                    slot_snapshot_signature=slot_signature,
-                    intent_signature=intent_sig,
-                )
-            )
-            disclosure_included = bool(action.payload.get("disclosure_required", False))
-            self._fast_plan_cache[cache_key] = (reason, segments, disclosure_included)
-            while len(self._fast_plan_cache) > self._fast_plan_cache_max:
-                self._fast_plan_cache.popitem(last=False)
-
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="timing_marker",
-            payload_obj={
-                "phase": "speech_plan_build_ms",
-                "purpose": reason,
-                "segments": len(segments),
-                "intent_signature": intent_sig,
-                "slot_signature": slot_signature,
-                "duration_ms": self._clock.now_ms() - int(plan_build_start_ms),
-                "cached": cache_hit,
-            },
-        )
-        return await self._emit_fast_path_from_segments(
-            action=action,
-            segments=segments,
-            reason=reason,
-            disclosure_included=disclosure_included,
-        )
-
-    def _transcript_key(self, transcript: list[Any]) -> str:
-        last_user = ""
-        for u in reversed(transcript):
-            if getattr(u, "role", "") == "user":
-                last_user = getattr(u, "content", "") or ""
-                break
-        payload = f"{len(transcript)}|{last_user.strip().lower()}"
-        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
-
-    def _tool_req_key(self, reqs: list[Any]) -> str:
-        parts: list[str] = []
-        for r in reqs or []:
-            name = str(getattr(r, "name", ""))
-            args = getattr(r, "arguments", {}) or {}
+    async def submit_control(self, msg: dict[str, Any]) -> None:
+        if self._control_in_q.full():
             try:
-                args_json = json.dumps(args, separators=(",", ":"), sort_keys=True)
-            except Exception:
-                args_json = "{}"
-            parts.append(f"{name}:{args_json}")
-        return "|".join(parts)
-
-    async def _cancel_speculative_planning(self, *, keep_result: bool = False) -> None:
-        if self._spec_task is not None:
-            self._spec_task.cancel()
-            self._spec_task = None
-        last: Optional[SpeculativeResult] = None
-        while True:
-            try:
-                last = self._spec_out_q.get_nowait()
+                _ = self._control_in_q.get_nowait()
             except asyncio.QueueEmpty:
-                break
-        if keep_result and last is not None:
-            self._spec_result = last
+                pass
+        await self._control_in_q.put(msg)
 
-    async def _maybe_start_speculative_planning(self, ev: InboundUpdateOnly) -> None:
-        if self._config.conversation_profile == "b2b":
-            # B2B has a deterministic, mostly non-tooling objection path; skip speculative
-            # policy precompute to avoid needless work before the real response turn.
-            return
-        if self._conv_state != ConvState.LISTENING:
-            return
-        if ev.turntaking not in (None, "user_turn"):
-            return
-        tkey = self._transcript_key(ev.transcript)
-        if tkey == self._spec_transcript_key and self._spec_task is not None and not self._spec_task.done():
-            return
-        self._spec_transcript_key = tkey
-        await self._cancel_speculative_planning(keep_result=False)
+    async def submit_audio(self, frame: bytes) -> None:
+        if len(self._audio_in_q) >= self._audio_in_q.maxlen:
+            self._audio_in_q.popleft()
+            self.metrics.inc(METRIC_KEYS["audio_in_dropped_total"], 1)
+        self._audio_in_q.append(bytes(frame))
 
-        async def _speculate() -> None:
+    async def next_outbound(self) -> OutboundEvent:
+        # Control plane always wins.
+        if not self._control_out_q.empty():
+            return OutboundEvent(kind="json", payload=await self._control_out_q.get())
+        if self._audio_out_q:
+            return OutboundEvent(kind="audio", payload=self._audio_out_q.popleft())
+
+        # Wait for whichever queue gets data first, but prefer control if both.
+        wait_task = asyncio.create_task(self._control_out_q.get())
+        while True:
+            if self._audio_out_q:
+                wait_task.cancel()
+                await asyncio.gather(wait_task, return_exceptions=True)
+                return OutboundEvent(kind="audio", payload=self._audio_out_q.popleft())
+            if wait_task.done():
+                return OutboundEvent(kind="json", payload=wait_task.result())
+            await asyncio.sleep(0)
+
+    async def _run(self) -> None:
+        try:
+            while self._running:
+                handled = False
+                if not self._control_in_q.empty():
+                    msg = await self._control_in_q.get()
+                    await self._handle_control(msg)
+                    handled = True
+
+                if self._audio_in_q:
+                    frame = self._audio_in_q.popleft()
+                    await self._handle_audio(frame)
+                    handled = True
+
+                if not handled:
+                    await asyncio.sleep(0)
+        except asyncio.CancelledError:
+            return
+
+    async def _handle_control(self, msg: dict[str, Any]) -> None:
+        try:
+            ev = parse_client_control(msg)
+        except (ValidationError, ValueError) as e:
+            await self._emit_json({"type": "error", "code": "BAD_CONTROL", "message": str(e)})
+            return
+
+        if isinstance(ev, SessionStart):
+            if ev.session_id != self.session_id:
+                await self._emit_json(
+                    {
+                        "type": "error",
+                        "code": "SESSION_ID_MISMATCH",
+                        "message": "session_id does not match websocket route",
+                    }
+                )
+                return
+            self.config = ev.config
+            self._apply_runtime_config()
+            await self._emit_json(
+                {
+                    "type": "session.started",
+                    "session_id": self.session_id,
+                    "effective_config": self.config.model_dump(),
+                }
+            )
+            return
+
+        if isinstance(ev, ConfigUpdate):
+            patch = dict(ev.config_patch)
+            merged = self.config.model_dump()
+            merged.update(patch)
             try:
-                await self._clock.sleep_ms(int(self._config.speculative_debounce_ms))
-                if self._shutdown_evt.is_set() or self._conv_state != ConvState.LISTENING:
-                    return
-
-                spec_state = SlotState(
-                    intent=self._slot_state.intent,
-                    patient_name=self._slot_state.patient_name,
-                    phone=self._slot_state.phone,
-                    phone_confirmed=self._slot_state.phone_confirmed,
-                    requested_dt=self._slot_state.requested_dt,
-                    requested_dt_confirmed=self._slot_state.requested_dt_confirmed,
-                    reprompts=dict(self._slot_state.reprompts or {}),
-                    b2b_funnel_stage=self._slot_state.b2b_funnel_stage,
-                    b2b_autonomy_mode=self._slot_state.b2b_autonomy_mode,
-                    question_depth=int(self._slot_state.question_depth or 1),
-                    objection_pressure=int(self._slot_state.objection_pressure or 0),
-                )
-
-                last_user = ""
-                for u in reversed(ev.transcript):
-                    if getattr(u, "role", "") == "user":
-                        last_user = getattr(u, "content", "") or ""
-                        break
-                safety = evaluate_user_text(
-                    last_user,
-                    clinic_name=self._config.clinic_name,
-                    profile=self._config.conversation_profile,
-                    b2b_org_name=self._config.b2b_org_name,
-                )
-                action = decide_action(
-                    state=spec_state,
-                    transcript=ev.transcript,
-                    needs_apology=False,
-                    safety_kind=safety.kind,
-                    safety_message=safety.message,
-                    profile=self._config.conversation_profile,
-                )
-                objection = detect_objection(last_user)
-                playbook = apply_playbook(
-                    action=action,
-                    objection=objection,
-                    prior_attempts=int(spec_state.reprompts.get("dt", 0)),
-                    profile=self._config.conversation_profile,
-                )
-                action = playbook.action
-
-                tool_records: list[ToolCallRecord] = []
-                if self._config.speculative_tool_prefetch_enabled and action.tool_requests:
-                    timeout_ms = max(
-                        1,
-                        min(
-                            int(self._config.vic_tool_timeout_ms),
-                            int(self._config.speculative_tool_prefetch_timeout_ms),
-                        ),
-                    )
-                    started = self._clock.now_ms()
-                    for req in action.tool_requests:
-                        rec = await self._tools.invoke(
-                            name=req.name,
-                            arguments=req.arguments,
-                            timeout_ms=timeout_ms,
-                            started_at_ms=started,
-                            emit_invocation=None,
-                            emit_result=None,
-                        )
-                        tool_records.append(rec)
-
-                res = SpeculativeResult(
-                    transcript_key=tkey,
-                    tool_req_key=self._tool_req_key(action.tool_requests),
-                    tool_records=tool_records,
-                    created_at_ms=self._clock.now_ms(),
-                )
-                while self._spec_out_q.qsize() > 0:
-                    try:
-                        _ = self._spec_out_q.get_nowait()
-                    except asyncio.QueueEmpty:
-                        break
-                self._metrics.inc("speculative.plans_total", 1)
-                self._spec_out_q.put_nowait(res)
-            except asyncio.CancelledError:
+                self.config = RuntimeConfig.model_validate(merged)
+            except ValidationError as e:
+                await self._emit_json({"type": "error", "code": "BAD_CONFIG", "message": str(e)})
                 return
-            except Exception:
+            self._apply_runtime_config()
+            await self._emit_json(
+                {
+                    "type": "session.started",
+                    "session_id": self.session_id,
+                    "effective_config": self.config.model_dump(),
+                }
+            )
+            return
+
+        if isinstance(ev, UserTurnEnd):
+            await self._finalize_user_turn(force=True)
+            return
+
+        if isinstance(ev, Ping):
+            await self._emit_json({"type": "pong", "ts_ms": ev.ts_ms})
+            return
+
+    async def _handle_audio(self, frame: bytes) -> None:
+        now = self.clock.now_ms()
+        has_speech = self.vad.is_speech(frame)
+        prosody = self.prosody.ingest(frame, has_speech=has_speech)
+
+        # Always feed ASR first for transcript stream.
+        asr_results = await self.asr.ingest_audio(frame=frame, has_speech=has_speech, now_ms=now)
+        for res in asr_results:
+            await self._emit_json(
+                {
+                    "type": "transcript.final" if res.is_final else "transcript.partial",
+                    "text": res.text,
+                    "stability": res.stability,
+                    "ts_ms": now,
+                }
+            )
+            if res.is_final:
+                self._pending_final_text = res.text
+
+        ev = self.turn_manager.on_audio(has_speech=has_speech, now_ms=now, prosody=prosody)
+        if ev == "barge_in":
+            await self._handle_barge_in()
+            return
+        if ev == "turn_timeout_prompt":
+            await self._emit_timeout_prompt()
+            return
+        if ev == "eou_detected":
+            await self._finalize_user_turn(force=False)
+            self.metrics.observe(METRIC_KEYS["eou_detection_ms"], now)
+
+    async def _emit_timeout_prompt(self) -> None:
+        txt = "Are you still there?"
+        await self._emit_json({"type": "soft_timeout.filler", "turn_id": self._turn_id, "text": txt})
+        await self._speak_text(txt, turn_id=self._turn_id, reason="turn_timeout")
+
+    async def _finalize_user_turn(self, *, force: bool) -> None:
+        final = self._pending_final_text
+        if not final:
+            res = await self.asr.force_finalize()
+            if res is not None:
+                final = res.text
+                await self._emit_json({"type": "transcript.final", "text": final, "ts_ms": self.clock.now_ms()})
+        if not final:
+            return
+
+        self._pending_final_text = ""
+        self._turn_id += 1
+        await self._set_state(TurnState.AGENT_THINKING, reason="final_transcript")
+
+        if self._agent_task is not None and not self._agent_task.done():
+            self._cancel_agent.set()
+            self._agent_task.cancel()
+            await asyncio.gather(self._agent_task, return_exceptions=True)
+
+        self._cancel_agent = asyncio.Event()
+        self._soft_filler_spoken_turn = None
+        self._agent_task = asyncio.create_task(self._run_agent_turn(final, self._turn_id))
+
+    async def _run_agent_turn(self, user_text: str, turn_id: int) -> None:
+        chunker = SpeakableChunker(min_words=4)
+        first_token_ts: Optional[int] = None
+        first_audio_ts: Optional[int] = None
+        got_speakable = False
+
+        async def maybe_soft_timeout_filler() -> None:
+            if not self.config.soft_timeout_enabled:
                 return
+            await self.clock.sleep_ms(int(self.config.soft_timeout_sec * 1000))
+            if self._cancel_agent.is_set():
+                return
+            if got_speakable:
+                return
+            if self._soft_filler_spoken_turn == turn_id:
+                return
+            self._soft_filler_spoken_turn = turn_id
+            self.metrics.inc(METRIC_KEYS["soft_timeout_trigger_total"], 1)
+            filler = "One sec while I pull that up."
+            await self._emit_json({"type": "soft_timeout.filler", "turn_id": turn_id, "text": filler})
+            await self._speak_text(filler, turn_id=turn_id, reason="soft_timeout")
 
-        self._spec_task = asyncio.create_task(_speculate())
-
-    def _update_transcript(self, transcript: list[Any]) -> None:
-        view = self._memory.ingest_snapshot(transcript=list(transcript), slot_state=self._slot_state)
-        self._transcript = list(view.recent_transcript)
-        self._memory_summary = view.summary_blob
-        if view.compacted:
-            self._metrics.inc(VIC["memory_transcript_compactions_total"], 1)
-        # "current" memory metrics are gauges, not histograms.
-        self._metrics.set(VIC["memory_transcript_chars_current"], view.chars_current)
-        self._metrics.set(VIC["memory_transcript_utterances_current"], view.utterances_current)
-
-    def _looks_like_low_signal(self, text: str) -> bool:
-        compact = re.sub(r"\s+", "", text or "")
-        compact_with_spaces = re.sub(r"\s+", " ", (text or "").strip().lower())
-        if not compact_with_spaces:
-            return True
-        if _is_intro_noise_like(compact_with_spaces):
-            return True
-        if _NO_SIGNAL_CHAR_PAT.fullmatch(compact):
-            return True
-        compact_phrase = re.sub(r"[^a-z0-9\s]", " ", compact_with_spaces)
-        compact_words = [w for w in re.sub(r"\s+", " ", compact_phrase).strip().split(" ") if w]
-        if compact_words and len(compact_words) <= 4:
-            compact_phrase = " ".join(compact_words)
-            if _NO_SIGNAL_ACK_PAT.fullmatch(compact_phrase):
-                return True
-        if _NO_SIGNAL_REPEAT_PUNCT.fullmatch(compact) and len(compact) >= 2 and not compact[0].isalnum():
-            return True
-        lower_compact = compact.lower()
-        if _NO_SIGNAL_REPEAT_PUNCT.fullmatch(lower_compact) and lower_compact in {"??", "!!", "~~", "--", "__", "..."}:
-            return True
-        return False
-
-    def _normalized_b2b_user_signature(self, text: str) -> str:
-        compact = re.sub(r"\s+", "", (text or "").strip().lower())
-        if not compact:
-            return ""
-        compact_alpha = re.sub(r"[^a-z0-9]", "", compact)
-        if not compact_alpha:
-            return compact
-        if re.fullmatch(_NO_SIGNAL_REPEAT_PUNCT, compact) and len(compact) >= 2 and not compact[0].isalnum():
-            return compact
-        return compact_alpha[:100]
-
-    def _is_sensitive_capture(self) -> bool:
-        # Conservative suppression: while collecting/confirming contact details, do not backchannel.
-        s = self._slot_state
-        if getattr(s, "intent", None) != "booking":
-            return False
-        if not getattr(s, "phone_confirmed", False):
-            return True
-        # Name repair/spelling attempts also count as sensitive capture.
-        rep = getattr(s, "reprompts", {}) or {}
-        if int(rep.get("name", 0)) > 0 or int(rep.get("name_confidence", 0)) > 0:
-            return True
-        return False
-
-    # ---------------------------------------------------------------------
-    # Turn output handlers
-    # ---------------------------------------------------------------------
-
-    async def _handle_turn_output(self, out: TurnOutput) -> None:
-        if out.epoch != self._epoch:
-            # Stale output from canceled epoch.
-            self._metrics.inc(VIC["stale_segment_dropped_total"], 1)
-            return
-
-        if out.kind == "outbound_msg":
-            await self._enqueue_outbound(out.payload)
-            return
-
-        if out.kind == "speech_plan":
-            await self._emit_speech_plan(plan=out.payload)
-            return
-
-        if out.kind == "turn_complete":
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    content="",
-                    content_complete=True,
-                )
-            )
-            await self._set_conv_state(ConvState.LISTENING, reason="turn_complete")
-            return
-
-    async def _emit_speech_plan(self, *, plan: SpeechPlan) -> None:
-        self._speech_plans.append(plan)
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="speech_plan",
-            payload_obj={
-                "plan_id": plan.plan_id,
-                "reason": plan.reason,
-                "segment_count": len(plan.segments),
-            },
-        )
-        for seg in plan.segments:
-            await self._emit_segment(seg)
-
-    async def _emit_fast_path_from_segments(
-        self,
-        *,
-        action: DialogueAction,
-        segments: tuple[SpeechSegment, ...],
-        reason: PlanReason,
-        disclosure_included: bool,
-    ) -> bool:
-        plan = build_plan(
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            created_at_ms=self._clock.now_ms(),
-            reason=reason,
-            segments=list(segments),
-            source_refs=[],
-            disclosure_included=disclosure_included,
-            metrics=self._metrics,
-        )
-        await self._emit_speech_plan(plan=plan)
-
-        if action.action_type == "EndCall" and bool(action.payload.get("end_call", False)):
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    content="",
-                    content_complete=True,
-                    end_call=True,
-                )
-            )
-        else:
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    content="",
-                    content_complete=True,
-                )
-            )
-        return True
-
-    async def _emit_segment(self, seg: SpeechSegment) -> None:
-        # Transition to speaking on first segment.
-        if self._conv_state != ConvState.SPEAKING:
-            await self._set_conv_state(ConvState.SPEAKING, reason="first_segment")
-
-        # Metrics: latency from finalization to first segment + to ACK.
-        if self._turn_rt is not None and self._turn_rt.epoch == self._epoch:
-            if self._turn_rt.first_segment_ms is None:
-                self._turn_rt.first_segment_ms = self._clock.now_ms()
-                await self._trace.emit(
-                    event_type="timing_marker",
-                    t_ms=self._clock.now_ms(),
-                    session_id=self._session_id,
-                    call_id=self._call_id,
-                    turn_id=self._epoch,
-                    epoch=self._epoch,
-                    ws_state=self._ws_state.value,
-                    conv_state=self._conv_state.value,
-                    payload_obj={
-                        "phase": "first_response_latency_ms",
-                        "duration_ms": self._turn_rt.first_segment_ms - self._turn_rt.finalized_ms,
-                    },
-                )
-                self._metrics.observe(
-                    VIC["turn_final_to_first_segment_ms"],
-                    self._turn_rt.first_segment_ms - self._turn_rt.finalized_ms,
-                )
-            if seg.purpose == "ACK" and self._turn_rt.ack_segment_ms is None:
-                self._turn_rt.ack_segment_ms = self._clock.now_ms()
-                self._metrics.observe(
-                    VIC["turn_final_to_ack_segment_ms"],
-                    self._turn_rt.ack_segment_ms - self._turn_rt.finalized_ms,
-                )
-
-        seg_hash = seg.segment_hash(epoch=self._epoch, turn_id=self._epoch)
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="speech_segment",
-            payload_obj={
-                "purpose": seg.purpose,
-                "segment_index": seg.segment_index,
-                "interruptible": seg.interruptible,
-                "safe_interrupt_point": seg.safe_interrupt_point,
-                "expected_duration_ms": seg.expected_duration_ms,
-                "requires_tool_evidence": seg.requires_tool_evidence,
-                "tool_evidence_ids": seg.tool_evidence_ids,
-            },
-            segment_hash=seg_hash,
-        )
-
-        priority = 50
-        if seg.purpose == "FILLER":
-            priority = 20
-        elif seg.purpose == "ACK":
-            priority = 40
-
-        await self._enqueue_outbound(
-            OutboundResponse(
-                response_type="response",
-                response_id=self._epoch,
-                content=seg.ssml,
-                content_complete=False,
-                no_interruption_allowed=(False if seg.interruptible else True),
-            ),
-            priority=priority,
-        )
-
-    async def _cancel_turn(self, *, reason: str) -> None:
-        old_q = self._turn_output_q
-        if self._turn_task is not None:
-            self._turn_task.cancel()
-            self._turn_task = None
-        self._turn_output_q = None
-
-        # Drain any pending turn outputs and count them as stale drops. This avoids silent queue
-        # accumulation and makes stale-drop behavior measurable/deterministic.
-        if old_q is not None:
-            while True:
-                try:
-                    _ = old_q.get_nowait()
-                except asyncio.QueueEmpty:
+        filler_task = asyncio.create_task(maybe_soft_timeout_filler())
+        started_ms = self.clock.now_ms()
+        try:
+            async for delta in self.llm.stream_text(prompt=user_text):
+                if self._cancel_agent.is_set():
                     break
-                else:
-                    self._metrics.inc(VIC["stale_segment_dropped_total"], 1)
+                if first_token_ts is None and delta.strip():
+                    first_token_ts = self.clock.now_ms()
+                    self.metrics.observe(METRIC_KEYS["first_token_latency_ms"], first_token_ts - started_ms)
 
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="turn_cancel",
-            payload_obj={"reason": reason},
-        )
+                await self._emit_json({"type": "agent.text.delta", "turn_id": turn_id, "text_delta": delta})
+                chunks = chunker.push(delta)
+                for chunk in chunks:
+                    if self._cancel_agent.is_set():
+                        break
+                    got_speakable = True
+                    if first_audio_ts is None:
+                        first_audio_ts = self.clock.now_ms()
+                        self.metrics.observe(
+                            METRIC_KEYS["first_audio_latency_ms"],
+                            first_audio_ts - started_ms,
+                        )
+                    await self._speak_text(chunk, turn_id=turn_id, reason="stream_chunk")
 
-    # ---------------------------------------------------------------------
-    # Outbound helpers + initial BEGIN
-    # ---------------------------------------------------------------------
+            tail = chunker.flush()
+            if tail and not self._cancel_agent.is_set():
+                await self._speak_text(tail, turn_id=turn_id, reason="stream_tail")
 
-    def _is_control_inbound(self, item: InboundItem) -> bool:
-        return isinstance(
-            item,
-            (TransportClosed, InboundPingPong, InboundResponseRequired, InboundReminderRequired),
-        )
-
-    def _outbound_plane(self, msg: OutboundEvent) -> str:
-        rt = str(getattr(msg, "response_type", ""))
-        if rt in {"config", "update_agent", "ping_pong"}:
-            return "control"
-        return "speech"
-
-    def _default_outbound_priority(self, msg: OutboundEvent) -> int:
-        rt = str(getattr(msg, "response_type", ""))
-        if rt == "config":
-            return 100
-        if rt == "update_agent":
-            return 90
-        if rt == "ping_pong":
-            return 80
-        if rt == "agent_interrupt":
-            return 60
-        if rt in {"tool_call_invocation", "tool_call_result"}:
-            return 70
-        if rt == "metadata":
-            return 10
-        if rt == "response":
-            return 100 if bool(getattr(msg, "content_complete", False)) else 50
-        return 50
-
-    async def _enqueue_outbound(
-        self,
-        msg: OutboundEvent,
-        *,
-        epoch: Optional[int] = None,
-        speak_gen: Optional[int] = None,
-        priority: Optional[int] = None,
-        enqueued_ms: Optional[int] = None,
-        deadline_ms: Optional[int] = None,
-    ) -> None:
-        if self._shutdown_evt.is_set():
-            return
-        enq_start_ms = self._clock.now_ms()
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="timing_marker",
-            payload_obj={
-                "phase": "outbound_enqueue_start_ms",
-                "response_type": str(getattr(msg, "response_type", "")),
-                "response_id": int(getattr(msg, "response_id", 0)),
-            },
-        )
-
-        rt = str(getattr(msg, "response_type", ""))
-        if epoch is None and rt == "response":
-            epoch = int(getattr(msg, "response_id", 0))
-            speak_gen = int(self._gate_ref.speak_gen)
-        elif epoch is None and rt in {"tool_call_invocation", "tool_call_result"}:
-            epoch = int(self._epoch)
-            speak_gen = int(self._gate_ref.speak_gen)
-
-        if priority is None:
-            priority = self._default_outbound_priority(msg)
-        plane = self._outbound_plane(msg)
-        if enqueued_ms is None:
-            enqueued_ms = self._clock.now_ms()
-        if (
-            deadline_ms is None
-            and str(getattr(msg, "response_type", "")) == "ping_pong"
-            and int(self._config.keepalive_ping_write_deadline_ms) > 0
-        ):
-            deadline_ms = int(self._config.keepalive_ping_write_deadline_ms)
-
-        env = OutboundEnvelope(
-            msg=msg,
-            epoch=epoch,
-            speak_gen=speak_gen,
-            priority=int(priority),
-            plane=plane,  # type: ignore[arg-type]
-            enqueued_ms=int(enqueued_ms),
-            deadline_ms=(None if deadline_ms is None else int(deadline_ms)),
-        )
-
-        def evict(existing: OutboundEnvelope) -> bool:
-            ex_msg = existing.msg
-
-            # Never evict terminal response frames; those are our correctness boundary.
-            if (
-                str(getattr(ex_msg, "response_type", "")) == "response"
-                and bool(getattr(ex_msg, "content_complete", False))
-            ):
-                return False
-
-            # Prefer evicting stale gates (epoch/speak_gen) to prevent queue bloat.
-            if existing.epoch is not None and existing.epoch != int(self._gate_ref.epoch):
-                return True
-            if existing.speak_gen is not None and existing.speak_gen != int(self._gate_ref.speak_gen):
-                return True
-
-            # Control-plane frames should never be evicted for speech.
-            if existing.plane == "control" and env.plane != "control":
-                return False
-            if env.plane == "control" and existing.plane != "control":
-                return True
-
-            # Otherwise, evict older, lower-priority items first.
-            return int(existing.priority) < int(env.priority)
-
-        # Never block: if full, evict stale/low-priority items first.
-        ok = await self._outbound_q.put(env, evict=evict)
-        if not ok:
-            self._metrics.inc("outbound_queue_dropped_total", 1)
-
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._epoch,
-            epoch=self._epoch,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="timing_marker",
-            payload_obj={
-                "phase": "outbound_enqueue_ms",
-                "duration_ms": self._clock.now_ms() - int(enq_start_ms),
-                "response_type": str(getattr(msg, "response_type", "")),
-                "priority": int(priority),
-                "response_id": int(getattr(msg, "response_id", 0)),
-            },
-        )
-
-    async def _send_config(self) -> None:
-        cfg = RetellConfig(
-            auto_reconnect=self._config.retell_auto_reconnect,
-            call_details=self._config.retell_call_details,
-            transcript_with_tool_calls=self._config.retell_transcript_with_tool_calls,
-        )
-        await self._enqueue_outbound(OutboundConfig(response_type="config", config=cfg))
-
-    async def _send_update_agent(self) -> None:
-        if not self._config.retell_send_update_agent_on_connect:
-            return
-        agent_cfg = AgentConfig(
-            responsiveness=float(self._config.retell_responsiveness),
-            interruption_sensitivity=float(self._config.retell_interruption_sensitivity),
-            reminder_trigger_ms=int(self._config.retell_reminder_trigger_ms),
-            reminder_max_count=int(self._config.retell_reminder_max_count),
-        )
-        await self._enqueue_outbound(
-            OutboundUpdateAgent(response_type="update_agent", agent_config=agent_cfg)
-        )
-
-    async def _send_begin_greeting(self) -> None:
-        if self._config.conversation_profile == "b2b":
-            greeting = (
-                f"Hi, this is {self._config.b2b_agent_name} with {self._config.b2b_org_name}. "
-                "Is now a bad time for a quick question?"
-            )
-            if self._config.eve_v7_enabled:
-                try:
-                    greeting = load_eve_v7_opener(
-                        script_path=self._config.eve_v7_script_path,
-                        placeholders={
-                            "business_name": self._config.b2b_business_name,
-                            "city": self._config.b2b_city,
-                            "clinic_name": self._config.b2b_business_name,
-                            "test_timestamp": self._config.b2b_test_timestamp,
-                            "evidence_type": self._config.b2b_evidence_type,
-                            "emr_system": self._config.b2b_emr_system,
-                            "contact_number": self._config.b2b_contact_number,
-                        },
-                    )
-                except Exception:
-                    pass
-            self._disclosure_sent = bool(self._config.b2b_auto_disclosure)
-        else:
-            greeting = (
-                f"Hi! Thanks for calling {self._config.clinic_name}. "
-                "This is Sarah, the clinic's virtual assistant. "
-                "How can I help today?"
-            )
-            self._disclosure_sent = True
-        plan = build_plan(
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=0,
-            epoch=0,
-            created_at_ms=self._clock.now_ms(),
-            reason="CONTENT",
-            segments=micro_chunk_text(
-                text=greeting,
-                max_expected_ms=self._config.vic_max_segment_expected_ms,
-                pace_ms_per_char=self._config.pace_ms_per_char,
-                purpose="CONTENT",
-                interruptible=True,
-                requires_tool_evidence=False,
-                tool_evidence_ids=[],
-                max_monologue_expected_ms=self._config.vic_max_monologue_expected_ms,
-                markup_mode=self._config.speech_markup_mode,
-                dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-            ),
-            source_refs=[],
-            disclosure_included=True,
-            metrics=self._metrics,
-        )
-        # Record as SpeechPlan/Segments for VIC determinism.
-        self._speech_plans.append(plan)
-        await self._set_conv_state(ConvState.SPEAKING, reason="begin_greeting")
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=0,
-            epoch=0,
-            ws_state=self._ws_state.value,
-            conv_state=self._conv_state.value,
-            event_type="speech_plan",
-            payload_obj={
-                "plan_id": plan.plan_id,
-                "reason": plan.reason,
-                "segment_count": len(plan.segments),
-            },
-        )
-        for seg in plan.segments:
-            await self._trace.emit(
-                t_ms=self._clock.now_ms(),
-                session_id=self._session_id,
-                call_id=self._call_id,
-                turn_id=0,
-                epoch=0,
-                ws_state=self._ws_state.value,
-                conv_state=self._conv_state.value,
-                event_type="speech_segment",
-                payload_obj={
-                    "purpose": seg.purpose,
-                    "segment_index": seg.segment_index,
-                    "interruptible": seg.interruptible,
-                    "safe_interrupt_point": seg.safe_interrupt_point,
-                    "expected_duration_ms": seg.expected_duration_ms,
-                    "requires_tool_evidence": seg.requires_tool_evidence,
-                    "tool_evidence_ids": seg.tool_evidence_ids,
-                },
-                segment_hash=seg.segment_hash(epoch=0, turn_id=0),
-            )
-            await self._enqueue_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=0,
-                    content=seg.ssml,
-                    content_complete=False,
-                ),
-                priority=50,
-            )
-        await self._enqueue_outbound(
-            OutboundResponse(
-                response_type="response",
-                response_id=0,
-                content="",
-                content_complete=True,
-            ),
-            priority=100,
-        )
-        await self._set_conv_state(ConvState.LISTENING, reason="begin_complete")
-
-    # ---------------------------------------------------------------------
-    # Keepalive / watchdog
-    # ---------------------------------------------------------------------
-
-    def _reset_idle_watchdog(self) -> None:
-        if self._idle_task is not None:
-            self._idle_task.cancel()
-        self._idle_task = asyncio.create_task(self._idle_watchdog())
-
-    async def _idle_watchdog(self) -> None:
-        try:
-            await self._clock.sleep_ms(self._config.idle_timeout_ms)
-            await self.end_session(reason="idle_timeout")
-        except asyncio.CancelledError:
-            return
-
-    async def _ping_loop(self) -> None:
-        try:
-            while not self._shutdown_evt.is_set():
-                await self._clock.sleep_ms(self._config.ping_interval_ms)
-                await self._enqueue_outbound(
-                    OutboundPingPong(
-                        response_type="ping_pong",
-                        timestamp=self._clock.now_ms(),
+            if not self._cancel_agent.is_set():
+                self._audio_out_seq += 1
+                self._push_audio(
+                    build_audio_packet(
+                        stream_kind=2,
+                        seq=self._audio_out_seq,
+                        flags=FLAG_END_OF_TURN,
+                        pcm=b"",
                     )
                 )
+                await self._set_state(TurnState.IDLE, reason="agent_turn_complete")
         except asyncio.CancelledError:
             return
+        finally:
+            filler_task.cancel()
+            await asyncio.gather(filler_task, return_exceptions=True)
 
+    async def _speak_text(self, text: str, *, turn_id: int, reason: str) -> None:
+        segments = parse_tagged_text(text, scope_words=self.config.expressive_scope_words)
+        if self._state != TurnState.AGENT_SPEAKING:
+            await self._set_state(TurnState.AGENT_SPEAKING, reason=reason)
+
+        for seg in segments:
+            if self._cancel_agent.is_set():
+                return
+            await self._emit_json({"type": "agent.segment", "turn_id": turn_id, "segment": seg.model_dump()})
+            async for pcm in self.tts.synthesize(segment=seg, sample_rate_hz=16000):
+                if self._cancel_agent.is_set():
+                    return
+                self._audio_out_seq += 1
+                self._push_audio(
+                    build_audio_packet(
+                        stream_kind=2,
+                        seq=self._audio_out_seq,
+                        flags=0,
+                        pcm=pcm,
+                    )
+                )
+
+    async def _handle_barge_in(self) -> None:
+        t0 = self.clock.now_ms()
+        await self._set_state(TurnState.BARGED_IN_RECOVERY, reason="barge_in")
+        self._cancel_agent.set()
+        if self._agent_task is not None:
+            self._agent_task.cancel()
+            await asyncio.gather(self._agent_task, return_exceptions=True)
+
+        cancelled_seq = self._audio_out_seq
+        self._audio_out_q.clear()
+        self._audio_out_seq += 1
+        self._push_audio(
+            build_audio_packet(
+                stream_kind=2,
+                seq=self._audio_out_seq,
+                flags=FLAG_BARGE_FLUSH,
+                pcm=b"",
+            )
+        )
+        await self._emit_json(
+            {
+                "type": "barge_in",
+                "turn_id": self._turn_id,
+                "cancelled_audio_seq": cancelled_seq,
+                "ts_ms": self.clock.now_ms(),
+            }
+        )
+        await self._set_state(TurnState.USER_SPEAKING, reason="barge_in_recovered")
+        self.metrics.observe(METRIC_KEYS["barge_in_stop_latency_ms"], self.clock.now_ms() - t0)
+
+    async def _set_state(self, state: TurnState, *, reason: str) -> None:
+        self._state = state
+        self.turn_manager.set_state(state, self.clock.now_ms())
+        await self._emit_json(
+            {
+                "type": "turn.state",
+                "state": state.value,
+                "reason": reason,
+                "ts_ms": self.clock.now_ms(),
+            }
+        )
+
+    def _apply_runtime_config(self) -> None:
+        self.vad.update_config(
+            VADConfig(
+                interruptions_enabled=self.config.interruptions_enabled,
+                interruption_sensitivity=self.config.interruption_sensitivity,
+            )
+        )
+        self.turn_manager.update_config(self.config)
+
+    def _push_audio(self, blob: bytes) -> None:
+        if len(self._audio_out_q) >= self._audio_out_q.maxlen:
+            self._audio_out_q.popleft()
+            self.metrics.inc(METRIC_KEYS["audio_out_dropped_total"], 1)
+            self._audio_out_drop_streak += 1
+            if self._audio_out_drop_streak >= 20:
+                # hard-stop path to avoid wedging under persistent backpressure
+                asyncio.create_task(self._emit_json({"type": "error", "code": "BACKPRESSURE_OVERFLOW", "message": "audio backpressure overflow"}))
+        else:
+            self._audio_out_drop_streak = 0
+        self._audio_out_q.append(blob)
+
+    async def _emit_json(self, payload: dict[str, Any]) -> None:
+        if self._control_out_q.full():
+            try:
+                _ = self._control_out_q.get_nowait()
+            except asyncio.QueueEmpty:
+                pass
+        await self._control_out_q.put(payload)
+        await self._emit_metrics_tick()
+
+    async def _emit_metrics_tick(self) -> None:
+        snap = self.metrics.snapshot()
+        payload = {
+            "type": "metrics.tick",
+            "turn_id": self._turn_id,
+            "metrics_snapshot": snap,
+        }
+        if self._control_out_q.full():
+            return
+        await self._control_out_q.put(payload)
 ```
 
-### `app/persona_prompt.py`
+## `src/agent/turn_manager.py`
 
-```
+```python
 from __future__ import annotations
 
+from dataclasses import dataclass
+from typing import Literal
 
-def build_system_prompt(*, clinic_name: str, clinic_city: str, clinic_state: str) -> str:
-    """
-    Persona constants only. Transport/orchestration must not import this module.
-    """
+from src.interfaces.events import RuntimeConfig, TurnEagerness, TurnState
+from src.processing.prosody import ProsodyFeatures, prosody_adjustment_ms
 
-    return f"""You are Sarah, a warm front-desk coordinator for {clinic_name}, {clinic_city}, {clinic_state}.
+TurnEvent = Literal["none", "eou_detected", "barge_in", "turn_timeout_prompt"]
 
-Primary goal: help book appointments, answer basic non-clinical questions, and route clinical questions safely.
 
-Truthfulness:
-- Never claim to be human.
-- Never invent prices, appointment availability, or eligibility. Use tools for facts.
+@dataclass(slots=True)
+class TurnSnapshot:
+    state: TurnState = TurnState.IDLE
+    last_speech_ms: int = 0
+    turn_started_ms: int = 0
+    timeout_prompted: bool = False
 
-Voice style (Retell text semantics):
-- Warm, slightly chatty, hospitable.
-- Short breath groups; light fillers; occasional self-corrections.
 
-Retell pacing and "read slowly":
-- Pauses are represented by spaced dashes: " - " (do not output SSML by default).
-- When reading phone numbers or confirmation codes, separate digits with spaced dashes:
-  Example: 2 - 1 - 3 - 4
-"""
+class TurnManager:
+    def __init__(self, *, config: RuntimeConfig) -> None:
+        self._cfg = config
+        self._snap = TurnSnapshot()
+
+    @property
+    def state(self) -> TurnState:
+        return self._snap.state
+
+    def update_config(self, cfg: RuntimeConfig) -> None:
+        self._cfg = cfg
+
+    @staticmethod
+    def eagerness_scalar(mode: TurnEagerness) -> float:
+        if mode == TurnEagerness.EAGER:
+            return 1.0
+        if mode == TurnEagerness.NORMAL:
+            return 0.5
+        return 0.0
+
+    def base_eou_ms(self) -> int:
+        e = self.eagerness_scalar(self._cfg.turn_eagerness)
+        return int(800 - (600 * e))
+
+    def final_eou_ms(self, prosody: ProsodyFeatures | None) -> int:
+        base = self.base_eou_ms()
+        adjust = prosody_adjustment_ms(prosody) if prosody is not None else 0
+        return int(max(120, min(1200, base + adjust)))
+
+    def set_state(self, state: TurnState, now_ms: int) -> None:
+        self._snap.state = state
+        if state == TurnState.USER_SPEAKING:
+            self._snap.turn_started_ms = int(now_ms)
+            self._snap.timeout_prompted = False
+
+    def on_audio(self, *, has_speech: bool, now_ms: int, prosody: ProsodyFeatures | None) -> TurnEvent:
+        s = self._snap.state
+        now_ms = int(now_ms)
+
+        if s == TurnState.AGENT_SPEAKING and self._cfg.interruptions_enabled and has_speech:
+            self._snap.state = TurnState.BARGED_IN_RECOVERY
+            return "barge_in"
+
+        if s in {TurnState.IDLE, TurnState.BARGED_IN_RECOVERY} and has_speech:
+            self.set_state(TurnState.USER_SPEAKING, now_ms)
+            self._snap.last_speech_ms = now_ms
+            return "none"
+
+        if s == TurnState.USER_SPEAKING:
+            if has_speech:
+                self._snap.last_speech_ms = now_ms
+                return "none"
+
+            # turn timeout prompt once while waiting in user turn
+            if (
+                not self._snap.timeout_prompted
+                and now_ms - self._snap.last_speech_ms >= int(self._cfg.turn_timeout_sec * 1000)
+            ):
+                self._snap.timeout_prompted = True
+                return "turn_timeout_prompt"
+
+            eou_ms = self.final_eou_ms(prosody)
+            if now_ms - self._snap.last_speech_ms >= eou_ms:
+                self._snap.state = TurnState.AGENT_THINKING
+                return "eou_detected"
+
+        return "none"
+```
+
+## `src/interfaces/__init__.py`
+
+```python
 
 ```
 
-### `app/protocol.py`
+## `src/interfaces/adapters.py`
 
-```
-from __future__ import annotations
-
-import json
-from typing import Annotated, Any, Literal, Optional, Union
-
-from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
-
-
-# =============================================================================
-# Retell LLM WebSocket Protocol (STRICT)
-#
-# Contract: do not invent message types. All WS frames are JSON text.
-# Inbound discriminator: interaction_type
-# Outbound discriminator: response_type
-# =============================================================================
-
-
-# -----------------------------
-# Shared leaf models
-# -----------------------------
-
-
-class TranscriptUtterance(BaseModel):
-    # Retell may include additional fields beyond role/content; ignore them.
-    model_config = ConfigDict(extra="ignore")
-
-    role: Literal["user", "agent"]
-    content: str
-
-
-class RetellConfig(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    auto_reconnect: bool
-    call_details: bool
-    transcript_with_tool_calls: bool
-
-
-class AgentConfig(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    responsiveness: Optional[float] = None
-    interruption_sensitivity: Optional[float] = None
-    reminder_trigger_ms: Optional[int] = None
-    reminder_max_count: Optional[int] = None
-
-
-# -----------------------------
-# Inbound (Retell -> Server)
-# Discriminator: interaction_type
-# -----------------------------
-
-
-class InboundPingPong(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-
-    interaction_type: Literal["ping_pong"]
-    timestamp: int
-
-
-class InboundCallDetails(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-
-    interaction_type: Literal["call_details"]
-    call: dict[str, Any]
-
-
-class InboundUpdateOnly(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-
-    interaction_type: Literal["update_only"]
-    transcript: list[TranscriptUtterance]
-    transcript_with_tool_calls: Optional[list[Any]] = None
-    turntaking: Optional[Literal["agent_turn", "user_turn"]] = None
-
-
-class InboundResponseRequired(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-
-    interaction_type: Literal["response_required"]
-    response_id: int
-    transcript: list[TranscriptUtterance]
-    transcript_with_tool_calls: Optional[list[Any]] = None
-
-
-class InboundReminderRequired(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-
-    interaction_type: Literal["reminder_required"]
-    response_id: int
-    transcript: list[TranscriptUtterance]
-    transcript_with_tool_calls: Optional[list[Any]] = None
-
-
-InboundEvent = Annotated[
-    Union[
-        InboundPingPong,
-        InboundCallDetails,
-        InboundUpdateOnly,
-        InboundResponseRequired,
-        InboundReminderRequired,
-    ],
-    Field(discriminator="interaction_type"),
-]
-
-_inbound_adapter = TypeAdapter(InboundEvent)
-
-
-# -----------------------------
-# Outbound (Server -> Retell)
-# Discriminator: response_type
-# -----------------------------
-
-TIMING_MARKER_PHASES = frozenset(
-    {
-        "policy_decision_start_ms",
-        "policy_decision_ms",
-        "speech_plan_build_start_ms",
-        "speech_plan_build_ms",
-        "speech_plan_ack_ms",
-        "pre_ack_enqueued",
-        "outbound_enqueue_start_ms",
-        "outbound_enqueue_ms",
-        "first_response_latency_ms",
-    }
-)
-
-
-def is_timing_marker_phase(phase: str) -> bool:
-    return str(phase) in TIMING_MARKER_PHASES
-
-
-class OutboundConfig(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    response_type: Literal["config"]
-    config: RetellConfig
-
-
-class OutboundUpdateAgent(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    response_type: Literal["update_agent"]
-    agent_config: AgentConfig
-
-
-class OutboundPingPong(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    response_type: Literal["ping_pong"]
-    timestamp: int
-
-
-class OutboundResponse(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    response_type: Literal["response"]
-    response_id: int
-    content: str
-    content_complete: bool
-    no_interruption_allowed: Optional[bool] = None
-    end_call: Optional[bool] = None
-    transfer_number: Optional[str] = None
-    digit_to_press: Optional[str] = None
-
-
-class OutboundAgentInterrupt(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    response_type: Literal["agent_interrupt"]
-    interrupt_id: int
-    content: str
-    content_complete: bool
-    no_interruption_allowed: Optional[bool] = None
-    end_call: Optional[bool] = None
-    transfer_number: Optional[str] = None
-    digit_to_press: Optional[str] = None
-
-
-class OutboundToolCallInvocation(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    response_type: Literal["tool_call_invocation"]
-    tool_call_id: str
-    name: str
-    # Contract: must be a stringified JSON object.
-    arguments: str
-
-
-class OutboundToolCallResult(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    response_type: Literal["tool_call_result"]
-    tool_call_id: str
-    content: str
-
-
-class OutboundMetadata(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    response_type: Literal["metadata"]
-    metadata: Any
-
-
-OutboundEvent = Annotated[
-    Union[
-        OutboundConfig,
-        OutboundUpdateAgent,
-        OutboundPingPong,
-        OutboundResponse,
-        OutboundAgentInterrupt,
-        OutboundToolCallInvocation,
-        OutboundToolCallResult,
-        OutboundMetadata,
-    ],
-    Field(discriminator="response_type"),
-]
-
-_outbound_adapter = TypeAdapter(OutboundEvent)
-
-
-# -----------------------------
-# Parsing / serialization helpers
-# -----------------------------
-
-
-def parse_inbound_json(raw_text: str) -> InboundEvent:
-    obj = json.loads(raw_text)
-    return parse_inbound_obj(obj)
-
-
-def parse_inbound_obj(obj: Any) -> InboundEvent:
-    return _inbound_adapter.validate_python(obj)
-
-
-def parse_outbound_json(raw_text: str) -> OutboundEvent:
-    obj = json.loads(raw_text)
-    return _outbound_adapter.validate_python(obj)
-
-
-def dumps_outbound(event: OutboundEvent) -> str:
-    # Canonical JSON for deterministic hashing/tests.
-    payload = event.model_dump(exclude_none=True)
-    return json.dumps(payload, separators=(",", ":"), sort_keys=True)
-
-```
-
-### `app/server.py`
-
-```
+```python
 from __future__ import annotations
 
 import asyncio
-import os
+import math
+from dataclasses import dataclass
+from typing import AsyncIterator, Protocol
+
+from .events import SpeechSegment
+
+
+@dataclass(frozen=True, slots=True)
+class ASRResult:
+    text: str
+    is_final: bool
+    stability: float
+
+
+class ASRAdapter(Protocol):
+    async def ingest_audio(self, *, frame: bytes, has_speech: bool, now_ms: int) -> list[ASRResult]: ...
+
+    async def force_finalize(self) -> ASRResult | None: ...
+
+
+class LLMAdapter(Protocol):
+    async def stream_text(self, *, prompt: str) -> AsyncIterator[str]: ...
+
+
+class TTSAdapter(Protocol):
+    async def synthesize(self, *, segment: SpeechSegment, sample_rate_hz: int = 16000) -> AsyncIterator[bytes]: ...
+
+
+class MockASRAdapter:
+    """
+    Deterministic no-key ASR mock.
+    Emits partials while speech is detected and final text after brief silence.
+    """
+
+    def __init__(self, *, scripted_turns: list[str] | None = None) -> None:
+        self._script = list(
+            scripted_turns
+            or [
+                "i want to book an appointment",
+                "what times are available tomorrow",
+                "how much is a general visit",
+            ]
+        )
+        self._turn_idx = 0
+        self._speech_frames = 0
+        self._silence_frames = 0
+        self._active = False
+
+    def _current_script(self) -> str:
+        if not self._script:
+            return "hello"
+        return self._script[self._turn_idx % len(self._script)]
+
+    async def ingest_audio(self, *, frame: bytes, has_speech: bool, now_ms: int) -> list[ASRResult]:
+        out: list[ASRResult] = []
+        if has_speech:
+            self._active = True
+            self._speech_frames += 1
+            self._silence_frames = 0
+            if self._speech_frames % 3 == 0:
+                words = self._current_script().split()
+                n = min(len(words), max(1, self._speech_frames // 3))
+                out.append(
+                    ASRResult(
+                        text=" ".join(words[:n]),
+                        is_final=False,
+                        stability=min(0.95, 0.2 + (0.1 * n)),
+                    )
+                )
+        else:
+            self._silence_frames += 1
+            if self._active and self._silence_frames >= 5:
+                out.append(ASRResult(text=self._current_script(), is_final=True, stability=1.0))
+                self._turn_idx += 1
+                self._speech_frames = 0
+                self._silence_frames = 0
+                self._active = False
+        return out
+
+    async def force_finalize(self) -> ASRResult | None:
+        if not self._active:
+            return None
+        self._active = False
+        self._speech_frames = 0
+        self._silence_frames = 0
+        txt = self._current_script()
+        self._turn_idx += 1
+        return ASRResult(text=txt, is_final=True, stability=1.0)
+
+
+class MockLLMAdapter:
+    def __init__(self, *, token_delay_ms: int = 20) -> None:
+        self._token_delay_ms = int(token_delay_ms)
+
+    async def stream_text(self, *, prompt: str) -> AsyncIterator[str]:
+        p = (prompt or "").lower()
+        if "price" in p or "cost" in p:
+            reply = "[excited] Great question, the general visit is $120, and I can help you book now."
+        elif "available" in p or "appointment" in p:
+            reply = "[slow] I can offer Tuesday at 9:00 AM, Tuesday at 11:30 AM, or Wednesday at 2:15 PM."
+        else:
+            reply = "[laughs] I can help with that, and we can do this step by step."
+
+        for tok in reply.split(" "):
+            if self._token_delay_ms > 0:
+                await asyncio.sleep(self._token_delay_ms / 1000.0)
+            yield tok + " "
+
+
+class MockTTSAdapter:
+    """
+    Deterministic tone generator for streaming PCM16LE chunks.
+    """
+
+    def __init__(self) -> None:
+        self._phase = 0.0
+
+    async def synthesize(self, *, segment: SpeechSegment, sample_rate_hz: int = 16000) -> AsyncIterator[bytes]:
+        words = max(1, segment.word_count)
+        frames = max(1, words)
+        base_freq = 220.0
+        if segment.style_modifier.value == "excited":
+            base_freq = 290.0
+        elif segment.style_modifier.value == "whispers":
+            base_freq = 160.0
+        elif segment.style_modifier.value == "slow":
+            base_freq = 180.0
+
+        for _ in range(frames):
+            pcm = _tone_frame(
+                sample_rate_hz=sample_rate_hz,
+                freq_hz=base_freq,
+                phase=self._phase,
+                amplitude=0.2,
+            )
+            self._phase += 0.1
+            yield pcm
+            await asyncio.sleep(0)
+
+
+def _tone_frame(*, sample_rate_hz: int, freq_hz: float, phase: float, amplitude: float) -> bytes:
+    # 20ms at 16kHz = 320 samples.
+    n_samples = int(sample_rate_hz * 0.02)
+    out = bytearray()
+    for i in range(n_samples):
+        t = (i / sample_rate_hz) + phase
+        v = int(max(-32767, min(32767, math.sin(2 * math.pi * freq_hz * t) * 32767 * amplitude)))
+        out.extend(int(v).to_bytes(2, "little", signed=True))
+    return bytes(out)
+```
+
+## `src/interfaces/events.py`
+
+```python
+from __future__ import annotations
+
+import struct
+from enum import Enum
+from typing import Any, Literal, Optional
+
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+
+AUDIO_MAGIC = b"EVA1"
+AUDIO_HEADER_STRUCT = struct.Struct("<4sHHIH")
+FLAG_END_OF_TURN = 1
+FLAG_BARGE_FLUSH = 2
+
+
+class TurnState(str, Enum):
+    IDLE = "IDLE"
+    USER_SPEAKING = "USER_SPEAKING"
+    AGENT_THINKING = "AGENT_THINKING"
+    AGENT_SPEAKING = "AGENT_SPEAKING"
+    BARGED_IN_RECOVERY = "BARGED_IN_RECOVERY"
+    ENDED = "ENDED"
+
+
+class TurnEagerness(str, Enum):
+    EAGER = "EAGER"
+    NORMAL = "NORMAL"
+    PATIENT = "PATIENT"
+
+
+class StyleModifier(str, Enum):
+    BASELINE = "baseline"
+    LAUGHS = "laughs"
+    WHISPERS = "whispers"
+    SIGHS = "sighs"
+    SLOW = "slow"
+    EXCITED = "excited"
+
+
+class RuntimeConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    turn_timeout_sec: int = Field(default=8, ge=1, le=30)
+    soft_timeout_enabled: bool = True
+    soft_timeout_sec: float = Field(default=0.8, ge=0.2, le=10.0)
+    interruptions_enabled: bool = True
+    interruption_sensitivity: float = Field(default=0.6, ge=0.0, le=1.0)
+    turn_eagerness: TurnEagerness = TurnEagerness.NORMAL
+    expressive_scope_words: int = Field(default=5, ge=1, le=20)
+    target_voice_id: Optional[str] = None
+
+    # Explicitly blocked impersonation-style fields.
+    target_person_voice: Optional[str] = None
+    voice_clone_id: Optional[str] = None
+    voice_clone_source: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_safety(self) -> "RuntimeConfig":
+        if self.target_person_voice:
+            raise ValueError("target_person_voice is not allowed")
+        if self.voice_clone_id:
+            raise ValueError("voice_clone_id is not allowed")
+        if self.voice_clone_source:
+            raise ValueError("voice_clone_source is not allowed")
+        if self.target_voice_id and not self.target_voice_id.startswith("neutral_"):
+            raise ValueError("target_voice_id must reference a neutral catalog voice")
+        return self
+
+
+class SpeechSegment(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    text: str
+    style_modifier: StyleModifier = StyleModifier.BASELINE
+    speed_multiplier: float = 1.0
+    scope_id: str
+    word_count: int
+
+
+class SessionStart(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    type: Literal["session.start"]
+    session_id: str
+    config: RuntimeConfig
+
+
+class ConfigUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    type: Literal["config.update"]
+    config_patch: dict[str, Any]
+
+
+class UserTurnEnd(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    type: Literal["user.turn_end"]
+    ts_ms: int
+
+
+class Ping(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    type: Literal["ping"]
+    ts_ms: int
+
+
+ClientControl = SessionStart | ConfigUpdate | UserTurnEnd | Ping
+
+
+def parse_client_control(payload: dict[str, Any]) -> ClientControl:
+    t = payload.get("type")
+    if t == "session.start":
+        return SessionStart.model_validate(payload)
+    if t == "config.update":
+        return ConfigUpdate.model_validate(payload)
+    if t == "user.turn_end":
+        return UserTurnEnd.model_validate(payload)
+    if t == "ping":
+        return Ping.model_validate(payload)
+    raise ValueError(f"unknown control event type: {t}")
+
+
+def build_audio_packet(*, stream_kind: int, seq: int, flags: int, pcm: bytes) -> bytes:
+    header = AUDIO_HEADER_STRUCT.pack(AUDIO_MAGIC, int(stream_kind), 0, int(seq), int(flags))
+    return header + pcm
+
+
+def parse_audio_packet(blob: bytes) -> tuple[int, int, int, bytes]:
+    if len(blob) < AUDIO_HEADER_STRUCT.size:
+        raise ValueError("audio packet too short")
+    magic, stream_kind, _reserved, seq, flags = AUDIO_HEADER_STRUCT.unpack_from(blob, 0)
+    if magic != AUDIO_MAGIC:
+        raise ValueError("invalid audio packet magic")
+    return int(stream_kind), int(seq), int(flags), blob[AUDIO_HEADER_STRUCT.size :]
+```
+
+## `src/main.py`
+
+```python
+from __future__ import annotations
+
+import asyncio
 import json
-from pathlib import Path
 
-from fastapi import FastAPI, WebSocket
-from fastapi.responses import JSONResponse, PlainTextResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
-from .clock import RealClock
-from .config import BrainConfig
-from .dashboard_data import build_dashboard_summary, build_repo_map
-from .metrics import CompositeMetrics, Metrics
-from .orchestrator import Orchestrator
-from .provider import build_llm_client
-from .prom_export import GLOBAL_PROM
-from .security import is_ip_allowed, resolve_client_ip, verify_query_token, verify_shared_secret
-from .shell.executor import ShellExecutor
-from .trace import TraceSink
-from .transport_ws import GateRef, Transport, socket_reader, socket_writer
-from .bounded_queue import BoundedDequeQueue
-from .tools import ToolRegistry
+from src.agent.orchestrator import SessionOrchestrator
 
 
-class StarletteTransport(Transport):
-    def __init__(self, ws: WebSocket) -> None:
-        self._ws = ws
-
-    async def recv_text(self) -> str:
-        return await self._ws.receive_text()
-
-    async def send_text(self, text: str) -> None:
-        await self._ws.send_text(text)
-
-    async def close(self, *, code: int = 1000, reason: str = "") -> None:
-        try:
-            await self._ws.close(code=code, reason=reason)
-        except Exception:
-            return
-
-
-app = FastAPI()
-_REPO_ROOT = Path(__file__).resolve().parents[1]
-_DASHBOARD_DIR = _REPO_ROOT / "dashboard"
-if _DASHBOARD_DIR.exists():
-    app.mount("/dashboard", StaticFiles(directory=str(_DASHBOARD_DIR), html=True), name="dashboard")
+app = FastAPI(title="Expressive Voice Prototype")
 
 
 @app.get("/healthz")
@@ -12403,8036 +11018,492 @@ async def healthz() -> dict[str, bool]:
     return {"ok": True}
 
 
-@app.get("/metrics")
-async def metrics() -> PlainTextResponse:
-    return PlainTextResponse(GLOBAL_PROM.render())
-
-
-@app.get("/api/dashboard/summary")
-async def dashboard_summary() -> JSONResponse:
-    payload = build_dashboard_summary(GLOBAL_PROM.render())
-    return JSONResponse(payload)
-
-
-@app.get("/api/dashboard/repo-map")
-async def dashboard_repo_map() -> JSONResponse:
-    return JSONResponse(build_repo_map(_REPO_ROOT))
-
-
-@app.get("/api/dashboard/sop")
-async def dashboard_sop() -> JSONResponse:
-    path = _REPO_ROOT / "docs" / "self_improve_sop.md"
-    text = ""
-    ok = False
-    if path.exists():
-        ok = True
-        text = path.read_text(encoding="utf-8")
-    return JSONResponse(
-        {
-            "ok": ok,
-            "path": "docs/self_improve_sop.md",
-            "markdown": text,
-        }
-    )
-
-
-@app.get("/api/dashboard/readme")
-async def dashboard_readme() -> JSONResponse:
-    path = _REPO_ROOT / "README.md"
-    text = ""
-    ok = False
-    if path.exists():
-        ok = True
-        text = path.read_text(encoding="utf-8")
-    return JSONResponse(
-        {
-            "ok": ok,
-            "path": "README.md",
-            "markdown": text,
-        }
-    )
-
-
-@app.websocket("/ws/{call_id}")
-async def ws_brain(ws: WebSocket, call_id: str) -> None:
-    await _run_session(ws, call_id, route_name="ws")
-
-
-@app.websocket("/llm-websocket/{call_id}")
-async def llm_websocket(ws: WebSocket, call_id: str) -> None:
-    await _run_session(ws, call_id, route_name="llm-websocket")
-
-
-def _normalize_route(route: str) -> str:
-    return str(route or "").strip().strip("/").strip()
-
-
-def _log_ws_event(cfg: "BrainConfig", *, route_name: str, call_id: str, event: str, **payload: object) -> None:
-    if not cfg.ws_structured_logging:
-        return
-    base = {
-        "component": "ws_session",
-        "event": event,
-        "route": f"/{_normalize_route(route_name)}",
-        "call_id": call_id,
-    }
-    base.update(payload)
-    print(json.dumps(base, sort_keys=True, separators=(",", ":")))
-
-
-async def _run_session(ws: WebSocket, call_id: str, route_name: str) -> None:
-    cfg = BrainConfig.from_env()
-    route = _normalize_route(route_name)
-    canonical_route = _normalize_route(cfg.websocket_canonical_route)
-    if cfg.websocket_enforce_canonical_route and route != canonical_route:
-        await ws.accept()
-        _log_ws_event(
-            cfg,
-            route_name=route,
-            call_id=call_id,
-            event="reject_noncanonical_route",
-            canonical_route=f"/{canonical_route}",
-        )
-        await ws.close(code=1008, reason="non_canonical_route")
-        return
-    _log_ws_event(
-        cfg,
-        route_name=route,
-        call_id=call_id,
-        event="connect",
-        canonical_route=f"/{canonical_route}",
-        ip="",
-    )
-    # Optional WS handshake hardening. In production, prefer enforcing at the reverse proxy.
-    headers = {str(k): str(v) for k, v in ws.headers.items()}
-    remote_ip = ""
-    try:
-        if ws.client is not None:
-            remote_ip = ws.client.host or ""
-    except Exception:
-        remote_ip = ""
-
-    effective_ip = resolve_client_ip(
-        remote_ip=remote_ip,
-        headers=headers,
-        trusted_proxy_enabled=cfg.ws_trusted_proxy_enabled,
-        trusted_proxy_cidrs=cfg.ws_trusted_proxy_cidrs,
-    )
-
-    if cfg.ws_allowlist_enabled and not is_ip_allowed(
-        remote_ip=effective_ip, cidrs=cfg.ws_allowlist_cidrs
-    ):
-        await ws.accept()
-        await ws.close(code=1008, reason="forbidden")
-        return
-
-    if cfg.ws_shared_secret_enabled and not verify_shared_secret(
-        headers=headers,
-        header=cfg.ws_shared_secret_header,
-        secret=cfg.ws_shared_secret,
-    ):
-        await ws.accept()
-        await ws.close(code=1008, reason="forbidden")
-        return
-
-    if not verify_query_token(
-        query_params=dict(ws.query_params),
-        token_param=cfg.ws_query_token_param,
-        expected_token=cfg.ws_query_token,
-    ):
-        await ws.accept()
-        await ws.close(code=1008, reason="forbidden")
-        return
-
+@app.websocket("/expressive/ws/{session_id}")
+async def expressive_ws(ws: WebSocket, session_id: str) -> None:
     await ws.accept()
-    clock = RealClock()
-    session_metrics = Metrics()
-    metrics = CompositeMetrics(session_metrics, GLOBAL_PROM)
-    trace = TraceSink()
-
-    inbound_q: BoundedDequeQueue = BoundedDequeQueue(maxsize=cfg.inbound_queue_max)
-    outbound_q: BoundedDequeQueue = BoundedDequeQueue(maxsize=cfg.outbound_queue_max)
-    shutdown_evt = asyncio.Event()
-    gate = GateRef(epoch=0, speak_gen=0)
-    shell_executor = ShellExecutor(
-        mode=cfg.shell_mode,
-        enable_hosted=cfg.shell_enable_hosted,
-        allowed_commands=cfg.shell_allowed_commands,
-        workdir=os.getcwd(),
-    )
-    tools = ToolRegistry(
-        session_id=call_id,
-        clock=clock,
-        metrics=metrics,
-        shell_executor=shell_executor,
-        shell_tool_enabled=cfg.shell_tool_enabled,
-        shell_tool_canary_enabled=cfg.shell_tool_canary_enabled,
-        shell_tool_canary_percent=cfg.shell_tool_canary_percent,
-    )
-    llm = build_llm_client(cfg, session_id=call_id)
-
-    transport = StarletteTransport(ws)
-    orch = Orchestrator(
-        session_id=call_id,
-        call_id=call_id,
-        config=cfg,
-        clock=clock,
-        metrics=metrics,
-        trace=trace,
-        inbound_q=inbound_q,
-        outbound_q=outbound_q,
-        shutdown_evt=shutdown_evt,
-        gate=gate,
-        tools=tools,
-        llm=llm,
-    )
-
-    reader_task = asyncio.create_task(
-        socket_reader(
-            transport=transport,
-            inbound_q=inbound_q,
-            metrics=metrics,
-            shutdown_evt=shutdown_evt,
-            max_frame_bytes=cfg.ws_max_frame_bytes,
-            structured_logs=cfg.ws_structured_logging,
-            call_id=call_id,
-        )
-    )
-    writer_task = asyncio.create_task(
-        socket_writer(
-            transport=transport,
-            outbound_q=outbound_q,
-            metrics=metrics,
-            shutdown_evt=shutdown_evt,
-            gate=gate,
-            clock=clock,
-            inbound_q=inbound_q,
-            ws_write_timeout_ms=cfg.ws_write_timeout_ms,
-            ws_close_on_write_timeout=cfg.ws_close_on_write_timeout,
-            ws_max_consecutive_write_timeouts=cfg.ws_max_consecutive_write_timeouts,
-        )
-    )
-    orch_task = asyncio.create_task(orch.run())
-
-    try:
-        await orch_task
-    finally:
-        shutdown_evt.set()
-        reader_task.cancel()
-        writer_task.cancel()
-        if llm is not None:
-            await llm.aclose()
-        await transport.close(code=1000, reason="session_end")
-
-```
-
-### `app/speech_planner.py`
-
-```
-from __future__ import annotations
-
-import hashlib
-import json
-import re
-from collections import OrderedDict
-from dataclasses import dataclass, field
-from typing import Any, Literal, Optional
-
-from .metrics import Metrics, VIC
-from .trace import hash_segment
-
-
-SpeechMarkupMode = Literal["DASH_PAUSE", "RAW_TEXT", "SSML"]
-DashPauseScope = Literal["PROTECTED_ONLY", "SEGMENT_BOUNDARY"]
-
-PlanReason = Literal[
-    "ACK",
-    "FILLER",
-    "CONTENT",
-    "BACKCHANNEL",
-    "CLARIFY",
-    "CONFIRM",
-    "REPAIR",
-    "ERROR",
-    "CLOSING",
-]
-
-
-SegmentPurpose = Literal[
-    "ACK",
-    "FILLER",
-    "CONTENT",
-    "BACKCHANNEL",
-    "CLARIFY",
-    "CONFIRM",
-    "REPAIR",
-    "CONTROL",
-    "CLOSING",
-]
-
-
-ProtectedSpanKind = Literal["PRICE", "TIME", "DATE", "PHONE", "DIGITS"]
-
-
-@dataclass(frozen=True, slots=True)
-class SourceRef:
-    kind: str
-    id: str
-
-
-@dataclass(frozen=True, slots=True)
-class ProtectedSpan:
-    kind: ProtectedSpanKind
-    start: int
-    end: int
-
-
-@dataclass(frozen=True, slots=True)
-class SpeechSegment:
-    segment_index: int
-    purpose: SegmentPurpose
-    ssml: str
-    plain_text: str
-    interruptible: bool
-    safe_interrupt_point: bool
-    expected_duration_ms: int
-    contains_protected_span: bool
-    protected_spans: list[ProtectedSpan]
-    requires_tool_evidence: bool
-    tool_evidence_ids: list[str]
-
-    def segment_hash(self, *, epoch: int, turn_id: int) -> str:
-        return hash_segment(self.ssml, self.purpose, epoch, turn_id)
-
-
-@dataclass(frozen=True, slots=True)
-class SpeechPlan:
-    session_id: str
-    call_id: str
-    turn_id: int
-    epoch: int
-    plan_id: str
-    segments: list[SpeechSegment]
-    created_at_ms: int
-    reason: PlanReason
-    source_refs: list[SourceRef] = field(default_factory=list)
-    disclosure_included: bool = False
-
-
-_MICRO_CHUNK_CACHE_MAX = 1024
-_MICRO_CHUNK_CACHE: "OrderedDict[tuple[Any, ...], tuple[SpeechSegment, ...]]" = (
-    OrderedDict()
-)
-_SCRIPT_TEXT_CACHE_MAX = 256
-_SCRIPT_TEXT_CACHE: "OrderedDict[tuple[Any, ...], tuple[SpeechSegment, ...]]" = OrderedDict()
-
-
-_PRICE_PAT = re.compile(r"(\$\s*\d+(?:\.\d+)?)")
-_PHONE_PAT = re.compile(r"\b(\d{3})[\s\-\)]*(\d{3})[\s\-]*(\d{4})\b")
-_TIME_PAT = re.compile(r"\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b", re.I)
-_DIGITS_PAT = re.compile(r"\d+")
-
-
-def _det_break_ms(segment_index: int) -> int:
-    # Deterministic "random" in [150, 400].
-    return 150 + ((segment_index * 77) % 251)
-
-
-def dash_pause(*, units: int) -> str:
-    """
-    Retell pause primitive: spaced dashes.
-
-    Each unit is exactly " - " (spaces around dash). Repeating units yields double spaces
-    between dashes naturally (" -  -  - ").
-    """
-    if int(units) <= 0:
-        return ""
-    return " - " * int(units)
-
-
-def _dash_pause_units_for_break(*, break_ms: int, dash_pause_unit_ms: int) -> int:
-    u = int(dash_pause_unit_ms)
-    if u <= 0:
-        return 0
-    b = max(0, int(break_ms))
-    # Round to nearest pause unit, but always emit at least one unit for non-last segments.
-    return max(1, int((b + (u // 2)) // u))
-
-
-def _find_protected_spans(text: str) -> list[ProtectedSpan]:
-    spans: list[ProtectedSpan] = []
-
-    for m in _PHONE_PAT.finditer(text):
-        spans.append(ProtectedSpan(kind="PHONE", start=m.start(), end=m.end()))
-
-    for m in _PRICE_PAT.finditer(text):
-        spans.append(ProtectedSpan(kind="PRICE", start=m.start(), end=m.end()))
-
-    for m in _TIME_PAT.finditer(text):
-        spans.append(ProtectedSpan(kind="TIME", start=m.start(), end=m.end()))
-
-    # Generic digits (avoid double-marking ones inside phone/price/time spans).
-    covered = [False] * (len(text) + 1)
-    for s in spans:
-        for i in range(s.start, s.end):
-            if 0 <= i < len(covered):
-                covered[i] = True
-
-    for m in _DIGITS_PAT.finditer(text):
-        if any(covered[i] for i in range(m.start(), m.end())):
-            continue
-        spans.append(ProtectedSpan(kind="DIGITS", start=m.start(), end=m.end()))
-
-    spans.sort(key=lambda s: (s.start, s.end))
-    return spans
-
-
-def _digit_pause_ms_for_spans(
-    *,
-    text: str,
-    spans: list[ProtectedSpan],
-    purpose: SegmentPurpose,
-    digit_dash_pause_unit_ms: int,
-) -> int:
-    extra = 0
-    unit = int(digit_dash_pause_unit_ms)
-    if unit <= 0:
-        unit = 0
-    for sp in spans:
-        if sp.kind == "PHONE" or (sp.kind == "DIGITS" and purpose in {"CONFIRM", "REPAIR"}):
-            digits = re.sub(r"\D+", "", text[sp.start : sp.end])
-            if digits:
-                extra += max(0, len(digits) - 1) * unit
-    return int(extra)
-
-
-def _apply_protected_span_formatting(
-    *,
-    text: str,
-    spans: list[ProtectedSpan],
-    purpose: SegmentPurpose,
-) -> str:
-    """
-    Render protected spans into a Retell-friendly "read slowly" format for digits/phone.
-
-    - PHONE spans are always rendered as digits separated by spaced dashes.
-    - DIGITS spans are rendered that way only for CONFIRM/REPAIR purposes (avoid spacing normal numbers).
-    """
-    if not spans:
-        return text
-
-    out: list[str] = []
-    cur = 0
-    for sp in spans:
-        out.append(text[cur : sp.start])
-        chunk = text[sp.start : sp.end]
-        if sp.kind == "PHONE" or (sp.kind == "DIGITS" and purpose in {"CONFIRM", "REPAIR"}):
-            digits = re.sub(r"\D+", "", chunk)
-            if digits:
-                out.append(" - ".join(list(digits)))
-            else:
-                out.append(chunk)
-        else:
-            out.append(chunk)
-        cur = sp.end
-    out.append(text[cur:])
-    return "".join(out)
-
-
-def _boundary_pause(
-    *,
-    mode: SpeechMarkupMode,
-    break_ms: int,
-    dash_pause_unit_ms: int,
-) -> tuple[str, int]:
-    """
-    Returns (suffix_text, pause_ms).
-    """
-    if mode == "RAW_TEXT":
-        return ("", 0)
-    if mode == "SSML":
-        return (f'<break time="{int(break_ms)}ms"/>', int(break_ms))
-    # DASH_PAUSE
-    units = _dash_pause_units_for_break(break_ms=int(break_ms), dash_pause_unit_ms=int(dash_pause_unit_ms))
-    return (dash_pause(units=units), units * int(dash_pause_unit_ms))
-
-
-def _estimate_expected_ms(
-    *,
-    plain_text: str,
-    purpose: SegmentPurpose,
-    pace_ms_per_char: int,
-    spans: list[ProtectedSpan],
-    mode: SpeechMarkupMode,
-    break_ms: int,
-    include_boundary_pause: bool,
-    dash_pause_unit_ms: int,
-    digit_dash_pause_unit_ms: int,
-    dash_pause_scope: DashPauseScope,
-) -> int:
-    base = len(plain_text) * int(pace_ms_per_char)
-    digit_extra = _digit_pause_ms_for_spans(
-        text=plain_text,
-        spans=spans,
-        purpose=purpose,
-        digit_dash_pause_unit_ms=int(digit_dash_pause_unit_ms),
-    )
-    boundary_ms = 0
-    if include_boundary_pause and (
-        mode == "SSML" or (mode == "DASH_PAUSE" and dash_pause_scope == "SEGMENT_BOUNDARY")
-    ):
-        _, boundary_ms = _boundary_pause(
-            mode=mode,
-            break_ms=int(break_ms),
-            dash_pause_unit_ms=int(dash_pause_unit_ms),
-        )
-    return max(0, int(base + digit_extra + boundary_ms))
-
-
-def _canonical_plan_id(
-    *,
-    session_id: str,
-    call_id: str,
-    turn_id: int,
-    epoch: int,
-    reason: PlanReason,
-    segments: list[SpeechSegment],
-    disclosure_included: bool,
-) -> str:
-    payload = {
-        "session_id": session_id,
-        "call_id": call_id,
-        "turn_id": turn_id,
-        "epoch": epoch,
-        "reason": reason,
-        "disclosure_included": bool(disclosure_included),
-        "segments": [
-            {"purpose": s.purpose, "ssml": s.ssml, "interruptible": s.interruptible}
-            for s in segments
-        ],
-    }
-    blob = json.dumps(payload, separators=(",", ":"), sort_keys=True).encode("utf-8")
-    return hashlib.sha256(blob).hexdigest()
-
-
-@dataclass(frozen=True, slots=True)
-class _SegmentDraft:
-    purpose: SegmentPurpose
-    plain_text: str
-    interruptible: bool
-    requires_tool_evidence: bool
-    tool_evidence_ids: list[str]
-
-
-def micro_chunk_text(
-    *,
-    text: str,
-    max_expected_ms: int,
-    pace_ms_per_char: int,
-    purpose: SegmentPurpose,
-    interruptible: bool,
-    requires_tool_evidence: bool,
-    tool_evidence_ids: list[str],
-    max_monologue_expected_ms: Optional[int] = None,
-    markup_mode: SpeechMarkupMode = "DASH_PAUSE",
-    dash_pause_unit_ms: int = 200,
-    digit_dash_pause_unit_ms: int = 150,
-    dash_pause_scope: DashPauseScope = "PROTECTED_ONLY",
-    include_trailing_pause: bool = False,
-) -> list[SpeechSegment]:
-    """
-    Split text into breath-group segments under max_expected_ms (deterministic).
-    """
-    cleaned = re.sub(r"\s+", " ", (text or "").strip())
-    if not cleaned:
-        return []
-
-    cache_key = (
-        cleaned,
-        int(max_expected_ms),
-        int(pace_ms_per_char),
-        purpose,
-        bool(interruptible),
-        bool(requires_tool_evidence),
-        tuple(sorted(set(tool_evidence_ids))),
-        int(max_monologue_expected_ms or 0),
-        str(markup_mode),
-        int(dash_pause_unit_ms),
-        int(digit_dash_pause_unit_ms),
-        str(dash_pause_scope),
-        bool(include_trailing_pause),
-    )
-    cached = _MICRO_CHUNK_CACHE.get(cache_key)
-    if cached is not None:
-        _MICRO_CHUNK_CACHE.move_to_end(cache_key)
-        return list(cached)
-
-    # Clause boundary splitter.
-    parts = re.split(r"(?<=[\.!\?;])\s+|,\s+|\s+(?:and|but|so)\s+", cleaned)
-    parts = [p.strip() for p in parts if p and p.strip()]
-
-    drafts: list[_SegmentDraft] = []
-    buf: list[str] = []
-
-    def est_candidate(plain: str, *, next_index: int) -> int:
-        spans = _find_protected_spans(plain)
-        return _estimate_expected_ms(
-            plain_text=plain,
-            purpose=purpose,
-            pace_ms_per_char=int(pace_ms_per_char),
-            spans=spans,
-            mode=markup_mode,
-            break_ms=_det_break_ms(next_index),
-            include_boundary_pause=True,
-            dash_pause_unit_ms=int(dash_pause_unit_ms),
-            digit_dash_pause_unit_ms=int(digit_dash_pause_unit_ms),
-            dash_pause_scope=dash_pause_scope,
-        )
-
-    def flush_buf() -> None:
-        nonlocal buf, drafts
-        if not buf:
-            return
-        plain = " ".join(buf).strip()
-        if plain:
-            drafts.append(
-                _SegmentDraft(
-                    purpose=purpose,
-                    plain_text=plain,
-                    interruptible=bool(interruptible),
-                    requires_tool_evidence=bool(requires_tool_evidence),
-                    tool_evidence_ids=list(tool_evidence_ids),
-                )
-            )
-        buf = []
-
-    def add_part(part_text: str) -> None:
-        nonlocal buf, drafts
-        part_text = part_text.strip()
-        if not part_text:
-            return
-        if not buf:
-            # If a single part is too long, split by words deterministically.
-            if est_candidate(part_text, next_index=len(drafts)) > int(max_expected_ms):
-                words = part_text.split(" ")
-                wbuf: list[str] = []
-                for w in words:
-                    if not w:
-                        continue
-                    cand = " ".join(wbuf + [w]).strip()
-                    if wbuf and est_candidate(cand, next_index=len(drafts)) > int(max_expected_ms):
-                        buf = wbuf
-                        flush_buf()
-                        wbuf = [w]
-                    else:
-                        wbuf.append(w)
-                if wbuf:
-                    buf = wbuf
-                    flush_buf()
+    orch = SessionOrchestrator(session_id=session_id)
+    await orch.start()
+
+    async def reader() -> None:
+        while True:
+            msg = await ws.receive()
+            mtype = msg.get("type")
+            if mtype == "websocket.disconnect":
                 return
-
-            buf.append(part_text)
-            return
-
-        cand = (" ".join(buf + [part_text])).strip()
-        if est_candidate(cand, next_index=len(drafts)) > int(max_expected_ms):
-            flush_buf()
-            buf.append(part_text)
-        else:
-            buf.append(part_text)
-
-    for part in parts:
-        add_part(part)
-    flush_buf()
-
-    if max_monologue_expected_ms is not None and purpose == "CONTENT":
-        drafts = _insert_checkins_drafts(
-            drafts=drafts,
-            max_monologue_expected_ms=int(max_monologue_expected_ms),
-            pace_ms_per_char=int(pace_ms_per_char),
-            digit_dash_pause_unit_ms=int(digit_dash_pause_unit_ms),
-        )
-
-    # Render drafts to final SpeechSegments with stable indices and appropriate pause suffixes.
-    segments: list[SpeechSegment] = []
-    last_index = len(drafts) - 1
-    for i, d in enumerate(drafts):
-        plain = d.plain_text
-        spans = _find_protected_spans(plain)
-        body = _apply_protected_span_formatting(text=plain, spans=spans, purpose=d.purpose)
-        break_ms = _det_break_ms(i)
-        include_pause = bool(include_trailing_pause) or (i < last_index)
-        if markup_mode == "RAW_TEXT":
-            include_pause = False
-        elif markup_mode == "DASH_PAUSE" and dash_pause_scope != "SEGMENT_BOUNDARY":
-            include_pause = False
-        suffix, boundary_ms = ("", 0)
-        if include_pause:
-            suffix, boundary_ms = _boundary_pause(
-                mode=markup_mode,
-                break_ms=int(break_ms),
-                dash_pause_unit_ms=int(dash_pause_unit_ms),
-            )
-        # Important: Retell concatenates streaming chunks exactly as sent. If we emit multiple
-        # segments for the same response_id, we must preserve word boundaries across chunk
-        # boundaries (otherwise you get "thisor" / "Eve.Is"). We do this deterministically
-        # by appending a single space to non-final segments when the next segment begins with
-        # an alphanumeric character and the current chunk does not already end in whitespace.
-        #
-        # We intentionally avoid doing this in SSML mode to minimize surprises for the
-        # experimental path.
-        out_text = body + suffix
-        if markup_mode != "SSML" and i < last_index:
-            nxt = drafts[i + 1].plain_text.lstrip()
-            if nxt:
-                nxt0 = nxt[0]
-                if (
-                    out_text
-                    and not out_text[-1].isspace()
-                    and not nxt0.isspace()
-                    and (nxt0.isalnum() or nxt0 in {"$", "(", "[", "\"", "'"})
-                ):
-                    out_text += " "
-        digit_extra = _digit_pause_ms_for_spans(
-            text=plain,
-            spans=spans,
-            purpose=d.purpose,
-            digit_dash_pause_unit_ms=int(digit_dash_pause_unit_ms),
-        )
-        expected = max(
-            0,
-            int(len(plain) * int(pace_ms_per_char) + digit_extra + int(boundary_ms)),
-        )
-        segments.append(
-            SpeechSegment(
-                segment_index=i,
-                purpose=d.purpose,
-                ssml=out_text,
-                plain_text=plain,
-                interruptible=bool(d.interruptible),
-                safe_interrupt_point=True,
-                expected_duration_ms=int(expected),
-                contains_protected_span=bool(spans),
-                protected_spans=spans,
-                requires_tool_evidence=bool(d.requires_tool_evidence),
-                tool_evidence_ids=list(d.tool_evidence_ids),
-            )
-        )
-
-    _MICRO_CHUNK_CACHE[cache_key] = tuple(segments)
-    while len(_MICRO_CHUNK_CACHE) > _MICRO_CHUNK_CACHE_MAX:
-        _MICRO_CHUNK_CACHE.popitem(last=False)
-    return segments
-
-
-def micro_chunk_text_cached(
-    *,
-    text: str,
-    max_expected_ms: int,
-    pace_ms_per_char: int,
-    purpose: SegmentPurpose,
-    interruptible: bool,
-    requires_tool_evidence: bool,
-    tool_evidence_ids: list[str],
-    max_monologue_expected_ms: Optional[int] = None,
-    markup_mode: SpeechMarkupMode = "DASH_PAUSE",
-    dash_pause_unit_ms: int = 200,
-    digit_dash_pause_unit_ms: int = 150,
-    dash_pause_scope: DashPauseScope = "PROTECTED_ONLY",
-    include_trailing_pause: bool = False,
-    slot_snapshot_signature: str = "",
-    intent_signature: str = "",
-) -> list[SpeechSegment]:
-    """Memoized wrapper used by deterministic fast paths."""
-    cache_key = (
-        slot_snapshot_signature,
-        intent_signature,
-        re.sub(r"\s+", " ", (text or "").strip()),
-        int(max_expected_ms),
-        int(pace_ms_per_char),
-        purpose,
-        bool(interruptible),
-        bool(requires_tool_evidence),
-        tuple(sorted(set(tool_evidence_ids))),
-        int(max_monologue_expected_ms or 0),
-        str(markup_mode),
-        int(dash_pause_unit_ms),
-        int(digit_dash_pause_unit_ms),
-        str(dash_pause_scope),
-        bool(include_trailing_pause),
-    )
-    cached = _SCRIPT_TEXT_CACHE.get(cache_key)
-    if cached is not None:
-        _SCRIPT_TEXT_CACHE.move_to_end(cache_key)
-        return list(cached)
-
-    chunks = micro_chunk_text(
-        text=text,
-        max_expected_ms=max_expected_ms,
-        pace_ms_per_char=pace_ms_per_char,
-        purpose=purpose,
-        interruptible=interruptible,
-        requires_tool_evidence=requires_tool_evidence,
-        tool_evidence_ids=tool_evidence_ids,
-        max_monologue_expected_ms=max_monologue_expected_ms,
-        markup_mode=markup_mode,
-        dash_pause_unit_ms=dash_pause_unit_ms,
-        digit_dash_pause_unit_ms=digit_dash_pause_unit_ms,
-        dash_pause_scope=dash_pause_scope,
-        include_trailing_pause=include_trailing_pause,
-    )
-    _SCRIPT_TEXT_CACHE[cache_key] = tuple(chunks)
-    while len(_SCRIPT_TEXT_CACHE) > _SCRIPT_TEXT_CACHE_MAX:
-        _SCRIPT_TEXT_CACHE.popitem(last=False)
-    return chunks
-
-
-@dataclass(slots=True)
-class StreamingChunker:
-    """
-    Helper for streaming text sources (LLM token deltas).
-
-    The chunker accumulates deltas and periodically flushes them into SpeechSegments using the
-    same deterministic micro-chunking and Retell markup rules as non-streaming paths.
-    """
-
-    max_expected_ms: int
-    pace_ms_per_char: int
-    purpose: SegmentPurpose
-    interruptible: bool
-    requires_tool_evidence: bool
-    tool_evidence_ids: list[str]
-    markup_mode: SpeechMarkupMode = "DASH_PAUSE"
-    dash_pause_unit_ms: int = 200
-    digit_dash_pause_unit_ms: int = 150
-    dash_pause_scope: DashPauseScope = "PROTECTED_ONLY"
-    _buf: str = ""
-
-    def push(self, *, delta: str) -> list[SpeechSegment]:
-        if not delta:
-            return []
-        self._buf += str(delta)
-        if not self._should_flush():
-            return []
-        return self._flush(include_trailing_pause=True)
-
-    def flush_final(self) -> list[SpeechSegment]:
-        return self._flush(include_trailing_pause=False)
-
-    def _buf_expected_ms(self) -> int:
-        plain = re.sub(r"\s+", " ", (self._buf or "").strip())
-        if not plain:
-            return 0
-        spans = _find_protected_spans(plain)
-        digit_extra = _digit_pause_ms_for_spans(
-            text=plain,
-            spans=spans,
-            purpose=self.purpose,
-            digit_dash_pause_unit_ms=int(self.digit_dash_pause_unit_ms),
-        )
-        return max(0, int(len(plain) * int(self.pace_ms_per_char) + digit_extra))
-
-    def _should_flush(self) -> bool:
-        plain = (self._buf or "").strip()
-        if not plain:
-            return False
-        if plain.endswith((".", "!", "?", ";")):
-            return True
-        return self._buf_expected_ms() >= int(self.max_expected_ms)
-
-    def _flush(self, *, include_trailing_pause: bool) -> list[SpeechSegment]:
-        plain = re.sub(r"\s+", " ", (self._buf or "").strip())
-        self._buf = ""
-        if not plain:
-            return []
-        return micro_chunk_text(
-            text=plain,
-            max_expected_ms=int(self.max_expected_ms),
-            pace_ms_per_char=int(self.pace_ms_per_char),
-            purpose=self.purpose,
-            interruptible=bool(self.interruptible),
-            requires_tool_evidence=bool(self.requires_tool_evidence),
-            tool_evidence_ids=list(self.tool_evidence_ids),
-            markup_mode=self.markup_mode,
-            dash_pause_unit_ms=int(self.dash_pause_unit_ms),
-            digit_dash_pause_unit_ms=int(self.digit_dash_pause_unit_ms),
-            dash_pause_scope=self.dash_pause_scope,
-            include_trailing_pause=bool(include_trailing_pause),
-        )
-
-
-def _insert_checkins_drafts(
-    *,
-    drafts: list[_SegmentDraft],
-    max_monologue_expected_ms: int,
-    pace_ms_per_char: int,
-    digit_dash_pause_unit_ms: int,
-) -> list[_SegmentDraft]:
-    if max_monologue_expected_ms <= 0:
-        return drafts
-
-    out: list[_SegmentDraft] = []
-    since_checkin = 0
-    for d in drafts:
-        spans = _find_protected_spans(d.plain_text)
-        expected_wo_boundary = max(
-            0,
-            int(
-                len(d.plain_text) * int(pace_ms_per_char)
-                + _digit_pause_ms_for_spans(
-                    text=d.plain_text,
-                    spans=spans,
-                    purpose=d.purpose,
-                    digit_dash_pause_unit_ms=int(digit_dash_pause_unit_ms),
-                )
-            ),
-        )
-        if out and since_checkin + expected_wo_boundary > int(max_monologue_expected_ms):
-            out.append(
-                _SegmentDraft(
-                    purpose="CLARIFY",
-                    plain_text="Want me to keep going?",
-                    interruptible=True,
-                    requires_tool_evidence=False,
-                    tool_evidence_ids=[],
-                )
-            )
-            since_checkin = 0
-
-        out.append(d)
-        since_checkin += expected_wo_boundary
-
-    return out
-
-
-def build_plan(
-    *,
-    session_id: str,
-    call_id: str,
-    turn_id: int,
-    epoch: int,
-    created_at_ms: int,
-    reason: PlanReason,
-    segments: list[SpeechSegment],
-    source_refs: Optional[list[SourceRef]] = None,
-    disclosure_included: bool = False,
-    metrics: Optional[Metrics] = None,
-) -> SpeechPlan:
-    plan_id = _canonical_plan_id(
-        session_id=session_id,
-        call_id=call_id,
-        turn_id=turn_id,
-        epoch=epoch,
-        reason=reason,
-        segments=segments,
-        disclosure_included=bool(disclosure_included),
-    )
-    plan = SpeechPlan(
-        session_id=session_id,
-        call_id=call_id,
-        turn_id=turn_id,
-        epoch=epoch,
-        plan_id=plan_id,
-        segments=list(segments),
-        created_at_ms=int(created_at_ms),
-        reason=reason,
-        source_refs=list(source_refs or []),
-        disclosure_included=bool(disclosure_included),
-    )
-
-    if metrics is not None:
-        metrics.observe(VIC["segment_count_per_turn"], len(segments))
-        for seg in segments:
-            metrics.observe(VIC["segment_expected_duration_ms"], seg.expected_duration_ms)
-
-    return plan
-
-
-def enforce_vic_tool_grounding_or_fallback(
-    *,
-    plan: SpeechPlan,
-    metrics: Metrics,
-) -> SpeechPlan:
-    """
-    VIC-H01/H02: If a segment requires tool evidence, it must have tool_evidence_ids.
-    If violated, hard-fallback into an ERROR plan without numbers.
-    """
-
-    for seg in plan.segments:
-        if seg.requires_tool_evidence and not seg.tool_evidence_ids:
-            metrics.inc(VIC["factual_segment_without_tool_evidence_total"], 1)
-            metrics.inc(VIC["fallback_used_total"], 1)
-            fallback_text = "I can check that for you, but I don't want to guess. Could I get a little more detail?"
-            fb_segs = micro_chunk_text(
-                text=fallback_text,
-                max_expected_ms=1200,
-                pace_ms_per_char=20,
-                purpose="CONTENT",
-                interruptible=True,
-                requires_tool_evidence=False,
-                tool_evidence_ids=[],
-            )
-            return build_plan(
-                session_id=plan.session_id,
-                call_id=plan.call_id,
-                turn_id=plan.turn_id,
-                epoch=plan.epoch,
-                created_at_ms=plan.created_at_ms,
-                reason="ERROR",
-                segments=fb_segs,
-                source_refs=plan.source_refs,
-                disclosure_included=plan.disclosure_included,
-                metrics=metrics,
-            )
-
-    return plan
-
-```
-
-### `app/tools.py`
-
-```
-from __future__ import annotations
-
-import asyncio
-import json
-from dataclasses import dataclass
-from typing import Any, Awaitable, Callable, Optional
-
-from .canary import rollout_enabled
-from .clock import Clock
-from .shell.executor import ShellExecutor
-
-
-@dataclass(frozen=True, slots=True)
-class ToolCallRecord:
-    tool_call_id: str
-    name: str
-    arguments: dict[str, Any]
-    started_at_ms: int
-    completed_at_ms: int
-    ok: bool
-    content: str
-
-
-ToolFn = Callable[[dict[str, Any]], Awaitable[str]]
-EmitFn = Callable[[str, str, str], Awaitable[None]]
-
-
-async def _run_with_timeout(
-    clock: Clock,
-    *,
-    coro: Awaitable[str],
-    deadline_ms: int,
-) -> tuple[bool, str]:
-    """
-    Deterministic timeout based on Clock.sleep_ms(), not wall clock.
-    Returns (ok, content_or_error).
-    """
-
-    # Anchor timeouts to an absolute deadline so tests can safely advance FakeClock even if
-    # the coroutine hasn't yet reached its first sleep point.
-    timeout_task = asyncio.create_task(clock.sleep_ms(deadline_ms - clock.now_ms()))
-    work_task = asyncio.create_task(coro)
-    done, pending = await asyncio.wait({timeout_task, work_task}, return_when=asyncio.FIRST_COMPLETED)
-
-    if work_task in done and not work_task.cancelled():
-        # Work completed first; stop the timeout task and drain it.
-        if timeout_task in pending:
-            timeout_task.cancel()
-        if pending:
-            await asyncio.gather(*pending, return_exceptions=True)
-        try:
-            return True, str(work_task.result())
-        except Exception as e:  # pragma: no cover (defensive)
-            return False, f"tool_error:{type(e).__name__}"
-
-    # Timed out.
-    if work_task in pending:
-        work_task.cancel()
-    if pending:
-        await asyncio.gather(*pending, return_exceptions=True)
-    return False, "tool_timeout"
-
-
-class ToolRegistry:
-    def __init__(
-        self,
-        *,
-        session_id: str,
-        clock: Clock,
-        latency_ms_by_tool: Optional[dict[str, int]] = None,
-        metrics: Any | None = None,
-        shell_executor: ShellExecutor | None = None,
-        shell_tool_enabled: bool = False,
-        shell_tool_canary_enabled: bool = False,
-        shell_tool_canary_percent: int = 0,
-    ) -> None:
-        self._session_id = session_id
-        self._clock = clock
-        self._latency_ms_by_tool = dict(latency_ms_by_tool or {})
-        self._tool_seq = 0
-        self._metrics = metrics
-        self._shell_executor = shell_executor
-        self._shell_tool_enabled = bool(shell_tool_enabled)
-        self._shell_tool_canary_enabled = bool(shell_tool_canary_enabled)
-        self._shell_tool_canary_percent = int(shell_tool_canary_percent)
-        self._tools: dict[str, ToolFn] = {
-            "check_availability": self._check_availability,
-            "get_pricing": self._get_pricing,
-            "check_eligibility": self._check_eligibility,
-            "clinic_policies": self._clinic_policies,
-            "send_evidence_package": self._send_evidence_package,
-            "mark_dnc_compliant": self._mark_dnc_compliant,
-            "run_shell_command": self._run_shell_command,
-        }
-
-    def _new_tool_call_id(self) -> str:
-        # Deterministic, globally unique within a call/session.
-        self._tool_seq += 1
-        return f"{self._session_id}:tool:{self._tool_seq}"
-
-    def set_latency_ms(self, name: str, ms: int) -> None:
-        self._latency_ms_by_tool[name] = int(ms)
-
-    def get_latency_ms(self, name: str) -> int:
-        return int(self._latency_ms_by_tool.get(name, 0))
-
-    def _normalize_tool_name(self, name: str) -> str:
-        key = str(name or "").strip()
-        if key.lower() == "mark_dnc":
-            return "mark_dnc_compliant"
-        return key.lower()
-
-    async def invoke(
-        self,
-        *,
-        name: str,
-        arguments: dict[str, Any],
-        timeout_ms: int,
-        started_at_ms: Optional[int] = None,
-        emit_invocation: Optional[Callable[[str, str, str], Awaitable[None]]] = None,
-        emit_result: Optional[Callable[[str, str], Awaitable[None]]] = None,
-    ) -> ToolCallRecord:
-        canonical_name = self._normalize_tool_name(name)
-        if canonical_name not in self._tools:
-            raise ValueError(f"unknown tool: {name}")
-
-        tool_call_id = self._new_tool_call_id()
-        started = int(started_at_ms) if started_at_ms is not None else self._clock.now_ms()
-
-        args_json = json.dumps(arguments, separators=(",", ":"), sort_keys=True)
-        if emit_invocation is not None:
-            await emit_invocation(tool_call_id, canonical_name, args_json)
-
-        ok, content = await self._invoke_impl(
-            name=canonical_name,
-            arguments=arguments,
-            timeout_ms=timeout_ms,
-            started_at_ms=started,
-        )
-        completed = self._clock.now_ms()
-
-        if emit_result is not None:
-            await emit_result(tool_call_id, content)
-
-        return ToolCallRecord(
-            tool_call_id=tool_call_id,
-            name=canonical_name,
-            arguments=dict(arguments),
-            started_at_ms=started,
-            completed_at_ms=completed,
-            ok=ok,
-            content=content,
-        )
-
-    async def _invoke_impl(
-        self,
-        *,
-        name: str,
-        arguments: dict[str, Any],
-        timeout_ms: int,
-        started_at_ms: int,
-    ) -> tuple[bool, str]:
-        async def work() -> str:
-            latency = self.get_latency_ms(name)
-            if latency > 0:
-                # Anchor latency to the declared start time for determinism under FakeClock jumps.
-                await self._clock.sleep_ms((started_at_ms + latency) - self._clock.now_ms())
-            return await self._tools[name](arguments)
-
-        return await _run_with_timeout(
-            self._clock,
-            coro=work(),
-            deadline_ms=int(started_at_ms) + int(timeout_ms),
-        )
-
-    # ---------------------------------------------------------------------
-    # Mock tools (deterministic)
-    # ---------------------------------------------------------------------
-
-    async def _check_availability(self, arguments: dict[str, Any]) -> str:
-        requested_dt = str(arguments.get("requested_dt", "")).strip().lower()
-        # Deterministic slot generation.
-        if "sunday" in requested_dt:
-            slots: list[str] = []
-            return json.dumps({"slots": slots}, separators=(",", ":"), sort_keys=True)
-        if "tomorrow" in requested_dt:
-            slots = [
-                "Tomorrow 9:00 AM",
-                "Tomorrow 11:30 AM",
-                "Tomorrow 3:15 PM",
-                "Tomorrow 4:40 PM",
-            ]
-        else:
-            slots = [
-                "Tuesday 9:00 AM",
-                "Tuesday 11:30 AM",
-                "Wednesday 2:15 PM",
-                "Thursday 4:40 PM",
-                "Friday 10:10 AM",
-            ]
-        return json.dumps({"slots": slots}, separators=(",", ":"), sort_keys=True)
-
-    async def _get_pricing(self, arguments: dict[str, Any]) -> str:
-        service_id = str(arguments.get("service_id", "general"))
-        # Deterministic pricing; must be treated as tool-grounded.
-        if service_id == "general":
-            return json.dumps({"service_id": service_id, "price_usd": 120}, separators=(",", ":"), sort_keys=True)
-        return json.dumps({"service_id": service_id, "price_usd": 0}, separators=(",", ":"), sort_keys=True)
-
-    async def _check_eligibility(self, arguments: dict[str, Any]) -> str:
-        return json.dumps({"eligible": True}, separators=(",", ":"), sort_keys=True)
-
-    async def _clinic_policies(self, arguments: dict[str, Any]) -> str:
-        return json.dumps({"policies": "We can help schedule appointments and answer basic questions."}, separators=(",", ":"), sort_keys=True)
-
-    async def _run_shell_command(self, arguments: dict[str, Any]) -> str:
-        if self._metrics is not None:
-            self._metrics.inc("shell.exec_total", 1)
-
-        if not self._shell_tool_enabled:
-            if self._metrics is not None:
-                self._metrics.inc("shell.exec_denied_total", 1)
-            return json.dumps({"ok": False, "error": "shell_tool_disabled"}, separators=(",", ":"), sort_keys=True)
-
-        if self._shell_tool_canary_enabled and not rollout_enabled(self._session_id, self._shell_tool_canary_percent):
-            if self._metrics is not None:
-                self._metrics.inc("shell.exec_denied_total", 1)
-            return json.dumps({"ok": False, "error": "shell_tool_not_in_canary"}, separators=(",", ":"), sort_keys=True)
-
-        if self._shell_executor is None:
-            if self._metrics is not None:
-                self._metrics.inc("shell.exec_denied_total", 1)
-            return json.dumps({"ok": False, "error": "shell_executor_missing"}, separators=(",", ":"), sort_keys=True)
-
-        command = str(arguments.get("command", "")).strip()
-        timeout_s = int(arguments.get("timeout_s", 20) or 20)
-        prefer_hosted = bool(arguments.get("prefer_hosted", False))
-        if not command:
-            if self._metrics is not None:
-                self._metrics.inc("shell.exec_denied_total", 1)
-            return json.dumps({"ok": False, "error": "missing_command"}, separators=(",", ":"), sort_keys=True)
-
-        result = await self._shell_executor.execute(command, timeout_s=max(1, timeout_s), prefer_hosted=prefer_hosted)
-        if (result.reason or "") in {"timeout"}:
-            if self._metrics is not None:
-                self._metrics.inc("shell.exec_timeout_total", 1)
-        if (result.reason or "").startswith("denied_") or (result.reason or "").startswith("not_in_allowlist") or (result.reason or "").startswith("interactive_"):
-            if self._metrics is not None:
-                self._metrics.inc("shell.exec_denied_total", 1)
-
-        payload = {
-            "ok": bool(result.ok),
-            "runtime": result.runtime,
-            "returncode": int(result.returncode),
-            "reason": result.reason,
-            "duration_ms": int(result.duration_ms),
-            "stdout": (result.stdout or "")[:1200],
-            "stderr": (result.stderr or "")[:1200],
-        }
-        return json.dumps(payload, separators=(",", ":"), sort_keys=True)
-
-    async def _send_evidence_package(self, arguments: dict[str, Any]) -> str:
-        recipient_email = str(arguments.get("recipient_email", "")).strip()
-        delivery_method = str(arguments.get("delivery_method", "EMAIL_ONLY")).strip()
-        artifact_type = str(arguments.get("artifact_type", "FAILURE_LOG_PDF")).strip()
-
-        if delivery_method not in {"EMAIL_ONLY", "EMAIL_AND_SMS"}:
-            return json.dumps(
-                {
-                    "ok": False,
-                    "tool": "send_evidence_package",
-                    "error": "invalid_delivery_method",
-                },
-                sort_keys=True,
-                separators=(",", ":"),
-            )
-        if artifact_type not in {"AUDIO_LINK", "FAILURE_LOG_PDF"}:
-            return json.dumps(
-                {
-                    "ok": False,
-                    "tool": "send_evidence_package",
-                    "error": "invalid_artifact_type",
-                },
-                sort_keys=True,
-                separators=(",", ":"),
-            )
-        if not recipient_email:
-            return json.dumps(
-                {
-                    "ok": False,
-                    "tool": "send_evidence_package",
-                    "error": "missing_recipient_email",
-                },
-                sort_keys=True,
-                separators=(",", ":"),
-            )
-
-        return json.dumps(
-            {
-                "ok": True,
-                "tool": "send_evidence_package",
-                "recipient_email": recipient_email,
-                "delivery_method": delivery_method,
-                "artifact_type": artifact_type,
-                "status": "queued",
-            },
-            sort_keys=True,
-            separators=(",", ":"),
-        )
-
-    async def _mark_dnc_compliant(self, arguments: dict[str, Any]) -> str:
-        reason = str(arguments.get("reason", "USER_REQUEST")).strip().upper()
-        if reason not in {"USER_REQUEST", "WRONG_NUMBER", "HOSTILE"}:
-            return json.dumps(
-                {
-                    "ok": False,
-                    "tool": "mark_dnc_compliant",
-                    "error": "invalid_reason",
-                },
-                sort_keys=True,
-                separators=(",", ":"),
-            )
-        return json.dumps(
-            {
-                "ok": True,
-                "tool": "mark_dnc_compliant",
-                "reason": reason,
-                "status": "dnc_recorded",
-            },
-            sort_keys=True,
-            separators=(",", ":"),
-        )
-
-```
-
-### `app/transport_ws.py`
-
-```
-from __future__ import annotations
-
-import asyncio
-import json
-import json as _json
-from dataclasses import dataclass
-from json import JSONDecodeError
-from typing import Literal, Optional, Protocol
-
-from .bounded_queue import BoundedDequeQueue
-from .clock import Clock
-from .metrics import Metrics, VIC
-from .protocol import (
-    InboundCallDetails,
-    InboundEvent,
-    InboundPingPong,
-    InboundReminderRequired,
-    InboundResponseRequired,
-    InboundUpdateOnly,
-    OutboundEvent,
-    dumps_outbound,
-    parse_inbound_obj,
-)
-
-
-class Transport(Protocol):
-    async def recv_text(self) -> str: ...
-
-    async def send_text(self, text: str) -> None: ...
-
-    async def close(self, *, code: int = 1000, reason: str = "") -> None: ...
-
-
-@dataclass(frozen=True, slots=True)
-class TransportClosed:
-    reason: str
-
-
-InboundItem = InboundEvent | TransportClosed
-
-
-@dataclass(frozen=True, slots=True)
-class OutboundEnvelope:
-    """
-    Internal-only wrapper to enforce epoch + speak-generation gating in the single writer.
-
-    This must never leak onto the wire: only `msg` is serialized and sent as JSON.
-    """
-
-    msg: OutboundEvent
-    epoch: Optional[int] = None
-    speak_gen: Optional[int] = None
-    priority: int = 0
-    plane: Literal["control", "speech"] = "speech"
-    enqueued_ms: Optional[int] = None
-    deadline_ms: Optional[int] = None
-
-
-async def socket_reader(
-    *,
-    transport: Transport,
-    inbound_q: BoundedDequeQueue[InboundItem],
-    metrics: Metrics,
-    shutdown_evt: asyncio.Event,
-    max_frame_bytes: int = 262_144,
-    structured_logs: bool = False,
-    call_id: str | None = None,
-) -> None:
-    """
-    Reads WS frames -> JSON decode -> protocol validation -> inbound bounded queue.
-    Never blocks on a full inbound queue: it drops/evicts via inbound policy handled by orchestrator.
-    """
-    def _log(event: str, **payload: object) -> None:
-        if not structured_logs:
-            return
-        base = {
-            "component": "ws_inbound",
-            "call_id": str(call_id or ""),
-            "event": event,
-        }
-        base.update(payload)
-        print(_json.dumps(base, sort_keys=True, separators=(",", ":")))
-
-    try:
-        while not shutdown_evt.is_set():
-            raw = await transport.recv_text()
-            if int(max_frame_bytes) > 0:
-                raw_len = len(raw.encode("utf-8"))
-                if raw_len > int(max_frame_bytes):
-                    _log("frame_dropped", reason="frame_too_large", size_bytes=raw_len)
-                    await inbound_q.put(TransportClosed(reason="FRAME_TOO_LARGE"))
-                    return
-            try:
-                obj = json.loads(raw)
-                _log(
-                    "raw_frame",
-                    interaction_type=str(
-                        obj["interaction_type"] if isinstance(obj, dict) else ""
-                    ),
-                    size_bytes=len(raw.encode("utf-8")),
-                )
-            except JSONDecodeError:
-                _log("frame_dropped", reason="BAD_JSON")
-                await inbound_q.put(TransportClosed(reason="BAD_JSON"))
-                return
-            except Exception:
-                _log("frame_dropped", reason="BAD_JSON")
-                await inbound_q.put(TransportClosed(reason="BAD_JSON"))
-                return
-
-            try:
-                ev = parse_inbound_obj(obj)
-            except Exception:
-                interaction_type = ""
-                if isinstance(obj, dict):
-                    interaction_type = str(obj.get("interaction_type", ""))
-                _log("frame_dropped", reason="BAD_SCHEMA", interaction_type=interaction_type)
-                await inbound_q.put(TransportClosed(reason="BAD_SCHEMA"))
-                return
-
-            _log(
-                "frame_accepted",
-                interaction_type=str(getattr(ev, "interaction_type", "")),
-                has_transcript=hasattr(ev, "transcript"),
-            )
-
-            # Inbound overflow policy (bounded):
-            # - update_only: keep only latest snapshot (drop older update_only first)
-            # - response_required/reminder_required: evict update_only first, then ping/call_details
-            if isinstance(ev, InboundUpdateOnly):
-                await inbound_q.drop_where(
-                    lambda x: isinstance(x, InboundUpdateOnly)
-                    or (hasattr(x, "interaction_type") and getattr(x, "interaction_type") == "update_only")
-                )
-                ok = await inbound_q.put(ev)
-            elif isinstance(ev, (InboundResponseRequired, InboundReminderRequired)):
-                ok = await inbound_q.put(
-                    ev,
-                    evict=lambda x: isinstance(x, (InboundUpdateOnly, InboundPingPong, InboundCallDetails)),
-                )
-                if not ok:
-                    # Extreme overload: drop an older response_required (stale) to keep the newest epoch.
-                    ok = await inbound_q.put(
-                        ev,
-                        evict=lambda x: hasattr(x, "response_id")
-                        and getattr(x, "response_id") < getattr(ev, "response_id"),
-                    )
-            elif isinstance(ev, InboundPingPong):
-                # Keepalive control plane must not be starved by update-only floods.
-                ok = await inbound_q.put(ev)
-                if not ok:
-                    evicted = await inbound_q.evict_one_where(lambda x: isinstance(x, InboundUpdateOnly))
-                    if evicted:
-                        metrics.inc(VIC["inbound_queue_evictions_total"], 1)
-                        metrics.inc("inbound.queue_evictions.drop_update_only_for_ping_total", 1)
-                        ok = await inbound_q.put(ev)
-            else:
-                # call_details: drop if queue is full.
-                ok = await inbound_q.put(ev, evict=lambda x: isinstance(x, InboundUpdateOnly))
-            if not ok:
-                # If inbound queue is full, drop this frame and count it.
-                metrics.inc("inbound_queue_dropped_total", 1)
-    except Exception:
-        await inbound_q.put(TransportClosed(reason="transport_read_error"))
-
-
-class GateRef:
-    def __init__(self, *, epoch: int = 0, speak_gen: int = 0) -> None:
-        self.epoch = int(epoch)
-        self.speak_gen = int(speak_gen)
-        self._version = 0
-        self._changed_evt = asyncio.Event()
-
-    def snapshot(self) -> tuple[int, int, int, asyncio.Event]:
-        # (epoch, speak_gen, version, changed_evt)
-        return (int(self.epoch), int(self.speak_gen), int(self._version), self._changed_evt)
-
-    def set_epoch(self, epoch: int) -> None:
-        self.epoch = int(epoch)
-        self.speak_gen = 0
-        self._pulse_changed()
-
-    def bump_speak_gen(self) -> int:
-        self.speak_gen = int(self.speak_gen) + 1
-        self._pulse_changed()
-        return int(self.speak_gen)
-
-    def _pulse_changed(self) -> None:
-        # Wake any writer send currently in-flight, then swap the event to make it edge-triggered.
-        self._version += 1
-        self._changed_evt.set()
-        self._changed_evt = asyncio.Event()
-
-
-async def socket_writer(
-    *,
-    transport: Transport,
-    outbound_q: BoundedDequeQueue[OutboundEnvelope],
-    metrics: Metrics,
-    shutdown_evt: asyncio.Event,
-    gate: GateRef,
-    clock: Clock,
-    inbound_q: Optional[BoundedDequeQueue[InboundItem]] = None,
-    ws_write_timeout_ms: int = 400,
-    ws_close_on_write_timeout: bool = True,
-    ws_max_consecutive_write_timeouts: int = 2,
-) -> None:
-    """
-    Single-writer rule: the only task that writes to the WS.
-    Drops stale turn-bound messages if (epoch, speak_gen) doesn't match the current gate.
-    """
-    def _is_control_envelope(env: OutboundEnvelope) -> bool:
-        if env.plane == "control":
-            return True
-        return False
-
-    async def _signal_fatal_and_stop(reason: str) -> None:
-        if inbound_q is not None:
-            await inbound_q.put(TransportClosed(reason=reason))
-        shutdown_evt.set()
-        try:
-            await transport.close(code=1011, reason=reason)
-        except Exception:
-            pass
-
-    consecutive_write_timeouts = 0
-
-    try:
-        while not shutdown_evt.is_set():
-            try:
-                env = await outbound_q.get_prefer(_is_control_envelope)
-            except Exception:
-                return
-
-            # Gate checks for turn-bound envelopes (response/tool weaving).
-            gate_epoch, gate_speak_gen, _, changed_evt = gate.snapshot()
-            if env.epoch is not None and env.epoch != gate_epoch:
-                metrics.inc(VIC["stale_segment_dropped_total"], 1)
-                continue
-            if env.speak_gen is not None and env.speak_gen != gate_speak_gen:
-                metrics.inc(VIC["stale_segment_dropped_total"], 1)
-                continue
-
-            msg = env.msg
-
-            # Belt-and-suspenders: never send a response chunk for the wrong response_id.
-            if (
-                getattr(msg, "response_type", None) == "response"
-                and getattr(msg, "response_id", None) != gate_epoch
-            ):
-                metrics.inc(VIC["stale_segment_dropped_total"], 1)
-                continue
-
-            payload = dumps_outbound(msg)
-
-            async def _send_payload() -> bool:
-                nonlocal consecutive_write_timeouts
-                rt = str(getattr(msg, "response_type", ""))
-                if rt == "ping_pong" and env.enqueued_ms is not None:
-                    delay = max(0, clock.now_ms() - int(env.enqueued_ms))
-                    metrics.observe(VIC["keepalive_ping_pong_queue_delay_ms"], delay)
-                    deadline = int(env.deadline_ms or 0)
-                    if deadline > 0 and delay > deadline:
-                        metrics.inc(VIC["keepalive_ping_pong_missed_deadline_total"], 1)
-                if rt == "ping_pong":
-                    metrics.inc(VIC["keepalive_ping_pong_write_attempt_total"], 1)
+            text = msg.get("text")
+            if text is not None:
                 try:
-                    await clock.run_with_timeout(
-                        transport.send_text(payload),
-                        timeout_ms=max(1, int(ws_write_timeout_ms)),
-                    )
-                    consecutive_write_timeouts = 0
-                    return True
-                except TimeoutError:
-                    metrics.inc(VIC["ws_write_timeout_total"], 1)
-                    if rt == "ping_pong":
-                        metrics.inc(VIC["keepalive_ping_pong_write_timeout_total"], 1)
-                    consecutive_write_timeouts += 1
-                    if (
-                        ws_close_on_write_timeout
-                        and consecutive_write_timeouts
-                        >= max(1, int(ws_max_consecutive_write_timeouts))
-                    ):
-                        await _signal_fatal_and_stop("WRITE_TIMEOUT_BACKPRESSURE")
-                    return False
-
-            # Control-plane frames are always sent immediately and never preempted by queued speech.
-            if env.plane == "control":
-                ok_send = await _send_payload()
-                if not ok_send:
-                    if shutdown_evt.is_set():
-                        return
-                    continue
-                continue
-
-            # Speech-plane writes are cancellable for two reasons:
-            # 1) gate changes (epoch/speak_gen),
-            # 2) a control-plane envelope arrives and must preempt.
-            if env.epoch is not None or env.speak_gen is not None:
-                send_task = asyncio.create_task(_send_payload())
-                gate_task = asyncio.create_task(changed_evt.wait())
-                control_wait_task = asyncio.create_task(outbound_q.wait_for_any(_is_control_envelope))
-                done, pending = await asyncio.wait(
-                    {send_task, gate_task, control_wait_task},
-                    return_when=asyncio.FIRST_COMPLETED,
-                )
-
-                if gate_task in done and not send_task.done():
-                    send_task.cancel()
-                    control_wait_task.cancel()
-                    await asyncio.gather(
-                        send_task, gate_task, control_wait_task, return_exceptions=True
-                    )
-                    metrics.inc(VIC["stale_segment_dropped_total"], 1)
-                elif control_wait_task in done and not send_task.done():
-                    # A control frame is waiting; requeue speech deterministically and send control first.
-                    send_task.cancel()
-                    gate_task.cancel()
-                    await asyncio.gather(
-                        send_task, gate_task, control_wait_task, return_exceptions=True
-                    )
-
-                    ok = await outbound_q.put(
-                        env,
-                        evict=lambda existing: (
-                            existing.plane == "speech"
-                            and int(existing.priority) < int(env.priority)
-                            and not (
-                                getattr(existing.msg, "response_type", None) == "response"
-                                and bool(getattr(existing.msg, "content_complete", False))
-                            )
-                        ),
-                    )
-                    if not ok:
-                        metrics.inc("outbound_queue_dropped_total", 1)
-                else:
-                    gate_task.cancel()
-                    control_wait_task.cancel()
-                    await asyncio.gather(gate_task, control_wait_task, return_exceptions=True)
-                    ok_send = await send_task
-                    if not ok_send and shutdown_evt.is_set():
-                        return
-                continue
-
-            ok_send = await _send_payload()
-            if not ok_send and shutdown_evt.is_set():
-                return
-    except Exception:
-        # Writer errors end the session by exiting; orchestrator watchdog should close.
-        return
-
-```
-
-### `app/turn_handler.py`
-
-```
-from __future__ import annotations
-
-import asyncio
-import contextlib
-import json
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Literal, Optional
-
-from .clock import Clock
-from .config import BrainConfig
-from .dialogue_policy import DialogueAction, ToolRequest
-from .fact_guard import FactTemplate, validate_rewrite
-from .eve_prompt import load_eve_v7_system_prompt
-from .llm_client import LLMClient
-from .metrics import Metrics, VIC
-from .objection_library import sort_slots_by_acceptance
-from .persona_prompt import build_system_prompt
-from .phrase_selector import select_phrase
-from .trace import TraceSink
-from .protocol import (
-    OutboundEvent,
-    OutboundResponse,
-    OutboundToolCallInvocation,
-    OutboundToolCallResult,
-)
-from .speech_planner import (
-    SourceRef,
-    SpeechPlan,
-    StreamingChunker,
-    build_plan,
-    enforce_vic_tool_grounding_or_fallback,
-    micro_chunk_text,
-)
-from .skills import load_skills, render_skills_for_prompt, retrieve_skills
-from .tools import ToolCallRecord, ToolRegistry
-from .voice_guard import guard_user_text
-
-
-TurnOutputKind = Literal["speech_plan", "outbound_msg", "turn_complete"]
-
-
-@dataclass(frozen=True, slots=True)
-class TurnOutput:
-    kind: TurnOutputKind
-    epoch: int
-    payload: Any
-
-
-_ACK_STANDARD = [
-    "Okay.",
-]
-_ACK_APOLOGY = [
-    "Sorry about that.",
-]
-_ACK_APOLOGY_B2B = [
-    "Okay.",
-]
-_FILLER_1 = [
-    "Okay, one sec.",
-    "Give me a second.",
-    "Checking that now.",
-    "One moment.",
-    "Hang on one sec.",
-    "Let me check that.",
-    "All right, one sec.",
-    "Thanks-one second.",
-]
-_FILLER_2 = [
-    "Still pulling that up.",
-    "Thanks for waiting-I am still checking.",
-    "Almost there-I am still loading it.",
-    "Just a bit longer-I am still checking.",
-    "Still on it.",
-    "Still working on that now.",
-]
-
-
-_SKILLS_CACHE: dict[str, tuple[int, list[Any]]] = {}
-
-
-def _skills_tree_mtime(skills_dir: str) -> int:
-    root = Path(skills_dir)
-    if not root.exists() or not root.is_dir():
-        return 0
-    mt = 0
-    for p in root.rglob("*.md"):
-        try:
-            v = int(p.stat().st_mtime)
-        except Exception:
-            v = 0
-        if v > mt:
-            mt = v
-    return mt
-
-
-def _b2b_eve_placeholders(config: BrainConfig) -> dict[str, str]:
-    return {
-        "business_name": config.b2b_business_name,
-        "city": config.b2b_city,
-        "clinic_name": config.b2b_business_name,
-        "test_timestamp": config.b2b_test_timestamp,
-        "evidence_type": config.b2b_evidence_type,
-        "emr_system": config.b2b_emr_system,
-        "contact_number": config.b2b_contact_number,
-    }
-
-
-def _load_skills_cached(skills_dir: str) -> list[Any]:
-    key = str(Path(skills_dir))
-    mt = _skills_tree_mtime(key)
-    cached = _SKILLS_CACHE.get(key)
-    if cached and cached[0] == mt:
-        return cached[1]
-    skills = load_skills(key)
-    _SKILLS_CACHE[key] = (mt, skills)
-    return skills
-
-
-def _pick_phrase(
-    *,
-    options: list[str],
-    call_id: str,
-    turn_id: int,
-    segment_kind: str,
-    segment_index: int,
-    used_phrases: set[str],
-) -> str:
-    chosen = select_phrase(
-        options=options,
-        call_id=call_id,
-        turn_id=turn_id,
-        segment_kind=segment_kind,
-        segment_index=segment_index,
-    )
-    if chosen not in used_phrases:
-        used_phrases.add(chosen)
-        return chosen
-
-    if len(options) <= 1:
-        used_phrases.add(chosen)
-        return chosen
-
-    start = options.index(chosen)
-    for off in range(1, len(options)):
-        cand = options[(start + off) % len(options)]
-        if cand not in used_phrases:
-            used_phrases.add(cand)
-            return cand
-    used_phrases.add(chosen)
-    return chosen
-
-
-def _ack_text(
-    *,
-    call_id: str,
-    turn_id: int,
-    needs_apology: bool,
-    disclosure_required: bool,
-    conversation_profile: str,
-    used_phrases: set[str],
-) -> str:
-    options = _ACK_STANDARD
-    if needs_apology:
-        options = _ACK_APOLOGY_B2B if conversation_profile == "b2b" else _ACK_APOLOGY
-    base = _pick_phrase(
-        options=options,
-        call_id=call_id,
-        turn_id=turn_id,
-        segment_kind="ACK",
-        segment_index=0,
-        used_phrases=used_phrases,
-    )
-    if disclosure_required:
-        return f"{base} I'm Sarah, the clinic's virtual assistant."
-    return base
-
-
-def _filler_text(*, call_id: str, turn_id: int, filler_index: int, used_phrases: set[str]) -> str:
-    options = _FILLER_1 if int(filler_index) <= 0 else _FILLER_2
-    return _pick_phrase(
-        options=options,
-        call_id=call_id,
-        turn_id=turn_id,
-        segment_kind="FILLER",
-        segment_index=int(filler_index),
-        used_phrases=used_phrases,
-    )
-
-
-class TurnHandler:
-    """
-    Cancellable worker that produces SpeechPlans for exactly one epoch.
-    """
-
-    def __init__(
-        self,
-        *,
-        session_id: str,
-        call_id: str,
-        epoch: int,
-        turn_id: int,
-        action: DialogueAction,
-        config: BrainConfig,
-        clock: Clock,
-        metrics: Metrics,
-        tools: ToolRegistry,
-        llm: Optional[LLMClient] = None,
-        output_q: asyncio.Queue[TurnOutput],
-        prefetched_tool_records: Optional[list[ToolCallRecord]] = None,
-        trace: Optional[TraceSink] = None,
-    ) -> None:
-        self._session_id = session_id
-        self._call_id = call_id
-        self._epoch = int(epoch)
-        self._turn_id = int(turn_id)
-        self._action = action
-        self._config = config
-        self._clock = clock
-        self._metrics = metrics
-        self._tools = tools
-        self._llm = llm
-        self._output_q = output_q
-        self._trace = trace
-        self._used_phrases: set[str] = set()
-        self._prefetched_tool_records = list(prefetched_tool_records or [])
-
-    def _guard_text(self, text: str) -> str:
-        return guard_user_text(
-            text=text,
-            metrics=self._metrics,
-            plain_language_mode=self._config.voice_plain_language_mode,
-            no_reasoning_leak=self._config.voice_no_reasoning_leak,
-            jargon_blocklist_enabled=self._config.voice_jargon_blocklist_enabled,
-        )
-
-    async def _emit_plan(self, plan: SpeechPlan) -> None:
-        await self._output_q.put(TurnOutput(kind="speech_plan", epoch=self._epoch, payload=plan))
-
-    async def _trace_marker(self, *, phase: str, payload_obj: dict[str, Any]) -> None:
-        if self._trace is None:
-            return
-        await self._trace.emit(
-            t_ms=self._clock.now_ms(),
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._turn_id,
-            epoch=self._epoch,
-            ws_state="LISTENING",
-            conv_state="PROCESSING",
-            event_type="timing_marker",
-            payload_obj={"phase": phase, **payload_obj},
-        )
-
-    async def _emit_outbound(self, msg: OutboundEvent) -> None:
-        await self._output_q.put(TurnOutput(kind="outbound_msg", epoch=self._epoch, payload=msg))
-
-    async def _emit_done(self) -> None:
-        await self._output_q.put(TurnOutput(kind="turn_complete", epoch=self._epoch, payload=None))
-
-    async def run(self) -> None:
-        try:
-            await self._run_impl()
-        except asyncio.CancelledError:
-            # Cancelled epochs must stop immediately; no terminal is required because epoch is stale
-            # (or a barge-in hint will be handled by orchestrator).
-            raise
-        except Exception:
-            # Deterministic fallback on unexpected errors.
-            err_text = "Sorry-I hit a snag. Can you say that one more time?"
-            segs = micro_chunk_text(
-                text=self._guard_text(err_text),
-                max_expected_ms=self._config.vic_max_segment_expected_ms,
-                pace_ms_per_char=self._config.pace_ms_per_char,
-                purpose="CONTENT",
-                interruptible=True,
-                requires_tool_evidence=False,
-                tool_evidence_ids=[],
-                markup_mode=self._config.speech_markup_mode,
-                dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-            )
-            plan = build_plan(
-                session_id=self._session_id,
-                call_id=self._call_id,
-                turn_id=self._turn_id,
-                epoch=self._epoch,
-                created_at_ms=self._clock.now_ms(),
-                reason="ERROR",
-                segments=segs,
-                source_refs=[],
-                metrics=self._metrics,
-            )
-            await self._emit_plan(plan)
-            await self._emit_done()
-
-    async def _run_impl(self) -> None:
-        needs_apology = bool(self._action.payload.get("needs_apology", False))
-        disclosure_required = bool(self._action.payload.get("disclosure_required", False))
-        skip_ack = bool(self._action.payload.get("skip_ack", False))
-        no_signal = bool(self._action.payload.get("no_signal", False))
-        no_progress = bool(self._action.payload.get("no_progress", False))
-        action_message = str(self._action.payload.get("message", "") or "")
-        is_no_signal_no_speech = bool(no_signal) and not bool(action_message.strip())
-        is_no_progress_with_no_message = (
-            self._action.action_type == "Noop"
-            and not bool(str(self._action.payload.get("message", "")).strip())
-            and no_progress
-        )
-        if (
-            self._action.action_type == "Noop"
-            or is_no_signal_no_speech
-            or (no_progress and not action_message.strip())
-        ):
-            if is_no_signal_no_speech or is_no_progress_with_no_message:
-                # No-op branches used for ambient/noise turns. Preserve state transitions
-                # without advancing audio (one-bandwidth no-speak path).
-                await self._emit_done()
-                return
-            if no_progress:
-                await self._emit_done()
-                return
-            await self._emit_done()
-            return
-
-        # VIC-B01: ACK segment quickly after response_required finalization.
-        # If the orchestrator already emitted a pre-ACK chunk for this epoch (safe pre-ack),
-        # suppress the TurnHandler ACK to avoid back-to-back boilerplate.
-        if (
-            not skip_ack
-            and self._config.conversation_profile != "b2b"
-            and not no_signal
-            and not no_progress
-            and not is_no_signal_no_speech
-            and not is_no_progress_with_no_message
-            and bool(self._action.payload.get("message", ""))
-        ):
-            ack_segs = micro_chunk_text(
-                text=self._guard_text(
-                    _ack_text(
-                        call_id=self._call_id,
-                        turn_id=self._turn_id,
-                        needs_apology=needs_apology,
-                        disclosure_required=disclosure_required,
-                        conversation_profile=self._config.conversation_profile,
-                        used_phrases=self._used_phrases,
-                    )
-                ),
-                max_expected_ms=self._config.vic_max_segment_expected_ms,
-                pace_ms_per_char=self._config.pace_ms_per_char,
-                purpose="ACK",
-                interruptible=True,
-                requires_tool_evidence=False,
-                tool_evidence_ids=[],
-                markup_mode=self._config.speech_markup_mode,
-                dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-            )
-            ack_plan = build_plan(
-                session_id=self._session_id,
-                call_id=self._call_id,
-                turn_id=self._turn_id,
-                epoch=self._epoch,
-                created_at_ms=self._clock.now_ms(),
-                reason="ACK",
-                segments=ack_segs,
-                source_refs=[],
-                disclosure_included=bool(disclosure_required),
-                metrics=self._metrics,
-            )
-            await self._trace_marker(
-                phase="speech_plan_ack_ms",
-                payload_obj={"purpose": "ACK", "plan_segments": len(ack_segs)},
-            )
-            await self._emit_plan(ack_plan)
-
-        # If this is a pure ask/repair/identity/safety response, no tools required.
-        tool_records: list[ToolCallRecord] = []
-        if self._action.tool_requests:
-            tool_records = await self._execute_tools_with_latency_masking(self._action.tool_requests)
-
-        # Optional LLM NLG (provider-agnostic). Default is disabled to keep deterministic behavior.
-        if (
-            self._config.use_llm_nlg
-            and self._llm is not None
-            and self._action.action_type in {"Ask", "Repair"}
-            and not self._action.tool_requests
-        ):
-            await self._emit_llm_nlg_content(tool_records=tool_records)
-            await self._emit_done()
-            return
-
-        # Build content plan based on action + tool results.
-        await self._trace_marker(
-            phase="speech_plan_build_start_ms",
-            payload_obj={"purpose": "CONTENT", "tool_records": len(tool_records)},
-        )
-        plan_start = self._clock.now_ms()
-        plan = await self._plan_from_action(tool_records)
-        await self._trace_marker(
-            phase="speech_plan_build_ms",
-            payload_obj={"purpose": plan.reason, "segments": len(plan.segments), "duration_ms": self._clock.now_ms() - plan_start},
-        )
-        plan = enforce_vic_tool_grounding_or_fallback(plan=plan, metrics=self._metrics)
-        await self._emit_plan(plan)
-        if self._action.action_type == "EndCall" and bool(self._action.payload.get("end_call", False)):
-            await self._emit_outbound(
-                OutboundResponse(
-                    response_type="response",
-                    response_id=self._epoch,
-                    content="",
-                    content_complete=True,
-                    end_call=True,
-                )
-            )
-        await self._emit_done()
-
-    async def _maybe_rewrite_fact_template(self, *, ft: FactTemplate) -> str:
-        """
-        Optional factual phrasing rewrite with strict placeholder preservation.
-        """
-        if not self._config.llm_phrasing_for_facts_enabled:
-            return ft.render()
-        if self._llm is None:
-            return ft.render()
-
-        prompt = (
-            "Rewrite this clinic assistant response with warmer phrasing.\n"
-            "Hard constraints:\n"
-            "- Keep all placeholder tokens exactly unchanged.\n"
-            "- Do not add any numbers.\n"
-            "- Keep it short (1-2 sentences).\n\n"
-            f"TEXT: {ft.template}\n"
-            "Return only rewritten text."
-        )
-        try:
-            async def _collect() -> str:
-                parts: list[str] = []
-                async for d in self._llm.stream_text(prompt=prompt):
-                    if d:
-                        parts.append(str(d))
-                return "".join(parts).strip()
-
-            rewritten = await self._clock.run_with_timeout(
-                _collect(),
-                timeout_ms=max(200, int(self._config.vic_model_timeout_ms)),
-            )
-            if validate_rewrite(rewritten=rewritten, required_tokens=ft.required_tokens):
-                return ft.render(rewritten)
-        except Exception:
-            pass
-
-        self._metrics.inc(VIC["llm_fact_guard_fallback_total"], 1)
-        return ft.render()
-
-    def _build_llm_prompt(self, *, tool_records: list[ToolCallRecord]) -> str:
-        if self._config.conversation_profile == "b2b" and self._config.eve_v7_enabled:
-            try:
-                system = load_eve_v7_system_prompt(
-                    script_path=self._config.eve_v7_script_path,
-                    placeholders=_b2b_eve_placeholders(self._config),
-                )
-            except Exception:
-                system = build_system_prompt(
-                    clinic_name=self._config.clinic_name,
-                    clinic_city=self._config.clinic_city,
-                    clinic_state=self._config.clinic_state,
-                )
-        else:
-            system = build_system_prompt(
-                clinic_name=self._config.clinic_name,
-                clinic_city=self._config.clinic_city,
-                clinic_state=self._config.clinic_state,
-            )
-        # Keep this prompt contract-driven and short; the LLM is only used to phrase non-factual turns
-        # by default (Ask/Repair). Tool-grounded factual responses remain deterministic unless you
-        # explicitly extend this integration.
-        payload = json.dumps(self._action.payload or {}, separators=(",", ":"), sort_keys=True)
-        tool_summary = json.dumps(
-            [{"name": r.name, "ok": r.ok, "content": r.content} for r in tool_records],
-            separators=(",", ":"),
-            sort_keys=True,
-        )
-        skills_block = ""
-        if self._config.skills_enabled:
-            self._metrics.inc("skills.invocations_total", 1)
-            try:
-                skills = _load_skills_cached(self._config.skills_dir)
-                query = " ".join(
-                    [
-                        str(self._action.action_type or ""),
-                        payload,
-                    ]
-                )
-                hits = retrieve_skills(query, skills, max_items=max(0, int(self._config.skills_max_injected)))
-                if hits:
-                    self._metrics.inc("skills.hit_total", 1)
-                    rendered = render_skills_for_prompt(hits)
-                    if rendered:
-                        skills_block = (
-                            "Relevant skills (advisory only; hard constraints still win):\n"
-                            f"{rendered}\n\n"
-                        )
-            except Exception:
-                # Skill lookup must never break a live turn.
-                self._metrics.inc("skills.error_total", 1)
-        return (
-            f"{system}\n\n"
-            "Task: write the single next utterance for the clinic assistant.\n"
-            "Hard constraints:\n"
-            "- Do not claim to be human.\n"
-            "- Do not invent any numbers, prices, times, dates, or availability.\n"
-            "- Use plain words an 8th grader can understand.\n"
-            "- Never explain your internal reasoning.\n"
-            "- Keep it short (1-2 sentences).\n"
-            "- Use Retell dash pauses for pacing (spaced dashes: ' - ').\n\n"
-            f"action_type={self._action.action_type}\n"
-            f"action_payload={payload}\n"
-            f"tool_records={tool_summary}\n\n"
-            f"{skills_block}"
-            "Return only the text to say."
-        )
-
-    async def _emit_llm_nlg_content(self, *, tool_records: list[ToolCallRecord]) -> None:
-        assert self._llm is not None
-
-        prompt = self._build_llm_prompt(tool_records=tool_records)
-
-        # Bounded token queue to avoid unbounded buffering if the model streams faster than we emit.
-        token_q: asyncio.Queue[Optional[str]] = asyncio.Queue(maxsize=64)
-
-        async def produce() -> None:
-            try:
-                async for delta in self._llm.stream_text(prompt=prompt):
-                    # Always drain to completion; consumer controls whether/when to forward.
-                    await token_q.put(self._guard_text(str(delta)))
-            finally:
-                await token_q.put(None)  # sentinel
-
-        producer_task = asyncio.create_task(produce())
-        filler_task = asyncio.create_task(self._clock.sleep_ms(self._config.vic_model_filler_threshold_ms))
-        timeout_task = asyncio.create_task(self._clock.sleep_ms(self._config.vic_model_timeout_ms))
-
-        chunker = StreamingChunker(
-            max_expected_ms=self._config.vic_max_segment_expected_ms,
-            pace_ms_per_char=self._config.pace_ms_per_char,
-            purpose="CONTENT",
-            interruptible=True,
-            requires_tool_evidence=False,
-            tool_evidence_ids=[],
-            markup_mode=self._config.speech_markup_mode,
-            dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-            digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-        )
-
-        filler_sent = False
-        content_emitted = False
-        digit_violation = False
-        timed_out = False
-
-        try:
-            while True:
-                get_task = asyncio.create_task(token_q.get())
-                wait_set: set[asyncio.Task[Any]] = {get_task, timeout_task}
-                if not filler_sent and not content_emitted:
-                    wait_set.add(filler_task)
-
-                done, _ = await asyncio.wait(wait_set, return_when=asyncio.FIRST_COMPLETED)
-
-                # Prefer tokens over filler if both complete "at the same time".
-                if get_task in done:
-                    delta = get_task.result()
-                    if delta is None:
-                        break
-                    if not delta:
-                        continue
-                    if any(ch.isdigit() for ch in delta):
-                        digit_violation = True
-                        break
-                    segs = chunker.push(delta=delta)
-                    if segs:
-                        content_emitted = True
-                        plan = build_plan(
-                            session_id=self._session_id,
-                            call_id=self._call_id,
-                            turn_id=self._turn_id,
-                            epoch=self._epoch,
-                            created_at_ms=self._clock.now_ms(),
-                            reason="CONTENT",
-                            segments=segs,
-                            source_refs=[],
-                            metrics=self._metrics,
-                        )
-                        await self._emit_plan(plan)
-                else:
-                    # We didn't consume a token; avoid leaking this per-iteration task.
-                    get_task.cancel()
-                    await asyncio.gather(get_task, return_exceptions=True)
-
-                if timeout_task in done:
-                    # Hard timeout: stop consuming and fall back.
-                    self._metrics.inc(VIC["fallback_used_total"], 1)
-                    timed_out = True
-                    break
-
-                if filler_task in done and not filler_sent and not content_emitted:
-                    filler_sent = True
-                    filler_plan = build_plan(
-                        session_id=self._session_id,
-                        call_id=self._call_id,
-                        turn_id=self._turn_id,
-                        epoch=self._epoch,
-                        created_at_ms=self._clock.now_ms(),
-                        reason="FILLER",
-                        segments=micro_chunk_text(
-                            text=self._guard_text(_filler_text(
-                                call_id=self._call_id,
-                                turn_id=self._turn_id,
-                                filler_index=0,
-                                used_phrases=self._used_phrases,
-                            )),
-                            max_expected_ms=self._config.vic_max_segment_expected_ms,
-                            pace_ms_per_char=self._config.pace_ms_per_char,
-                            purpose="FILLER",
-                            interruptible=True,
-                            requires_tool_evidence=False,
-                            tool_evidence_ids=[],
-                            markup_mode=self._config.speech_markup_mode,
-                            dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                            digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-                        ),
-                        source_refs=[],
-                        metrics=self._metrics,
-                    )
-                    await self._emit_plan(filler_plan)
-
-            # Final flush of any remaining buffered content.
-            if not digit_violation and not timed_out:
-                final_segs = chunker.flush_final()
-                if final_segs:
-                    content_emitted = True
-                    plan = build_plan(
-                        session_id=self._session_id,
-                        call_id=self._call_id,
-                        turn_id=self._turn_id,
-                        epoch=self._epoch,
-                        created_at_ms=self._clock.now_ms(),
-                        reason="CONTENT",
-                        segments=final_segs,
-                        source_refs=[],
-                        metrics=self._metrics,
-                    )
-                    await self._emit_plan(plan)
-
-            if (digit_violation or timed_out) and not content_emitted:
-                # If we failed before emitting meaningful content, fall back deterministically.
-                self._metrics.inc(VIC["fallback_used_total"], 1)
-                msg = "Sorry-one moment. Could you say that again?"
-                segs = micro_chunk_text(
-                    text=self._guard_text(msg),
-                    max_expected_ms=self._config.vic_max_segment_expected_ms,
-                    pace_ms_per_char=self._config.pace_ms_per_char,
-                    purpose="CLARIFY",
-                    interruptible=True,
-                    requires_tool_evidence=False,
-                    tool_evidence_ids=[],
-                    markup_mode=self._config.speech_markup_mode,
-                    dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                    digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-                )
-                plan = build_plan(
-                    session_id=self._session_id,
-                    call_id=self._call_id,
-                    turn_id=self._turn_id,
-                    epoch=self._epoch,
-                    created_at_ms=self._clock.now_ms(),
-                    reason="CLARIFY",
-                    segments=segs,
-                    source_refs=[],
-                    metrics=self._metrics,
-                )
-                await self._emit_plan(plan)
-        finally:
-            for t in (producer_task, filler_task, timeout_task):
-                if t is not None and not t.done():
-                    t.cancel()
-            await asyncio.shield(
-                asyncio.gather(producer_task, filler_task, timeout_task, return_exceptions=True)
-            )
-
-    async def _execute_tools_with_latency_masking(self, requests: list[ToolRequest]) -> list[ToolCallRecord]:
-        records: list[ToolCallRecord] = []
-        # Map prefetched records by (name, canonical_args_json).
-        prefetched: dict[tuple[str, str], ToolCallRecord] = {}
-        if self._prefetched_tool_records:
-            for r in self._prefetched_tool_records:
-                try:
-                    args_json = json.dumps(r.arguments, separators=(",", ":"), sort_keys=True)
+                    obj = json.loads(text)
                 except Exception:
-                    args_json = "{}"
-                prefetched[(str(r.name), args_json)] = r
-
-        for req in requests:
-            started = self._clock.now_ms()
-            first_filler_sent = False
-            fillers_sent = 0
-            timeout_at = started + self._config.vic_tool_timeout_ms
-            tool_call_id_val: Optional[str] = None
-            tool_result_sent = False
-
-            async def emit_invocation(tc_id: str, name: str, args_json: str) -> None:
-                nonlocal tool_call_id_val
-                tool_call_id_val = tc_id
-                await self._emit_outbound(
-                    OutboundToolCallInvocation(
-                        response_type="tool_call_invocation",
-                        tool_call_id=tc_id,
-                        name=name,
-                        arguments=args_json,
-                    )
-                )
-
-            async def emit_result(tc_id: str, content: str) -> None:
-                nonlocal tool_result_sent
-                tool_result_sent = True
-                await self._emit_outbound(
-                    OutboundToolCallResult(
-                        response_type="tool_call_result",
-                        tool_call_id=tc_id,
-                        content=str(content),
-                    )
-                )
-
-            # Fast-path: reuse a prefetched tool result if it matches exactly and is OK.
-            try:
-                req_args_json = json.dumps(req.arguments, separators=(",", ":"), sort_keys=True)
-            except Exception:
-                req_args_json = "{}"
-            pre = prefetched.get((str(req.name), req_args_json))
-            if pre is not None and bool(pre.ok):
-                # Emit tool weaving events now (optional but enabled in config) without re-running the tool.
-                await emit_invocation(pre.tool_call_id, pre.name, req_args_json)
-                await emit_result(pre.tool_call_id, pre.content)
-                self._metrics.observe(VIC["tool_call_total_ms"], pre.completed_at_ms - pre.started_at_ms)
-                records.append(pre)
+                    await orch.submit_control({"type": "bad.json", "raw": text})
+                    continue
+                await orch.submit_control(obj)
                 continue
+            b = msg.get("bytes")
+            if b is not None:
+                await orch.submit_audio(bytes(b))
 
-            tool_task = asyncio.create_task(
-                self._tools.invoke(
-                    name=req.name,
-                    arguments=req.arguments,
-                    timeout_ms=self._config.vic_tool_timeout_ms,
-                    started_at_ms=started,
-                    emit_invocation=emit_invocation,
-                    emit_result=emit_result,
-                )
-            )
-
-            timer_task: Optional[asyncio.Task[None]] = None
-            try:
-                # Filler deadlines: first at threshold, second after a longer wait. Deterministic.
-                filler_deadlines = [started + self._config.vic_tool_filler_threshold_ms]
-                if self._config.vic_max_fillers_per_tool > 1:
-                    second_filler_ms = max(
-                        self._config.vic_tool_filler_threshold_ms,
-                        200,
-                    )
-                    filler_deadlines.append(started + self._config.vic_tool_filler_threshold_ms + second_filler_ms)
-
-                rec: Optional[ToolCallRecord] = None
-                while rec is None:
-                    if tool_task.done():
-                        rec = await tool_task
-                        break
-
-                    now = self._clock.now_ms()
-                    if now >= timeout_at:
-                        # Enforce a hard stop independent of tool-task scheduling.
-                        tool_task.cancel()
-                        with contextlib.suppress(BaseException):
-                            await tool_task
-                        if tool_call_id_val is not None and not tool_result_sent:
-                            tool_result_sent = True
-                            await emit_result(tool_call_id_val, "tool_timeout")
-                        rec = ToolCallRecord(
-                            tool_call_id=tool_call_id_val or f"{self._session_id}:tool:timeout",
-                            name=req.name,
-                            arguments=dict(req.arguments),
-                            started_at_ms=started,
-                            completed_at_ms=timeout_at,
-                            ok=False,
-                            content="tool_timeout",
-                        )
-                        break
-
-                    next_filler_deadline: Optional[int] = None
-                    if fillers_sent < self._config.vic_max_fillers_per_tool:
-                        for d in filler_deadlines:
-                            if d > now:
-                                next_filler_deadline = d
-                                break
-
-                    # Next timer is either a filler deadline or the hard timeout.
-                    next_deadline = timeout_at
-                    if next_filler_deadline is not None:
-                        next_deadline = min(next_filler_deadline, timeout_at)
-
-                    timer_task = asyncio.create_task(self._clock.sleep_ms(next_deadline - now))
-                    done, pending = await asyncio.wait(
-                        {tool_task, timer_task}, return_when=asyncio.FIRST_COMPLETED
-                    )
-
-                    if tool_task in done:
-                        # Tool finished first; stop the timer without touching the tool task.
-                        if timer_task in pending:
-                            timer_task.cancel()
-                            with contextlib.suppress(BaseException):
-                                await timer_task
-                        continue
-
-                    # Timer fired.
-                    if next_deadline >= timeout_at:
-                        # Timeout path handled at top of loop.
-                        continue
-
-                    # Filler deadline fired and tool still running: emit a filler.
-                    fillers_sent += 1
-                    filler_plan = build_plan(
-                        session_id=self._session_id,
-                        call_id=self._call_id,
-                        turn_id=self._turn_id,
-                        epoch=self._epoch,
-                        created_at_ms=self._clock.now_ms(),
-                        reason="FILLER",
-                        segments=micro_chunk_text(
-                            text=self._guard_text(_filler_text(
-                                call_id=self._call_id,
-                                turn_id=self._turn_id,
-                                filler_index=fillers_sent - 1,
-                                used_phrases=self._used_phrases,
-                            )),
-                            max_expected_ms=self._config.vic_max_segment_expected_ms,
-                            pace_ms_per_char=self._config.pace_ms_per_char,
-                            purpose="FILLER",
-                            interruptible=True,
-                            requires_tool_evidence=False,
-                            tool_evidence_ids=[],
-                            markup_mode=self._config.speech_markup_mode,
-                            dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                            digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-                        ),
-                        source_refs=[],
-                        metrics=self._metrics,
-                    )
-                    await self._emit_plan(filler_plan)
-
-                    if not first_filler_sent:
-                        first_filler_sent = True
-                        self._metrics.observe(
-                            VIC["tool_call_to_first_filler_ms"], self._clock.now_ms() - started
-                        )
-
-                assert rec is not None
-            finally:
-                if timer_task is not None and not timer_task.done():
-                    timer_task.cancel()
-                    with contextlib.suppress(BaseException):
-                        await timer_task
-                if not tool_task.done():
-                    tool_task.cancel()
-                    with contextlib.suppress(BaseException):
-                        await tool_task
-            self._metrics.observe(VIC["tool_call_total_ms"], rec.completed_at_ms - rec.started_at_ms)
-            if not rec.ok:
-                self._metrics.inc(VIC["tool_failures_total"], 1)
-            records.append(rec)
-        return records
-
-    async def _plan_from_action(self, tool_records: list[ToolCallRecord]) -> SpeechPlan:
-        created_at = self._clock.now_ms()
-        needs_apology = bool(self._action.payload.get("needs_apology", False))
-        needs_empathy = bool(self._action.payload.get("needs_empathy", False))
-        source_refs = [SourceRef(kind="tool_call", id=r.tool_call_id) for r in tool_records]
-
-        # Helper: used for tool-grounded numeric/time statements.
-        tool_ids = [r.tool_call_id for r in tool_records if r.ok]
-
-        def with_empathy(msg: str) -> str:
-            if not needs_empathy:
-                return msg
-            low = (msg or "").lower()
-            if "sorry" in low:
-                return msg
-            if self._config.conversation_profile == "b2b":
-                return f"I hear you. {msg}"
-            return f"I'm sorry about that. {msg}"
-
-        action = self._action.action_type
-
-        if action == "EscalateSafety":
-            msg = with_empathy(str(self._action.payload.get("message", "")))
-            segs = micro_chunk_text(
-                text=self._guard_text(msg),
-                max_expected_ms=self._config.vic_max_segment_expected_ms,
-                pace_ms_per_char=self._config.pace_ms_per_char,
-                purpose="CONTENT",
-                interruptible=True,
-                requires_tool_evidence=False,
-                tool_evidence_ids=[],
-                markup_mode=self._config.speech_markup_mode,
-                dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-            )
-            return build_plan(
-                session_id=self._session_id,
-                call_id=self._call_id,
-                turn_id=self._turn_id,
-                epoch=self._epoch,
-                created_at_ms=created_at,
-                reason="ERROR",
-                segments=segs,
-                source_refs=source_refs,
-                metrics=self._metrics,
-            )
-
-        if action == "Ask":
-            msg = with_empathy(str(self._action.payload.get("message", "")))
-            segs = micro_chunk_text(
-                text=self._guard_text(msg),
-                max_expected_ms=self._config.vic_max_segment_expected_ms,
-                pace_ms_per_char=self._config.pace_ms_per_char,
-                purpose="CLARIFY",
-                interruptible=True,
-                requires_tool_evidence=False,
-                tool_evidence_ids=[],
-                markup_mode=self._config.speech_markup_mode,
-                dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-            )
-            return build_plan(
-                session_id=self._session_id,
-                call_id=self._call_id,
-                turn_id=self._turn_id,
-                epoch=self._epoch,
-                created_at_ms=created_at,
-                reason="CLARIFY",
-                segments=segs,
-                source_refs=source_refs,
-                metrics=self._metrics,
-            )
-
-        if action == "Repair":
-            self._metrics.inc(VIC["repair_attempts_total"], 1)
-            field = str(self._action.payload.get("field", ""))
-            strategy = str(self._action.payload.get("strategy", "ask"))
-            if field == "name" and strategy == "spell":
-                msg = with_empathy("Could you spell your name for me?")
+    async def writer() -> None:
+        while True:
+            out = await orch.next_outbound()
+            if out.kind == "json":
+                await ws.send_text(json.dumps(out.payload, separators=(",", ":"), sort_keys=True))
             else:
-                msg = with_empathy("Sorry, can you say that again?")
-            segs = micro_chunk_text(
-                text=self._guard_text(msg),
-                max_expected_ms=self._config.vic_max_segment_expected_ms,
-                pace_ms_per_char=self._config.pace_ms_per_char,
-                purpose="REPAIR",
-                interruptible=True,
-                requires_tool_evidence=False,
-                tool_evidence_ids=[],
-                markup_mode=self._config.speech_markup_mode,
-                dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-            )
-            return build_plan(
-                session_id=self._session_id,
-                call_id=self._call_id,
-                turn_id=self._turn_id,
-                epoch=self._epoch,
-                created_at_ms=created_at,
-                reason="REPAIR",
-                segments=segs,
-                source_refs=source_refs,
-                metrics=self._metrics,
-            )
+                await ws.send_bytes(out.payload)  # type: ignore[arg-type]
 
-        if action == "Confirm":
-            self._metrics.inc(VIC["confirmations_total"], 1)
-            field = str(self._action.payload.get("field", ""))
-            if field == "phone_last4":
-                last4 = str(self._action.payload.get("phone_last4", ""))
-                msg = with_empathy(f"Just to confirm, your last four are {last4}, right?")
-            elif field == "requested_dt":
-                dt = str(self._action.payload.get("requested_dt", ""))
-                msg = with_empathy(f"Just to confirm, {dt}, right?")
-            else:
-                msg = with_empathy("Just to confirm, is that right?")
+    reader_task = asyncio.create_task(reader())
+    writer_task = asyncio.create_task(writer())
 
-            segs = micro_chunk_text(
-                text=self._guard_text(msg),
-                max_expected_ms=self._config.vic_max_segment_expected_ms,
-                pace_ms_per_char=self._config.pace_ms_per_char,
-                purpose="CONFIRM",
-                interruptible=True,
-                requires_tool_evidence=False,
-                tool_evidence_ids=[],
-                markup_mode=self._config.speech_markup_mode,
-                dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-            )
-            return build_plan(
-                session_id=self._session_id,
-                call_id=self._call_id,
-                turn_id=self._turn_id,
-                epoch=self._epoch,
-                created_at_ms=created_at,
-                reason="CONFIRM",
-                segments=segs,
-                source_refs=source_refs,
-                metrics=self._metrics,
-            )
-
-        if action == "Inform":
-            info_type = str(self._action.payload.get("info_type", ""))
-            if info_type == "identity":
-                msg = str(self._action.payload.get("message", ""))
-                segs = micro_chunk_text(
-                    text=self._guard_text(msg),
-                    max_expected_ms=self._config.vic_max_segment_expected_ms,
-                    pace_ms_per_char=self._config.pace_ms_per_char,
-                    purpose="CONTENT",
-                    interruptible=True,
-                    requires_tool_evidence=False,
-                    tool_evidence_ids=[],
-                    markup_mode=self._config.speech_markup_mode,
-                    dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                    digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-                )
-                return build_plan(
-                    session_id=self._session_id,
-                    call_id=self._call_id,
-                    turn_id=self._turn_id,
-                    epoch=self._epoch,
-                    created_at_ms=created_at,
-                    reason="CONTENT",
-                    segments=segs,
-                    source_refs=source_refs,
-                    disclosure_included=True,
-                    metrics=self._metrics,
-                )
-
-            if info_type == "b2b_identity":
-                msg = with_empathy(str(self._action.payload.get("message", "")))
-                segs = micro_chunk_text(
-                    text=self._guard_text(msg),
-                    max_expected_ms=self._config.vic_max_segment_expected_ms,
-                    pace_ms_per_char=self._config.pace_ms_per_char,
-                    purpose="CONTENT",
-                    interruptible=True,
-                    requires_tool_evidence=False,
-                    tool_evidence_ids=[],
-                    markup_mode=self._config.speech_markup_mode,
-                    dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                    digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                    dash_pause_scope=self._config.dash_pause_scope,
-                )
-                return build_plan(
-                    session_id=self._session_id,
-                    call_id=self._call_id,
-                    turn_id=self._turn_id,
-                    epoch=self._epoch,
-                    created_at_ms=created_at,
-                    reason="CONTENT",
-                    segments=segs,
-                    source_refs=source_refs,
-                    metrics=self._metrics,
-                )
-
-            if info_type == "shell_exec":
-                rec = None
-                for r in tool_records:
-                    if r.name == "run_shell_command":
-                        rec = r
-                        break
-                if rec is None:
-                    msg = with_empathy("I couldn't execute that command in this turn.")
-                else:
-                    try:
-                        p = json.loads(rec.content or "{}")
-                    except Exception:
-                        p = {}
-                    ok = bool(p.get("ok", False))
-                    reason = str(p.get("reason", "unknown"))
-                    runtime = str(p.get("runtime", "local"))
-                    rc = p.get("returncode", "n/a")
-                    out = str(p.get("stdout", "") or "").strip()
-                    err = str(p.get("stderr", "") or "").strip()
-                    preview = out if out else err
-                    preview = preview.replace("\n", " ").strip()
-                    if len(preview) > 140:
-                        preview = preview[:140].rstrip() + "..."
-                    if ok:
-                        msg = with_empathy(
-                            f"Command executed in {runtime} with return code {rc}. "
-                            + (f"Output: {preview}" if preview else "No output.")
-                        )
-                    else:
-                        msg = with_empathy(
-                            f"Command execution failed with reason {reason} and return code {rc}. "
-                            + (f"Output: {preview}" if preview else "No output.")
-                        )
-                segs = micro_chunk_text(
-                    text=self._guard_text(msg),
-                    max_expected_ms=self._config.vic_max_segment_expected_ms,
-                    pace_ms_per_char=self._config.pace_ms_per_char,
-                    purpose="CONTENT",
-                    interruptible=True,
-                    requires_tool_evidence=False,
-                    tool_evidence_ids=[],
-                    markup_mode=self._config.speech_markup_mode,
-                    dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                    digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                    dash_pause_scope=self._config.dash_pause_scope,
-                )
-                return build_plan(
-                    session_id=self._session_id,
-                    call_id=self._call_id,
-                    turn_id=self._turn_id,
-                    epoch=self._epoch,
-                    created_at_ms=created_at,
-                    reason="CONTENT",
-                    segments=segs,
-                    source_refs=source_refs,
-                    metrics=self._metrics,
-                )
-
-            if info_type == "pricing":
-                # Use tool result if available.
-                price_usd: Optional[int] = None
-                for r in tool_records:
-                    if r.name == "get_pricing" and r.ok:
-                        try:
-                            price_usd = int(json.loads(r.content).get("price_usd"))
-                        except Exception:
-                            price_usd = None
-                if price_usd is None:
-                    self._metrics.inc(VIC["fallback_used_total"], 1)
-                    msg = with_empathy(
-                        "I can check pricing for you, but I don't want to guess. What service are you asking about?"
-                    )
-                    segs = micro_chunk_text(
-                        text=self._guard_text(msg),
-                        max_expected_ms=self._config.vic_max_segment_expected_ms,
-                        pace_ms_per_char=self._config.pace_ms_per_char,
-                        purpose="CLARIFY",
-                        interruptible=True,
-                        requires_tool_evidence=False,
-                        tool_evidence_ids=[],
-                        markup_mode=self._config.speech_markup_mode,
-                        dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                        digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-                    )
-                    return build_plan(
-                        session_id=self._session_id,
-                        call_id=self._call_id,
-                        turn_id=self._turn_id,
-                        epoch=self._epoch,
-                        created_at_ms=created_at,
-                        reason="ERROR",
-                        segments=segs,
-                        source_refs=source_refs,
-                        metrics=self._metrics,
-                    )
-
-                ft = FactTemplate(
-                    template=with_empathy("For a general visit, it's [[PRICE]]."),
-                    placeholders={"PRICE": f"${price_usd}"},
-                )
-                msg = await self._maybe_rewrite_fact_template(ft=ft)
-                segs = micro_chunk_text(
-                    text=self._guard_text(msg),
-                    max_expected_ms=self._config.vic_max_segment_expected_ms,
-                    pace_ms_per_char=self._config.pace_ms_per_char,
-                    purpose="CONTENT",
-                    interruptible=True,
-                    requires_tool_evidence=True,
-                    tool_evidence_ids=tool_ids,
-                    max_monologue_expected_ms=self._config.vic_max_monologue_expected_ms,
-                    markup_mode=self._config.speech_markup_mode,
-                    dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                    digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-                )
-                return build_plan(
-                    session_id=self._session_id,
-                    call_id=self._call_id,
-                    turn_id=self._turn_id,
-                    epoch=self._epoch,
-                    created_at_ms=created_at,
-                    reason="CONTENT",
-                    segments=segs,
-                    source_refs=source_refs,
-                    metrics=self._metrics,
-                )
-
-        if action == "OfferSlots":
-            # Parse slots.
-            slots: list[str] = []
-            for r in tool_records:
-                if r.name == "check_availability" and r.ok:
-                    try:
-                        slots = list(json.loads(r.content).get("slots", []))
-                    except Exception:
-                        slots = []
-            if not slots:
-                self._metrics.inc(VIC["fallback_used_total"], 1)
-                msg = with_empathy(
-                    "I'm not seeing openings right now. Do you want to try a different day, or should I have someone call you back?"
-                )
-                segs = micro_chunk_text(
-                    text=self._guard_text(msg),
-                    max_expected_ms=self._config.vic_max_segment_expected_ms,
-                    pace_ms_per_char=self._config.pace_ms_per_char,
-                    purpose="CLARIFY",
-                    interruptible=True,
-                    requires_tool_evidence=False,
-                    tool_evidence_ids=[],
-                    markup_mode=self._config.speech_markup_mode,
-                    dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                    digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-                )
-                return build_plan(
-                    session_id=self._session_id,
-                    call_id=self._call_id,
-                    turn_id=self._turn_id,
-                    epoch=self._epoch,
-                    created_at_ms=created_at,
-                    reason="ERROR",
-                    segments=segs,
-                    source_refs=source_refs,
-                    metrics=self._metrics,
-                )
-
-            ranked_slots = sort_slots_by_acceptance(slots)
-            offer = ranked_slots[:3]  # VIC-G01
-            self._metrics.observe(VIC["offered_slots_count"], len(offer))
-            prefix = str(self._action.payload.get("message_prefix", "")).strip()
-            lead = f"{prefix} " if prefix else ""
-            ft = FactTemplate(
-                template=with_empathy(
-                    f"{lead}I have [[SLOT_1]], [[SLOT_2]], or [[SLOT_3]]. Which works best?"
-                ),
-                placeholders={
-                    "SLOT_1": str(offer[0]),
-                    "SLOT_2": str(offer[1]),
-                    "SLOT_3": str(offer[2]),
-                },
-            )
-            msg = await self._maybe_rewrite_fact_template(ft=ft)
-            segs = micro_chunk_text(
-                text=self._guard_text(msg),
-                max_expected_ms=self._config.vic_max_segment_expected_ms,
-                pace_ms_per_char=self._config.pace_ms_per_char,
-                purpose="CONTENT",
-                interruptible=True,
-                requires_tool_evidence=True,
-                tool_evidence_ids=tool_ids,
-                max_monologue_expected_ms=self._config.vic_max_monologue_expected_ms,
-                markup_mode=self._config.speech_markup_mode,
-                dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-            )
-            return build_plan(
-                session_id=self._session_id,
-                call_id=self._call_id,
-                turn_id=self._turn_id,
-                epoch=self._epoch,
-                created_at_ms=created_at,
-                reason="CONTENT",
-                segments=segs,
-                source_refs=source_refs,
-                metrics=self._metrics,
-            )
-
-        if action == "EndCall":
-            msg = with_empathy(str(self._action.payload.get("message", "Thanks for your time. Goodbye.")))
-            segs = micro_chunk_text(
-                text=self._guard_text(msg),
-                max_expected_ms=self._config.vic_max_segment_expected_ms,
-                pace_ms_per_char=self._config.pace_ms_per_char,
-                purpose="CLOSING",
-                interruptible=True,
-                requires_tool_evidence=False,
-                tool_evidence_ids=[],
-                markup_mode=self._config.speech_markup_mode,
-                dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-                digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-            )
-            return build_plan(
-                session_id=self._session_id,
-                call_id=self._call_id,
-                turn_id=self._turn_id,
-                epoch=self._epoch,
-                created_at_ms=created_at,
-                reason="CLOSING",
-                segments=segs,
-                source_refs=source_refs,
-                metrics=self._metrics,
-            )
-
-        # Default.
-        msg = with_empathy("How can I help?")
-        segs = micro_chunk_text(
-            text=self._guard_text(msg),
-            max_expected_ms=self._config.vic_max_segment_expected_ms,
-            pace_ms_per_char=self._config.pace_ms_per_char,
-            purpose="CLARIFY",
-            interruptible=True,
-            requires_tool_evidence=False,
-            tool_evidence_ids=[],
-            markup_mode=self._config.speech_markup_mode,
-            dash_pause_unit_ms=self._config.dash_pause_unit_ms,
-            digit_dash_pause_unit_ms=self._config.digit_dash_pause_unit_ms,
-                dash_pause_scope=self._config.dash_pause_scope,
-        )
-        return build_plan(
-            session_id=self._session_id,
-            call_id=self._call_id,
-            turn_id=self._turn_id,
-            epoch=self._epoch,
-            created_at_ms=created_at,
-            reason="CLARIFY",
-            segments=segs,
-            source_refs=source_refs,
-            metrics=self._metrics,
-        )
-
-```
-
-### `docs/lead_factory.md`
-
-```
-# Lead Factory (Speed + Ease)
-
-Purpose: build large call-ready lead queues for OpenClaw/Retell from scraped data.
-
-## One-command run
-
-```bash
-make leads INPUT=tests/fixtures/leads_seed.csv
-```
-
-Outputs:
-
-- `data/leads/all_scored.csv`
-- `data/leads/qualified.csv`
-- `data/leads/call_queue.jsonl`
-- `data/leads/summary.json`
-
-## Direct source pull (n8n/HTTP)
-
-```bash
-python3 scripts/lead_factory.py \
-  --source-url https://your-n8n-endpoint/leads \
-  --out-dir data/leads \
-  --min-score 60 \
-  --top-k 500
-```
-
-Expected JSON shape from source URL:
-
-- List of lead objects, or
-- Object with one of: `data`, `items`, `leads`, `records` containing a list.
-
-## Optional push to n8n after scoring
-
-Set:
-
-- `N8N_LEAD_WEBHOOK_URL=https://your-n8n-endpoint/intake`
-
-Then run:
-
-```bash
-make leads INPUT=path/to/your_leads.csv
-```
-
-The script POSTs batches:
-
-```json
-{
-  "batch_size": 25,
-  "leads": [ ...qualified_leads... ]
-}
-```
-
-## ICP filter logic
-
-Qualified leads must satisfy all:
-
-- ad-active signal
-- high-ticket vertical signal (dental/plastic/medspa/etc.)
-- ability-to-pay signal (`5k-10k/mo` fit)
-- score >= `--min-score` (default 60)
-
-
-```
-
-### `docs/retell_ws_brain_contract.md`
-
-```
-# Retell WS Brain Contract
-
-Production-grade “Brain” server implementing Retell’s Custom LLM WebSocket contract with deterministic, VIC-gated behavior.
-
-## Endpoints
-
-- WebSocket: `/ws/{call_id}`
-- WebSocket (alias): `/llm-websocket/{call_id}`
-- Health: `GET /healthz`
-- Metrics: `GET /metrics` (Prometheus text format; dots are exported as underscores)
-
-## Wire Protocol (Authoritative)
-
-All WebSocket frames are JSON text. Inbound messages are discriminated by `interaction_type` and outbound by `response_type`.
-
-Source of truth:
-- `app/protocol.py`
-
-No invented message types are allowed.
-
-## Connection Flow
-
-On connection open, the server sends:
-1. `config` (optional but enabled by default)
-2. A BEGIN `response` stream for `response_id=0`:
-   - greeting chunks (if `BRAIN_SPEAK_FIRST=true`), then terminal `content_complete=true`, OR
-   - an empty terminal `content_complete=true` if waiting for the user
-
-## Keepalive
-
-- Retell may send inbound `ping_pong`. If `RETELL_AUTO_RECONNECT=true`, we respond with outbound `ping_pong` (echo timestamp).
-- The server also sends periodic outbound `ping_pong` on `BRAIN_PING_INTERVAL_MS` when `RETELL_AUTO_RECONNECT=true`.
-- Keepalive is treated as control-plane traffic:
-  - inbound `ping_pong` is prioritized over update-only backlog
-  - outbound `ping_pong` is dequeued ahead of speech traffic
-  - speech send operations can be preempted when control frames are pending
-  - writes use per-frame deadlines; repeated blocked sends trigger session close with reason `WRITE_TIMEOUT_BACKPRESSURE`
-
-Reference: [Retell LLM WebSocket](https://docs.retellai.com/api-references/llm-websocket).  
-Operational contract: auto-reconnect keepalive cadence is ~2s and Retell may close/reconnect after ~5s without keepalive traffic.
-
-### Write-Timeout Contract
-
-- Each outbound frame send is bounded by `WS_WRITE_TIMEOUT_MS`.
-- On timeout:
-  - `ws.write_timeout_total` increments
-  - `keepalive.ping_pong_write_timeout_total` increments for ping writes
-- On repeated timeouts (`WS_MAX_CONSECUTIVE_WRITE_TIMEOUTS`) and if `WS_CLOSE_ON_WRITE_TIMEOUT=true`:
-  - writer emits `TransportClosed(reason=\"WRITE_TIMEOUT_BACKPRESSURE\")`
-  - orchestrator ends session and closes websocket
-  - Retell can reconnect cleanly
-
-### Inbound Parse/Frame Contract
-
-- Reader rejects oversized frames (`WS_MAX_FRAME_BYTES`) with `TransportClosed(reason=\"FRAME_TOO_LARGE\")`.
-- JSON parse failure produces `TransportClosed(reason=\"BAD_JSON\")`.
-- Schema validation failure produces `TransportClosed(reason=\"BAD_SCHEMA\")`.
-- Unknown fields remain forward-compatible via permissive model extras.
-
-## Epoch Cancellation Rule (Hard)
-
-`response_id` is the **epoch**.
-
-When a new `response_required` / `reminder_required` arrives with `response_id=N`:
-- Orchestrator atomically sets current epoch to `N`
-- Cancels any in-flight TurnHandler for older epochs
-- Drops queued outbound messages for stale epochs
-- Writer drops any stale in-flight/queued messages for old epochs
-
-## Same-Epoch Barge-In (Speak-Gen Gate)
-
-When `update_only.turntaking == "user_turn"` arrives while the agent has pending speech:
-- Orchestrator bumps an internal **speak-generation** gate (`speak_gen`)
-- Writer drops/cancels queued/in-flight outbound chunks from the old `speak_gen`
-- Orchestrator immediately emits a terminal empty `response` for the current epoch
-
-This is internal-only; it does **not** change the Retell wire schema.
-
-## Retell Pacing Semantics (Dash Pauses)
-
-Default speech markup mode is **DASH_PAUSE**:
-- pauses are represented by spaced dashes: `" - "`
-- longer pauses use repeated units: `" - " * N` (produces double spaces between dashes)
-- protected digit spans (phone / codes) are rendered read-slowly as: `2 - 1 - 3 - 4`
-
-Reference: [Retell Add Pause](https://docs.retellai.com/build/add-pause).  
-Pause token must keep spaces around `-` (`" - "`).
-
-SSML `<break>` tags are **not** used by default; SSML mode exists only as experimental config.
-
-## Backchanneling
-
-Server-generated backchannels via `agent_interrupt` are considered **experimental** and OFF by default.
-
-Recommended: configure backchanneling in the Retell agent settings (`enable_backchannel`, `backchannel_frequency`, `backchannel_words`).
-
-## Security Contract
-
-- Primary supported hardening: IP/CIDR allowlist.
-- Shared-secret header and query-token checks are optional and OFF by default.
-- Proxy-aware client IP resolution honors `X-Forwarded-For` only when trusted-proxy mode is explicitly enabled and the direct peer is in trusted proxy CIDRs.
-
-References:
-- [Retell Setup WebSocket Server](https://docs.retellai.com/integrate-llm/setup-websocket-server)
-- [Retell Secure Webhook](https://docs.retellai.com/features/secure-webhook)
-
-```
-
-### `docs/retell_ws_brain_playbook.md`
-
-```
-# Retell WS Brain Playbook
-
-## Install
-
-Recommended (virtualenv):
-
-```bash
-python3 -m pip install -e ".[dev]"
-```
-
-Gemini + ops tooling (optional):
-
-```bash
-python3 -m pip install -e ".[gemini,ops]"
-```
-
-## Run
-
-```bash
-python3 -m uvicorn app.server:app --host 0.0.0.0 --port 8080
-```
-
-## WebSocket Endpoints
-
-- `ws://{host}/ws/{call_id}`
-- `ws://{host}/llm-websocket/{call_id}` (alias)
-
-## Retell Platform Semantics (Important)
-
-Pacing/pauses are **dash-based** by default (Retell style), not SSML:
-- pause unit: `" - "`
-- digits read slowly: `2 - 1 - 3 - 4`
-
-Configure with:
-- `SPEECH_MARKUP_MODE=DASH_PAUSE|RAW_TEXT|SSML`
-- `DASH_PAUSE_SCOPE=PROTECTED_ONLY|SEGMENT_BOUNDARY` (default `PROTECTED_ONLY`)
-
-Reference: [Retell Add Pause](https://docs.retellai.com/build/add-pause).  
-Use spaced dash tokens (`" - "`), not compact dashes.
-
-## Gemini (P1)
-
-Enable Gemini streaming NLG (optional):
-- `BRAIN_USE_LLM_NLG=true`
-- `LLM_PROVIDER=gemini`
-
-Gemini Developer API:
-- `GEMINI_API_KEY=...`
-
-Vertex AI:
-- `GEMINI_VERTEXAI=true`
-- `GEMINI_PROJECT=...`
-- `GEMINI_LOCATION=global` (often required for preview models)
-
-Model/tuning:
-- `GEMINI_MODEL=gemini-3-flash-preview`
-- `GEMINI_THINKING_LEVEL=minimal|low|medium|high` (voice default is `minimal`)
-
-## Metrics
-
-- `GET /metrics` returns Prometheus text.
-- Exported names replace dots with underscores (example: `vic.turn_final_to_ack_segment_ms` -> `vic_turn_final_to_ack_segment_ms`).
-
-Key VIC metrics to watch:
-- `vic.turn_final_to_ack_segment_ms` (target <= 300ms in harness)
-- `vic.turn_final_to_first_segment_ms`
-- `vic.barge_in_cancel_latency_ms` (p95 target <= 250ms in harness)
-- `vic.stale_segment_dropped_total` (must increase under preemption tests)
-- `vic.factual_segment_without_tool_evidence_total` (must stay 0)
-- `vic.replay_hash_mismatch_total` (must stay 0)
-
-Keepalive/control-plane metrics:
-- `keepalive.ping_pong_queue_delay_ms` (target p99 < 100ms in non-stalled conditions)
-- `keepalive.ping_pong_missed_deadline_total` (target 0)
-- `keepalive.ping_pong_write_attempt_total` (should track expected ping volume)
-- `keepalive.ping_pong_write_timeout_total` (target 0 in healthy operation)
-- `ws.write_timeout_total` (alert on sustained increase)
-- `ws.close_reason_total.WRITE_TIMEOUT_BACKPRESSURE` (near-zero normal; expected in torture tests)
-- `inbound.queue_evictions_total` (watch for persistent growth under input floods)
-- `memory.transcript_chars_current` / `memory.transcript_utterances_current` (must remain under configured caps)
-- `memory.transcript_compactions_total` (expected to rise in very long calls)
-
-Keepalive reference: [Retell LLM WebSocket](https://docs.retellai.com/api-references/llm-websocket).
-Retell keepalive expectation in production: ping/pong around every 2s, reconnect/close behavior after roughly 5s without traffic.
-
-## Security Hardening (Optional)
-
-Prefer enforcing allowlists/secrets at the reverse proxy. This server supports optional gating:
-- `WS_ALLOWLIST_ENABLED=true`
-- `WS_ALLOWLIST_CIDRS="10.0.0.0/8,192.168.1.0/24"`
-- `WS_TRUSTED_PROXY_ENABLED=true`
-- `WS_TRUSTED_PROXY_CIDRS="10.0.0.0/8"`
-- `WS_SHARED_SECRET_ENABLED=true`
-- `WS_SHARED_SECRET="..."`
-- `WS_SHARED_SECRET_HEADER="X-RETELL-SIGNATURE"`
-- `WS_QUERY_TOKEN="..."`
-- `WS_QUERY_TOKEN_PARAM="token"`
-
-Recommended posture for Retell:
-- use IP allowlisting first (Retell-compatible)
-- keep shared-secret optional/off unless your client can send custom headers
-- trust `X-Forwarded-For` only with trusted-proxy mode and explicit proxy CIDRs
-
-References:
-- [Retell Setup WebSocket Server](https://docs.retellai.com/integrate-llm/setup-websocket-server)
-- [Retell Secure Webhook](https://docs.retellai.com/features/secure-webhook)
-
-## Production Default Baseline
-
-- `BRAIN_INBOUND_QUEUE_MAX=256`
-- `BRAIN_OUTBOUND_QUEUE_MAX=256`
-- `BRAIN_IDLE_TIMEOUT_MS=5000`
-- `BRAIN_PING_INTERVAL_MS=2000`
-- `WS_WRITE_TIMEOUT_MS=400`
-- `WS_CLOSE_ON_WRITE_TIMEOUT=true`
-- `WS_MAX_CONSECUTIVE_WRITE_TIMEOUTS=2`
-- `WS_MAX_FRAME_BYTES=262144`
-- `TRANSCRIPT_MAX_UTTERANCES=200`
-- `TRANSCRIPT_MAX_CHARS=50000`
-- `LLM_PHRASING_FOR_FACTS_ENABLED=false`
-
-Operational note:
-- Priority queues handle ordering under load, but they cannot unblock a stalled kernel send buffer.
-- Write deadlines are the hard escape hatch. When exceeded repeatedly, we close intentionally and rely on Retell reconnect.
-- This close-on-timeout behavior is correct for real backpressure: without it, a blocked writer can deadlock keepalive and cause prolonged wedge behavior.
-
-## Load Testing
-
-Deterministic in-memory acceptance:
-
-```bash
-python3 -m pytest -q tests/acceptance/at_vic_100_sessions.py
-python3 -m pytest -q tests/acceptance/at_no_leak_30min.py
-python3 scripts/load_test.py --sessions 100
-```
-
-Real-socket WebSocket load test (run server first):
-
-```bash
-python3 scripts/ws_load_test.py --sessions 25 --turns 2
-python3 scripts/ws_load_test.py --sessions 10 --turns 2 --torture-pause-reads-ms 1500 --assert-keepalive
-python3 scripts/ws_load_test.py --sessions 10 --duration-sec 300 --turn-interval-ms 250 --torture-pause-reads-ms 1500 --torture-pause-reads-every-turn --assert-keepalive
-python3 scripts/metrics_summary.py --metrics-url http://127.0.0.1:8080/metrics
-bash scripts/ci_hard_gates.sh
-```
-
-## Real Retell Call Validation Checklist
-
-1. Configure Retell to connect to `wss://.../llm-websocket/{call_id}` (or `/ws/{call_id}`).
-2. On connect, confirm:
-   - server sends `config`
-   - server sends BEGIN `response` stream for `response_id=0` (greeting or empty terminal)
-3. Confirm keepalive:
-   - Retell sends inbound `ping_pong`
-   - server echoes outbound `ping_pong` promptly (timestamp echoed)
-4. Confirm epoch cancellation:
-   - send `response_required` id=N then id=N+1 mid-stream
-   - no further chunks for id=N should be spoken after id=N+1 starts
-5. Confirm barge-in within epoch:
-   - while agent speaking, user interrupts -> Retell sends `update_only.turntaking=user_turn`
-   - server stops immediately (speak-gen gate)
-6. Confirm pacing audibly:
-   - digits are read slowly: `4 - 5 - 6 - 7`
-   - default output contains no SSML `<break>` tags
-7. Backchanneling:
-   - enable backchannels in Retell agent config (recommended)
-   - server does not emit `agent_interrupt` backchannels by default
-
-```
-
-### `docs/revenue_ops_loop.md`
-
-```
-# Revenue Ops Loop
-
-This loop is designed to stay simple and executable every day.
-
-## Objective Function
-
-- Maximize: `email_capture_rate`
-- Minimize: `time_to_email_capture`, `turns_to_capture`, `first_response_latency`
-
-## One-command run
-
-```bash
-make money
-```
-
-That runs:
-1. `scripts/retell_learning_loop.py`
-2. `scripts/revenue_ops_loop.py`
-3. `scripts/dogfood_scorecard.py`
-
-## Metrics source
-
-`/data/retell_calls/call_*/call.json`
-
-The loop reads `transcript_object` and latency fields to compute:
-
-- `email_capture_rate`
-- `direct_email_capture_rate`
-- `time_to_email_capture_p50/p95`
-- `turns_to_capture_p50/p95`
-- `first_response_latency_p50/p95`
-- objection counts
-- `first_response_latency_band` where:
-  - `<700ms` => `excellent`
-  - `700-999ms` => `good`
-  - `1000-1499ms` => `warning`
-  - `1500ms+` => `poor`
-
-## Output
-
-- `data/revenue_ops/latest.json`
-- `data/revenue_ops/latest.md`
-
-## Optional n8n push
-
-Set:
-
-- `N8N_OUTCOME_WEBHOOK_URL=https://...`
-
-Then run:
-
-```bash
-python3 scripts/revenue_ops_loop.py --push-webhook "$N8N_OUTCOME_WEBHOOK_URL"
-```
-
-```
-
-### `docs/voice_interaction_contract.md`
-
-```
-# Voice Interaction Contract (VIC) v1.0
-
-See `tests/test_vic_contract.py` for deterministic invariants enforced in CI.
-
-Intermediate artifacts:
-- `SpeechPlan` / `SpeechSegment` in `app/speech_planner.py`
-- `TraceEvent` in `app/trace.py`
-
-## Retell-Accurate Output Semantics
-
-Default speech markup mode is **DASH_PAUSE**:
-- pause token is spaced dashes: `" - "`
-- longer pauses repeat the unit (double spaces appear between dashes)
-- protected digit spans (phone / codes) are rendered read-slowly as: `2 - 1 - 3 - 4`
-- default pause scope is `PROTECTED_ONLY` to avoid choppy generic speech
-- optional `SEGMENT_BOUNDARY` scope can re-enable explicit boundary pauses
-
-Reference: [Retell Add Pause](https://docs.retellai.com/build/add-pause).  
-Dash pause behavior requires spaces around `-` (`" - "`).
-
-SSML `<break>` tags are supported only as an experimental mode and are not used by default.
-
-Deterministic variation:
-- ACK/filler phrase selection is hash-based (`call_id`, `turn_id`, segment kind/index)
-- this adds conversational variation without randomness and preserves replay determinism
-
-Fact-preserving phrasing guard (default off):
-- `LLM_PHRASING_FOR_FACTS_ENABLED=false` keeps factual turns deterministic/tool-rendered.
-- When enabled, factual phrasing uses placeholder-locked templates and validation:
-  - placeholders must survive unchanged
-  - numeric literals outside placeholders are rejected
-  - violations fall back to deterministic templates and increment `llm.fact_guard_fallback_total`
-
-Memory compaction contract:
-- transcript memory is bounded by `TRANSCRIPT_MAX_UTTERANCES` and `TRANSCRIPT_MAX_CHARS`
-- older history compacts into a deterministic summary blob
-- summary keeps minimal PII only (for phone data, only last4)
-
-Optional Retell normalization:
-- `RETELL_NORMALIZE_FOR_SPEECH=true` can improve consistency for numbers/currency/dates
-- tradeoff: may add latency (typically around ~100ms)
-
-## Backchanneling Policy
-
-Server-generated backchannels via `agent_interrupt` are OFF by default because `agent_interrupt`
-is an interruption primitive. Recommended backchannels are configured in the Retell agent itself.
-
-```
-
-### `orchestration/eve-v7-harness-run.rb`
-
-```
-#!/usr/bin/env ruby
-require 'yaml'
-
-orch_file = ARGV[0] || 'orchestration/eve-v7-orchestrator.yaml'
-test_file = ARGV[1] || 'orchestration/eve-v7-test-cases.yaml'
-orch = YAML.load_file(orch_file)
-tests = YAML.load_file(test_file)
-
-states = orch.dig('flow', 'states')
-start = orch.dig('flow', 'start')
-contracts = orch['contracts'].map { |c| c['name'] }
-regex_rules = {}
-orch.dig('parser', 'regex')&.each do |name, pattern|
-  begin
-    regex_rules[name.to_sym] = Regexp.new(pattern, Regexp::IGNORECASE)
-  rescue RegexpError => e
-    puts "Invalid regex #{name}: #{e.message}"
-    exit 1
-  end
-end
-
-DNC_PATTERN = /\b(do not call|dont call|stop calls|remove from list|delete my number|unsubscribe|opt out|off the list)\b/i
-
-def infer_intents(text, regex_rules)
-  intents = {}
-  intents[:hostile] = !!(text =~ /hang up|you idiot|f\*+ck|damn|shut up|absolute dumpster fire|trash/i)
-  intents[:dnc] = !!(text =~ DNC_PATTERN)
-  intents[:answering_service] = !!(text =~ /answering service|call center|virtual assistant|\bva\b/i)
-  intents[:is_sales] = !!(text =~ /are you a sales call|this is a sales|marketing agency|sales call/i)
-  intents[:info_email] = !!(text =~ /info@|front desk|frontdesk|generic inbox/i)
-  intents[:ai_disclosure] = !!(text =~ /are you a robot|are you ai|are you a bot|is this a bot|is this ai/i)
-  intents[:skeptical] = !!(text =~ /not interested|not buying|not going to send|sounds like spam/i)
-  intents[:wants_sms] = !!(text =~ /text|sms|message/i)
-  intents[:yes] = !!(text =~ /\byes\b|\byeah\b|\byep\b/i)
-  intents[:no] = !!(text =~ /\bno\b|\bnah\b|\bnope\b/i)
-  intents[:accept_send] = !!(text =~ /send|okay|sure|yes|yeah/i)
-  intents[:email] = !!(text =~ regex_rules[:email]) if regex_rules[:email]
-  intents[:user_provides_direct_email] = intents[:email]
-  intents
-end
-
-def evaluate_transition(state_def, intents, user_text)
-  transitions = state_def['transitions'] || []
-  fallback = nil
-  transitions.each do |t|
-    cond = t['when']
-    case cond
-    when 'sentiment == hostile'
-      return t['goto'] if intents[:hostile]
-    when 'user_intent == ai_disclosure'
-      return t['goto'] if intents[:ai_disclosure]
-    when 'user_intent == dnc'
-      return t['goto'] if intents[:dnc]
-    when 'user_intent in [skeptical, is_sales]'
-      return t['goto'] if intents[:skeptical] || intents[:is_sales]
-    when 'user_intent == answering_service'
-      return t['goto'] if intents[:answering_service]
-    when 'user_intent == info_email'
-      return t['goto'] if intents[:info_email]
-    when 'user_intent == user_accepts_send'
-      return t['goto'] if intents[:accept_send]
-    when 'user_intent == user_wants_sms'
-      return t['goto'] if intents[:wants_sms]
-    when 'user_intent == user_provides_direct_email'
-      return t['goto'] if intents[:user_provides_direct_email]
-    when 'user_reply in [yes, true, admits_pain]'
-      return t['goto'] if intents[:yes] && !intents[:no]
-    when 'user_reply in [no, denies, not_like_that]'
-      return t['goto'] if intents[:no] || intents[:skeptical]
-    when true, 'true'
-      fallback = t['goto']
-    end
-  end
-  fallback
-end
-
-def advance_goto_chain(state, states, transitions, path, tools_seen)
-  loop do
-    state_def = states[state]
-    break unless state_def
-
-    tool_name = state_def['tool']
-    tools_seen << tool_name if tool_name
-
-    goto_state = state_def['goto']
-    break unless goto_state
-
-    transitions << [state, goto_state]
-    state = goto_state
-    path << state
-  end
-  state
-end
-
-cases = tests['tests'] || []
-pass = 0
-
-puts "Harness contract: #{orch_file}"
-puts "Test set:    #{test_file}"
-puts "States:      #{states.keys.size}, start=#{start}"
-puts "Contracts:   #{contracts.join(', ')}"
-puts
-
-cases.each do |tc|
-  state = tc['expected_start_state'] || start
-  path = [state]
-  transitions = []
-  tools_seen = []
-  ok = true
-
-    (tc['turns'] || []).each do |turn|
-      if turn['user']
-        intents = infer_intents(turn['user'], regex_rules)
-        next_state = evaluate_transition(states[state], intents, turn['user'])
-        if next_state.nil?
-          next_state = state
-        end
-        transitions << [state, next_state]
-        state = next_state
-        state = advance_goto_chain(state, states, transitions, path, tools_seen)
-      elsif turn['assistant_state']
-        expected_state = turn['assistant_state']
-        if state != expected_state
-          transitions << [state, expected_state]
-          path << expected_state if path.last != expected_state
-        end
-        state = expected_state
-        state = advance_goto_chain(state, states, transitions, path, tools_seen)
-        if states[state].nil?
-          ok = false
-          puts "  invalid_assistant_state=#{state} in #{tc['id']}"
-        end
-      end
-    end
-
-  if tc['expected_transitions']
-    tc['expected_transitions'].each do |tr|
-      found = transitions.any? { |s, t| s == tr['from'] && t == tr['to'] }
-      ok = false unless found
-    end
-  end
-
-  if tc['expected_tool_calls']
-    tc['expected_tool_calls'].each do |call|
-      call.keys.each do |tool|
-        found = tools_seen.include?(tool)
-        ok = false unless found
-      end
-    end
-  end
-
-  if tc['expected_final_state']
-    ok = false unless state == tc['expected_final_state']
-  end
-
-  pass += 1 if ok
-  puts "#{tc['id']} #{ok ? 'PASS' : 'FAIL'}"
-  puts "  path: #{path.join(' -> ')}"
-  if tc['expected_transitions']
-    tc['expected_transitions'].each do |tr|
-      found = transitions.any? { |s, t| s == tr['from'] && t == tr['to'] }
-      status = found ? 'OK' : 'MISSING'
-      puts "  transition #{tr['from']} -> #{tr['to']} #{status}"
-    end
-  end
-  if tc['expected_tool_calls']
-    tc['expected_tool_calls'].each do |call|
-      call.keys.each do |tool|
-        found = tools_seen.include?(tool)
-        status = found ? 'OK' : 'MISSING'
-        puts "  tool #{tool} #{status}"
-      end
-    end
-  end
-  puts
-end
-
-puts "Summary: #{pass}/#{cases.size} test groups passing"
-
-```
-
-### `orchestration/eve-v7-orchestrator.yaml`
-
-```
-version: "7.0"
-id: eve_medspa_apex_predator_v7
-name: EVE MedSpa Apex Predator Orchestrator
-mode: deterministic_state_machine
-
-agent:
-  id: eve_medspa_apex_predator_v7
-  name: Cassidy
-  role: Clinical Intake Auditor
-  voice_profile:
-    model: soft_authoritative_female
-    pace: 0.92
-    interruption_sensitivity: MAX
-    post_turn_silence_ms: 1200
-    sentiment_latency_ms:
-      normal: 1200
-      hostile: 2000
-
-contracts:
-  - name: send_evidence_package
-    description: Trigger evidence delivery (email + optional SMS)
-    parameters:
-      type: object
-      required:
-        - recipient_email
-        - delivery_method
-        - artifact_type
-      properties:
-        recipient_email:
-          type: string
-          format: email
-        delivery_method:
-          type: string
-          enum:
-            - EMAIL_ONLY
-            - EMAIL_AND_SMS
-        artifact_type:
-          type: string
-          enum:
-            - AUDIO_LINK
-            - FAILURE_LOG_PDF
-  - name: mark_dnc_compliant
-    description: Adds number to Do-Not-Call list
-    parameters:
-      type: object
-      required:
-        - reason
-      properties:
-        reason:
-          type: string
-          enum:
-            - USER_REQUEST
-            - WRONG_NUMBER
-            - HOSTILE
-
-compliance:
-  disclosure_if_asked_about_ai: "I'm Cassidy, an automated intake auditor running a capacity test for the clinic."
-  dnc_handler:
-    tool: mark_dnc_compliant
-    default_reason: USER_REQUEST
-  explicit_consent:
-    stop_signal: STOP
-
-state_variables:
-  required:
-    - clinic_name
-    - city
-    - business_name
-    - test_timestamp
-    - evidence_type
-    - contact_number
-  defaults:
-    artifact_type: FAILURE_LOG_PDF
-    missed_treatment: "$1,500 Botox or Morpheus8 consult"
-    emr_system: "Zenoti, Boulevard, or MangoMint"
-
-parser:
-  extraction:
-    clinic_name:
-      sources:
-        - session
-      required: true
-    city:
-      sources:
-        - session
-      required: true
-    business_name:
-      sources:
-        - session
-      required: true
-    test_timestamp:
-      sources:
-        - session
-      required: true
-    evidence_type:
-      sources:
-        - session
-      required: true
-    recipient_email:
-      sources:
-        - session
-        - extracted_entity
-      required: false
-    artifact_type:
-      sources:
-        - evidence_type
-      transform: |
-        if evidence_type in ["AUDIO", "AUDIO_LINK", "VOICE", "call_recording"] -> AUDIO_LINK
-        else -> FAILURE_LOG_PDF
-  regex:
-    email: '(?i)\\b[\\w.%+-]+@[\\w.-]+\\.[a-z]{2,}\\b'
-    dnc: '(?i)\\b(do not call|stop calls|remove from list|delete my number|unsubscrib|opt out)\\b'
-    ai_disclosure: '(?i)\\b(are you a robot|are you ai|are you a bot|is this a bot|is this ai)\\b'
-    hostile: '(?i)\\b(hang up|you idiot|f[\\*]*ck|damn|shut up|you are )\\b'
-    answering_service: '(?i)\\b(answering service|call center|virtual assistant|VA)\\b'
-    is_sales: '(?i)\\b(are you a sales call|this is a sales|sales call|marketing agency)\\b'
-    info_email: '(?i)\\b(info@|front desk|frontdesk|generic inbox)\\b'
-    skeptical: '(?i)\\b(not interested|not buying|not going to send|sounds like spam)\\b'
-
-intent_labels:
-  - name: hostile
-    source: "regex+llm"
-    rules:
-      - type: regex
-        value: dnc
-      - type: regex
-        value: hostile
-      - type: llm_sentiment
-        value: NEGATIVE_HIGH
-  - name: dnc
-    source: "regex+llm"
-    rules:
-      - type: regex
-        value: dnc
-      - type: llm_intent
-        value: do_not_contact
-  - name: ai_disclosure
-    source: regex
-    rules:
-      - type: regex
-        value: ai_disclosure
-  - name: answering_service
-    source: "regex+llm"
-    rules:
-      - type: regex
-        value: answering_service
-      - type: llm_intent
-        value: has_call_handling
-  - name: is_sales
-    source: regex
-    rules:
-      - type: regex
-        value: is_sales
-  - name: info_email
-    source: regex
-    rules:
-      - type: regex
-        value: info_email
-  - name: skeptical
-    source: regex
-    rules:
-      - type: regex
-        value: skeptical
-  - name: user_provides_direct_email
-    source: regex
-    rules:
-      - type: regex
-        value: email
-    capture: extracted_email
-  - name: user_wants_sms
-    source: llm_intent
-    rules:
-      - type: llm_intent
-        value: wants_sms
-  - name: user_accepts_send
-    source: llm_intent
-    rules:
-      - type: llm_intent
-        value: accepts
-
-flow:
-  start: opener
-
-  states:
-    opener:
-      say: |
-        Hi... this is Cassidy.
-        I'm actually looking at a clinical intake audit for {{clinic_name}}, and to be honest, I feel terrible if I'm catching you in the middle of checking out a patient?
-      wait_ms: 1200
-      transitions:
-        - when: sentiment == hostile
-          goto: hostility_handler
-        - when: user_intent == ai_disclosure
-          goto: disclose_ai
-        - when: user_intent == dnc
-          goto: dnc
-        - when: true
-          goto: discovery
-
-    disclose_ai:
-      say: "{{compliance.disclosure_if_asked_about_ai}}"
-      goto: discovery
-
-    hostility_handler:
-      say: |
-        It sounds like today is an absolute dumpster fire at the front desk.
-        Should I just delete this lost patient log and let you go?
-      latency_ms: 2000
-      goto: discovery
-
-    discovery:
-      say: |
-        Okay, thanks for taking a second.
-        I was reviewing a capacity test we ran on your phone lines {{test_timestamp}}.
-        A call for a {{missed_treatment}} completely dropped into voicemail.
-        Quick question—when you unlock the clinic on Monday mornings, are you usually walking into a massive pile of weekend voicemails or is your front desk system airtight?
-      wait_ms: 1200
-      transitions:
-        - when: sentiment == hostile
-          goto: hostility_handler
-        - when: user_reply in [yes, true, admits_pain]
-          goto: pain_admitted
-        - when: user_reply in [no, denies, not_like_that]
-          goto: pain_denied
-        - when: user_intent == dnc
-          goto: dnc
-        - when: true
-          goto: pain_denied
-
-    pain_admitted:
-      say: |
-        That makes sense. The Monday mess is where high-ticket consults often fall through the cracks.
-        I have the {{evidence_type}} file for that dropped patient.
-        I don't want to add to your plate right now—would it be a ridiculous idea to email this log to the Practice Manager so they can see the gap?
-      wait_ms: 1200
-      transitions:
-        - when: user_intent in [skeptical, is_sales]
-          goto: objection_sales
-        - when: user_intent == answering_service
-          goto: objection_answering_service
-        - when: user_intent == info_email
-          goto: objection_info_email
-        - when: user_intent == user_accepts_send
-          goto: send_package_prompt
-        - when: user_intent == dnc
-          goto: dnc
-        - when: true
-          goto: send_package_prompt
-
-    pain_denied:
-      say: |
-        That's actually impressive.
-        Most aesthetic clinics in {{city}} struggle with that.
-        Our data shows 73% of patients that hit voicemail on high-ticket procedures often stop replying and go elsewhere.
-        I have the {{evidence_type}} of where your specific line failed.
-        Would you be opposed to me sending it over to the Medical Director as proof the system leaked?
-      transitions:
-        - when: user_intent in [skeptical, is_sales]
-          goto: objection_sales
-        - when: user_intent == answering_service
-          goto: objection_answering_service
-        - when: user_intent == info_email
-          goto: objection_info_email
-        - when: user_intent == user_accepts_send
-          goto: send_package_prompt
-        - when: user_intent == dnc
-          goto: dnc
-        - when: true
-          goto: send_package_prompt
-
-    objection_answering_service:
-      say: |
-        I hear you. Most 7-figure clinics do.
-        But does your service collect booking deposit and schedule into {{emr_system}},
-        or does it just capture name and number for follow-up call?
-        Right, that message gap is exactly where patients drift away. Should I send it to keep this visible?
-      transitions:
-        - when: true
-          goto: send_package_prompt
-
-    objection_info_email:
-      say: |
-        I can definitely try that inbox.
-        Generic front-desk inboxes often trigger spam filters on audio or logs, so leadership may not see revenue impact.
-        Is there a direct clinical ops or manager email you want me to use instead?
-      transitions:
-        - when: user_intent == user_provides_direct_email
-          set:
-            recipient_email: "{{extracted_email}}"
-          goto: send_package_prompt
-        - when: true
-          goto: send_package_prompt
-
-    objection_sales:
-      say: |
-        It sounds like you get absolutely hammered by marketing agencies, so I get why you're asking.
-        I'm not an agency. I'm a diagnostician sending a missed-lead report.
-        If you are fully booked and don't care about this dropped consult, I can delete it right now.
-        ...completely up to you?
-      transitions:
-        - when: true
-          goto: send_package_prompt
-
-    send_package_prompt:
-      ask: |
-        Great. I can route this now.
-        If I send one evidence copy, should it be email only or email + SMS to make sure it lands?
-      transitions:
-        - when: user_intent == user_wants_sms
-          set:
-            delivery_method: EMAIL_AND_SMS
-          goto: send_package
-        - when: true
-          set:
-            delivery_method: EMAIL_ONLY
-          goto: send_package
-
-    send_package:
-      precondition:
-        require:
-          - variable: recipient_email
-            missing_goto: request_recipient_email
-          - variable: artifact_type
-            assign: "{{artifact_type}}"
-            default: FAILURE_LOG_PDF
-      tool: send_evidence_package
-      tool_args:
-        recipient_email: "{{recipient_email}}"
-        delivery_method: "{{delivery_method}}"
-        artifact_type: "{{artifact_type}}"
-      on_success:
-        say: |
-          Perfect. I'm routing that now.
-          Would it be a terrible idea if I also send a short text with the exact drop timestamp so your team can review it without digging through voicemail?
-      on_failure:
-        say: |
-          I couldn’t send that package in this attempt.
-          Share the direct manager email and I’ll retry immediately.
-      transitions:
-        - when: true
-          goto: done
-
-    request_recipient_email:
-      ask: |
-        I can’t route it until I have a direct manager email.
-        You can send it to me now and I’ll retry immediately.
-      transitions:
-        - when: user_intent == user_provides_direct_email
-          set:
-            recipient_email: "{{extracted_email}}"
-            delivery_method: "{{delivery_method}}"
-            artifact_type: "{{artifact_type}}"
-          goto: send_package
-        - when: true
-          goto: request_recipient_email
-
-    dnc:
-      say: |
-        Done. You’re off the list.
-        For audit notes, do you want me to log 'not taking consults' or 'bad time to reach'?
-      tool: mark_dnc_compliant
-      tool_args:
-        reason: USER_REQUEST
-      goto: done
-
-    done:
-      say: |
-        Appreciate you taking the time.
-        If anything changes, reply STOP to stop contact.
-
-assurance_checks:
-  required_before_send:
-    - assert: recipient_email is present
-    - assert: delivery_method in [EMAIL_ONLY, EMAIL_AND_SMS]
-    - assert: artifact_type in [AUDIO_LINK, FAILURE_LOG_PDF]
-  guardrails:
-    - trigger: dnc intent detected
-      action: mark_dnc_compliant(USER_REQUEST)
-    - trigger: hostile sentiment > 0.85
-      action: route_to hostility_handler and raise latency to 2000
-    - trigger: ai_disclosure request
-      action: disclose policy
-    - trigger: no explicit consent + user says STOP
-      action: route_to dnc
-
-```
-
-### `orchestration/eve-v7-runtime-harness.md`
-
-```
-# EVE V7.0 Runtime Harness
-
-This package provides a deterministic runtime binding layer for Retell/Vapi while keeping the orchestrator source-of-truth in:
-
-- `orchestration/eve-v7-orchestrator.yaml`
-
-## 1) Retell binding (reference payload)
-
-Use `orchestration/eve-v7-orchestrator.yaml` as the policy source and generate tool schemas from `contracts`.
-
-```json
-{
-  "agent": {
-    "name": "eve_medspa_apex_predator_v7",
-    "model": "gpt-4o-mini",
-    "system_prompt_source": "orchestration/eve-v7-orchestrator.yaml#flow",
-    "voice": {
-      "model": "soft_authoritative_female",
-      "speed": 0.92,
-      "post_processing": {
-        "post_turn_silence_ms": 1200
-      }
-    }
-  },
-  "functions": [
-    {
-      "name": "send_evidence_package",
-      "description": "Triggers the Double-Tap delivery (Email + optional SMS) to the clinic.
-",
-      "parameters": {
-        "recipient_email": { "type": "string", "format": "email" },
-        "delivery_method": { "type": "string", "enum": ["EMAIL_ONLY", "EMAIL_AND_SMS"] },
-        "artifact_type": { "type": "string", "enum": ["AUDIO_LINK", "FAILURE_LOG_PDF"] }
-      },
-      "required": ["recipient_email", "delivery_method", "artifact_type"]
-    },
-    {
-      "name": "mark_dnc_compliant",
-      "description": "Immediate Do-Not-Call add.",
-      "parameters": {
-        "reason": {
-          "type": "string",
-          "enum": ["USER_REQUEST", "WRONG_NUMBER", "HOSTILE"]
-        }
-      },
-      "required": ["reason"]
-    }
-  ],
-  "state_machine": "orchestration/eve-v7-orchestrator.yaml"
-}
-```
-
-## 2) Vapi binding (reference payload)
-
-Use the same state machine JSON and function schema for Vapi tool calls.
-
-```json
-{
-  "assistant": {
-    "name": "Cassidy",
-    "voice": "soft_authoritative_female",
-    "temperature": 0.2,
-    "max_delay_ms": 1200,
-    "system": "orchestration/eve-v7-orchestrator.yaml#flow",
-    "tools": "orchestration/eve-v7-orchestrator.yaml#contracts"
-  },
-  "dialer": {
-    "initial_state": "opener"
-  }
-}
-```
-
-## 3) Runtime contract guards
-
-1. Bind these as non-LLM hard checks before any tool invocation:
-   - `recipient_email` is required for `send_evidence_package`
-   - `delivery_method` must be enum `EMAIL_ONLY` or `EMAIL_AND_SMS`
-   - `artifact_type` must be enum `AUDIO_LINK` or `FAILURE_LOG_PDF`
-
-2. Sentiment hooks:
-   - `hostile` -> route to `hostility_handler` and set `latency_ms` to 2000
-   - `ai_disclosure` -> route to `disclose_ai`
-   - `dnc` -> route to `dnc`
-
-## 4) Local deterministic execution harness
-
-Use `orchestration/eve-v7-harness-run.rb` to simulate test cases without the platform runtime.
-
-```bash
-ruby orchestration/eve-v7-harness-run.rb orchestration/eve-v7-orchestrator.yaml orchestration/eve-v7-test-cases.yaml
-```
-
-This prints per-case transition path and contract/tool expectation checks.
-
-```
-
-### `orchestration/eve-v7-test-cases.yaml`
-
-```
-tests:
-  - id: TC-01
-    name: Hostile interruption
-    scenario: User interrupts with escalation and asks to stop calls
-    expected_start_state: opener
-    turns:
-      - user: "This is a complete waste of time, take me off the list now"
-      - expected: dnc
-    expected_transitions:
-      - from: opener
-        to: dnc
-    expected_tool_calls:
-      - mark_dnc_compliant:
-          reason: USER_REQUEST
-    expected_final_state: done
-
-  - id: TC-02
-    name: Answering service objection
-    scenario: User says they use an answering service
-    turns:
-      - user: "We have an answering service that answers for us"
-      - user: "Our answering service takes name and number"
-      - assistant_state: objection_answering_service
-      - user: "I guess okay"
-      - assistant_state: send_package_prompt
-    expected_transitions:
-      - from: opener
-        to: discovery
-      - from: discovery
-        to: pain_denied
-      - from: pain_denied
-        to: objection_answering_service
-      - from: objection_answering_service
-        to: send_package_prompt
-    expected_tool_calls: []
-
-  - id: TC-03
-    name: Sales suspicion handling
-    scenario: User challenges if this is a sales call
-    turns:
-      - user: "Are you a sales call?"
-      - user: "It's handled by a marketing agency"
-      - assistant_state: objection_sales
-      - user: "No, don't send it"
-      - assistant_state: send_package_prompt
-    expected_transitions:
-      - from: opener
-        to: discovery
-      - from: discovery
-        to: pain_denied
-      - from: pain_denied
-        to: objection_sales
-      - from: objection_sales
-        to: send_package_prompt
-    expected_guardrails:
-      - no_hard_pressure
-      - no_deceptive_claims
-
-  - id: TC-04
-    name: Email routing override
-    scenario: User gives manager email in response to generic mailbox objection
-    turns:
-      - user: "Send it to info@clinic.com"
-      - assistant_state: objection_info_email
-      - user: "Use manager@clinic.com instead"
-      - assistant_state: request_recipient_email
-      - user: "Send to clinicalops@clinic.com"
-      - assistant_state: send_package
-    expected_tool_calls:
-      - send_evidence_package:
-          required_args:
-            recipient_email: clinicalops@clinic.com
-
-  - id: TC-05
-    name: Short reply latency
-    scenario: User responds with one-word confirmation
-    turns:
-      - user: "yes"
-      - assistant_state: pain_admitted
-    expected_transitions:
-      - from: opener
-        to: discovery
-      - from: discovery
-        to: pain_admitted
-
-  - id: TC-06
-    name: Fallback route
-    scenario: Unclear answer after discovery
-    turns:
-      - user: "maybe maybe"
-      - user: "uhhh send"
-      - assistant_state: send_package_prompt
-    expected_transitions:
-      - from: discovery
-        to: pain_denied
-      - from: pain_denied
-        to: send_package_prompt
-
-```
-
-### `scripts/b2b_switch_to_ws_brain.sh`
-
-```
-#!/usr/bin/env bash
-set -euo pipefail
-
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
-
-if [[ ! -f "$ENV_FILE" ]]; then
-  echo "Missing env file: $ENV_FILE" >&2
-  exit 2
-fi
-
-set -a
-# shellcheck disable=SC1090
-source "$ENV_FILE"
-set +a
-
-: "${RETELL_API_KEY:?RETELL_API_KEY is required}"
-: "${B2B_AGENT_ID:?B2B_AGENT_ID is required}"
-
-# Base URL Retell should connect to. Retell will append /{call_id}.
-# Example: wss://YOUR_DOMAIN/llm-websocket
-BRAIN_WSS_BASE_URL="${BRAIN_WSS_BASE_URL:-${RETELL_LLM_WEBSOCKET_BASE_URL:-}}"
-: "${BRAIN_WSS_BASE_URL:?Set BRAIN_WSS_BASE_URL (e.g. wss://YOUR_DOMAIN/llm-websocket)}"
-
-python3 - <<'PY'
-import json
-import os
-import subprocess
-import sys
-from datetime import datetime
-from pathlib import Path
-
-api = os.environ["RETELL_API_KEY"].strip()
-agent_id = os.environ["B2B_AGENT_ID"].strip()
-base_url = os.environ["BRAIN_WSS_BASE_URL"].strip().rstrip("/")
-
-root = Path(__file__).resolve().parents[1]
-backup_dir = root / "data" / "retell_agent_backups"
-backup_dir.mkdir(parents=True, exist_ok=True)
-
-def curl_json(args: list[str]) -> dict:
-    out = subprocess.check_output(args, text=True)
-    return json.loads(out)
-
-def try_patch(payload: dict) -> tuple[bool, dict | None, str]:
-    data = json.dumps(payload)
-    cmd = [
-        "curl",
-        "-sS",
-        "-X",
-        "PATCH",
-        f"https://api.retellai.com/update-agent/{agent_id}",
-        "-H",
-        f"Authorization: Bearer {api}",
-        "-H",
-        "Content-Type: application/json",
-        "--data",
-        data,
-    ]
-    p = subprocess.run(cmd, text=True, capture_output=True)
-    if p.returncode != 0:
-        return False, None, (p.stderr.strip() or p.stdout.strip() or "curl_failed")
     try:
-        return True, json.loads(p.stdout), ""
-    except Exception:
-        return False, None, (p.stdout.strip() or "bad_json_response")
-
-agent = curl_json(
-    [
-        "curl",
-        "-sS",
-        "-H",
-        f"Authorization: Bearer {api}",
-        f"https://api.retellai.com/get-agent/{agent_id}",
-    ]
-)
-
-stamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-backup_path = backup_dir / f"{agent_id}_{stamp}.json"
-backup_path.write_text(json.dumps(agent, indent=2), encoding="utf-8")
-
-# Best-effort: set response engine to custom LLM websocket.
-# Retell docs have evolved; try a small set of candidate payloads.
-# We do NOT assume unknown fields exist; we probe and require the response to reflect the requested URL.
-
-candidates: list[tuple[str, dict]] = [
-    (
-        "response_engine.type=llm-websocket websocket_url",
-        {"response_engine": {"type": "llm-websocket", "websocket_url": base_url}},
-    ),
-    (
-        "response_engine.type=llm-websocket llm_websocket_url",
-        {"response_engine": {"type": "llm-websocket", "llm_websocket_url": base_url}},
-    ),
-    (
-        "response_engine.type=custom-llm llm_websocket_url",
-        {"response_engine": {"type": "custom-llm", "llm_websocket_url": base_url}},
-    ),
-    (
-        "legacy llm_websocket_url",
-        {"llm_websocket_url": base_url},
-    ),
-]
-
-errors: list[str] = []
-for label, payload in candidates:
-    ok, resp, err = try_patch(payload)
-    if not ok or resp is None:
-        errors.append(f"{label}: {err}")
-        continue
-
-    engine = resp.get("response_engine") or {}
-    # Some APIs may echo under response_engine; some may echo a legacy field.
-    reflected = (
-        (engine.get("websocket_url") == base_url)
-        or (engine.get("llm_websocket_url") == base_url)
-        or (resp.get("llm_websocket_url") == base_url)
-    )
-    if not reflected:
-        errors.append(f"{label}: patch_ok_but_url_not_reflected")
-        continue
-
-    result_path = backup_dir / f"{agent_id}_{stamp}.switched.json"
-    result_path.write_text(json.dumps(resp, indent=2), encoding="utf-8")
-
-    # Print minimal non-sensitive confirmation.
-    print(
-        json.dumps(
-            {
-                "status": "ok",
-                "agent_id": agent_id,
-                "brain_ws_base_url": base_url,
-                "response_engine": resp.get("response_engine"),
-            },
-            indent=2,
-        )
-    )
-    sys.exit(0)
-
-# If we get here, switching failed. Leave agent unchanged (only attempted PATCH calls).
-# Surface candidate errors and point to backup for manual rollback if needed.
-print(
-    json.dumps(
-        {
-            "status": "error",
-            "agent_id": agent_id,
-            "brain_ws_base_url": base_url,
-            "backup_path": str(backup_path.relative_to(root)),
-            "attempt_errors": errors,
-        },
-        indent=2,
-    )
-)
-sys.exit(1)
-PY
-
-```
-
-### `scripts/call_b2b.sh`
-
-```
-#!/usr/bin/env bash
-set -euo pipefail
-
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
-SUPERVISOR_SCRIPT="${RETELL_WS_SUPERVISOR_SCRIPT:-$ROOT_DIR/scripts/ws_brain_8099_supervisor.sh}"
-PROD_BRAIN_SCRIPT="${RETELL_WS_PROD_SCRIPT:-$ROOT_DIR/scripts/ws_brain_8099_prod.sh}"
-REQUIRED_B2B_AGENT_ID="agent_7a0abb6b0df0e6352fbd236f3b"
-REQUIRED_FROM_NUMBER="+14695998571"
-REQUIRED_WS_BASE="wss://ws.evesystems.org/llm-websocket"
-
-is_remote_non_local_ws_host() {
-  local ws_url="${BRAIN_WSS_BASE_URL:-}"
-  if [[ -z "$ws_url" ]]; then
-    return 1
-  fi
-  if [[ "$ws_url" == *"localhost"* || "$ws_url" == *"127.0.0.1"* ]]; then
-    return 1
-  fi
-  return 0
-}
-
-validate_b2b_ws_base_url() {
-  local base_url="$1"
-  if [[ -z "$base_url" ]]; then
-    return 0
-  fi
-
-  if [[ "${RETELL_ENFORCE_B2B_WS_URL:-true}" != "true" ]]; then
-    return 0
-  fi
-
-  python3 - <<'PY' "$base_url" "$REQUIRED_WS_BASE"
-import sys
-import urllib.parse
-
-base = sys.argv[1].strip()
-required = sys.argv[2].strip()
-
-parsed = urllib.parse.urlparse(base)
-if not parsed.scheme:
-    print("invalid:missing_scheme")
-    sys.exit(2)
-if parsed.scheme not in {"ws", "wss"}:
-    print(f"invalid:scheme:{parsed.scheme}")
-    sys.exit(2)
-
-required = urllib.parse.urlparse(required)
-if parsed.hostname != required.hostname:
-    print(f"invalid:host:{parsed.hostname}")
-    sys.exit(3)
-
-base_path = (parsed.path or "").rstrip("/")
-req_path = (required.path or "").rstrip("/")
-if base_path != req_path:
-    print(f"invalid:path:{base_path}")
-    sys.exit(3)
-print("ok")
-sys.exit(0)
-PY
-}
-
-if [[ ! -f "$ENV_FILE" ]]; then
-  echo "Missing env file: $ENV_FILE" >&2
-  echo "Create it with RETELL_API_KEY, B2B_AGENT_ID, RETELL_FROM_NUMBER, DOGFOOD_TO_NUMBER." >&2
-  exit 2
-fi
-
-set -a
-# shellcheck disable=SC1090
-source "$ENV_FILE"
-set +a
-
-: "${RETELL_API_KEY:?RETELL_API_KEY is required}"
-: "${B2B_AGENT_ID:?B2B_AGENT_ID is required}"
-: "${RETELL_FROM_NUMBER:?RETELL_FROM_NUMBER is required}"
-
-TO_NUMBER="${1:-${DOGFOOD_TO_NUMBER:-}}"
-if [[ -z "${TO_NUMBER:-}" ]]; then
-  echo "Usage: scripts/call_b2b.sh [to_number]" >&2
-  echo "Set DOGFOOD_TO_NUMBER in $ENV_FILE or pass a number like +19859914360" >&2
-  exit 2
-fi
-
-# Optional fast-fail/fallback tuning.
-CALL_AGENT_ID="${B2B_AGENT_ID}"
-if [[ "${RETELL_ENFORCE_B2B_AGENT_ID:-true}" == "true" && "$CALL_AGENT_ID" != "$REQUIRED_B2B_AGENT_ID" ]]; then
-  echo "Error: B2B_AGENT_ID must be '$REQUIRED_B2B_AGENT_ID' for this rollout." >&2
-  echo "Current B2B_AGENT_ID='$CALL_AGENT_ID'." >&2
-  exit 2
-fi
-
-BRAIN_WS_FAILOVER_TO_BACKUP="${RETELL_WS_FAILOVER_TO_BACKUP:-true}"
-B2B_AGENT_ID_BACKUP="${B2B_AGENT_ID_BACKUP:-}"
-AUTO_RESOLVE_CF_WS="${RETELL_AUTO_RESOLVE_CF_WS:-true}"
-RETELL_ENSURE_BRAIN="${RETELL_ENSURE_BRAIN_RUNNING:-true}"
-RETELL_WS_TARGET_PORT="${RETELL_WS_TARGET_PORT:-8099}"
-RETELL_WS_START_TIMEOUT_SEC="${RETELL_WS_START_TIMEOUT_SEC:-20}"
-FORCE_BRAIN_PORT_8099="${RETELL_FORCE_BRAIN_PORT_8099:-auto}"
-
-PRODUCTION_BRAIN_TOPOLOGY=0
-
-is_local_listener() {
-  local port="$1"
-  python3 - <<'PY' "$port"
-import socket
-import sys
-
-port = int(sys.argv[1])
-sock = socket.socket()
-sock.settimeout(0.5)
-try:
-    sock.connect(("127.0.0.1", port))
-    print("local_listener_ok=1")
-    sys.exit(0)
-except Exception:
-    print("local_listener_ok=0")
-    sys.exit(1)
-finally:
-    sock.close()
-PY
-}
-
-ensure_local_brain() {
-  local port="$1"
-  local tries="$2"
-  if is_local_listener "$port" >/dev/null; then
-    return 0
-  fi
-
-  if [[ "$RETELL_ENSURE_BRAIN" != "true" && "$RETELL_ENSURE_BRAIN" != "1" ]]; then
-    echo "Local brain on 127.0.0.1:${port} is not active and RETELL_ENSURE_BRAIN_RUNNING is disabled." >&2
-    return 2
-  fi
-
-  if [[ ! -x "$SUPERVISOR_SCRIPT" ]]; then
-    echo "Brain supervisor not executable: $SUPERVISOR_SCRIPT" >&2
-    echo "Set RETELL_WS_SUPERVISOR_SCRIPT to a valid script." >&2
-    return 2
-  fi
-
-  if [[ "$PRODUCTION_BRAIN_TOPOLOGY" == "1" ]]; then
-    if [[ ! -x "$PROD_BRAIN_SCRIPT" ]]; then
-      echo "Production brain launcher not executable: $PROD_BRAIN_SCRIPT" >&2
-      echo "Set RETELL_WS_PROD_SCRIPT to a valid script." >&2
-      return 2
-    fi
-    echo "Starting production brain watcher on 127.0.0.1:8099..." >&2
-    "$PROD_BRAIN_SCRIPT" --start >/dev/null 2>&1 || {
-      echo "Failed to launch production ws_brain watcher: $PROD_BRAIN_SCRIPT" >&2
-      return 2
-    }
-  else
-    echo "Starting supervised brain on 127.0.0.1:${port}..." >&2
-    "$SUPERVISOR_SCRIPT" --daemon --port "$port" --host "127.0.0.1" >/dev/null 2>&1 || {
-      echo "Failed to launch ws_brain supervisor: $SUPERVISOR_SCRIPT" >&2
-      return 2
-    }
-  fi
-
-  for _ in $(seq 1 "$tries"); do
-    if is_local_listener "$port" >/dev/null 2>&1; then
-      echo "Brain process is listening on 127.0.0.1:${port}." >&2
-      return 0
-    fi
-    sleep 0.5
-  done
-  echo "Local brain did not come up on port ${port} after ${tries} checks." >&2
-  return 3
-}
-
-check_ws_handshake() {
-  local base_url="$1"
-  local msg
-  msg="$(python3 - <<'PY' "$base_url"
-import asyncio
-import sys
-import json
-
-uri = sys.argv[1].strip().rstrip("/")
-call_id = "dogfood-health-check"
-endpoint = f"{uri}/{call_id}"
-
-try:
-    import websockets  # type: ignore
-except Exception:
-    sys.exit(0)
-
-async def _probe() -> int:
-    try:
-        async with websockets.connect(endpoint, open_timeout=5, close_timeout=2) as ws:
-            raw = await asyncio.wait_for(ws.recv(), timeout=5)
-            try:
-                msg = json.loads(raw)
-            except Exception:
-                msg = raw
-            if isinstance(msg, dict) and msg.get("response_type") in {"response", "pong"}:
-                return 0
-            return 0
-    except Exception as exc:
-        print(f"websocket_handshake_check_failed: {exc}")
-        return 2
-
-sys.exit(asyncio.run(_probe()))
-PY
-  )"
-  echo "$msg"
-}
-
-# E.164 validation for dial strings.
-if [[ ! "$TO_NUMBER" =~ ^\+[0-9]{7,15}$ ]]; then
-  echo "Warning: TO_NUMBER '$TO_NUMBER' is not in E.164 format (expected +<country code><number>)." >&2
-  echo "Call may fail if formatting is incorrect." >&2
-fi
-
-if [[ "${RETELL_ENFORCE_B2B_FROM:-true}" == "true" && "$RETELL_FROM_NUMBER" != "$REQUIRED_FROM_NUMBER" ]]; then
-  echo "Error: RETELL_FROM_NUMBER must be '$REQUIRED_FROM_NUMBER' for this rollout." >&2
-  echo "Current RETELL_FROM_NUMBER='$RETELL_FROM_NUMBER'." >&2
-  exit 2
-fi
-
-if [[ ! "$RETELL_FROM_NUMBER" =~ ^\+[0-9]{7,15}$ ]]; then
-  echo "Warning: RETELL_FROM_NUMBER '$RETELL_FROM_NUMBER' is not in E.164 format (expected +<country code><number>)." >&2
-  echo "Call may fail if formatting is incorrect." >&2
-fi
-
-if [[ -n "${BRAIN_WSS_BASE_URL:-}" ]]; then
-  if ! validate_b2b_ws_base_url "$BRAIN_WSS_BASE_URL"; then
-    echo "Error: BRAIN_WSS_BASE_URL must use '$REQUIRED_WS_BASE/{call_id}' for this rollout." >&2
-    echo "Current value: '$BRAIN_WSS_BASE_URL'." >&2
-    echo "Set RETELL_ENFORCE_B2B_WS_URL=false to bypass this check." >&2
-    exit 2
-  fi
-fi
-
-CLOUDFLARE_ENV_FILE="${CLOUDFLARE_ENV_FILE:-$ROOT_DIR/.env.cloudflare.local}"
-
-# If websocket URL is missing or stale, resolve a valid Cloudflare production websocket host automatically.
-resolve_cf_ws_url() {
-  CLOUDFLARE_ENV_FILE="$CLOUDFLARE_ENV_FILE" \
-  python3 - <<'PY'
-import json
-import os
-import socket
-import urllib.request
-from pathlib import Path
-
-env_cf = Path(os.environ["CLOUDFLARE_ENV_FILE"])
-if not env_cf.exists():
-    raise SystemExit(1)
-
-env = {}
-for line in env_cf.read_text(encoding="utf-8").splitlines():
-    if not line or line.lstrip().startswith("#") or "=" not in line:
-        continue
-    k, v = line.split("=", 1)
-    env[k.strip()] = v.strip()
-
-account = env.get("CLOUDFLARE_ACCOUNT_ID", "").strip()
-token = env.get("CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN", "").strip()
-if not account or not token:
-    raise SystemExit(1)
-
-hdr = {"Authorization": f"Bearer {token}"}
-tunnels_url = f"https://api.cloudflare.com/client/v4/accounts/{account}/cfd_tunnel"
-req = urllib.request.Request(tunnels_url, headers=hdr)
-with urllib.request.urlopen(req, timeout=20) as resp:
-    payload = json.loads(resp.read().decode("utf-8"))
-
-if not payload.get("success"):
-    raise SystemExit(1)
-
-best = []
-preferred = []
-for tunnel in payload.get("result", []) or []:
-    tid = tunnel.get("id")
-    if not tid:
-        continue
-    cfg_url = f"https://api.cloudflare.com/client/v4/accounts/{account}/cfd_tunnel/{tid}/configurations"
-    req_cfg = urllib.request.Request(cfg_url, headers=hdr)
-    with urllib.request.urlopen(req_cfg, timeout=20) as cfg_resp:
-        cfg = json.loads(cfg_resp.read().decode("utf-8"))
-    if not cfg.get("success"):
-        continue
-    ingress = (cfg.get("result") or {}).get("config", {}).get("ingress", [])
-    for rule in ingress:
-        host = rule.get("hostname")
-        service = rule.get("service", "")
-        if not service or service.startswith("http_status"):
-            continue
+        done, pending = await asyncio.wait({reader_task, writer_task}, return_when=asyncio.FIRST_COMPLETED)
+        for t in pending:
+            t.cancel()
+        await asyncio.gather(*pending, return_exceptions=True)
+        for t in done:
+            exc = t.exception()
+            if exc is not None and not isinstance(exc, WebSocketDisconnect):
+                raise exc
+    finally:
+        await orch.stop()
         try:
-            socket.getaddrinfo(host, 443, type=socket.SOCK_STREAM)
+            await ws.close()
         except Exception:
-            continue
-        if host.endswith(".evesystems.org"):
-            preferred.append((host, service))
-        else:
-            best.append((host, service))
+            pass
+```
 
-if preferred:
-    host, service = sorted(preferred, key=lambda x: x[0])[0]
-elif best:
-    host, service = sorted(best, key=lambda x: x[0])[0]
-else:
-    raise SystemExit(1)
-_ = service
-print(f"wss://{host}/llm-websocket")
-PY
-}
+## `src/processing/__init__.py`
 
-# Verify websocket endpoint connectivity (DNS). If broken, optionally fall back to backup agent.
-if [[ -z "${BRAIN_WSS_BASE_URL:-}" && "$AUTO_RESOLVE_CF_WS" == "true" ]]; then
-  echo "BRAIN_WSS_BASE_URL is empty; attempting Cloudflare auto-resolution..." >&2
-  RESOLVED_WS_URL="$(resolve_cf_ws_url || true)"
-  if [[ -n "${RESOLVED_WS_URL:-}" ]]; then
-    BRAIN_WSS_BASE_URL="$RESOLVED_WS_URL"
-    export BRAIN_WSS_BASE_URL
-    echo "Auto-resolved websocket base URL: $BRAIN_WSS_BASE_URL" >&2
-  else
-    echo "Cloudflare auto-resolution failed; continuing with configured BRAIN_WSS_BASE_URL value." >&2
-  fi
-fi
-
-if [[ -n "${BRAIN_WSS_BASE_URL:-}" ]]; then
-  if ! python3 - <<'PY'
-import os, socket, sys, urllib.parse
-
-url = os.environ.get("BRAIN_WSS_BASE_URL", "").strip()
-if not url:
-    sys.exit(0)
-parsed = urllib.parse.urlparse(url)
-host = parsed.hostname
-if not host:
-    print("invalid_b2b_ws_url")
-    sys.exit(2)
-try:
-    socket.getaddrinfo(host, 443, type=socket.SOCK_STREAM)
-except Exception:
-    print("dns_lookup_failed")
-    sys.exit(3)
-sys.exit(0)
-PY
-  then
-    :
-  else
-    RESOLVE_STATUS=$?
-    if [[ "$RESOLVE_STATUS" -eq 3 ]]; then
-      echo "Error: BRAIN_WSS_BASE_URL='$BRAIN_WSS_BASE_URL' is not resolvable from this host." >&2
-      if [[ "$BRAIN_WS_FAILOVER_TO_BACKUP" == "true" && -n "$B2B_AGENT_ID_BACKUP" ]]; then
-        echo "Falling back to backup agent id from B2B_AGENT_ID_BACKUP." >&2
-        CALL_AGENT_ID="$B2B_AGENT_ID_BACKUP"
-      else
-        echo "Fix: start ws_brain_dev_on.sh or set a valid BRAIN_WSS_BASE_URL." >&2
-        exit 2
-      fi
-    elif [[ "$RESOLVE_STATUS" -eq 2 ]]; then
-      echo "Error: BRAIN_WSS_BASE_URL='${BRAIN_WSS_BASE_URL}' is invalid." >&2
-      exit 2
-    fi
-  fi
-else
-  echo "Warning: BRAIN_WSS_BASE_URL is not set; skipping websocket pre-check." >&2
-fi
-
-# Optionally verify the selected agent is wired to this websocket URL.
-if [[ "${RETELL_VERIFY_AGENT_WS_URL:-true}" == "true" && -n "${BRAIN_WSS_BASE_URL:-}" ]]; then
-  AGENT_WS_URL="$(
-    python3 - <<'PY' "$CALL_AGENT_ID" "$BRAIN_WSS_BASE_URL" "$RETELL_API_KEY"
-import json
-import os
-import sys
-import urllib.error
-import urllib.request
-
-agent_id = sys.argv[1].strip()
-api_key = sys.argv[3].strip()
-
-url = f"https://api.retellai.com/get-agent/{agent_id}"
-req = urllib.request.Request(url, headers={"Authorization": f"Bearer {api_key}"})
-try:
-    with urllib.request.urlopen(req, timeout=10) as resp:
-        payload = json.loads(resp.read().decode("utf-8"))
-except urllib.error.HTTPError as exc:
-    body = exc.read().decode("utf-8", errors="ignore")
-    print(f"__retell_http_error__{exc.code}::{body}")
-    raise SystemExit(1)
-except Exception as exc:
-    print(f"__retell_request_failed__{exc}")
-    raise SystemExit(1)
-
-engine = payload.get("response_engine") or {}
-agent_url = (
-    engine.get("websocket_url")
-    or engine.get("llm_websocket_url")
-    or payload.get("llm_websocket_url")
-)
-if agent_url:
-    print(str(agent_url).strip())
-else:
-    print("")
-PY
-  )"
-  if [[ "$AGENT_WS_URL" == __retell_http_error__* || "$AGENT_WS_URL" == __retell_request_failed__* ]]; then
-    echo "Warning: could not read selected agent $CALL_AGENT_ID websocket config. Proceeding with manual override ${CALL_AGENT_ID}." >&2
-  elif [[ -n "$AGENT_WS_URL" && "$AGENT_WS_URL" != *"${BRAIN_WSS_BASE_URL}"* ]]; then
-    echo "Warning: selected agent $CALL_AGENT_ID is configured for websocket '$AGENT_WS_URL'." >&2
-    echo "Expected base: '$BRAIN_WSS_BASE_URL' from env." >&2
-    if [[ "$BRAIN_WS_FAILOVER_TO_BACKUP" == "true" && "$CALL_AGENT_ID" != "$B2B_AGENT_ID" && -n "$B2B_AGENT_ID" ]]; then
-      # already on backup; avoid looping
-      echo "Proceeding with current selected agent; review agent config in Retell dashboard if needed." >&2
-    elif [[ "$BRAIN_WS_FAILOVER_TO_BACKUP" == "true" && -n "$B2B_AGENT_ID_BACKUP" && "$CALL_AGENT_ID" == "$B2B_AGENT_ID" ]]; then
-      echo "Falling back to backup agent id from B2B_AGENT_ID_BACKUP due endpoint mismatch." >&2
-      CALL_AGENT_ID="$B2B_AGENT_ID_BACKUP"
-    fi
-  elif [[ -n "$AGENT_WS_URL" && "$AGENT_WS_URL" != *"llm-websocket"* ]]; then
-    echo "Warning: selected agent $CALL_AGENT_ID websocket URL '$AGENT_WS_URL' is not using the llm-websocket route." >&2
-  fi
-fi
-
-# Select production topology and ensure local brain early (when enabled).
-# - Remote/non-local BRAIN_WSS_BASE_URL implies production path (8099 + production watcher).
-# - Explicit override via RETELL_FORCE_BRAIN_PORT_8099 can force/disable this behavior.
-if [[ "$FORCE_BRAIN_PORT_8099" == "1" || "$FORCE_BRAIN_PORT_8099" == "true" ]]; then
-  PRODUCTION_BRAIN_TOPOLOGY=1
-elif [[ "$FORCE_BRAIN_PORT_8099" == "0" || "$FORCE_BRAIN_PORT_8099" == "false" ]]; then
-  PRODUCTION_BRAIN_TOPOLOGY=0
-elif is_remote_non_local_ws_host; then
-  PRODUCTION_BRAIN_TOPOLOGY=1
-fi
-
-if [[ "$PRODUCTION_BRAIN_TOPOLOGY" == "1" ]]; then
-  RETELL_WS_TARGET_PORT="8099"
-fi
-
-if [[ "$RETELL_ENSURE_BRAIN" == "true" || "$RETELL_ENSURE_BRAIN" == "1" ]]; then
-  WS_HANDSHAKE_LOCAL_PORT="${RETELL_WS_TARGET_PORT}"
-  if ! ensure_local_brain "$WS_HANDSHAKE_LOCAL_PORT" "$RETELL_WS_START_TIMEOUT_SEC"; then
-    echo "Error: local brain on 127.0.0.1:${WS_HANDSHAKE_LOCAL_PORT} is not available." >&2
-    if [[ "$PRODUCTION_BRAIN_TOPOLOGY" == "1" ]]; then
-      echo "Fix: start a persistent production brain instance using ${PROD_BRAIN_SCRIPT}." >&2
-      echo "Example: ${PROD_BRAIN_SCRIPT} --start" >&2
-    else
-      echo "Fix: start a persistent instance using ${SUPERVISOR_SCRIPT}." >&2
-      echo "Example: ${SUPERVISOR_SCRIPT} --daemon --port ${WS_HANDSHAKE_LOCAL_PORT} --host 127.0.0.1" >&2
-    fi
-    exit 2
-  fi
-fi
-
-# Optional local websocket handshake guard.
-# If enabled, verify Retell can connect to this public endpoint directly before creating the call.
-if [[ "${RETELL_VERIFY_WS_HANDSHAKE:-true}" == "true" && -n "${BRAIN_WSS_BASE_URL:-}" ]]; then
-  WS_HANDSHAKE_LOCAL_PORT="${RETELL_WS_TARGET_PORT:-8099}"
-
-  set +e
-  hand_msg="$(check_ws_handshake "$BRAIN_WSS_BASE_URL")"
-  hand_rc=$?
-  set -e
-  if [[ "$hand_rc" -ne 0 ]]; then
-    echo "Error: websocket endpoint handshake check failed for BRAIN_WSS_BASE_URL='$BRAIN_WSS_BASE_URL'." >&2
-    echo "Detail: $hand_msg" >&2
-    echo "Retell will usually return error_llm_websocket_open if this is not fixed." >&2
-    if [[ "${hand_msg}" == *"HTTP 502"* || "${hand_msg}" == *"handshake failed"* ]]; then
-      if ! is_local_listener "$WS_HANDSHAKE_LOCAL_PORT" >/dev/null; then
-        echo "Local listener is not active on 127.0.0.1:${WS_HANDSHAKE_LOCAL_PORT}." >&2
-        echo "Retrying brain startup before failing..." >&2
-        if ! ensure_local_brain "$WS_HANDSHAKE_LOCAL_PORT" "$RETELL_WS_START_TIMEOUT_SEC"; then
-          echo "Start the brain on that port, or set RETELL_WS_TARGET_PORT to your active server port." >&2
-          echo "Fix by ensuring Cloudflare route stays mapped to an active backend and points to your running brain." >&2
-          echo "Run: bash scripts/cloudflare_verify.sh" >&2
-          exit 2
-        fi
-        hand_msg="$(check_ws_handshake "$BRAIN_WSS_BASE_URL")"
-        hand_rc=$?
-        if [[ "$hand_rc" -eq 0 ]]; then
-          echo "Brain restart succeeded; websocket handshake check recovered." >&2
-        else
-          echo "Detail: $hand_msg" >&2
-          echo "Retell will usually return error_llm_websocket_open if this is not fixed." >&2
-          echo "Fix by ensuring Cloudflare route stays mapped to an active backend and points to your running brain." >&2
-          echo "Run: bash scripts/cloudflare_verify.sh" >&2
-          exit 2
-        fi
-      fi
-    fi
-  fi
-fi
-
-# Final explicit endpoint check if fallback also mismatches.
-if [[ "${CALL_AGENT_ID}" != "${B2B_AGENT_ID}" && -n "${BRAIN_WSS_BASE_URL:-}" ]]; then
-  echo "Call will use override agent id: $CALL_AGENT_ID" >&2
-fi
-
-RESP="$(
-  curl -sS -X POST "https://api.retellai.com/v2/create-phone-call" \
-    -H "Authorization: Bearer $RETELL_API_KEY" \
-    -H "Content-Type: application/json" \
-    --data "{\"from_number\":\"$RETELL_FROM_NUMBER\",\"to_number\":\"$TO_NUMBER\",\"override_agent_id\":\"$CALL_AGENT_ID\",\"metadata\":{\"source\":\"dogfood\"}}"
-)"
-
-# Default behavior: do NOT print raw JSON (it can include sensitive fields).
-# Use PRINT_RAW=1 if you explicitly want to see the full API response.
-if [[ "${PRINT_RAW:-0}" == "1" ]]; then
-  echo "$RESP"
-fi
-
-echo "$RESP" | python3 -c 'import json,sys
-try:
-  r=json.load(sys.stdin)
-except Exception as e:
-  print(f"Failed to parse response: {e}", file=sys.stderr)
-  raise SystemExit(1)
-cid=r.get("call_id","")
-status=r.get("call_status","")
-if cid:
-  print(f"Started call_id={cid} status={status}")
-else:
-  print("\nRetell response did not include call_id", file=sys.stderr)
-  raise SystemExit(1)'
-
-CALL_ID="$(echo "$RESP" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("call_id",""))')"
-
-AUTO_LEARN="${RETELL_AUTO_LEARN_ON_CALL:-true}"
-AUTO_LEARN_LOWER="$(printf '%s' "$AUTO_LEARN" | tr '[:upper:]' '[:lower:]')"
-if [[ "$AUTO_LEARN_LOWER" == "true" && -n "$CALL_ID" ]]; then
-  mkdir -p "$ROOT_DIR/data/retell_calls"
-  (
-    POLL_SEC="${RETELL_AUTO_LEARN_POLL_SEC:-5}"
-    POLL_STEPS="${RETELL_AUTO_LEARN_POLL_STEPS:-180}"
-    for _ in $(seq 1 "$POLL_STEPS"); do
-      STATUS="$(
-        curl -sS -H "Authorization: Bearer $RETELL_API_KEY" \
-          "https://api.retellai.com/v2/get-call/$CALL_ID" \
-          | python3 -c 'import json,sys; print((json.load(sys.stdin).get("call_status") or "").strip())'
-      )"
-      if [[ "$STATUS" == "ended" ]]; then
-        break
-      fi
-      sleep "$POLL_SEC"
-    done
-    python3 "$ROOT_DIR/scripts/retell_learning_loop.py" \
-      --limit "${RETELL_LEARN_LIMIT:-100}" \
-      --threshold "${RETELL_LEARN_THRESHOLD:-250}" \
-      > "$ROOT_DIR/data/retell_calls/_last_auto_learn.log" 2>&1
-  ) &
-  echo "Auto-learning queued in background for call_id=$CALL_ID"
-fi
+```python
 
 ```
 
-### `scripts/call_status.sh`
+## `src/processing/chunking.py`
 
-```
-#!/usr/bin/env bash
-set -euo pipefail
-
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
-
-if [[ ! -f "$ENV_FILE" ]]; then
-  echo "Missing env file: $ENV_FILE" >&2
-  echo "Create it with RETELL_API_KEY." >&2
-  exit 2
-fi
-
-set -a
-# shellcheck disable=SC1090
-source "$ENV_FILE"
-set +a
-
-: "${RETELL_API_KEY:?RETELL_API_KEY is required}"
-
-CALL_ID="${1:-}"
-if [[ -z "$CALL_ID" ]]; then
-  echo "Usage: scripts/call_status.sh <call_id>" >&2
-  exit 2
-fi
-
-curl -sS \
-  -H "Authorization: Bearer $RETELL_API_KEY" \
-  "https://api.retellai.com/v2/get-call/$CALL_ID" \
-  | python3 - <<'PY'
-import json
-import sys
-
-raw = sys.stdin.read()
-try:
-    data = json.loads(raw)
-except Exception:
-    print(raw)
-    raise SystemExit(1)
-
-def get(path, default=""):
-    cur = data
-    for key in path:
-        if not isinstance(cur, dict):
-            return default
-        cur = cur.get(key)
-    return cur if cur is not None else default
-
-call_id = get(("call_id",), "")
-status = get(("call_status",), "")
-disconn = get(("disconnection_reason",), "")
-disconn_msg = get(("disconnection_reason_message",), "")
-ended_reason = get(("ended_reason",), "")
-duration = get(("call_duration_ms",), "")
-transcript = get(("transcript",), [])
-last_event = ""
-if isinstance(transcript, list) and transcript:
-    last = transcript[-1]
-    if isinstance(last, dict):
-        last_event = (last.get("content") or "").strip()
-
-print(f"call_id={call_id}")
-print(f"status={status}")
-if disconn:
-    print(f"disconnection_reason={disconn}")
-if disconn_msg:
-    print(f"disconnection_reason_message={disconn_msg}")
-if ended_reason:
-    print(f"ended_reason={ended_reason}")
-if duration != "":
-    print(f"duration_ms={duration}")
-if last_event:
-    print(f"last_transcript={last_event}")
-print("---")
-print(json.dumps(data, indent=2))
-PY
-
-```
-
-### `scripts/ci_hard_gates.sh`
-
-```
-#!/usr/bin/env bash
-set -euo pipefail
-
-# Ensure a writable Python environment for dependency provisioning.
-if [[ -z "${VIRTUAL_ENV:-}" ]]; then
-  if [[ ! -x ".venv/bin/python3" ]]; then
-    python3 -m venv .venv
-  fi
-  # shellcheck disable=SC1091
-  source .venv/bin/activate
-fi
-
-python3 -m pip install -e ".[dev,ops]"
-
-python3 - <<'PY'
-import importlib.util
-import sys
-
-missing = []
-for mod in ("websockets", "prometheus_client"):
-    if importlib.util.find_spec(mod) is None:
-        missing.append(mod)
-if missing:
-    print(
-        "Missing required optional dependencies for CI hard gates: "
-        + ", ".join(missing)
-        + "\nInstall with: python3 -m pip install -e \".[dev,ops]\"",
-        file=sys.stderr,
-    )
-    raise SystemExit(2)
-PY
-
-python3 -m pytest -q tests tests_expressive
-python3 -m pytest -q -k vic_contract
-python3 -m pytest -q tests/acceptance/at_vic_100_sessions.py
-python3 -m pytest -q tests/acceptance/at_no_leak_30min.py
-python3 -m pytest -q tests/acceptance/at_ws_torture_5min.py
-
-if ! command -v npm >/dev/null 2>&1; then
-  echo "npm is required for web hard gates (apps/web)." >&2
-  exit 2
-fi
-
-if [[ -f "apps/web/package.json" ]]; then
-  pushd apps/web >/dev/null
-  npm install
-  npm run test
-  npm run build
-  popd >/dev/null
-fi
-
-```
-
-### `scripts/cloudflare_verify.sh`
-
-```
-#!/usr/bin/env bash
-set -euo pipefail
-
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT_DIR"
-
-ENV_FILE_CF="$ROOT_DIR/.env.cloudflare.local"
-if [[ -f "$ENV_FILE_CF" ]]; then
-  set -a
-  # shellcheck disable=SC1090
-  source "$ENV_FILE_CF"
-  set +a
-fi
-
-: "${CLOUDFLARE_ACCOUNT_ID:?CLOUDFLARE_ACCOUNT_ID missing (expected in .env.cloudflare.local)}"
-: "${CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN:?CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN missing (expected in .env.cloudflare.local)}"
-
-# Verify token without printing it.
-resp="$(curl -sS "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/tokens/verify" \
-  -H "Authorization: Bearer ${CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN}")"
-
-CF_VERIFY_JSON="$resp" python3 - <<'PY'
-import json, os, sys
-raw = os.environ.get('CF_VERIFY_JSON','')
-try:
-    j = json.loads(raw)
-except Exception:
-    print('cloudflare_verify: bad_json')
-    sys.exit(1)
-
-ok = bool(j.get('success'))
-print('cloudflare_verify:', 'ok' if ok else 'fail')
-if not ok:
-    errs = j.get('errors') or []
-    # Print only codes/messages.
-    slim = [{'code': e.get('code'), 'message': e.get('message')} for e in errs][:5]
-    print(json.dumps(slim, indent=2))
-    sys.exit(1)
-PY
-
-# Optional tunnel audit (hostnames + DNS reachability).
-audit_resp="$(curl -sS "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/cfd_tunnel" \
-  -H "Authorization: Bearer ${CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN}")"
-
-CF_TUNNELS_JSON="$audit_resp" python3 - <<'PY'
-import json
-import os
-import socket
-import urllib.request
-
-raw = os.environ.get("CF_TUNNELS_JSON", "")
-try:
-    payload = json.loads(raw)
-except Exception:
-    print("cloudflare_tunnel_audit: bad_json")
-    raise SystemExit(0)
-
-if not bool(payload.get("success")):
-    print("cloudflare_tunnel_audit: api_error")
-    raise SystemExit(0)
-
-tunnels = payload.get("result", []) or []
-if not tunnels:
-    print("cloudflare_tunnel_audit: no_tunnels_found")
-    raise SystemExit(0)
-
-def _dns_ok(hostname: str) -> bool:
-    try:
-        socket.getaddrinfo(hostname, 443, type=socket.SOCK_STREAM)
-        return True
-    except Exception:
-        return False
-
-def _fetch_config(account_id: str, token: str, tunnel_id: str) -> dict:
-    req = urllib.request.Request(
-        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/cfd_tunnel/{tunnel_id}/configurations",
-        headers={"Authorization": f"Bearer {token}"},
-    )
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        return json.loads(resp.read().decode("utf-8"))
-
-account_id = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "")
-token = os.environ.get("CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN", "")
-
-print("cloudflare_tunnel_audit:")
-for tunnel in tunnels:
-    name = tunnel.get("name")
-    tid = tunnel.get("id")
-    print(f"- {name} ({tid})")
-    ingress = []
-    try:
-        cfg = _fetch_config(account_id, token, tid)
-        if bool(cfg.get("success")):
-            ingress = (cfg.get("result") or {}).get("config", {}).get("ingress", [])
-    except Exception:
-        ingress = []
-
-    if not ingress:
-        print("  status: no_configured_ingress")
-        continue
-    for rule in ingress:
-        hostname = rule.get("hostname")
-        service = rule.get("service")
-        if hostname:
-            print(f"  - {hostname} -> {service} ; dns_ok={_dns_ok(hostname)}")
-        elif service and service != "http_status:404":
-            print(f"  - fallback service without hostname: {service}")
-PY
-
-```
-
-### `scripts/dogfood_scorecard.py`
-
-```
+```python
 from __future__ import annotations
 
-import argparse
-import sys
-from pathlib import Path
+import re
 
-from metrics_summary import (
-    _fetch_metrics_text,
-    histogram_quantile_from_buckets,
-    parse_prometheus_text,
-)
+_BOUNDARY = re.compile(r"[,.!?;:]")
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser(description="Dogfood scorecard for Retell Brain quality gates.")
-    ap.add_argument("--metrics-url", default="http://127.0.0.1:8080/metrics")
-    ap.add_argument("--metrics-file", default="")
-    args = ap.parse_args()
+class SpeakableChunker:
+    def __init__(self, *, min_words: int = 4) -> None:
+        self._buf = ""
+        self._min_words = int(min_words)
 
-    text = _fetch_metrics_text(metrics_url=args.metrics_url, metrics_file=(args.metrics_file or None))
-    counters, gauges, hists = parse_prometheus_text(text)
-
-    ack_p95 = histogram_quantile_from_buckets(hists.get("vic_turn_final_to_ack_segment_ms", {}), 0.95)
-    first_p95 = histogram_quantile_from_buckets(hists.get("vic_turn_final_to_first_segment_ms", {}), 0.95)
-    cancel_p95 = histogram_quantile_from_buckets(hists.get("vic_barge_in_cancel_latency_ms", {}), 0.95)
-
-    checks = [
-        ("ACK p95 <= 300ms", (ack_p95 is not None and ack_p95 <= 300), ack_p95),
-        ("First-content p95 <= 700ms", (first_p95 is not None and first_p95 <= 700), first_p95),
-        ("Barge-in cancel p95 <= 250ms", (cancel_p95 is not None and cancel_p95 <= 250), cancel_p95),
-        (
-            "Reasoning leakage == 0",
-            int(counters.get("voice_reasoning_leak_total", 0)) == 0,
-            int(counters.get("voice_reasoning_leak_total", 0)),
-        ),
-        (
-            "Jargon violations == 0",
-            int(counters.get("voice_jargon_violation_total", 0)) == 0,
-            int(counters.get("voice_jargon_violation_total", 0)),
-        ),
-        (
-            "Replay mismatches == 0",
-            int(counters.get("vic_replay_hash_mismatch_total", 0)) == 0,
-            int(counters.get("vic_replay_hash_mismatch_total", 0)),
-        ),
-    ]
-
-    print("Dogfood Scorecard")
-    print("=================")
-    failed = False
-    for name, ok, value in checks:
-        status = "PASS" if ok else "FAIL"
-        if not ok:
-            failed = True
-        print(f"{status:4}  {name:32} value={value}")
-
-    print("\nCurrent Memory")
-    print("--------------")
-    print(f"transcript_chars_current={int(gauges.get('memory_transcript_chars_current', 0))}")
-    print(f"transcript_utterances_current={int(gauges.get('memory_transcript_utterances_current', 0))}")
-    print("\nOpenClaw Runtime Expansion")
-    print("--------------------------")
-    skills_inv = int(counters.get("skills_invocations_total", 0))
-    skills_hit = int(counters.get("skills_hit_total", 0))
-    skills_err = int(counters.get("skills_error_total", 0))
-    if skills_inv > 0:
-        skills_hit_rate = (float(skills_hit) / float(skills_inv)) * 100.0
-        skills_hit_rate_str = f"{skills_hit_rate:.1f}%"
-    else:
-        skills_hit_rate_str = "n/a"
-    print(f"skills.invocations_total={skills_inv}")
-    print(f"skills.hit_total={skills_hit}")
-    print(f"skills.hit_rate_pct={skills_hit_rate_str}")
-    print(f"skills.error_total={skills_err}")
-    print(f"shell.exec_total={int(counters.get('shell_exec_total', 0))}")
-    print(f"shell.exec_denied_total={int(counters.get('shell_exec_denied_total', 0))}")
-    print(f"shell.exec_timeout_total={int(counters.get('shell_exec_timeout_total', 0))}")
-    print(f"self_improve.cycles_total={int(counters.get('self_improve_cycles_total', 0))}")
-    print(f"self_improve.proposals_total={int(counters.get('self_improve_proposals_total', 0))}")
-    print(f"self_improve.applies_total={int(counters.get('self_improve_applies_total', 0))}")
-    print(
-        "self_improve.blocked_on_gates_total="
-        + str(int(counters.get("self_improve_blocked_on_gates_total", 0)))
-    )
-    print(f"context.compactions_total={int(counters.get('context_compactions_total', 0))}")
-    print(
-        "context.compaction_tokens_saved_total="
-        + str(int(counters.get("context_compaction_tokens_saved_total", 0)))
-    )
-
-    if failed:
-        raise SystemExit(1)
-
-
-if __name__ == "__main__":
-    main()
-
-```
-
-### `scripts/load_test.py`
-
-```
-from __future__ import annotations
-
-import argparse
-import asyncio
-import os
-import sys
-from typing import Iterable
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from app.config import BrainConfig
-from app.metrics import VIC
-
-from tests.harness.transport_harness import HarnessSession
-
-
-def _percentile(values: Iterable[int], p: float) -> int | None:
-    v = sorted(int(x) for x in values)
-    if not v:
-        return None
-    if p <= 0:
-        return v[0]
-    if p >= 100:
-        return v[-1]
-    k = int(round((p / 100.0) * (len(v) - 1)))
-    return v[k]
-
-
-async def _run_sessions(n: int) -> None:
-    cfg = BrainConfig(speak_first=False, retell_auto_reconnect=False, idle_timeout_ms=10_000_000)
-    sessions: list[HarnessSession] = []
-    try:
-        for i in range(n):
-            sessions.append(await HarnessSession.start(session_id=f"lt{i}", cfg=cfg))
-
-        # Drain initial config + BEGIN terminal for all sessions.
-        for s in sessions:
-            await s.recv_outbound()
-            await s.recv_outbound()
-
-        # One turn per session.
-        for s in sessions:
-            await s.send_inbound_obj(
-                {
-                    "interaction_type": "response_required",
-                    "response_id": 1,
-                    "transcript": [{"role": "user", "content": "Hi"}],
-                }
-            )
-
-        # Wait deterministically until all sessions have observed ACK latency.
-        for _ in range(5000):
-            if all(s.metrics.get_hist(VIC["turn_final_to_ack_segment_ms"]) for s in sessions):
+    def push(self, delta: str) -> list[str]:
+        self._buf += delta
+        out: list[str] = []
+        while True:
+            words = len(re.findall(r"\b\w+\b", self._buf))
+            if words < self._min_words:
                 break
-            await asyncio.sleep(0)
+            m = _BOUNDARY.search(self._buf)
+            if not m:
+                break
+            idx = m.end()
+            chunk = self._buf[:idx].strip()
+            self._buf = self._buf[idx:].lstrip()
+            if chunk:
+                out.append(chunk)
+        return out
 
-        ack_lats: list[int] = []
-        first_lats: list[int] = []
-        stale_drops = 0
-        schema_violations = 0
-        for s in sessions:
-            ack_lats.extend(s.metrics.get_hist(VIC["turn_final_to_ack_segment_ms"]))
-            first_lats.extend(s.metrics.get_hist(VIC["turn_final_to_first_segment_ms"]))
-            stale_drops += s.metrics.get(VIC["stale_segment_dropped_total"])
-            schema_violations += s.trace.schema_violations_total
-
-        print("**Load Test Summary**")
-        print(f"sessions={n}")
-        print(f"schema_violations_total={schema_violations}")
-        print(f"stale_segment_dropped_total={stale_drops}")
-        ack_p50 = _percentile(ack_lats, 50)
-        ack_p95 = _percentile(ack_lats, 95)
-        ack_p99 = _percentile(ack_lats, 99)
-        print(
-            "ack_latency_ms="
-            f"p50={ack_p50 if ack_p50 is not None else 'n/a'} "
-            f"p95={ack_p95 if ack_p95 is not None else 'n/a'} "
-            f"p99={ack_p99 if ack_p99 is not None else 'n/a'}"
-        )
-        first_p50 = _percentile(first_lats, 50)
-        first_p95 = _percentile(first_lats, 95)
-        first_p99 = _percentile(first_lats, 99)
-        print(
-            "first_segment_latency_ms="
-            f"p50={first_p50 if first_p50 is not None else 'n/a'} "
-            f"p95={first_p95 if first_p95 is not None else 'n/a'} "
-            f"p99={first_p99 if first_p99 is not None else 'n/a'}"
-        )
-    finally:
-        await asyncio.gather(*(s.stop() for s in sessions), return_exceptions=True)
-
-
-def main() -> None:
-    ap = argparse.ArgumentParser(description="Deterministic in-memory load test for the Retell WS Brain.")
-    ap.add_argument("--sessions", type=int, default=100, help="number of concurrent sessions to simulate")
-    args = ap.parse_args()
-    asyncio.run(_run_sessions(int(args.sessions)))
-
-
-if __name__ == "__main__":
-    main()
-
+    def flush(self) -> str:
+        out = self._buf.strip()
+        self._buf = ""
+        return out
 ```
 
-### `scripts/metrics_summary.py`
+## `src/processing/prosody.py`
 
-```
+```python
 from __future__ import annotations
 
-import argparse
-import math
-import re
-import urllib.request
-from pathlib import Path
-
-
-_TYPE_RE = re.compile(r"^#\s*TYPE\s+([a-zA-Z_:][a-zA-Z0-9_:]*)\s+(counter|gauge|histogram)\s*$")
-_SAMPLE_RE = re.compile(r"^([a-zA-Z_:][a-zA-Z0-9_:]*)(\{[^}]*\})?\s+([-+]?[0-9]+(?:\.[0-9]+)?)$")
-_LE_RE = re.compile(r'le="([^"]+)"')
-
-
-def _fetch_metrics_text(*, metrics_url: str, metrics_file: str | None) -> str:
-    if metrics_file:
-        return Path(metrics_file).read_text(encoding="utf-8")
-    with urllib.request.urlopen(metrics_url, timeout=5) as resp:
-        return resp.read().decode("utf-8")
-
-
-def parse_prometheus_text(text: str) -> tuple[dict[str, float], dict[str, float], dict[str, dict[str, float]]]:
-    types: dict[str, str] = {}
-    counters: dict[str, float] = {}
-    gauges: dict[str, float] = {}
-    hist_buckets: dict[str, dict[str, float]] = {}
-
-    for raw in text.splitlines():
-        line = raw.strip()
-        if not line:
-            continue
-        m_type = _TYPE_RE.match(line)
-        if m_type:
-            types[m_type.group(1)] = m_type.group(2)
-            continue
-        if line.startswith("#"):
-            continue
-
-        m_sample = _SAMPLE_RE.match(line)
-        if not m_sample:
-            continue
-        name = m_sample.group(1)
-        labels = m_sample.group(2) or ""
-        value = float(m_sample.group(3))
-
-        if name.endswith("_bucket"):
-            base = name[: -len("_bucket")]
-            m_le = _LE_RE.search(labels)
-            if m_le is None:
-                continue
-            le = m_le.group(1)
-            hist_buckets.setdefault(base, {})[le] = value
-            continue
-
-        t = types.get(name, "")
-        if t == "counter":
-            counters[name] = value
-        elif t == "gauge":
-            gauges[name] = value
-
-    return counters, gauges, hist_buckets
-
-
-def histogram_quantile_from_buckets(buckets: dict[str, float], q: float) -> float | None:
-    if not buckets:
-        return None
-    items: list[tuple[float, float]] = []
-    inf_count: float | None = None
-    for le_str, count in buckets.items():
-        if le_str == "+Inf":
-            inf_count = float(count)
-            continue
-        try:
-            items.append((float(le_str), float(count)))
-        except Exception:
-            continue
-    items.sort(key=lambda x: x[0])
-    if inf_count is None:
-        if not items:
-            return None
-        inf_count = items[-1][1]
-    if inf_count <= 0:
-        return None
-
-    target = max(1.0, math.ceil(float(q) * float(inf_count)))
-    for le, cumulative in items:
-        if cumulative >= target:
-            return le
-    # If only +Inf satisfies the quantile target, clamp to the highest finite bucket.
-    if items:
-        return items[-1][0]
-    return None
-
-
-def _fmt(v: float | int | None) -> str:
-    if v is None:
-        return "n/a"
-    if isinstance(v, float):
-        if v.is_integer():
-            return str(int(v))
-        return f"{v:.3f}"
-    return str(v)
-
-
-def summarize(*, counters: dict[str, float], gauges: dict[str, float], hist: dict[str, dict[str, float]]) -> str:
-    k_ping = "keepalive_ping_pong_queue_delay_ms"
-    k_cancel = "vic_barge_in_cancel_latency_ms"
-
-    ping_p95 = histogram_quantile_from_buckets(hist.get(k_ping, {}), 0.95)
-    ping_p99 = histogram_quantile_from_buckets(hist.get(k_ping, {}), 0.99)
-    cancel_p95 = histogram_quantile_from_buckets(hist.get(k_cancel, {}), 0.95)
-    cancel_p99 = histogram_quantile_from_buckets(hist.get(k_cancel, {}), 0.99)
-
-    skills_invocations = float(counters.get("skills_invocations_total", 0))
-    skills_hits = float(counters.get("skills_hit_total", 0))
-    skills_hit_rate = None
-    if skills_invocations > 0:
-        skills_hit_rate = (skills_hits / skills_invocations) * 100.0
-
-    lines = [
-        f"keepalive.ping_pong_queue_delay_ms p95={_fmt(ping_p95)} p99={_fmt(ping_p99)}",
-        "keepalive.ping_pong_write_timeout_total="
-        + _fmt(counters.get("keepalive_ping_pong_write_timeout_total", 0)),
-        "ws.write_timeout_total=" + _fmt(counters.get("ws_write_timeout_total", 0)),
-        f"vic.barge_in_cancel_latency_ms p95={_fmt(cancel_p95)} p99={_fmt(cancel_p99)}",
-        "memory.transcript_chars_current="
-        + _fmt(gauges.get("memory_transcript_chars_current", 0)),
-        "memory.transcript_utterances_current="
-        + _fmt(gauges.get("memory_transcript_utterances_current", 0)),
-        "skills.invocations_total=" + _fmt(counters.get("skills_invocations_total", 0)),
-        "skills.hit_total=" + _fmt(counters.get("skills_hit_total", 0)),
-        "skills.hit_rate_pct=" + _fmt(skills_hit_rate),
-        "skills.error_total=" + _fmt(counters.get("skills_error_total", 0)),
-        "shell.exec_total=" + _fmt(counters.get("shell_exec_total", 0)),
-        "shell.exec_denied_total=" + _fmt(counters.get("shell_exec_denied_total", 0)),
-        "shell.exec_timeout_total=" + _fmt(counters.get("shell_exec_timeout_total", 0)),
-        "self_improve.cycles_total=" + _fmt(counters.get("self_improve_cycles_total", 0)),
-        "self_improve.proposals_total=" + _fmt(counters.get("self_improve_proposals_total", 0)),
-        "self_improve.applies_total=" + _fmt(counters.get("self_improve_applies_total", 0)),
-        "self_improve.blocked_on_gates_total="
-        + _fmt(counters.get("self_improve_blocked_on_gates_total", 0)),
-        "context.compactions_total=" + _fmt(counters.get("context_compactions_total", 0)),
-        "context.compaction_tokens_saved_total="
-        + _fmt(counters.get("context_compaction_tokens_saved_total", 0)),
-    ]
-    return "\n".join(lines)
-
-
-def main() -> None:
-    ap = argparse.ArgumentParser(description="Print key Retell WS Brain SLO metrics summary from /metrics.")
-    ap.add_argument(
-        "--metrics-url",
-        type=str,
-        default="http://127.0.0.1:8080/metrics",
-        help="Prometheus metrics URL.",
-    )
-    ap.add_argument(
-        "--metrics-file",
-        type=str,
-        default="",
-        help="Optional local metrics text file; if set, metrics-url is ignored.",
-    )
-    args = ap.parse_args()
-
-    text = _fetch_metrics_text(metrics_url=args.metrics_url, metrics_file=(args.metrics_file or None))
-    counters, gauges, hists = parse_prometheus_text(text)
-    print(summarize(counters=counters, gauges=gauges, hist=hists))
-
-
-if __name__ == "__main__":
-    main()
-
-```
-
-### `scripts/prompts/b2b_fast_plain.generated.prompt.txt`
-
-```
-You are Cassidy from Eve Systems.
-
-Primary objective:
-- Close fast.
-- Be direct and plain.
-- Secure one usable manager/owner inbox and send the report.
-
-Behavior contract:
-- Short lines. One ask per turn.
-- 80%+ of turns are questions to keep a consultative, Socratic flow.
-- Adapt automatically every turn:
-  - If the prospect shows resistance, increase directness and reduce fluff.
-  - If the prospect is receptive, reduce questions and move faster to close.
-- Never explain internal reasoning.
-- No jargon.
-- If interrupted, stop immediately.
-- Ask first, claim second.
-- Never blame the person on the phone.
-- Do not hide your intent. You are trying to send a missed-call overflow report.
-- Do not mention intake lines, stress tests, artifacts, simulation, or bottlenecks.
-
-Important:
-- If user starts first, mirror once: "Hi, this is Cassidy from Eve Systems." then continue with your open question.
-
-NEPQ-style no-first cold-open:
-1) Permission question:
-   - "Hi, this is Cassidy from Eve Systems."
-   - "Is this a bad time for one quick question?"
-2) If they say bad time / no:
-   - "No problem. Should I close this now, or send one short report to the right inbox?"
-3) If yes:
-   - "Are you the person who routes messages to the decision maker?"
-4) If yes:
-   - "After busy periods, do any leads get lost in voicemail before anyone gets back to them?"
-5) Problem framing:
-   - "If callers wait on hold, do you ever hear they couldn’t get through later?"
-6) Consequence framing:
-   - "Does that sound like missed consult revenue you’d rather not have?"
-7) Close:
-   - "Could you give the best email for the manager so I can send this now?"
-
-Rules for flow:
-- Keep each step as one short question.
-- If they answer briefly, move forward one step.
-- If they challenge intent, answer once and return to the next question.
-- If defensive, use one line empathy then return to the task.
-- If hostile, call [end_call] and stop immediately.
-
-Value framing:
-- "What this helps with is not adding work, just making missed leads visible in one short report."
-- "You can send this on to the decision maker in under 60 seconds."
-
-Objection handling:
-1) "Is this sales?"
-   - "No pitch. This is a short missed-call report. What inbox should it go to?"
-2) "Not interested"
-   - "Understood. Want me to close this now, or send a short report to a manager inbox so it stays visible?"
-3) "We're busy / in a meeting"
-   - "Perfect, I can work async. What manager inbox should I send this to right now?"
-4) "Don't have direct email"
-   - "I understand—would a direct manager inbox be easiest, or should I use a routing inbox first?"
-5) Generic inbox provided
-   - Push once: "I can use that, but direct inbox usually gets faster reads. Do you have one?"
-   - If they repeat it, accept it and proceed.
-6) Confusion
-   - "I’m sending a short lead overflow report. What email should get this to leadership fastest?"
-7) "We already handle calls well"
-   - "If you feel this isn’t the right time, what email would leadership prefer for overflow updates?"
-
-Fast close sequence:
-- Confirm email once.
-- "Perfect, confirm that spelling for me?"
-- Call send_evidence_package.
-- Call log_call_outcome.
-- Call set_follow_up_plan with:
-  - followup_window_min=2
-  - followup_window_max=5
-  - trigger="email_open_or_click"
-  - channel_priority="call_then_sms"
-- End call.
-
-Strict language limits:
-- Target 7-12 words per turn.
-- Hard cap 16 words except email spelling.
-
-## LEARNED_CALL_PLAYBOOK_START
-Live optimization notes from recent calls:
-- Corpus size: 90 calls
-- Direct email captures: 0
-- Generic inbox captures: 1
-- Mean LLM p50: 1148.8 ms
-- Mean E2E p50: 2357.9 ms
-- Top objections and responses:
-  - busy: seen 2 times. If busy, skip pitch and ask only for routing email.
-  - no_email_policy: seen 1 times. If they refuse direct email, ask for best inbox and proceed.
-  - not_interested: seen 1 times. Offer archive-or-send binary choice once, then route.
-## LEARNED_CALL_PLAYBOOK_END
-
-```
-
-### `scripts/prompts/b2b_fast_plain.prompt.txt`
-
-```
-You are Cassidy from Eve Systems.
-
-Primary objective:
-- Close fast.
-- Be direct and plain.
-- Secure one usable manager/owner inbox and send the report.
-
-Behavior contract:
-- Short lines. One ask per turn.
-- 80%+ of turns are questions to keep a consultative, Socratic flow.
-- Adapt automatically every turn:
-  - If the prospect shows resistance, increase directness and reduce fluff.
-  - If the prospect is receptive, reduce questions and move faster to close.
-- Never explain internal reasoning.
-- No jargon.
-- If interrupted, stop immediately.
-- Ask first, claim second.
-- Never blame the person on the phone.
-- Do not hide your intent. You are trying to send a missed-call overflow report.
-- Do not mention intake lines, stress tests, artifacts, simulation, or bottlenecks.
-
-Important:
-- If user starts first, mirror once: "Hi, this is Cassidy from Eve Systems." then continue with your open question.
-
-NEPQ-style no-first cold-open:
-1) Permission question:
-   - "Hi, this is Cassidy from Eve Systems."
-   - "Is this a bad time for one quick question?"
-2) If they say bad time / no:
-   - "No problem. Should I close this now, or send one short report to the right inbox?"
-3) If yes:
-   - "Are you the person who routes messages to the decision maker?"
-4) If yes:
-   - "After busy periods, do any leads get lost in voicemail before anyone gets back to them?"
-5) Problem framing:
-   - "If callers wait on hold, do you ever hear they couldn’t get through later?"
-6) Consequence framing:
-   - "Does that sound like missed consult revenue you’d rather not have?"
-7) Close:
-   - "Could you give the best email for the manager so I can send this now?"
-
-Rules for flow:
-- Keep each step as one short question.
-- If they answer briefly, move forward one step.
-- If they challenge intent, answer once and return to the next question.
-- If defensive, use one line empathy then return to the task.
-- If hostile, call [end_call] and stop immediately.
-
-Value framing:
-- "What this helps with is not adding work, just making missed leads visible in one short report."
-- "You can send this on to the decision maker in under 60 seconds."
-
-Objection handling:
-1) "Is this sales?"
-   - "No pitch. This is a short missed-call report. What inbox should it go to?"
-2) "Not interested"
-   - "Understood. Want me to close this now, or send a short report to a manager inbox so it stays visible?"
-3) "We're busy / in a meeting"
-   - "Perfect, I can work async. What manager inbox should I send this to right now?"
-4) "Don't have direct email"
-   - "I understand—would a direct manager inbox be easiest, or should I use a routing inbox first?"
-5) Generic inbox provided
-   - Push once: "I can use that, but direct inbox usually gets faster reads. Do you have one?"
-   - If they repeat it, accept it and proceed.
-6) Confusion
-   - "I’m sending a short lead overflow report. What email should get this to leadership fastest?"
-7) "We already handle calls well"
-   - "If you feel this isn’t the right time, what email would leadership prefer for overflow updates?"
-
-Fast close sequence:
-- Confirm email once.
-- "Perfect, confirm that spelling for me?"
-- Call send_evidence_package.
-- Call log_call_outcome.
-- Call set_follow_up_plan with:
-  - followup_window_min=2
-  - followup_window_max=5
-  - trigger="email_open_or_click"
-  - channel_priority="call_then_sms"
-- End call.
-
-Strict language limits:
-- Target 7-12 words per turn.
-- Hard cap 16 words except email spelling.
-
-```
-
-### `scripts/replay_session.py`
-
-```
-from __future__ import annotations
-
-import argparse
-import asyncio
-import hashlib
-import json
-import os
-import sys
-from typing import Any, Iterable
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from tests.harness.transport_harness import HarnessSession
-
-
-def _sha256_hex(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
-
-
-def _digest_from_events(events: Iterable[dict[str, Any]]) -> str:
-    parts: list[str] = []
-    for e in events:
-        parts.append(
-            f"{e.get('seq')}:{e.get('t_ms')}:{e.get('session_id')}:{e.get('call_id')}:"
-            f"{e.get('turn_id')}:{e.get('epoch')}:{e.get('ws_state')}:{e.get('conv_state')}:"
-            f"{e.get('event_type')}:{e.get('payload_hash')}:{e.get('segment_hash') or ''}"
-        )
-    blob = "|".join(parts).encode("utf-8")
-    return _sha256_hex(blob)
-
-
-def _load_jsonl(path: str) -> list[dict[str, Any]]:
-    out: list[dict[str, Any]] = []
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            out.append(json.loads(line))
-    return out
-
-
-async def _run_builtin() -> tuple[str, str]:
-    async def run_once() -> str:
-        session = await HarnessSession.start(session_id="replay", tool_latencies={"get_pricing": 0})
-        try:
-            await session.recv_outbound()
-            await session.recv_outbound()
-            await session.send_inbound_obj(
-                {
-                    "interaction_type": "response_required",
-                    "response_id": 1,
-                    "transcript": [{"role": "user", "content": "How much does it cost?"}],
-                }
-            )
-            for _ in range(200):
-                await asyncio.sleep(0)
-                if any(p.epoch == 1 for p in session.orch.speech_plans):
-                    break
-            assert session.trace.schema_violations_total == 0
-            return session.trace.replay_digest()
-        finally:
-            await session.stop()
-
-    d1 = await run_once()
-    d2 = await run_once()
-    return d1, d2
-
-
-def main() -> None:
-    ap = argparse.ArgumentParser(description="Replay determinism helper (digest comparison).")
-    ap.add_argument("--trace-a", type=str, default="", help="path to trace JSONL A")
-    ap.add_argument("--trace-b", type=str, default="", help="path to trace JSONL B")
-    args = ap.parse_args()
-
-    if args.trace_a and args.trace_b:
-        a = _load_jsonl(args.trace_a)
-        b = _load_jsonl(args.trace_b)
-        da = _digest_from_events(a)
-        db = _digest_from_events(b)
-        print(f"digest_a={da}")
-        print(f"digest_b={db}")
-        if da != db:
-            print("replay_digest_mismatch", file=sys.stderr)
-            raise SystemExit(1)
-        return
-
-    if args.trace_a:
-        a = _load_jsonl(args.trace_a)
-        da = _digest_from_events(a)
-        print(f"digest={da}")
-        return
-
-    d1, d2 = asyncio.run(_run_builtin())
-    print(f"digest_run_1={d1}")
-    print(f"digest_run_2={d2}")
-    if d1 != d2:
-        print("replay_digest_mismatch", file=sys.stderr)
-        raise SystemExit(1)
-
-
-if __name__ == "__main__":
-    main()
-
-```
-
-### `scripts/retell_fast_recover.sh`
-
-```
-#!/usr/bin/env bash
-set -euo pipefail
-
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
-PROMPT_FILE="${RETELL_PROMPT_FILE:-$ROOT_DIR/scripts/prompts/b2b_fast_plain.prompt.txt}"
-
-if [[ ! -f "$ENV_FILE" ]]; then
-  echo "Missing env file: $ENV_FILE" >&2
-  exit 2
-fi
-if [[ ! -f "$PROMPT_FILE" ]]; then
-  echo "Missing prompt file: $PROMPT_FILE" >&2
-  exit 2
-fi
-
-set -a
-# shellcheck disable=SC1090
-source "$ENV_FILE"
-set +a
-
-: "${RETELL_API_KEY:?RETELL_API_KEY is required}"
-: "${B2B_AGENT_ID:?B2B_AGENT_ID is required}"
-
-BEGIN_AFTER_USER_SILENCE_MS="${BEGIN_AFTER_USER_SILENCE_MS:-10}"
-VOICE_SPEED="${VOICE_SPEED:-1.05}"
-MODEL_TEMPERATURE="${MODEL_TEMPERATURE:-0.03}"
-STT_ENDPOINTING_MS="${STT_ENDPOINTING_MS:-5}"
-MODEL_HIGH_PRIORITY="${MODEL_HIGH_PRIORITY:-true}"
-LLM_MODEL="${LLM_MODEL:-gemini-2.5-flash-lite}"
-START_SPEAKER="${START_SPEAKER:-user}"
-TRIM_TOOLS="${TRIM_TOOLS:-true}"
-export ROOT_DIR
-export RETELL_PROMPT_FILE="$PROMPT_FILE"
-export BEGIN_AFTER_USER_SILENCE_MS
-export VOICE_SPEED
-export MODEL_TEMPERATURE
-export STT_ENDPOINTING_MS
-export MODEL_HIGH_PRIORITY
-export LLM_MODEL
-export START_SPEAKER
-export TRIM_TOOLS
-
-python3 - <<'PY'
-import json
-import os
-import subprocess
-import sys
-from pathlib import Path
-
-api = os.environ["RETELL_API_KEY"]
-agent_id = os.environ["B2B_AGENT_ID"]
-prompt_file = Path(os.environ.get("RETELL_PROMPT_FILE") or "")
-if not prompt_file:
-    root = Path(os.environ["ROOT_DIR"])
-    prompt_file = root / "scripts" / "prompts" / "b2b_fast_plain.prompt.txt"
-prompt = prompt_file.read_text(encoding="utf-8")
-
-def curl_json(args: list[str]) -> dict:
-    out = subprocess.check_output(args, text=True)
-    return json.loads(out)
-
-agent = curl_json(
-    [
-        "curl",
-        "-sS",
-        "-H",
-        f"Authorization: Bearer {api}",
-        f"https://api.retellai.com/get-agent/{agent_id}",
-    ]
-)
-llm_id = agent.get("response_engine", {}).get("llm_id")
-if not llm_id:
-    raise SystemExit("Could not resolve llm_id from get-agent response")
-
-llm_payload = {
-    "model": os.environ["LLM_MODEL"],
-    "start_speaker": os.environ["START_SPEAKER"],
-    "general_prompt": prompt,
-    "begin_after_user_silence_ms": int(os.environ["BEGIN_AFTER_USER_SILENCE_MS"]),
-    "model_temperature": float(os.environ["MODEL_TEMPERATURE"]),
-    "model_high_priority": os.environ.get("MODEL_HIGH_PRIORITY", "true").lower() in {"1", "true", "yes", "on"},
-}
-
-if os.environ.get("TRIM_TOOLS", "true").lower() in {"1", "true", "yes", "on"}:
-    current_llm = curl_json(
-        [
-            "curl",
-            "-sS",
-            "-H",
-            f"Authorization: Bearer {api}",
-            f"https://api.retellai.com/get-retell-llm/{llm_id}",
-        ]
-    )
-    keep = {
-        "end_call",
-        "send_evidence_package",
-        "mark_dnc_compliant",
-        "log_call_outcome",
-        "set_follow_up_plan",
-        "set_followup",
-    }
-    tools = current_llm.get("general_tools") or []
-    trimmed = [t for t in tools if (t.get("name") or "") in keep]
-    if trimmed:
-        llm_payload["general_tools"] = trimmed
-llm = curl_json(
-    [
-        "curl",
-        "-sS",
-        "-X",
-        "PATCH",
-        f"https://api.retellai.com/update-retell-llm/{llm_id}",
-        "-H",
-        f"Authorization: Bearer {api}",
-        "-H",
-        "Content-Type: application/json",
-        "--data",
-        json.dumps(llm_payload),
-    ]
-)
-
-agent_payload = {
-    "responsiveness": 1.0,
-    "interruption_sensitivity": 1.0,
-    "begin_message_delay_ms": 0,
-    "enable_backchannel": False,
-    "normalize_for_speech": False,
-    "voice_speed": float(os.environ["VOICE_SPEED"]),
-    "custom_stt_config": {"provider": "deepgram", "endpointing_ms": int(os.environ["STT_ENDPOINTING_MS"])},
-}
-updated_agent = curl_json(
-    [
-        "curl",
-        "-sS",
-        "-X",
-        "PATCH",
-        f"https://api.retellai.com/update-agent/{agent_id}",
-        "-H",
-        f"Authorization: Bearer {api}",
-        "-H",
-        "Content-Type: application/json",
-        "--data",
-        json.dumps(agent_payload),
-    ]
-)
-
-print(
-    json.dumps(
-        {
-            "status": "ok",
-            "agent_id": agent_id,
-            "llm_id": llm_id,
-            "llm_begin_after_user_silence_ms": llm.get("begin_after_user_silence_ms"),
-            "llm_start_speaker": llm.get("start_speaker"),
-            "llm_model": llm.get("model"),
-            "llm_model_temperature": llm.get("model_temperature"),
-            "agent_voice_speed": updated_agent.get("voice_speed"),
-            "agent_responsiveness": updated_agent.get("responsiveness"),
-            "agent_interruption_sensitivity": updated_agent.get("interruption_sensitivity"),
-            "agent_stt_endpointing_ms": (updated_agent.get("custom_stt_config") or {}).get("endpointing_ms"),
-        },
-        indent=2,
-    )
-)
-PY
-
-```
-
-### `scripts/retell_learning_loop.py`
-
-```
-#!/usr/bin/env python3
-from __future__ import annotations
-
-import argparse
-import json
-import os
-import re
-import subprocess
-import sys
-import time
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any
-from urllib.parse import urlparse
-from urllib.request import urlopen
+from statistics import mean
+
+from .vad import frame_rms
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+@dataclass(frozen=True, slots=True)
+class ProsodyFeatures:
+    energy_rms: float
+    pitch_proxy: float
+    speaking_rate_proxy: float
+    pause_stability: float
 
 
-EMAIL_RE = re.compile(r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}\b")
+class ProsodyTracker:
+    def __init__(self, *, max_frames: int = 50) -> None:
+        self._max_frames = max(5, int(max_frames))
+        self._rms: list[float] = []
+        self._zc: list[float] = []
+        self._speech_flags: list[bool] = []
 
-OBJECTION_PATTERNS: dict[str, re.Pattern[str]] = {
-    "no_email_policy": re.compile(r"\b(don't|do not|cant|can't)\s+(give|share).*(email)\b", re.I),
-    "busy": re.compile(r"\b(busy|with a patient|in a meeting|call back)\b", re.I),
-    "not_interested": re.compile(r"\b(not interested|we're good|we are good)\b", re.I),
-    "is_sales": re.compile(r"\b(is this sales|sales call|are you selling)\b", re.I),
-    "generic_inbox": re.compile(r"\b(info@|admin@|frontdesk@|contact@|hello@)\b", re.I),
-}
+    def ingest(self, frame: bytes, *, has_speech: bool) -> ProsodyFeatures:
+        rms = frame_rms(frame)
+        zc = _zero_crossing_rate(frame)
+        self._rms.append(rms)
+        self._zc.append(zc)
+        self._speech_flags.append(bool(has_speech))
+        if len(self._rms) > self._max_frames:
+            self._rms.pop(0)
+            self._zc.pop(0)
+            self._speech_flags.pop(0)
 
-
-@dataclass
-class LearningStats:
-    total_calls: int = 0
-    calls_with_transcript: int = 0
-    calls_with_recording_url: int = 0
-    direct_email_captures: int = 0
-    generic_email_captures: int = 0
-    avg_llm_p50_ms: float = 0.0
-    avg_e2e_p50_ms: float = 0.0
-    objections: dict[str, int] = None  # type: ignore[assignment]
-
-    def __post_init__(self) -> None:
-        if self.objections is None:
-            self.objections = {k: 0 for k in OBJECTION_PATTERNS}
-
-
-def _curl_json(*, api_key: str, method: str, url: str, payload: dict[str, Any] | None = None) -> Any:
-    cmd = [
-        "curl",
-        "-sS",
-        "-X",
-        method,
-        url,
-        "-H",
-        f"Authorization: Bearer {api_key}",
-    ]
-    if payload is not None:
-        cmd += ["-H", "Content-Type: application/json", "--data", json.dumps(payload)]
-    out = subprocess.check_output(cmd, text=True)
-    return json.loads(out)
-
-
-def _load_env_file_fallback() -> None:
-    """
-    Lightweight .env loader so `make learn` works without manual export.
-    Only sets keys that are currently missing in process env.
-    """
-    env_file = os.getenv("RETELL_ENV_FILE") or str(REPO_ROOT / ".env.retell.local")
-    p = Path(env_file)
-    if not p.exists():
-        return
-    for raw in p.read_text(encoding="utf-8").splitlines():
-        line = raw.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        k, v = line.split("=", 1)
-        k = k.strip()
-        v = v.strip().strip("'").strip('"')
-        if k and k not in os.environ:
-            os.environ[k] = v
-
-
-def _safe_ext_from_url(url: str) -> str:
-    path = urlparse(url).path
-    ext = Path(path).suffix.lower()
-    if ext in {".mp3", ".wav", ".m4a", ".ogg"}:
-        return ext
-    return ".bin"
-
-
-def _download(url: str, to_path: Path) -> None:
-    to_path.parent.mkdir(parents=True, exist_ok=True)
-    with urlopen(url, timeout=20) as r:
-        data = r.read()
-    to_path.write_bytes(data)
-
-
-def _persist_call(call: dict[str, Any], out_dir: Path, download_recordings: bool) -> dict[str, Any]:
-    if not isinstance(call, dict):
-        return {"call_id": "", "saved": False, "downloaded": False}
-    call_id = str(call.get("call_id") or "")
-    if not call_id:
-        return {"call_id": "", "saved": False, "downloaded": False}
-    call_dir = out_dir / call_id
-    call_dir.mkdir(parents=True, exist_ok=True)
-
-    (call_dir / "call.json").write_text(json.dumps(call, indent=2, sort_keys=True), encoding="utf-8")
-    transcript = str(call.get("transcript") or "").strip()
-    (call_dir / "transcript.txt").write_text(transcript + ("\n" if transcript else ""), encoding="utf-8")
-    twtc = call.get("transcript_with_tool_calls")
-    if twtc is not None:
-        (call_dir / "transcript_with_tool_calls.json").write_text(
-            json.dumps(twtc, indent=2, sort_keys=True), encoding="utf-8"
+        return ProsodyFeatures(
+            energy_rms=(mean(self._rms) if self._rms else 0.0),
+            pitch_proxy=(mean(self._zc[-10:]) if self._zc else 0.0),
+            speaking_rate_proxy=_speaking_rate_proxy(self._speech_flags),
+            pause_stability=_pause_stability(self._speech_flags),
         )
 
-    rec_url = str(call.get("recording_url") or "").strip()
-    downloaded = False
-    if download_recordings and rec_url:
-        ext = _safe_ext_from_url(rec_url)
-        rec_path = call_dir / f"recording{ext}"
-        if not rec_path.exists():
-            try:
-                _download(rec_url, rec_path)
-                downloaded = True
-            except Exception:
-                # Keep loop durable even if signed URL is expired.
-                (call_dir / "recording_download_error.txt").write_text(
-                    f"failed_at={int(time.time())}\nurl={rec_url}\n", encoding="utf-8"
-                )
-    return {"call_id": call_id, "saved": True, "downloaded": downloaded}
 
-
-def _load_call_jsons(out_dir: Path) -> list[dict[str, Any]]:
-    calls: list[dict[str, Any]] = []
-    if not out_dir.exists():
-        return calls
-    for p in sorted(out_dir.glob("*/call.json")):
-        try:
-            calls.append(json.loads(p.read_text(encoding="utf-8")))
-        except Exception:
-            continue
-    return calls
-
-
-def _select_local_calls(
-    calls: list[dict[str, Any]],
-    *,
-    limit: int,
-    agent_id: str,
-    include_non_ended: bool,
-) -> list[dict[str, Any]]:
-    out: list[dict[str, Any]] = []
-    seen: set[str] = set()
-    for c in calls:
-        if not isinstance(c, dict):
-            continue
-        call_id = str(c.get("call_id") or "").strip()
-        if not call_id or call_id in seen:
-            continue
-        if agent_id and str(c.get("agent_id") or "") != agent_id:
-            continue
-        if not include_non_ended:
-            status = str(c.get("call_status") or "").lower()
-            if status and status != "ended":
-                continue
-        seen.add(call_id)
-        out.append(c)
-        if len(out) >= int(limit):
-            break
-    return out
-
-
-def _extract_agent_lines(transcript: str) -> list[str]:
-    out: list[str] = []
-    for line in transcript.splitlines():
-        line = line.strip()
-        if line.lower().startswith("agent:"):
-            out.append(line[6:].strip())
-    return out
-
-
-def _extract_user_lines(transcript: str) -> list[str]:
-    out: list[str] = []
-    for line in transcript.splitlines():
-        line = line.strip()
-        if line.lower().startswith("user:"):
-            out.append(line[5:].strip())
-    return out
-
-
-def _is_generic_email(email: str) -> bool:
-    local = email.split("@", 1)[0].lower()
-    return local in {"info", "admin", "frontdesk", "contact", "hello"}
-
-
-def _analyze(calls: list[dict[str, Any]]) -> LearningStats:
-    s = LearningStats()
-    llm_p50_vals: list[float] = []
-    e2e_p50_vals: list[float] = []
-
-    for c in calls:
-        if not isinstance(c, dict):
-            continue
-        s.total_calls += 1
-        transcript = str(c.get("transcript") or "")
-        if transcript.strip():
-            s.calls_with_transcript += 1
-        if c.get("recording_url"):
-            s.calls_with_recording_url += 1
-
-        emails = EMAIL_RE.findall(transcript)
-        for e in emails:
-            if _is_generic_email(e):
-                s.generic_email_captures += 1
-            else:
-                s.direct_email_captures += 1
-
-        for u in _extract_user_lines(transcript):
-            for k, pat in OBJECTION_PATTERNS.items():
-                if pat.search(u):
-                    s.objections[k] += 1
-
-        lat = c.get("latency") or {}
-        llm = lat.get("llm") or {}
-        e2e = lat.get("e2e") or {}
-        if isinstance(llm.get("p50"), (int, float)):
-            llm_p50_vals.append(float(llm["p50"]))
-        if isinstance(e2e.get("p50"), (int, float)):
-            e2e_p50_vals.append(float(e2e["p50"]))
-
-    if llm_p50_vals:
-        s.avg_llm_p50_ms = sum(llm_p50_vals) / len(llm_p50_vals)
-    if e2e_p50_vals:
-        s.avg_e2e_p50_ms = sum(e2e_p50_vals) / len(e2e_p50_vals)
-    return s
-
-
-def _build_learned_block(stats: LearningStats) -> str:
-    ranked = sorted(stats.objections.items(), key=lambda kv: kv[1], reverse=True)
-    top = [x for x in ranked if x[1] > 0][:3]
-    lines = [
-        "Live optimization notes from recent calls:",
-        f"- Corpus size: {stats.total_calls} calls",
-        f"- Direct email captures: {stats.direct_email_captures}",
-        f"- Generic inbox captures: {stats.generic_email_captures}",
-        f"- Mean LLM p50: {stats.avg_llm_p50_ms:.1f} ms",
-        f"- Mean E2E p50: {stats.avg_e2e_p50_ms:.1f} ms",
-    ]
-    if top:
-        lines.append("- Top objections and responses:")
-        mapping = {
-            "no_email_policy": "If they refuse direct email, ask for best inbox and proceed.",
-            "busy": "If busy, skip pitch and ask only for routing email.",
-            "not_interested": "Offer archive-or-send binary choice once, then route.",
-            "is_sales": "Use one-line no-pitch reply and return to email ask.",
-            "generic_inbox": "Push back once, then accept generic inbox immediately.",
-        }
-        for k, n in top:
-            lines.append(f"  - {k}: seen {n} times. {mapping.get(k, '')}".rstrip())
-    return "\n".join(lines).strip()
-
-
-def _write_reports(*, stats: LearningStats, out_dir: Path) -> Path:
-    report_dir = out_dir / "analysis"
-    report_dir.mkdir(parents=True, exist_ok=True)
-    payload = {
-        "total_calls": stats.total_calls,
-        "calls_with_transcript": stats.calls_with_transcript,
-        "calls_with_recording_url": stats.calls_with_recording_url,
-        "direct_email_captures": stats.direct_email_captures,
-        "generic_email_captures": stats.generic_email_captures,
-        "avg_llm_p50_ms": round(stats.avg_llm_p50_ms, 2),
-        "avg_e2e_p50_ms": round(stats.avg_e2e_p50_ms, 2),
-        "objections": stats.objections,
-        "learned_block": _build_learned_block(stats),
-    }
-    json_path = report_dir / "latest.json"
-    md_path = report_dir / "latest.md"
-    json_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
-    md_lines = [
-        "# Retell Learning Loop Report",
-        "",
-        f"- total_calls: {payload['total_calls']}",
-        f"- calls_with_transcript: {payload['calls_with_transcript']}",
-        f"- calls_with_recording_url: {payload['calls_with_recording_url']}",
-        f"- direct_email_captures: {payload['direct_email_captures']}",
-        f"- generic_email_captures: {payload['generic_email_captures']}",
-        f"- avg_llm_p50_ms: {payload['avg_llm_p50_ms']}",
-        f"- avg_e2e_p50_ms: {payload['avg_e2e_p50_ms']}",
-        "",
-        "## Objection Counts",
-    ]
-    for k, v in sorted(stats.objections.items()):
-        md_lines.append(f"- {k}: {v}")
-    md_lines += ["", "## Learned Block", "", payload["learned_block"], ""]
-    md_path.write_text("\n".join(md_lines), encoding="utf-8")
-    return json_path
-
-
-def _build_generated_prompt(base_prompt: str, learned_block: str) -> str:
-    marker_start = "## LEARNED_CALL_PLAYBOOK_START"
-    marker_end = "## LEARNED_CALL_PLAYBOOK_END"
-    block = f"{marker_start}\n{learned_block}\n{marker_end}"
-    if marker_start in base_prompt and marker_end in base_prompt:
-        pre = base_prompt.split(marker_start, 1)[0].rstrip()
-        post = base_prompt.split(marker_end, 1)[1].lstrip()
-        return f"{pre}\n\n{block}\n\n{post}".strip() + "\n"
-    return base_prompt.rstrip() + "\n\n" + block + "\n"
-
-
-def main() -> int:
-    _load_env_file_fallback()
-
-    def _rel(p: Path) -> str:
-        try:
-            return str(p.relative_to(REPO_ROOT))
-        except Exception:
-            return str(p)
-
-    ap = argparse.ArgumentParser(description="Sync Retell calls and auto-refine prompt after threshold.")
-    ap.add_argument("--limit", type=int, default=100, help="list-calls limit per run")
-    ap.add_argument("--threshold", type=int, default=250, help="minimum call corpus to auto-refine")
-    ap.add_argument("--out-dir", default="data/retell_calls")
-    ap.add_argument(
-        "--local-calls-dir",
-        default=str((REPO_ROOT / "data/retell_calls")),
-        help="offline mode input directory containing call.json files",
-    )
-    ap.add_argument("--offline", action="store_true", default=False, help="analyze local corpus only")
-    ap.add_argument("--agent-id", default=os.getenv("B2B_AGENT_ID", ""))
-    ap.add_argument("--download-recordings", action="store_true", default=True)
-    ap.add_argument("--no-download-recordings", dest="download_recordings", action="store_false")
-    ap.add_argument(
-        "--include-non-ended",
-        action="store_true",
-        default=False,
-        help="include non-ended calls in corpus sync (default false)",
-    )
-    ap.add_argument("--apply", action="store_true", default=True, help="apply refined prompt to live Retell LLM")
-    ap.add_argument("--no-apply", dest="apply", action="store_false")
-    args = ap.parse_args()
-
-    out_dir = Path(args.out_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    if args.offline:
-        api_key = os.getenv("RETELL_API_KEY", "").strip()
-        if api_key:
-            os.environ["RETELL_API_KEY"] = api_key
-        calls = _select_local_calls(
-            _load_call_jsons(Path(args.local_calls_dir)),
-            limit=int(args.limit),
-            agent_id=args.agent_id,
-            include_non_ended=args.include_non_ended,
-        )
-        stats = _analyze(calls)
-        report_path = _write_reports(stats=stats, out_dir=out_dir)
-
-        generated_prompt = REPO_ROOT / "scripts" / "prompts" / "b2b_fast_plain.generated.prompt.txt"
-        base_prompt_path = REPO_ROOT / "scripts" / "prompts" / "b2b_fast_plain.prompt.txt"
-        base_prompt = base_prompt_path.read_text(encoding="utf-8")
-        learned_block = _build_learned_block(stats)
-        generated_prompt.write_text(_build_generated_prompt(base_prompt, learned_block), encoding="utf-8")
-
-        print(
-            json.dumps(
-                {
-                    "status": "ok",
-                    "mode": "offline",
-                    "saved_calls_this_run": len(calls),
-                    "downloaded_recordings_this_run": 0,
-                    "corpus_total_calls": stats.total_calls,
-                    "threshold": int(args.threshold),
-                    "applied_refinement": False,
-                    "report_json": _rel(report_path),
-                    "generated_prompt": _rel(generated_prompt),
-                },
-                indent=2,
-                    )
-        )
-        return 0
-
-    api_key = os.getenv("RETELL_API_KEY", "").strip()
-    if not api_key:
-        print("RETELL_API_KEY is required", file=sys.stderr)
-        return 2
-
-    state_path = out_dir / "_state.json"
-    state = {}
-    if state_path.exists():
-        try:
-            state = json.loads(state_path.read_text(encoding="utf-8"))
-        except Exception:
-            state = {}
-    seen_ids: set[str] = set(state.get("seen_call_ids", []))
-
-    calls = _curl_json(
-        api_key=api_key,
-        method="POST",
-        url="https://api.retellai.com/v2/list-calls",
-        payload={"limit": int(args.limit)},
-    )
-    if not isinstance(calls, list):
-        print("Unexpected list-calls response shape", file=sys.stderr)
-        return 1
-
-    saved = 0
-    downloaded = 0
-    processed_ids: set[str] = set()
-    for c in calls:
-        if not isinstance(c, dict):
-            continue
-        call_id = str((c or {}).get("call_id") or "")
-        if not call_id:
-            continue
-        if call_id in processed_ids:
-            continue
-        processed_ids.add(call_id)
-        if args.agent_id and str(c.get("agent_id") or "") != args.agent_id:
-            continue
-        if not args.include_non_ended:
-            status = str(c.get("call_status") or "").lower()
-            if status and status != "ended":
-                continue
-        # Refresh call details to capture late-added artifacts.
-        call_full = _curl_json(
-            api_key=api_key,
-            method="GET",
-            url=f"https://api.retellai.com/v2/get-call/{call_id}",
-        )
-        result = _persist_call(call_full, out_dir, args.download_recordings)
-        if result.get("saved"):
-            saved += 1
-            seen_ids.add(call_id)
-        if result.get("downloaded"):
-            downloaded += 1
-
-    state["seen_call_ids"] = sorted(seen_ids)
-    state["last_sync_unix"] = int(time.time())
-    state_path.write_text(json.dumps(state, indent=2, sort_keys=True), encoding="utf-8")
-
-    corpus = _load_call_jsons(out_dir)
-    stats = _analyze(corpus)
-    report_path = _write_reports(stats=stats, out_dir=out_dir)
-
-    generated_prompt = REPO_ROOT / "scripts" / "prompts" / "b2b_fast_plain.generated.prompt.txt"
-    base_prompt_path = REPO_ROOT / "scripts" / "prompts" / "b2b_fast_plain.prompt.txt"
-    base_prompt = base_prompt_path.read_text(encoding="utf-8")
-    learned_block = _build_learned_block(stats)
-    generated_prompt.write_text(_build_generated_prompt(base_prompt, learned_block), encoding="utf-8")
-
-    applied = False
-    if args.apply and stats.total_calls >= int(args.threshold):
-        env = os.environ.copy()
-        env["RETELL_PROMPT_FILE"] = str(generated_prompt)
-        subprocess.check_call(["bash", str(REPO_ROOT / "scripts" / "retell_fast_recover.sh")], env=env)
-        applied = True
-
-    print(
-        json.dumps(
-            {
-                "status": "ok",
-                "mode": "live",
-                "saved_calls_this_run": saved,
-                "downloaded_recordings_this_run": downloaded,
-                "corpus_total_calls": stats.total_calls,
-                "threshold": int(args.threshold),
-                "applied_refinement": applied,
-                "report_json": _rel(report_path),
-                "generated_prompt": _rel(generated_prompt),
-            },
-            indent=2,
-        )
-    )
+def prosody_adjustment_ms(features: ProsodyFeatures) -> int:
+    # Rising + unstable cadence => wait longer
+    if features.pitch_proxy >= 0.18 and features.pause_stability <= 0.45:
+        return 120
+    # Falling + stable cadence => respond earlier
+    if features.pitch_proxy <= 0.08 and features.pause_stability >= 0.7:
+        return -100
     return 0
 
 
-if __name__ == "__main__":
-    raise SystemExit(main())
+def _zero_crossing_rate(frame: bytes) -> float:
+    if len(frame) < 4:
+        return 0.0
+    prev = int.from_bytes(frame[0:2], "little", signed=True)
+    crossings = 0
+    n = len(frame) // 2
+    for i in range(2, n * 2, 2):
+        cur = int.from_bytes(frame[i : i + 2], "little", signed=True)
+        if (prev < 0 <= cur) or (prev > 0 >= cur):
+            crossings += 1
+        prev = cur
+    return crossings / max(1, n)
 
+
+def _speaking_rate_proxy(flags: list[bool]) -> float:
+    if not flags:
+        return 0.0
+    speech_runs = 0
+    in_run = False
+    for f in flags:
+        if f and not in_run:
+            speech_runs += 1
+            in_run = True
+        elif not f:
+            in_run = False
+    return speech_runs / max(1, len(flags))
+
+
+def _pause_stability(flags: list[bool]) -> float:
+    if not flags:
+        return 0.0
+    pauses: list[int] = []
+    run = 0
+    for f in flags:
+        if not f:
+            run += 1
+        elif run > 0:
+            pauses.append(run)
+            run = 0
+    if run > 0:
+        pauses.append(run)
+    if not pauses:
+        return 1.0
+    avg = mean(pauses)
+    spread = sum(abs(p - avg) for p in pauses) / len(pauses)
+    return max(0.0, 1.0 - (spread / max(1.0, avg + 1.0)))
 ```
 
-### `scripts/retell_restore_agent.sh`
+## `src/processing/tag_parser.py`
 
-```
-#!/usr/bin/env bash
-set -euo pipefail
-
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
-BACKUP_JSON="${1:-}"
-
-if [[ -z "$BACKUP_JSON" ]]; then
-  echo "Usage: $0 data/retell_agent_backups/<backup>.json" >&2
-  exit 2
-fi
-if [[ ! -f "$BACKUP_JSON" ]]; then
-  echo "Missing backup file: $BACKUP_JSON" >&2
-  exit 2
-fi
-if [[ ! -f "$ENV_FILE" ]]; then
-  echo "Missing env file: $ENV_FILE" >&2
-  exit 2
-fi
-
-set -a
-# shellcheck disable=SC1090
-source "$ENV_FILE"
-set +a
-
-: "${RETELL_API_KEY:?RETELL_API_KEY is required}"
-
-python3 - <<'PY'
-import json
-import os
-import subprocess
-import sys
-from pathlib import Path
-
-api = os.environ["RETELL_API_KEY"].strip()
-backup_path = Path(sys.argv[1]).resolve()
-backup = json.loads(backup_path.read_text(encoding="utf-8"))
-agent_id = str(backup.get("agent_id") or backup.get("id") or "").strip()
-if not agent_id:
-    raise SystemExit("Backup JSON missing agent_id")
-
-payload = {}
-# Restore only the fields we know are safe to patch.
-if "response_engine" in backup and backup["response_engine"] is not None:
-    payload["response_engine"] = backup["response_engine"]
-if "llm_websocket_url" in backup and backup["llm_websocket_url"] is not None:
-    payload["llm_websocket_url"] = backup["llm_websocket_url"]
-
-if not payload:
-    raise SystemExit("Backup JSON had no response_engine/llm_websocket_url to restore")
-
-cmd = [
-    "curl",
-    "-sS",
-    "-X",
-    "PATCH",
-    f"https://api.retellai.com/update-agent/{agent_id}",
-    "-H",
-    f"Authorization: Bearer {api}",
-    "-H",
-    "Content-Type: application/json",
-    "--data",
-    json.dumps(payload),
-]
-
-out = subprocess.check_output(cmd, text=True)
-resp = json.loads(out)
-print(json.dumps({"status": "ok", "agent_id": agent_id, "response_engine": resp.get("response_engine")}, indent=2))
-PY
-"$BACKUP_JSON"
-
-```
-
-### `scripts/revenue_ops_loop.py`
-
-```
-#!/usr/bin/env python3
+```python
 from __future__ import annotations
 
-import argparse
-import asyncio
-import json
-import os
 import re
-import sys
-import time
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any
-import random
-from urllib.request import Request, urlopen
+
+from src.interfaces.events import SpeechSegment, StyleModifier
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
-
-from app.config import BrainConfig
-from app.metrics import VIC
-from tests.harness.transport_harness import HarnessSession
+_TAG_PATTERN = re.compile(r"\[(laughs|whispers|sighs|slow|excited)\]", re.I)
+_WORD_PATTERN = re.compile(r"\b\w+\b")
 
 
-EMAIL_RE = re.compile(r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}\b")
-GENERIC_LOCAL = {"info", "admin", "frontdesk", "contact", "hello", "office"}
-CLOSE_REQUEST_RE = re.compile(
-    r"\b(close|close this out|close this call|close the call|archive|send it|send this|call me now|hang up|hang up now|end call|end this call)\b",
-    re.I,
-)
-BETA_ALPHA = 2.0
-BETA_BETA = 8.0
-FR_P95_TRIM_FRACTION = 0.08
-LATENCY_CANDIDATES_SAFE_MAX_MS = 5_000.0
+@dataclass(frozen=True, slots=True)
+class TagScope:
+    scope_id: str
+    style: StyleModifier
+    speed: float
+    words_left: int
 
-# very lightweight fallback matcher for spoken emails like "name at gmail dot com"
-SPOKEN_EMAIL_RE = re.compile(
-    r"\b([a-z0-9._%+-]{1,64})\s+(?:at|@)\s+([a-z0-9.-]{1,128})\s+(?:dot|\.)\s+([a-z]{2,10})\b",
-    re.I,
-)
 
-OBJECTION_PATTERNS: dict[str, re.Pattern[str]] = {
-    "is_sales": re.compile(r"\b(is this sales|sales call|are you selling)\b", re.I),
-    "busy": re.compile(r"\b(busy|with a patient|in a meeting|call back)\b", re.I),
-    "no_email_policy": re.compile(r"\b(don't|do not|cant|can't|won't|will not)\s+(give|share).*(email)\b", re.I),
-    "generic_inbox": re.compile(r"\b(info@|admin@|frontdesk@|contact@|hello@)\b", re.I),
-    "not_interested": re.compile(r"\b(not interested|not right now|we're good|we are good)\b", re.I),
+_STYLE_MAP: dict[str, tuple[StyleModifier, float]] = {
+    "laughs": (StyleModifier.LAUGHS, 1.05),
+    "whispers": (StyleModifier.WHISPERS, 0.85),
+    "sighs": (StyleModifier.SIGHS, 0.9),
+    "slow": (StyleModifier.SLOW, 0.8),
+    "excited": (StyleModifier.EXCITED, 1.15),
 }
 
 
-def _looks_like_call_record(obj: Any) -> bool:
-    if not isinstance(obj, dict):
-        return False
-    if "call_id" in obj:
-        return True
-    if isinstance(obj.get("latency"), dict):
-        return True
-    if "transcript_object" in obj or "transcript_with_tool_calls" in obj or "transcript" in obj:
-        return True
-    return False
+def parse_tagged_text(text: str, *, scope_words: int = 5, base_scope_id: str = "base") -> list[SpeechSegment]:
+    scope_words = max(1, int(scope_words))
+    tokens = _tokenize(text or "")
+    out: list[SpeechSegment] = []
 
+    active_style = StyleModifier.BASELINE
+    active_speed = 1.0
+    words_left = 0
+    scope_idx = 0
+    scope_id = base_scope_id
 
-@dataclass
-class CallFeatures:
-    call_id: str
-    ended: bool
-    answered: bool
-    first_response_latency_ms: float | None
-    email_captured: bool
-    direct_email_captured: bool
-    close_intent: bool
-    close_to_email_success: bool
-    time_to_email_capture_sec: float | None
-    turns_to_capture: int | None
-    objection_hits: dict[str, int]
+    chunk_words: list[str] = []
 
-
-@dataclass
-class RevenueOpsSummary:
-    corpus_total_calls: int
-    ended_calls: int
-    answered_calls: int
-    email_captures: int
-    direct_email_captures: int
-    generic_email_captures: int
-    email_capture_rate: float
-    direct_email_capture_rate: float
-    close_request_count: int
-    close_to_email_success_count: int
-    close_request_rate: float
-    close_to_email_rate: float
-    first_response_latency_p50_ms: float | None
-    first_response_latency_p95_ms: float | None
-    time_to_email_capture_p50_sec: float | None
-    time_to_email_capture_p95_sec: float | None
-    turns_to_capture_p50: float | None
-    turns_to_capture_p95: float | None
-    objection_counts: dict[str, int]
-    objective_score: float
-
-
-def _quantile(vals: list[float], q: float, *, trim_fraction: float = 0.0) -> float | None:
-    if not vals:
-        return None
-    arr = sorted(float(v) for v in vals if isinstance(v, (int, float)) and v >= 0.0)
-    if not arr:
-        return None
-    if trim_fraction > 0.0:
-        drop = int(len(arr) * trim_fraction)
-        if 2 * drop >= len(arr):
-            drop = max(0, (len(arr) // 2) - 1)
-        if drop > 0:
-            arr = arr[drop : len(arr) - drop]
-    if len(arr) == 1:
-        return float(arr[0])
-    idx = (len(arr) - 1) * q
-    lo = int(idx)
-    hi = min(lo + 1, len(arr) - 1)
-    frac = idx - lo
-    return float(arr[lo] + (arr[hi] - arr[lo]) * frac)
-
-
-def _is_generic_email(email: str) -> bool:
-    local = email.split("@", 1)[0].lower().strip()
-    return local in GENERIC_LOCAL
-
-
-def _extract_text_lines(call: dict[str, Any]) -> list[tuple[str, str, float | None]]:
-    lines: list[tuple[str, str, float | None]] = []
-    tobj = call.get("transcript_object")
-    if isinstance(tobj, list) and tobj:
-        for item in tobj:
-            if not isinstance(item, dict):
-                continue
-            role = str(item.get("role") or "").strip().lower()
-            text = str(item.get("content") or "").strip()
-            t_end: float | None = None
-            words = item.get("words")
-            if isinstance(words, list) and words:
-                last = words[-1]
-                if isinstance(last, dict) and isinstance(last.get("end"), (int, float)):
-                    t_end = float(last["end"])
-            if role and text:
-                lines.append((role, text, t_end))
-        if lines:
-            return lines
-
-    raw = str(call.get("transcript") or "")
-    for line in raw.splitlines():
-        ln = line.strip()
-        if not ln or ":" not in ln:
-            continue
-        role, content = ln.split(":", 1)
-        r = role.strip().lower()
-        if r in {"agent", "user"}:
-            lines.append((r, content.strip(), None))
-    return lines
-
-
-def _find_email_capture(lines: list[tuple[str, str, float | None]]) -> tuple[bool, bool, float | None, int | None]:
-    for idx, (_, text, t_end) in enumerate(lines, start=1):
-        emails = EMAIL_RE.findall(text)
-        if emails:
-            direct = any(not _is_generic_email(e) for e in emails)
-            return True, direct, t_end, idx
-        if SPOKEN_EMAIL_RE.search(text):
-            return True, True, t_end, idx
-    return False, False, None, None
-
-
-def _extract_close_progression(lines: list[tuple[str, str, float | None]]) -> tuple[bool, bool, int, int]:
-    """
-    Detect whether user asks to close and whether any direct email was supplied after that request.
-
-    Returns:
-        (close_intent, close_to_email_success, close_turn_idx, close_email_turn_idx)
-    """
-    close_turn = 0
-    close_intent = False
-    close_to_email_success = False
-    close_success_turn = 0
-    for idx, role, text in [(i + 1, r, t) for i, (r, t, _) in enumerate(lines)]:
-        if role != "user":
-            continue
-        has_email, has_direct_email = _email_in_text(text)
-        if CLOSE_REQUEST_RE.search(text or "") and not close_intent:
-            close_intent = True
-            close_turn = idx
-            if has_email and has_direct_email:
-                close_to_email_success = True
-                close_success_turn = idx
-            continue
-        if not close_intent:
-            continue
-        if has_email and has_direct_email:
-            close_to_email_success = True
-            close_success_turn = idx
-            break
-    if close_turn == 0:
-        return False, False, 0, 0
-    if not close_to_email_success:
-        return True, False, close_turn, close_success_turn
-    return True, True, close_turn, close_success_turn
-
-
-def _email_in_text(text: str) -> tuple[bool, bool]:
-    emails = EMAIL_RE.findall(text)
-    if emails:
-        direct = any(not _is_generic_email(e) for e in emails)
-        return True, direct
-    if SPOKEN_EMAIL_RE.search(text):
-        return True, True
-    return False, False
-
-
-def _first_response_latency_ms(
-    call: dict[str, Any],
-    lines: list[tuple[str, str, float | None]],
-    *,
-    replay_ms: float | None = None,
-) -> float | None:
-    if replay_ms is not None and isinstance(replay_ms, (int, float)):
-        replay_ms_f = float(replay_ms)
-        if 0.0 <= replay_ms_f <= LATENCY_CANDIDATES_SAFE_MAX_MS:
-            return replay_ms_f
-    lat = call.get("latency") or {}
-    candidates = ["llm", "e2e", "asr", "s2s"]
-    for key in candidates:
-        src = lat.get(key) or {}
-        if not isinstance(src, dict):
-            continue
-        p50 = src.get("p50")
-        if isinstance(p50, (int, float)):
-            p50_val = float(p50)
-            if 0.0 <= p50_val <= LATENCY_CANDIDATES_SAFE_MAX_MS:
-                return p50_val
-    return None
-
-
-def _extract_features(call: dict[str, Any], *, replay_ms: float | None = None) -> CallFeatures:
-    call_id = str(call.get("call_id") or "")
-    status = str(call.get("call_status") or "").lower()
-    ended = status == "ended"
-
-    lines = _extract_text_lines(call)
-    answered = any(role == "user" for role, _, _ in lines)
-    fr = _first_response_latency_ms(call, lines, replay_ms=replay_ms)
-
-    captured, direct, t_cap, turns = _find_email_capture(lines)
-    close_intent, close_to_email_success, close_turn, close_success_turn = _extract_close_progression(lines)
-    if close_turn and close_success_turn and close_success_turn < close_turn:
-        close_to_email_success = False
-
-    objection_hits = {k: 0 for k in OBJECTION_PATTERNS}
-    for role, text, _ in lines:
-        if role != "user":
-            continue
-        for name, pat in OBJECTION_PATTERNS.items():
-            if pat.search(text):
-                objection_hits[name] += 1
-
-    return CallFeatures(
-        call_id=call_id,
-        ended=ended,
-        answered=answered,
-        first_response_latency_ms=fr,
-        email_captured=captured,
-        direct_email_captured=(captured and direct),
-        close_intent=close_intent,
-        close_to_email_success=(captured and close_intent and close_to_email_success),
-        time_to_email_capture_sec=t_cap,
-        turns_to_capture=turns,
-        objection_hits=objection_hits,
-    )
-
-
-async def _replay_first_response_ms(call: dict[str, Any], *, profile: str = "b2b") -> float | None:
-    call_id = str(call.get("call_id") or "replay-call")
-    lines = _extract_text_lines(call)
-    if not lines:
-        return None
-
-    cfg = BrainConfig(
-        conversation_profile=profile,
-        speak_first=False,
-        retell_send_update_agent_on_connect=False,
-    )
-    session = await HarnessSession.start(
-        session_id=call_id,
-        cfg=cfg,
-        use_real_clock=True,
-    )
-    metric_key = VIC["turn_final_to_first_segment_ms"]
-
-    try:
-        # Consume startup frames (config + initial empty speech response).
-        _ = await session.recv_outbound()
-        _ = await session.recv_outbound()
-
-        transcript: list[dict[str, str]] = []
-        response_id = 1
-        for role, content, _ in lines:
-            if role not in {"agent", "user"}:
-                continue
-            if not str(content).strip():
-                continue
-            transcript.append({"role": role, "content": content})
-            if role != "user":
-                continue
-
-            before = len(session.metrics.get_hist(metric_key))
-            await session.send_inbound_obj(
-                {
-                    "interaction_type": "response_required",
-                    "response_id": response_id,
-                    "transcript": transcript,
-                },
-                expect_ack=False,
+    def flush() -> None:
+        nonlocal chunk_words
+        if not chunk_words:
+            return
+        chunk_text = " ".join(chunk_words).strip()
+        wc = len(_WORD_PATTERN.findall(chunk_text))
+        if wc == 0:
+            chunk_words = []
+            return
+        out.append(
+            SpeechSegment(
+                text=chunk_text,
+                style_modifier=active_style,
+                speed_multiplier=active_speed,
+                scope_id=scope_id,
+                word_count=wc,
             )
-            response_id += 1
+        )
+        chunk_words = []
 
-            for _ in range(240):
-                observed = session.metrics.get_hist(metric_key)
-                if len(observed) > before:
-                    samples = [
-                        float(v)
-                        for v in observed[before:]
-                        if isinstance(v, (int, float))
-                    ]
-                    if samples:
-                        return float(samples[0])
-                await asyncio.sleep(0)
-    finally:
-        await session.stop()
-    return None
-
-
-async def _replay_latency_map(
-    calls: list[dict[str, Any]],
-    *,
-    seed: int | None = None,
-    default_profile: str = "b2b",
-) -> dict[str, float]:
-    ordered = _apply_call_order(calls, seed=seed)
-    result: dict[str, float] = {}
-    for call in ordered:
-        cid = str(call.get("call_id") or "").strip()
-        if not cid:
-            continue
-        profile = str(call.get("conversation_profile") or default_profile).lower()
-        if profile not in {"b2b", "clinic"}:
-            profile = default_profile
-        latency_ms = await _replay_first_response_ms(call, profile=profile)
-        if isinstance(latency_ms, (int, float)):
-            result[cid] = float(latency_ms)
-    return result
-
-
-def _load_calls(calls_dir: Path) -> list[dict[str, Any]]:
-    calls: list[dict[str, Any]] = []
-    if not calls_dir.exists():
-        return calls
-    seen_call_ids: set[str] = set()
-    for p in sorted(calls_dir.rglob("*.json")):
-        try:
-            obj = json.loads(p.read_text(encoding="utf-8"))
-        except Exception:
-            continue
-        if not _looks_like_call_record(obj):
+    for tok_type, tok_val in tokens:
+        if tok_type == "tag":
+            flush()
+            tag = tok_val.lower()
+            if tag in _STYLE_MAP:
+                active_style, active_speed = _STYLE_MAP[tag]
+                words_left = scope_words
+                scope_idx += 1
+                scope_id = f"scope_{scope_idx}_{tag}"
             continue
 
-        # Deduplicate by call_id when both legacy and alt layouts are present.
-        call_id = str((obj or {}).get("call_id", "")).strip()
-        if call_id and call_id in seen_call_ids:
-            continue
-        if call_id:
-            seen_call_ids.add(call_id)
-        calls.append(obj)
-    return calls
+        # plain text token
+        chunk_words.append(tok_val)
+        if _WORD_PATTERN.fullmatch(tok_val):
+            if words_left > 0:
+                words_left -= 1
+                if words_left == 0:
+                    flush()
+                    active_style = StyleModifier.BASELINE
+                    active_speed = 1.0
+                    scope_id = base_scope_id
+
+    flush()
+    return out
 
 
-def _apply_call_order(
-    calls: list[dict[str, Any]], *, seed: int | None = None
-) -> list[dict[str, Any]]:
-    ordered = list(calls)
-    if seed is not None:
-        rng = random.Random(int(seed))
-        rng.shuffle(ordered)
-    return ordered
-
-
-def _objective_score(
-    *,
-    answered_calls: int,
-    email_capture_count: int,
-    direct_email_capture_count: int,
-    close_request_count: int,
-    close_to_email_success_count: int,
-    first_response_latency_p95_ms: float | None,
-    turns_to_capture_p50: float | None,
-    time_to_capture_p50_sec: float | None,
-) -> float:
-    # 0..100 score with shrinkage to prevent small samples overfitting.
-    fr_penalty = min(1.0, (first_response_latency_p95_ms or 4000.0) / 2500.0)
-    turns_penalty = min(1.0, (turns_to_capture_p50 or 12.0) / 12.0)
-    tcap_penalty = min(1.0, (time_to_capture_p50_sec or 120.0) / 120.0)
-
-    email_capture_rate = _beta_success_rate(email_capture_count, answered_calls)
-    direct_email_capture_rate = _beta_success_rate(direct_email_capture_count, answered_calls)
-    close_request_rate = _beta_success_rate(close_request_count, answered_calls, default=0.0)
-    close_to_email_rate = _beta_success_rate(
-        close_to_email_success_count,
-        close_request_count,
-        default=0.0,
-    )
-
-    base = (
-        0.30 * email_capture_rate
-        + 0.20 * direct_email_capture_rate
-        + 0.20 * close_to_email_rate
-        + 0.10 * close_request_rate
-        + 0.10 * (1.0 - fr_penalty)
-        + 0.05 * (1.0 - turns_penalty)
-        + 0.05 * (1.0 - tcap_penalty)
-    )
-    return round(max(0.0, min(100.0, base * 100.0)), 2)
-
-
-def _beta_success_rate(successes: int, trials: int, *, default: float = 0.0) -> float:
-    if trials <= 0:
-        return float(default)
-    return (BETA_ALPHA + successes) / (BETA_ALPHA + BETA_BETA + trials)
-
-
-def _speed_grade(first_response_latency_p95_ms: float | None) -> str:
-    if first_response_latency_p95_ms is None:
-        return "unknown"
-    if first_response_latency_p95_ms < 700:
-        return "excellent"
-    if first_response_latency_p95_ms < 1000:
-        return "good"
-    if first_response_latency_p95_ms < 1500:
-        return "warning"
-    return "poor"
-
-
-def build_summary(
-    calls: list[dict[str, Any]],
-    *,
-    replay_latencies: dict[str, float] | None = None,
-) -> RevenueOpsSummary:
-    replay_latencies = replay_latencies or {}
-    features = [
-        _extract_features(c, replay_ms=replay_latencies.get(str(c.get("call_id") or "")))
-        for c in calls
-    ]
-
-    ended_calls = [f for f in features if f.ended]
-    answered_calls = [f for f in ended_calls if f.answered]
-
-    email_caps = [f for f in answered_calls if f.email_captured]
-    direct_caps = [f for f in answered_calls if f.direct_email_captured]
-    close_reqs = [f for f in answered_calls if f.close_intent]
-    close_success = [f for f in close_reqs if f.close_to_email_success]
-    generic_caps = len(email_caps) - len(direct_caps)
-
-    fr_vals = [f.first_response_latency_ms for f in answered_calls if f.first_response_latency_ms is not None]
-    tcap_vals = [f.time_to_email_capture_sec for f in email_caps if f.time_to_email_capture_sec is not None]
-    turns_vals = [float(f.turns_to_capture) for f in email_caps if f.turns_to_capture is not None]
-
-    objection_counts = {k: 0 for k in OBJECTION_PATTERNS}
-    for f in answered_calls:
-        for k, v in f.objection_hits.items():
-            objection_counts[k] += int(v)
-
-    denom = len(answered_calls)
-    email_rate = len(email_caps) / denom if denom else 0.0
-    direct_rate = len(direct_caps) / denom if denom else 0.0
-    fr_p50 = _quantile([float(x) for x in fr_vals], 0.50)
-    fr_p95 = _quantile([float(x) for x in fr_vals], 0.95, trim_fraction=FR_P95_TRIM_FRACTION)
-    tcap_p50 = _quantile([float(x) for x in tcap_vals], 0.50, trim_fraction=FR_P95_TRIM_FRACTION)
-    tcap_p95 = _quantile([float(x) for x in tcap_vals], 0.95, trim_fraction=FR_P95_TRIM_FRACTION)
-    turns_p50 = _quantile([float(x) for x in turns_vals], 0.50, trim_fraction=FR_P95_TRIM_FRACTION)
-    turns_p95 = _quantile([float(x) for x in turns_vals], 0.95, trim_fraction=FR_P95_TRIM_FRACTION)
-
-    score = _objective_score(
-        answered_calls=denom,
-        email_capture_count=len(email_caps),
-        direct_email_capture_count=len(direct_caps),
-        close_request_count=len(close_reqs),
-        close_to_email_success_count=len(close_success),
-        first_response_latency_p95_ms=fr_p95,
-        turns_to_capture_p50=turns_p50,
-        time_to_capture_p50_sec=tcap_p50,
-    )
-
-    return RevenueOpsSummary(
-        corpus_total_calls=len(features),
-        ended_calls=len(ended_calls),
-        answered_calls=len(answered_calls),
-        email_captures=len(email_caps),
-        direct_email_captures=len(direct_caps),
-        generic_email_captures=generic_caps,
-        email_capture_rate=round(email_rate, 4),
-        direct_email_capture_rate=round(direct_rate, 4),
-        close_request_count=len(close_reqs),
-        close_to_email_success_count=len(close_success),
-        close_request_rate=round(len(close_reqs) / denom, 4) if denom else 0.0,
-        close_to_email_rate=round(len(close_success) / max(1, len(close_reqs)), 4) if len(close_reqs) else 0.0,
-        first_response_latency_p50_ms=fr_p50,
-        first_response_latency_p95_ms=fr_p95,
-        time_to_email_capture_p50_sec=tcap_p50,
-        time_to_email_capture_p95_sec=tcap_p95,
-        turns_to_capture_p50=turns_p50,
-        turns_to_capture_p95=turns_p95,
-        objection_counts=objection_counts,
-        objective_score=score,
-    )
-
-
-def _recommend_actions(s: RevenueOpsSummary) -> list[str]:
-    actions: list[str] = []
-
-    if s.first_response_latency_p95_ms is None or s.first_response_latency_p95_ms > 1000:
-        actions.append(
-            "Latency: first response p95 is too high. Keep start_speaker=user, trim prompt opening, and stay on gemini-2.5-flash-lite."
-        )
-
-    if s.email_capture_rate < 0.20:
-        actions.append(
-            "Capture: email capture rate is low. Force one-question flow: identity -> value in 8 words -> direct email ask."
-        )
-
-    if s.direct_email_capture_rate < 0.10:
-        actions.append(
-            "Direct inbox: push once for direct manager email, then accept best routing inbox immediately to avoid dead turns."
-        )
-
-    if s.close_request_rate < 0.60:
-        actions.append(
-            "Progression: close-or-send path is under-triggered. Keep asking 'close this out or send a short manager email' every 1-2 turns."
-        )
-
-    if s.close_request_count > 0 and s.close_to_email_rate < 0.70:
-        actions.append(
-            "Close completion: close requests are not converting. Add a forced one-turn retry and transfer to inbox fallback only after two failed manager-email turns."
-        )
-
-    if (s.turns_to_capture_p50 or 99) > 6:
-        actions.append(
-            "Efficiency: median turns to capture is high. Cap to one objection response + one binary close (archive vs send)."
-        )
-
-    if s.objection_counts.get("is_sales", 0) > 0:
-        actions.append(
-            "Objection 'is sales' is recurring. Use one-liner: 'No pitch. Just sending the missed-call report.' then ask email again."
-        )
-
-    if s.objection_counts.get("no_email_policy", 0) > 0:
-        actions.append(
-            "No-email policy hit detected. Add fallback close: ask who to address in subject line and send to provided inbox."
-        )
-
-    if not actions:
-        actions.append("Maintain current script/settings; objective metrics are inside target bands.")
-    return actions
-
-
-def _summary_to_dict(s: RevenueOpsSummary) -> dict[str, Any]:
-    return {
-        "corpus_total_calls": s.corpus_total_calls,
-        "ended_calls": s.ended_calls,
-        "answered_calls": s.answered_calls,
-        "email_captures": s.email_captures,
-        "direct_email_captures": s.direct_email_captures,
-        "generic_email_captures": s.generic_email_captures,
-        "email_capture_rate": s.email_capture_rate,
-        "direct_email_capture_rate": s.direct_email_capture_rate,
-        "close_request_count": s.close_request_count,
-        "close_to_email_success_count": s.close_to_email_success_count,
-        "close_request_rate": s.close_request_rate,
-        "close_to_email_rate": s.close_to_email_rate,
-        "time_to_email_capture_p50_sec": s.time_to_email_capture_p50_sec,
-        "time_to_email_capture_p95_sec": s.time_to_email_capture_p95_sec,
-        "turns_to_capture_p50": s.turns_to_capture_p50,
-        "turns_to_capture_p95": s.turns_to_capture_p95,
-        "first_response_latency_p50_ms": s.first_response_latency_p50_ms,
-        "first_response_latency_p95_ms": s.first_response_latency_p95_ms,
-        "first_response_latency_band": _speed_grade(s.first_response_latency_p95_ms),
-        "objection_counts": s.objection_counts,
-        "objective_score": s.objective_score,
-    }
-
-
-def _write_report(*, out_dir: Path, summary: RevenueOpsSummary, actions: list[str]) -> tuple[Path, Path]:
-    out_dir.mkdir(parents=True, exist_ok=True)
-    payload = {
-        "ts_unix": int(time.time()),
-        "objective_function": {
-            "maximize": ["email_capture_rate", "direct_email_capture_rate", "close_request_rate", "close_to_email_rate"],
-            "minimize": ["time_to_email_capture", "turns_to_capture", "first_response_latency"],
-        },
-        "summary": _summary_to_dict(summary),
-        "recommended_actions": actions,
-    }
-    json_path = out_dir / "latest.json"
-    md_path = out_dir / "latest.md"
-    json_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
-
-    lines = [
-        "# Revenue Ops Report",
-        "",
-        f"- objective_score: {summary.objective_score}",
-        f"- email_capture_rate: {summary.email_capture_rate}",
-        f"- direct_email_capture_rate: {summary.direct_email_capture_rate}",
-        f"- close_request_rate: {summary.close_request_rate}",
-        f"- close_to_email_rate: {summary.close_to_email_rate}",
-        f"- first_response_latency_p95_ms: {summary.first_response_latency_p95_ms}",
-        f"- first_response_latency_band: {_speed_grade(summary.first_response_latency_p95_ms)}",
-        f"- turns_to_capture_p50: {summary.turns_to_capture_p50}",
-        f"- time_to_email_capture_p50_sec: {summary.time_to_email_capture_p50_sec}",
-        "",
-        "## Recommended Next Actions",
-    ]
-    for i, a in enumerate(actions, start=1):
-        lines.append(f"{i}. {a}")
-    lines.append("")
-    md_path.write_text("\n".join(lines), encoding="utf-8")
-    return json_path, md_path
-
-
-def _post_json(url: str, payload: dict[str, Any], timeout_s: float = 10.0) -> None:
-    req = Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    with urlopen(req, timeout=timeout_s) as r:
-        _ = r.read()
-
-
-def main() -> int:
-    ap = argparse.ArgumentParser(description="Revenue Ops loop from Retell call corpus.")
-    ap.add_argument("--calls-dir", default="data/retell_calls", help="Directory containing call_*/call.json")
-    ap.add_argument("--out-dir", default="data/revenue_ops", help="Where to write latest report")
-    ap.add_argument("--limit", type=int, default=0, help="Optional max calls to include; 0 disables.")
-    ap.add_argument("--max-calls", type=int, default=0, help="Optional hard cap on calls; 0 disables.")
-    ap.add_argument("--min-calls", type=int, default=0, help="Fail if fewer calls are available.")
-    ap.add_argument("--seed", type=int, default=None, help="Optional deterministic seed for call ordering.")
-    ap.add_argument(
-        "--replay-latency",
-        action="store_true",
-        default=False,
-        help="Replay call transcripts offline with deterministic local run to compute first-response latency.",
-    )
-    ap.add_argument("--push-webhook", default=os.getenv("N8N_OUTCOME_WEBHOOK_URL", ""), help="Optional webhook URL")
-    ap.add_argument("--print-json", action="store_true", default=True)
-    ap.add_argument("--no-print-json", dest="print_json", action="store_false")
-    args = ap.parse_args()
-
-    calls = _load_calls(Path(args.calls_dir))
-    calls = _apply_call_order(calls, seed=None if args.seed is None else int(args.seed))
-
-    if args.max_calls and args.max_calls > 0 and args.limit and args.limit > 0:
-        calls = calls[: min(int(args.max_calls), int(args.limit))]
-    elif args.max_calls and args.max_calls > 0:
-        calls = calls[: int(args.max_calls)]
-    elif args.limit and args.limit > 0:
-        calls = calls[: int(args.limit)]
-    if args.min_calls and args.min_calls > 0 and len(calls) < int(args.min_calls):
-        return 2
-
-    replay_latencies: dict[str, float] = {}
-    if args.replay_latency:
-        replay_latencies = asyncio.run(_replay_latency_map(calls, seed=args.seed))
-
-    summary = build_summary(calls, replay_latencies=replay_latencies)
-    actions = _recommend_actions(summary)
-    json_path, md_path = _write_report(out_dir=Path(args.out_dir), summary=summary, actions=actions)
-
-    out = {
-        "status": "ok",
-        "report_json": str(json_path),
-        "report_md": str(md_path),
-        "summary": _summary_to_dict(summary),
-        "recommended_actions": actions,
-    }
-
-    if args.push_webhook:
-        _post_json(args.push_webhook, out)
-        out["webhook_pushed"] = True
-
-    if args.print_json:
-        print(json.dumps(out, indent=2, sort_keys=True))
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
-
+def _tokenize(text: str) -> list[tuple[str, str]]:
+    parts: list[tuple[str, str]] = []
+    i = 0
+    while i < len(text):
+        m = _TAG_PATTERN.search(text, i)
+        if not m:
+            tail = text[i:].strip()
+            if tail:
+                parts.extend(("word", w) for w in tail.split())
+            break
+        pre = text[i : m.start()].strip()
+        if pre:
+            parts.extend(("word", w) for w in pre.split())
+        parts.append(("tag", m.group(1)))
+        i = m.end()
+    return parts
 ```
 
-### `scripts/run_dashboard.sh`
+## `src/processing/vad.py`
 
-```
-#!/usr/bin/env bash
-set -euo pipefail
-
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT_DIR"
-
-ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
-if [ -f "$ENV_FILE" ]; then
-  set -a
-  # shellcheck disable=SC1090
-  source "$ENV_FILE"
-  set +a
-fi
-
-# Default to B2B profile for dogfood voice calls unless explicitly overridden.
-export CONVERSATION_PROFILE="${CONVERSATION_PROFILE:-b2b}"
-
-PYTHON_BIN="python3"
-if [ -x "$ROOT_DIR/.venv/bin/python" ]; then
-  PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
-fi
-
-PORT="${PORT:-8080}"
-URL="http://127.0.0.1:${PORT}/dashboard/"
-
-if command -v open >/dev/null 2>&1; then
-  open "$URL" >/dev/null 2>&1 || true
-fi
-
-echo "Eve dashboard: $URL"
-exec "$PYTHON_BIN" -m uvicorn app.server:app --host 0.0.0.0 --port "$PORT"
-
-```
-
-### `scripts/ws_brain_8099_prod.sh`
-
-```
-#!/usr/bin/env bash
-set -euo pipefail
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-
-SUPERVISOR_SCRIPT="${RETELL_WS_SUPERVISOR_SCRIPT:-$ROOT_DIR/scripts/ws_brain_8099_supervisor.sh}"
-PORT="${WS_BRAIN_PORT:-8099}"
-HOST="${WS_BRAIN_HOST:-127.0.0.1}"
-
-usage() {
-  cat <<'EOF'
-Usage: ws_brain_8099_prod.sh [--start|--stop|--status|--restart]
-
-This is the production command wrapper for the LLM websocket brain on 8099.
-It forces/reinforces the continuous watcher mode and waits for readiness.
-EOF
-}
-
-is_listening() {
-  python3 - <<'PY' "$1"
-import socket
-import sys
-
-port = int(sys.argv[1])
-sock = socket.socket()
-sock.settimeout(0.25)
-try:
-    sock.connect(("127.0.0.1", port))
-    sock.close()
-    print("1")
-except Exception:
-    print("0")
-PY
-}
-
-wait_for_listener() {
-  local max_checks="$1"
-  local attempt=0
-
-  while (( attempt < max_checks )); do
-    if [[ "$(is_listening "$PORT")" == "1" ]]; then
-      return 0
-    fi
-    sleep 0.25
-    attempt=$((attempt + 1))
-  done
-  return 1
-}
-
-action="start"
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --start|--status|--stop|--restart)
-      action="${1#--}"
-      shift
-      ;;
-    -h|--help)
-      usage
-      exit 0
-      ;;
-    *)
-      echo "Unknown arg: $1" >&2
-      usage
-      exit 2
-      ;;
-  esac
-done
-
-case "$action" in
-  start)
-    "$SUPERVISOR_SCRIPT" --daemon --port "$PORT" --host "$HOST" >/dev/null 2>&1
-    if ! wait_for_listener 40; then
-      echo "ERROR: brain did not become reachable on ${HOST}:${PORT} after startup checks." >&2
-      echo "Inspect log: $ROOT_DIR/logs/ws_brain_${PORT}.log" >&2
-      "$SUPERVISOR_SCRIPT" --status --port "$PORT" --host "$HOST" || true
-      exit 2
-    fi
-    echo "LLM websocket brain watcher running and listening on ${HOST}:${PORT}"
-    ;;
-  status)
-    "$SUPERVISOR_SCRIPT" --status --port "$PORT" --host "$HOST"
-    ;;
-  stop)
-    "$SUPERVISOR_SCRIPT" --stop --port "$PORT" --host "$HOST"
-    ;;
-  restart)
-    "$SUPERVISOR_SCRIPT" --stop --port "$PORT" --host "$HOST"
-    "$SUPERVISOR_SCRIPT" --daemon --port "$PORT" --host "$HOST" >/dev/null 2>&1
-    if ! wait_for_listener 40; then
-      echo "ERROR: brain did not become reachable on ${HOST}:${PORT} after restart." >&2
-      echo "Inspect log: $ROOT_DIR/logs/ws_brain_${PORT}.log" >&2
-      exit 2
-    fi
-    echo "LLM websocket brain restarted and listening on ${HOST}:${PORT}"
-    ;;
-esac
-
-
-```
-
-### `scripts/ws_brain_dev_on.sh`
-
-```
-#!/usr/bin/env bash
-set -euo pipefail
-
-# One-command local dev:
-# 1) start the brain server
-# 2) expose it with a temporary public WSS URL (cloudflared)
-# 3) switch the B2B agent to point at that brain
-#
-# This is intended for fast dogfooding. For production, use a stable domain.
-
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$ROOT_DIR"
-
-ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
-if [ -f "$ENV_FILE" ]; then
-  set -a
-  # shellcheck disable=SC1090
-  source "$ENV_FILE"
-  set +a
-fi
-
-PORT="${PORT:-8080}"
-LOCAL_URL="http://127.0.0.1:${PORT}"
-
-PYTHON_BIN="python3"
-if [ -x "$ROOT_DIR/.venv/bin/python" ]; then
-  PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
-fi
-
-cleanup() {
-  if [ -n "${TUNNEL_PID:-}" ]; then
-    kill "$TUNNEL_PID" >/dev/null 2>&1 || true
-  fi
-  if [ -n "${SERVER_PID:-}" ]; then
-    kill "$SERVER_PID" >/dev/null 2>&1 || true
-  fi
-}
-trap cleanup EXIT
-
-# Start server.
-"$PYTHON_BIN" -m uvicorn app.server:app --host 0.0.0.0 --port "$PORT" >/dev/null 2>&1 &
-SERVER_PID=$!
-
-# Start tunnel.
-TUNNEL_LOG="$(mktemp)"
-cloudflared tunnel --url "$LOCAL_URL" --no-autoupdate --loglevel info --logfile "$TUNNEL_LOG" >/dev/null 2>&1 &
-TUNNEL_PID=$!
-
-# Wait for the public URL.
-PUBLIC_HTTPS=""
-for _ in $(seq 1 200); do
-  PUBLIC_HTTPS="$(grep -Eo 'https://[A-Za-z0-9-]+\.trycloudflare\.com' "$TUNNEL_LOG" | head -n 1 || true)"
-  if [ -n "$PUBLIC_HTTPS" ]; then
-    break
-  fi
-  sleep 0.05
-done
-
-if [ -z "$PUBLIC_HTTPS" ]; then
-  echo "Failed to get public URL from cloudflared" >&2
-  exit 1
-fi
-
-PUBLIC_WSS="wss://${PUBLIC_HTTPS#https://}"
-export BRAIN_WSS_BASE_URL="$PUBLIC_WSS/llm-websocket"
-
-echo "Public brain base URL: $BRAIN_WSS_BASE_URL"
-
-# Persist the base URL for future commands (local env file, not committed).
-if [ -f "$ENV_FILE" ]; then
-  tmp_env="$(mktemp)"
-  # Remove any prior value then append the new one.
-  grep -v '^BRAIN_WSS_BASE_URL=' "$ENV_FILE" >"$tmp_env" || true
-  echo "BRAIN_WSS_BASE_URL=$BRAIN_WSS_BASE_URL" >>"$tmp_env"
-  mv "$tmp_env" "$ENV_FILE"
-fi
-
-# Switch B2B agent to websocket brain.
-./scripts/b2b_switch_to_ws_brain.sh >/dev/null
-
-echo "B2B agent switched to brain."
-echo "Dashboard: http://127.0.0.1:${PORT}/dashboard/"
-echo "Next: make call"
-
-# Keep processes running.
-wait
-
-```
-
-### `scripts/ws_load_test.py`
-
-```
+```python
 from __future__ import annotations
 
-import argparse
-import asyncio
-import json
-import time
 from dataclasses import dataclass
-from typing import Iterable
-
-
-def _now_ms() -> int:
-    return int(time.time() * 1000)
-
-
-def _mono_ms() -> int:
-    return int(time.monotonic() * 1000)
-
-
-def _percentile(values: Iterable[int], p: float) -> int | None:
-    v = sorted(int(x) for x in values)
-    if not v:
-        return None
-    if p <= 0:
-        return v[0]
-    if p >= 100:
-        return v[-1]
-    k = int(round((p / 100.0) * (len(v) - 1)))
-    return v[k]
 
 
 @dataclass(slots=True)
-class SessionStats:
-    ack_ms: list[int]
-    cancel_ms: list[int]
-    ping_echo_ms: list[int]
-    keepalive_misses: int
-    protocol_errors: int = 0
-    close_reason: str = ""
-    closed_early: bool = False
-    hung: bool = False
+class VADConfig:
+    interruptions_enabled: bool = True
+    interruption_sensitivity: float = 0.6
+    hangover_frames: int = 3
 
 
-async def _recv_until_begin_complete(ws) -> None:
-    # Drain config + BEGIN response_id=0 stream (greeting or empty terminal).
-    for _ in range(200):
-        raw = await ws.recv()
-        try:
-            msg = json.loads(raw)
-        except Exception:
-            continue
+class VAD:
+    def __init__(self, cfg: VADConfig) -> None:
+        self._cfg = cfg
+        self._hangover = 0
 
-        if msg.get("response_type") == "response" and int(msg.get("response_id", -1)) == 0:
-            if bool(msg.get("content_complete")):
-                return
+    def update_config(self, cfg: VADConfig) -> None:
+        self._cfg = cfg
+
+    def is_speech(self, frame: bytes) -> bool:
+        if not frame:
+            return False
+        rms = frame_rms(frame)
+        thr = speech_threshold(self._cfg.interruption_sensitivity)
+        speech = rms >= thr
+        if speech:
+            self._hangover = self._cfg.hangover_frames
+            return True
+        if self._hangover > 0:
+            self._hangover -= 1
+            return True
+        return False
 
 
-async def _run_one(
-    *,
-    idx: int,
-    base_url: str,
-    turns: int,
-    duration_sec: int,
-    turn_interval_ms: int,
-    torture_pause_reads_ms: int,
-    torture_pause_reads_every_turn: bool,
-    keepalive_deadline_ms: int,
-) -> SessionStats:
-    try:
-        import websockets  # type: ignore[import-not-found]
-    except Exception as e:
-        raise RuntimeError(
-            "scripts/ws_load_test.py requires the optional dependency 'websockets'. "
-            "Install with: python3 -m pip install websockets"
-        ) from e
+def speech_threshold(interruption_sensitivity: float) -> float:
+    s = max(0.0, min(1.0, float(interruption_sensitivity)))
+    # higher sensitivity => lower threshold => easier interruption detection
+    return 1200.0 - (800.0 * s)
 
-    call_id = f"wslt{idx}"
-    uri = f"{base_url.rstrip('/')}/{call_id}"
-    ack_ms: list[int] = []
-    cancel_ms: list[int] = []
-    ping_echo_ms: list[int] = []
-    keepalive_misses = 0
-    protocol_errors = 0
-    pending_pings: dict[int, int] = {}
-    close_reason = ""
-    closed_early = False
-    start_ms = _mono_ms()
 
-    def _record_close(exc: Exception) -> None:
-        nonlocal close_reason, closed_early
-        if close_reason:
+def frame_rms(frame: bytes) -> float:
+    if len(frame) < 2:
+        return 0.0
+    n = len(frame) // 2
+    if n == 0:
+        return 0.0
+    total = 0.0
+    for i in range(0, n * 2, 2):
+        v = int.from_bytes(frame[i : i + 2], "little", signed=True)
+        total += float(v * v)
+    return (total / n) ** 0.5
+```
+
+## `src/utils/__init__.py`
+
+```python
+
+```
+
+## `src/utils/clock.py`
+
+```python
+from __future__ import annotations
+
+import asyncio
+import heapq
+from dataclasses import dataclass, field
+from typing import Protocol
+
+
+class Clock(Protocol):
+    def now_ms(self) -> int: ...
+
+    async def sleep_ms(self, delay_ms: int) -> None: ...
+
+
+class RealClock:
+    def now_ms(self) -> int:
+        return int(asyncio.get_running_loop().time() * 1000)
+
+    async def sleep_ms(self, delay_ms: int) -> None:
+        if delay_ms <= 0:
+            await asyncio.sleep(0)
             return
-        reason = str(getattr(exc, "reason", "") or "").strip()
-        code = getattr(exc, "code", None)
-        if reason:
-            close_reason = reason
-        elif code is not None:
-            close_reason = f"code={code}"
-        else:
-            close_reason = type(exc).__name__
-        closed_early = True
-
-    async with websockets.connect(uri, open_timeout=5, close_timeout=2) as ws:
-        try:
-            await _recv_until_begin_complete(ws)
-        except websockets.exceptions.ConnectionClosed as e:  # type: ignore[attr-defined]
-            _record_close(e)
-            return SessionStats(
-                ack_ms=ack_ms,
-                cancel_ms=cancel_ms,
-                ping_echo_ms=ping_echo_ms,
-                keepalive_misses=keepalive_misses,
-                protocol_errors=protocol_errors + 1,
-                close_reason=close_reason,
-                closed_early=closed_early,
-            )
-
-        # Keepalive: send ping_pong periodically (Retell -> server direction).
-        async def ping_loop() -> None:
-            try:
-                while True:
-                    await asyncio.sleep(2.0)
-                    ts = _now_ms()
-                    pending_pings[ts] = _mono_ms()
-                    await ws.send(
-                        json.dumps(
-                            {"interaction_type": "ping_pong", "timestamp": ts},
-                            separators=(",", ":"),
-                            sort_keys=True,
-                        )
-                    )
-            except asyncio.CancelledError:
-                return
-            except websockets.exceptions.ConnectionClosed as e:  # type: ignore[attr-defined]
-                _record_close(e)
-                return
-            except Exception:
-                return
-
-        ping_task = asyncio.create_task(ping_loop())
-        try:
-            rid = 1
-            while True:
-                if int(duration_sec) > 0:
-                    if (_mono_ms() - start_ms) >= int(duration_sec) * 1000:
-                        break
-                else:
-                    if rid > int(turns):
-                        break
-
-                # Send response_required.
-                t0 = _mono_ms()
-                expected_rid = int(rid)
-                t_barge: int | None = None
-                try:
-                    await ws.send(
-                        json.dumps(
-                            {
-                                "interaction_type": "response_required",
-                                "response_id": int(rid),
-                                "transcript": [{"role": "user", "content": "Hi"}],
-                            },
-                            separators=(",", ":"),
-                            sort_keys=True,
-                        )
-                    )
-                except websockets.exceptions.ConnectionClosed as e:  # type: ignore[attr-defined]
-                    _record_close(e)
-                    break
-
-                do_torture = bool(
-                    int(torture_pause_reads_ms) > 0
-                    and (rid == 1 or bool(torture_pause_reads_every_turn))
-                )
-                if do_torture:
-                    # Pause reads to pressure server writes, then barge-in and advance epoch.
-                    await asyncio.sleep(int(torture_pause_reads_ms) / 1000.0)
-                    try:
-                        t_barge = _mono_ms()
-                        await ws.send(
-                            json.dumps(
-                                {
-                                    "interaction_type": "update_only",
-                                    "transcript": [{"role": "user", "content": "Wait"}],
-                                    "turntaking": "user_turn",
-                                },
-                                separators=(",", ":"),
-                                sort_keys=True,
-                            )
-                        )
-                        expected_rid = int(rid) + 1
-                        await ws.send(
-                            json.dumps(
-                                {
-                                    "interaction_type": "response_required",
-                                    "response_id": int(expected_rid),
-                                    "transcript": [{"role": "user", "content": "Actually, can you repeat?"}],
-                                },
-                                separators=(",", ":"),
-                                sort_keys=True,
-                            )
-                        )
-                        rid = int(expected_rid)
-                    except websockets.exceptions.ConnectionClosed as e:  # type: ignore[attr-defined]
-                        _record_close(e)
-                        break
-
-                # Wait for first chunk + terminal for expected_rid.
-                saw_first = False
-                saw_terminal = False
-                for _ in range(2000):
-                    try:
-                        raw = await ws.recv()
-                    except websockets.exceptions.ConnectionClosed as e:  # type: ignore[attr-defined]
-                        _record_close(e)
-                        break
-                    try:
-                        msg = json.loads(raw)
-                    except Exception:
-                        protocol_errors += 1
-                        continue
-
-                    if msg.get("response_type") == "ping_pong":
-                        ts = int(msg.get("timestamp", -1))
-                        sent_at = pending_pings.pop(ts, None)
-                        if sent_at is not None:
-                            delay = max(0, _mono_ms() - int(sent_at))
-                            ping_echo_ms.append(delay)
-                            if delay > int(keepalive_deadline_ms):
-                                keepalive_misses += 1
-                        continue
-
-                    if msg.get("response_type") != "response":
-                        continue
-                    if int(msg.get("response_id", -1)) != int(expected_rid):
-                        continue
-
-                    if not saw_first and not bool(msg.get("content_complete")):
-                        saw_first = True
-                        ack_ms.append(_mono_ms() - t0)
-                    if bool(msg.get("content_complete")):
-                        saw_terminal = True
-                        if t_barge is not None:
-                            cancel_ms.append(max(0, _mono_ms() - int(t_barge)))
-                        break
-
-                if closed_early:
-                    break
-                if not saw_first:
-                    protocol_errors += 1
-                if not saw_terminal:
-                    protocol_errors += 1
-
-                rid += 1
-                if int(turn_interval_ms) > 0:
-                    await asyncio.sleep(int(turn_interval_ms) / 1000.0)
-
-        finally:
-            ping_task.cancel()
-            await asyncio.gather(ping_task, return_exceptions=True)
-
-    now = _mono_ms()
-    for _, sent_at in list(pending_pings.items()):
-        if (now - int(sent_at)) > int(keepalive_deadline_ms):
-            keepalive_misses += 1
-
-    return SessionStats(
-        ack_ms=ack_ms,
-        cancel_ms=cancel_ms,
-        ping_echo_ms=ping_echo_ms,
-        keepalive_misses=keepalive_misses,
-        protocol_errors=protocol_errors,
-        close_reason=close_reason,
-        closed_early=closed_early,
-    )
+        await asyncio.sleep(delay_ms / 1000.0)
 
 
-async def _main_async(args) -> None:
-    timeout_sec: float | None = None
-    if int(args.duration_sec) > 0:
-        timeout_sec = float(args.duration_sec) + max(30.0, float(args.keepalive_deadline_ms) / 1000.0 + 10.0)
-
-    async def _run_with_watchdog(i: int) -> SessionStats:
-        try:
-            coro = _run_one(
-                idx=i,
-                base_url=args.url,
-                turns=int(args.turns),
-                duration_sec=int(args.duration_sec),
-                turn_interval_ms=int(args.turn_interval_ms),
-                torture_pause_reads_ms=int(args.torture_pause_reads_ms),
-                torture_pause_reads_every_turn=bool(args.torture_pause_reads_every_turn),
-                keepalive_deadline_ms=int(args.keepalive_deadline_ms),
-            )
-            if timeout_sec is None:
-                return await coro
-            return await asyncio.wait_for(coro, timeout=timeout_sec)
-        except asyncio.TimeoutError:
-            return SessionStats(
-                ack_ms=[],
-                cancel_ms=[],
-                ping_echo_ms=[],
-                keepalive_misses=1,
-                protocol_errors=1,
-                close_reason="WATCHDOG_TIMEOUT",
-                closed_early=True,
-                hung=True,
-            )
-
-    stats = await asyncio.gather(*[_run_with_watchdog(i) for i in range(int(args.sessions))])
-
-    ack_all: list[int] = []
-    cancel_all: list[int] = []
-    ping_all: list[int] = []
-    keepalive_misses = 0
-    errs = 0
-    write_timeout_backpressure_closes_total = 0
-    unexpected_closes_total = 0
-    hung_sessions_total = 0
-    for s in stats:
-        ack_all.extend(s.ack_ms)
-        cancel_all.extend(s.cancel_ms)
-        ping_all.extend(s.ping_echo_ms)
-        keepalive_misses += int(s.keepalive_misses)
-        errs += int(s.protocol_errors)
-        if s.hung:
-            hung_sessions_total += 1
-        if s.closed_early:
-            if "WRITE_TIMEOUT_BACKPRESSURE" in str(s.close_reason):
-                write_timeout_backpressure_closes_total += 1
-            else:
-                unexpected_closes_total += 1
-
-    print("**WS Load Test Summary**")
-    print(f"url={args.url}")
-    print(
-        f"sessions={args.sessions} turns={args.turns} "
-        f"duration_sec={args.duration_sec} turn_interval_ms={args.turn_interval_ms}"
-    )
-    print(f"protocol_errors_total={errs}")
-    print(f"keepalive_misses_total={keepalive_misses}")
-    print(f"write_timeout_backpressure_closes_total={write_timeout_backpressure_closes_total}")
-    print(f"unexpected_closes_total={unexpected_closes_total}")
-    print(f"hung_sessions_total={hung_sessions_total}")
-    print(
-        "ack_latency_ms="
-        f"p50={_percentile(ack_all, 50)} p95={_percentile(ack_all, 95)} p99={_percentile(ack_all, 99)}"
-    )
-    print(
-        "cancel_latency_ms="
-        f"p50={_percentile(cancel_all, 50)} p95={_percentile(cancel_all, 95)} p99={_percentile(cancel_all, 99)}"
-    )
-    print(
-        "ping_echo_delay_ms="
-        f"p50={_percentile(ping_all, 50)} p95={_percentile(ping_all, 95)} p99={_percentile(ping_all, 99)}"
-    )
-    if args.assert_keepalive:
-        if keepalive_misses > 0:
-            raise SystemExit(
-                "keepalive deadline misses observed: "
-                f"{keepalive_misses} > 0 (deadline={args.keepalive_deadline_ms}ms)"
-            )
-        if hung_sessions_total > 0:
-            raise SystemExit(f"hung sessions observed: {hung_sessions_total} > 0")
-        if unexpected_closes_total > 0:
-            raise SystemExit(f"unexpected closes observed: {unexpected_closes_total} > 0")
+@dataclass(order=True)
+class _Sleeper:
+    wake_at: int
+    fut: asyncio.Future[None] = field(compare=False)
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser(description="Real-socket WebSocket load test (Retell-style message flow).")
-    ap.add_argument(
-        "--url",
-        type=str,
-        default="ws://127.0.0.1:8080/llm-websocket",
-        help="base ws URL (no trailing call_id), e.g. ws://127.0.0.1:8080/llm-websocket",
-    )
-    ap.add_argument("--sessions", type=int, default=25, help="number of concurrent WS sessions")
-    ap.add_argument("--turns", type=int, default=2, help="number of turns per session when duration-sec=0")
-    ap.add_argument(
-        "--duration-sec",
-        type=int,
-        default=0,
-        help="if >0, ignore --turns and run each session loop for this wall-clock duration",
-    )
-    ap.add_argument(
-        "--turn-interval-ms",
-        type=int,
-        default=250,
-        help="delay between turns in duration mode (and after each turn in turns mode)",
-    )
-    ap.add_argument(
-        "--torture-pause-reads-ms",
-        type=int,
-        default=0,
-        help="if >0, pause reads for this duration to create send backpressure",
-    )
-    ap.add_argument(
-        "--torture-pause-reads-every-turn",
-        action="store_true",
-        help="apply pause-reads torture on every turn (default is first turn only)",
-    )
-    ap.add_argument(
-        "--keepalive-deadline-ms",
-        type=int,
-        default=5000,
-        help="deadline for ping echo latency and unresolved ping checks",
-    )
-    ap.add_argument(
-        "--assert-keepalive",
-        action="store_true",
-        help="fail non-zero exit if keepalive misses, hangs, or unexpected closes are observed",
-    )
-    args = ap.parse_args()
-    asyncio.run(_main_async(args))
+class FakeClock:
+    def __init__(self, *, start_ms: int = 0) -> None:
+        self._now_ms = int(start_ms)
+        self._sleepers: list[_Sleeper] = []
 
+    def now_ms(self) -> int:
+        return int(self._now_ms)
 
-if __name__ == "__main__":
-    main()
+    async def sleep_ms(self, delay_ms: int) -> None:
+        if delay_ms <= 0:
+            await asyncio.sleep(0)
+            return
+        loop = asyncio.get_running_loop()
+        fut: asyncio.Future[None] = loop.create_future()
+        heapq.heappush(self._sleepers, _Sleeper(self._now_ms + int(delay_ms), fut))
+        await fut
 
+    async def advance(self, delta_ms: int) -> None:
+        self._now_ms += int(delta_ms)
+        while self._sleepers and self._sleepers[0].wake_at <= self._now_ms:
+            sl = heapq.heappop(self._sleepers)
+            if not sl.fut.done():
+                sl.fut.set_result(None)
+        await asyncio.sleep(0)
 ```
 
-### `tests/acceptance/at_no_leak_30min.py`
+## `src/utils/metrics.py`
 
+```python
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Any
+
+
+@dataclass
+class MetricsStore:
+    counters: dict[str, int] = field(default_factory=dict)
+    timings: dict[str, list[int]] = field(default_factory=dict)
+    gauges: dict[str, int] = field(default_factory=dict)
+
+    def inc(self, name: str, value: int = 1) -> None:
+        self.counters[name] = self.counters.get(name, 0) + int(value)
+
+    def observe(self, name: str, value_ms: int) -> None:
+        self.timings.setdefault(name, []).append(int(value_ms))
+
+    def set(self, name: str, value: int) -> None:
+        self.gauges[name] = int(value)
+
+    def percentile(self, name: str, p: float) -> int | None:
+        arr = sorted(self.timings.get(name, []))
+        if not arr:
+            return None
+        idx = int(round((max(0.0, min(100.0, p)) / 100.0) * (len(arr) - 1)))
+        return arr[idx]
+
+    def snapshot(self) -> dict[str, Any]:
+        return {
+            "counters": dict(self.counters),
+            "timings": {k: list(v) for k, v in self.timings.items()},
+            "gauges": dict(self.gauges),
+        }
+
+
+METRIC_KEYS = {
+    "eou_detection_ms": "turn.eou_detection_ms",
+    "first_token_latency_ms": "turn.first_token_latency_ms",
+    "first_audio_latency_ms": "turn.first_audio_latency_ms",
+    "barge_in_stop_latency_ms": "turn.barge_in_stop_latency_ms",
+    "soft_timeout_trigger_total": "turn.soft_timeout_trigger_total",
+    "false_interruption_total": "turn.false_interruption_total",
+    "audio_in_dropped_total": "queue.audio_in_dropped_total",
+    "audio_out_dropped_total": "queue.audio_out_dropped_total",
+}
 ```
+
+## `tests/acceptance/at_no_leak_30min.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -20471,13 +11542,11 @@ def test_at_no_leak_30min() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
-
 ```
 
-### `tests/acceptance/at_vic_100_sessions.py`
+## `tests/acceptance/at_vic_100_sessions.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -20517,13 +11586,11 @@ def test_at_vic_100_sessions() -> None:
             await asyncio.gather(*(s.stop() for s in sessions), return_exceptions=True)
 
     asyncio.run(_run())
-
-
 ```
 
-### `tests/acceptance/at_voice_quality_regression.py`
+## `tests/acceptance/at_voice_quality_regression.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -20629,12 +11696,11 @@ def test_voice_quality_regression_suite() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
 ```
 
-### `tests/acceptance/at_ws_torture_5min.py`
+## `tests/acceptance/at_ws_torture_5min.py`
 
-```
+```python
 from __future__ import annotations
 
 import os
@@ -20763,58 +11829,165 @@ def test_at_ws_torture_5min() -> None:
         except Exception:
             server.kill()
             server.wait(timeout=5)
-
 ```
 
-### `tests/fixtures/in_call_details.json`
+## `tests/fixtures/in_call_details.json`
 
-```
+```json
 {"interaction_type":"call_details","call":{"id":"call_123","foo":"bar"}}
-
-
 ```
 
-### `tests/fixtures/in_response_required.json`
+## `tests/fixtures/in_clear.json`
 
+```json
+{"interaction_type":"clear"}
 ```
+
+## `tests/fixtures/in_ping_pong.json`
+
+```json
+{"interaction_type":"ping_pong","timestamp":1700000000000}
+```
+
+## `tests/fixtures/in_reminder_required.json`
+
+```json
+{"interaction_type":"reminder_required","response_id":2,"transcript":[{"role":"user","content":"Hello?"}]}
+```
+
+## `tests/fixtures/in_response_required.json`
+
+```json
 {"interaction_type":"response_required","response_id":1,"transcript":[{"role":"user","content":"What is your pricing?"}]}
-
-
 ```
 
-### `tests/fixtures/in_update_only.json`
+## `tests/fixtures/in_update_only.json`
 
-```
+```json
 {"interaction_type":"update_only","transcript":[{"role":"user","content":"Hello"},{"role":"agent","content":"Hi"}],"turntaking":"user_turn"}
-
-
 ```
 
-### `tests/fixtures/out_config.json`
+## `tests/fixtures/leads_seed.csv`
 
+```csv
+business_name,website,phone,email,city,state,category,ad_active,google_ads_monthly,employee_count,reviews_count,pain_signals
+Prime Smile Dental,https://primesmiledental.com,+13105550101,manager@primesmiledental.com,Dallas,TX,dental,true,4500,12,180,"missed call,booking backlog"
+Glow Beauty Studio,https://glowbeauty.example,+13105550102,info@glowbeauty.example,Plano,TX,beauty,false,0,3,24,""
+North Star Plastic Surgery,https://northstarplasticsurgery.com,+13105550103,frontdesk@northstarplasticsurgery.com,Houston,TX,plastic surgery,true,6200,18,95,"voicemail overflow"
+Lakeview Auto Repair,https://lakeviewauto.example,+13105550104,owner@lakeviewauto.example,Austin,TX,auto repair,true,2000,6,70,"busy line"
 ```
+
+## `tests/fixtures/out_agent_interrupt_chunk.json`
+
+```json
+{"response_type":"agent_interrupt","interrupt_id":10,"content":"Hold on","content_complete":false,"no_interruption_allowed":true}
+```
+
+## `tests/fixtures/out_agent_interrupt_terminal.json`
+
+```json
+{"response_type":"agent_interrupt","interrupt_id":10,"content":"","content_complete":true}
+```
+
+## `tests/fixtures/out_config.json`
+
+```json
 {"response_type":"config","config":{"auto_reconnect":true,"call_details":true,"transcript_with_tool_calls":true}}
-
-
 ```
 
-### `tests/fixtures/retell_wire/inbound_response_required_missing_id_invalid.json`
+## `tests/fixtures/out_metadata.json`
 
+```json
+{"response_type":"metadata","metadata":{"k":"v","n":1}}
 ```
+
+## `tests/fixtures/out_ping_pong.json`
+
+```json
+{"response_type":"ping_pong","timestamp":1700000000000}
+```
+
+## `tests/fixtures/out_response_chunk.json`
+
+```json
+{"response_type":"response","response_id":1,"content":"Hello","content_complete":false}
+```
+
+## `tests/fixtures/out_response_terminal.json`
+
+```json
+{"response_type":"response","response_id":1,"content":"","content_complete":true}
+```
+
+## `tests/fixtures/out_tool_call_invocation.json`
+
+```json
+{"response_type":"tool_call_invocation","tool_call_id":"00000000-0000-0000-0000-000000000000","name":"get_pricing","arguments":"{\"service_id\":\"general\"}"}
+```
+
+## `tests/fixtures/out_tool_call_result.json`
+
+```json
+{"response_type":"tool_call_result","tool_call_id":"00000000-0000-0000-0000-000000000000","content":"{\"price_usd\":120}"}
+```
+
+## `tests/fixtures/out_update_agent.json`
+
+```json
+{"response_type":"update_agent","agent_config":{"responsiveness":0.8,"interruption_sensitivity":0.5,"reminder_trigger_ms":15000,"reminder_max_count":2}}
+```
+
+## `tests/fixtures/retell_wire/inbound_ping_pong_missing_timestamp_invalid.json`
+
+```json
+{"interaction_type":"ping_pong"}
+```
+
+## `tests/fixtures/retell_wire/inbound_ping_pong_valid.json`
+
+```json
+{"interaction_type":"ping_pong","timestamp":1730000000000}
+```
+
+## `tests/fixtures/retell_wire/inbound_reminder_required_valid.json`
+
+```json
+{"interaction_type":"reminder_required","response_id":8,"transcript":[{"role":"user","content":"Are you there?"}]}
+```
+
+## `tests/fixtures/retell_wire/inbound_response_required_missing_id_invalid.json`
+
+```json
 {"interaction_type":"response_required","transcript":[{"role":"user","content":"hello"}]}
-
 ```
 
-### `tests/fixtures/retell_wire/inbound_response_required_valid.json`
+## `tests/fixtures/retell_wire/inbound_response_required_valid.json`
 
-```
+```json
 {"interaction_type":"response_required","response_id":7,"transcript":[{"role":"user","content":"What is your pricing?"}]}
-
 ```
 
-### `tests/harness/transport_harness.py`
+## `tests/fixtures/retell_wire/outbound_ping_pong_valid.json`
 
+```json
+{"response_type":"ping_pong","timestamp":1730000000123}
 ```
+
+## `tests/fixtures/retell_wire/outbound_response_chunk_valid.json`
+
+```json
+{"response_type":"response","response_id":7,"content":"Got it.","content_complete":false}
+```
+
+## `tests/fixtures/retell_wire/outbound_response_terminal_valid.json`
+
+```json
+{"response_type":"response","response_id":7,"content":"","content_complete":true}
+```
+
+## `tests/harness/transport_harness.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -21006,12 +12179,351 @@ class HarnessSession:
     async def recv_outbound(self) -> OutboundEvent:
         raw = await self.transport.pop_outbound()
         return parse_outbound_json(raw)
-
 ```
 
-### `tests/test_backchannel_vic.py`
+## `tests/test_b2b_dialogue_policy_semantics.py`
 
+```python
+from __future__ import annotations
+
+from app.dialogue_policy import SlotState, decide_action
+from app.protocol import TranscriptUtterance
+
+
+def _u(role: str, content: str) -> TranscriptUtterance:
+    return TranscriptUtterance(role=role, content=content)
+
+
+def test_b2b_open_no_means_not_a_bad_time_proceed() -> None:
+    # Opener: "Is this a bad time?" User: "No." => proceed (not rejection).
+    st = SlotState(b2b_funnel_stage="OPEN")
+    tx = [
+        _u("agent", "Hi, this is Cassidy from Eve. Is this a bad time for one quick question?"),
+        _u("user", "No."),
+    ]
+    act = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert act.action_type == "Ask"
+    msg = str(act.payload.get("message", ""))
+    assert "close" not in msg.lower()
+    # ROUTING-stage question should appear after permission.
+    assert "manager" in msg.lower()
+    assert "email" in msg.lower()
+
+
+def test_b2b_open_yes_means_bad_time_offer_close_or_send() -> None:
+    st = SlotState(b2b_funnel_stage="OPEN")
+    tx = [
+        _u("agent", "Hi, this is Cassidy from Eve. Is this a bad time for one quick question?"),
+        _u("user", "Yes."),
+    ]
+    act = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert act.action_type == "Ask"
+    msg = str(act.payload.get("message", ""))
+    assert "close" in msg.lower()
+    assert "email" in msg.lower()
+
+
+def test_b2b_routing_no_is_admin_block_not_rejection() -> None:
+    st = SlotState(b2b_funnel_stage="ROUTING")
+    tx = [
+        _u("agent", "Are you the person handling manager routing, or should I use a routing inbox?"),
+        _u("user", "No."),
+    ]
+    act = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert act.action_type == "Ask"
+    msg = str(act.payload.get("message", ""))
+    assert "inbox" in msg.lower()
+    assert "close" not in msg.lower()
+
+
+def test_b2b_no_email_objection_routes_to_inbox() -> None:
+    st = SlotState(b2b_funnel_stage="ROUTING")
+    tx = [
+        _u("agent", "Quick question: what's the best way to get a short email to the manager?"),
+        _u("user", "We don't give out emails."),
+    ]
+    act = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    msg = str(act.payload.get("message", "")).lower()
+    assert act.action_type == "Ask"
+    assert "inbox" in msg
+    assert "archive" not in msg
+
+
+def test_b2b_open_ambient_noise_with_whitespace_no_signal_noop() -> None:
+    st = SlotState(b2b_funnel_stage="OPEN")
+    tx = [
+        _u("agent", "Hi, this is Cassidy with Eve. Is now a bad time for a quick question?"),
+        _u("user", "   "),
+    ]
+    act = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert act.action_type == "Noop"
+    assert act.payload.get("no_progress") is True
+    assert bool(act.payload.get("no_signal"))
+
+
+def test_b2b_open_noise_fragment_noop() -> None:
+    st = SlotState(b2b_funnel_stage="OPEN")
+    tx = [
+        _u("agent", "Hi, this is Cassidy with Eve. Is now a bad time for a quick question?"),
+        _u("user", "um"),
+    ]
+    act = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert act.action_type == "Noop"
+    assert act.payload.get("no_progress") is True
+    assert bool(act.payload.get("no_signal"))
+    assert act.payload.get("intent_signature") == "b2b:OPEN:noise_only"
+
+    again = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert again.action_type == "Noop"
+    assert again.payload.get("intent_signature") in {
+        "b2b:OPEN:noise_only",
+        "b2b:OPEN:repeated_noise",
+    }
+
+
+def test_b2b_open_got_it_acknowledgement_noop() -> None:
+    st = SlotState(b2b_funnel_stage="OPEN")
+    tx = [
+        _u("agent", "Hi, this is Cassidy with Eve. Is now a bad time for a quick question?"),
+        _u("user", "Yep, got it."),
+    ]
+    act = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert act.action_type == "Noop"
+    assert act.payload.get("no_progress") is True
+    assert bool(act.payload.get("no_signal"))
+    assert act.payload.get("message", "") == ""
+
+
+def test_b2b_repeated_opener_signal_stays_silent() -> None:
+    st = SlotState(
+        b2b_funnel_stage="OPEN",
+        b2b_last_stage="OPEN",
+        b2b_last_signal="NEW_CALL",
+        b2b_no_signal_streak=1,
+    )
+    tx = [
+        _u("agent", "Hi, this is Cassidy with Eve. Is now a bad time for a quick question?"),
+        _u("user", "..."),
+    ]
+    first = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert first.action_type == "Noop"
+    assert first.payload.get("no_progress") is True
+
+
+def test_b2b_repeated_short_noise_without_signature_progress_does_not_replay() -> None:
+    st = SlotState()
+    opener = _u("agent", "Hi, this is Cassidy with Eve. Is now a bad time for a quick question?")
+    tx = [opener, _u("user", "um")]
+    first = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    second = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert first.action_type == "Noop"
+    assert second.action_type == "Noop"
+    assert first.payload.get("message", "") == ""
+    assert second.payload.get("message", "") == ""
+    assert first.payload.get("no_signal") is True
+    assert second.payload.get("no_signal") is True
+
+
+def test_b2b_empty_noise_turns_stay_noop_and_do_not_replay_opener() -> None:
+    st = SlotState(b2b_funnel_stage="OPEN")
+    tx = [
+        _u("agent", "Hi, this is Cassidy with Eve. Is now a bad time for a quick question?"),
+        _u("user", "  "),
+    ]
+    first = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    second = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert first.action_type == "Noop"
+    assert second.action_type == "Noop"
+    assert first.payload.get("no_progress") is True
+    assert second.payload.get("no_progress") is True
+    assert first.payload.get("message", "") == ""
+    assert second.payload.get("message", "") == ""
+
+
+def test_b2b_intro_phrase_with_got_it_is_treated_as_no_signal() -> None:
+    st = SlotState(b2b_funnel_stage="OPEN")
+    tx = [
+        _u("agent", "Hi, this is Cassidy with Eve. Is now a bad time for a quick question?"),
+        _u("user", "Hey, this is Cassidy from Eve, yep got it."),
+    ]
+    first = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    second = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert first.action_type == "Noop"
+    assert second.action_type == "Noop"
+    assert first.payload.get("message", "") == ""
+    assert second.payload.get("message", "") == ""
+    assert first.payload.get("no_signal") is True
+    assert second.payload.get("no_signal") is True
+
+
+def test_b2b_open_hello_does_not_repeat_opener() -> None:
+    st = SlotState(b2b_funnel_stage="OPEN")
+    tx = [
+        _u("agent", "Hi, this is Cassidy with Eve. Is now a bad time for a quick question?"),
+        _u("user", "Hello?"),
+    ]
+    act = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    msg = str(act.payload.get("message", ""))
+    # Should move forward to routing, not re-ask "bad time" again.
+    assert "bad time" not in msg.lower()
+    assert "email" in msg.lower()
+
+
+def test_b2b_open_not_a_bad_time_phrase_proceeds() -> None:
+    st = SlotState(b2b_funnel_stage="OPEN")
+    tx = [
+        _u("agent", "Hi, this is Cassidy with Eve. Is now a bad time for a quick question?"),
+        _u("user", "That is not a bad time, go ahead."),
+    ]
+    act = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    msg = str(act.payload.get("message", "")).lower()
+    assert act.action_type == "Ask"
+    assert "manager" in msg
+    assert "email" in msg
+    assert "close" not in msg
+
+
+def test_b2b_no_email_and_soft_rejection_favors_inbox_request() -> None:
+    st = SlotState(b2b_funnel_stage="OPEN")
+    tx = [
+        _u("agent", "Quick question: what's the best way to get a short email to the manager?"),
+        _u("user", "We don't give out emails, not interested."),
+    ]
+    act = decide_action(
+        state=st,
+        transcript=tx,
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    msg = str(act.payload.get("message", "")).lower()
+    assert act.action_type == "Ask"
+    assert "inbox" in msg
 ```
+
+## `tests/test_backchannel_vic.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -21129,13 +12641,559 @@ def test_backchannel_experimental_never_interrupts_user_turn_or_sensitive_captur
             await session.stop()
 
     asyncio.run(_run())
-
-
 ```
 
-### `tests/test_epoch_barge_in.py`
+## `tests/test_canary.py`
 
+```python
+from __future__ import annotations
+
+from app.canary import rollout_enabled
+
+
+def test_rollout_enabled_bounds() -> None:
+    assert rollout_enabled("any", -1) is False
+    assert rollout_enabled("any", 0) is False
+    assert rollout_enabled("any", 100) is True
+    assert rollout_enabled("any", 150) is True
+
+
+def test_rollout_enabled_is_deterministic() -> None:
+    a = rollout_enabled("session-123", 17)
+    b = rollout_enabled("session-123", 17)
+    assert a is b
 ```
+
+## `tests/test_context_compaction.py`
+
+```python
+from __future__ import annotations
+
+from app.agent.compaction import CompactionContext, build_compaction_summary
+from app.conversation_memory import ConversationMemory
+from app.dialogue_policy import SlotState
+from app.protocol import TranscriptUtterance
+
+
+def test_compaction_summary_fields() -> None:
+    txt = build_compaction_summary(
+        CompactionContext(
+            open_objectives="book_or_answer",
+            pending_failures="none",
+            active_guardrails="tool_grounding",
+            last_green_baseline="vic_green",
+        )
+    )
+    assert "open_objectives=" in txt
+    assert "pending_failures=" in txt
+    assert "active_guardrails=" in txt
+    assert "last_green_baseline=" in txt
+
+
+def test_conversation_memory_adds_compaction_context() -> None:
+    mem = ConversationMemory(max_utterances=1, max_chars=20)
+    transcript = [
+        TranscriptUtterance(role="user", content="I want booking tomorrow afternoon"),
+        TranscriptUtterance(role="agent", content="Sure"),
+        TranscriptUtterance(role="user", content="My number is 972 555 1212"),
+    ]
+    view = mem.ingest_snapshot(transcript=transcript, slot_state=SlotState(intent="booking"))
+    assert view.compacted is True
+    assert "Compaction context:" in view.summary_blob
+    assert "phone_last4=1212" in view.summary_blob
+```
+
+## `tests/test_dashboard_routes.py`
+
+```python
+from __future__ import annotations
+
+import contextlib
+import importlib.util
+import os
+import socket
+import subprocess
+import sys
+import time
+import urllib.request
+from pathlib import Path
+
+import pytest
+
+
+def _free_port() -> int:
+    with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+        s.bind(("127.0.0.1", 0))
+        return int(s.getsockname()[1])
+
+
+def _wait_ready(base_url: str, timeout_s: float = 8.0) -> None:
+    deadline = time.time() + timeout_s
+    last_err: Exception | None = None
+    while time.time() < deadline:
+        try:
+            with urllib.request.urlopen(f"{base_url}/healthz", timeout=1.5) as resp:
+                if resp.status == 200:
+                    return
+        except Exception as e:  # pragma: no cover
+            last_err = e
+            time.sleep(0.1)
+    raise RuntimeError(f"server did not become ready: {last_err}")
+
+
+def _get(url: str) -> tuple[int, str]:
+    with urllib.request.urlopen(url, timeout=5.0) as resp:
+        body = resp.read().decode("utf-8", errors="replace")
+        return int(resp.status), body
+
+
+def _uvicorn_python(repo_root: Path) -> str:
+    if importlib.util.find_spec("uvicorn") is not None:
+        return sys.executable
+    venv_py = repo_root / ".venv" / "bin" / "python"
+    if venv_py.exists():
+        return str(venv_py)
+    return sys.executable
+
+
+def test_dashboard_routes_smoke() -> None:
+    pytest.importorskip("uvicorn")
+    repo_root = Path(__file__).resolve().parents[1]
+    port = _free_port()
+    env = os.environ.copy()
+    py = _uvicorn_python(repo_root)
+    proc = subprocess.Popen(
+        [
+            py,
+            "-m",
+            "uvicorn",
+            "app.server:app",
+            "--host",
+            "127.0.0.1",
+            "--port",
+            str(port),
+        ],
+        cwd=str(repo_root),
+        env=env,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    try:
+        base = f"http://127.0.0.1:{port}"
+        _wait_ready(base)
+
+        status, body = _get(f"{base}/dashboard/")
+        assert status == 200
+        assert "Eve Dashboard" in body
+
+        status, body = _get(f"{base}/api/dashboard/summary")
+        assert status == 200
+        assert '"status"' in body
+        assert '"checks"' in body
+
+        status, body = _get(f"{base}/api/dashboard/repo-map")
+        assert status == 200
+        assert '"components"' in body
+
+        status, body = _get(f"{base}/api/dashboard/sop")
+        assert status == 200
+        assert '"markdown"' in body
+    finally:
+        proc.terminate()
+        try:
+            proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:  # pragma: no cover
+            proc.kill()
+            proc.wait(timeout=5)
+```
+
+## `tests/test_dialogue_policy_b2b.py`
+
+```python
+from __future__ import annotations
+
+from app.dialogue_policy import SlotState, decide_action
+from app.protocol import TranscriptUtterance
+
+
+def _tx(user_text: str) -> list[TranscriptUtterance]:
+    return [TranscriptUtterance(role="user", content=user_text)]
+
+
+def test_b2b_policy_starts_with_b2b_permission_question() -> None:
+    state = SlotState()
+    action = decide_action(
+        state=state,
+        transcript=_tx("hello"),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert action.action_type == "Ask"
+    msg = str(action.payload.get("message", "")).lower()
+    assert "bad time" in msg or "question" in msg
+
+
+def test_b2b_policy_tiny_got_it_fragment_stays_silent() -> None:
+    state = SlotState()
+    first = decide_action(
+        state=state,
+        transcript=_tx("yep got it."),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    second = decide_action(
+        state=state,
+        transcript=_tx("yep got it."),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert first.action_type == "Noop"
+    assert second.action_type == "Noop"
+    assert first.payload.get("message", "") == ""
+    assert first.payload.get("no_progress") is True
+    assert first.payload.get("no_signal") is True
+    assert second.payload.get("message", "") == ""
+    assert second.payload.get("no_progress") is True
+    assert second.payload.get("no_signal") is True
+
+
+def test_b2b_policy_tiny_noise_token_stays_silent() -> None:
+    state = SlotState()
+    first = decide_action(
+        state=state,
+        transcript=_tx("um"),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    second = decide_action(
+        state=state,
+        transcript=_tx("um"),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert first.action_type == "Noop"
+    assert second.action_type == "Noop"
+    assert first.payload.get("message", "") == ""
+    assert second.payload.get("message", "") == ""
+
+
+def test_b2b_profile_close_now_moves_to_manager_email_capture() -> None:
+    state = SlotState()
+    action = decide_action(
+        state=state,
+        transcript=_tx("call me now"),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert action.action_type == "Ask"
+    msg = str(action.payload.get("message", "")).lower()
+    assert "manager" in msg
+    assert "email" in msg
+    assert action.payload.get("slots_needed") == ["manager_email"]
+
+
+def test_b2b_policy_handles_explicit_dnc() -> None:
+    state = SlotState()
+    action = decide_action(
+        state=state,
+        transcript=_tx("stop calling me"),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert action.action_type == "EndCall"
+    assert action.payload.get("end_call") is True
+    assert action.payload.get("fast_path") is True
+    assert str(action.payload.get("intent_signature", "")).startswith("b2b:OPEN:")
+
+
+def test_b2b_policy_closes_when_email_collected() -> None:
+    state = SlotState()
+    action = decide_action(
+        state=state,
+        transcript=_tx("send it to manager@example.com"),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert action.action_type == "EndCall"
+    assert action.payload.get("email") == "manager@example.com"
+
+
+def test_b2b_generic_email_gets_one_pushback_then_accepts() -> None:
+    state = SlotState()
+    first = decide_action(
+        state=state,
+        transcript=_tx("send it to info@clinic.com"),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert first.action_type == "Ask"
+    assert "direct manager email" in str(first.payload.get("message", "")).lower()
+    assert first.payload.get("fast_path") is True
+    assert str(first.payload.get("intent_signature", "")) == "b2b:generic_email:ask"
+
+    second = decide_action(
+        state=state,
+        transcript=_tx("send it to info@clinic.com"),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    assert second.action_type == "EndCall"
+    assert second.payload.get("fast_path") is True
+    assert str(second.payload.get("intent_signature", "")).startswith("b2b:OPEN:generic_email")
+    assert second.payload.get("fast_path") is True
+    assert str(second.payload.get("intent_signature", "")).startswith("b2b:OPEN:generic_email")
+
+
+def test_b2b_progression_remains_question_heavy() -> None:
+    state = SlotState()
+
+    def act(msg: str) -> str:
+        action = decide_action(
+            state=state,
+            transcript=_tx(msg),
+            needs_apology=False,
+            safety_kind="ok",
+            safety_message="",
+            profile="b2b",
+        )
+        return str(action.payload.get("message", "")).strip()
+
+    messages = [
+        act("hello"),
+        act("yes"),
+        act("yes"),
+        act("yes"),
+        act("manager@example.com"),
+    ]
+
+    question_msgs = [m for m in messages if m.endswith("?")]
+    # 4/5 are questions in this core funnel path (>= 80%).
+    assert len(question_msgs) >= 4
+    assert len(messages) == 5
+
+
+def test_b2b_policy_relaxes_when_conversation_is_positive() -> None:
+    state = SlotState()
+    _ = decide_action(
+        state=state,
+        transcript=_tx("who are you?"),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    # Repeated positive answers should relax into conservative mode.
+    for _ in range(3):
+        _ = decide_action(
+            state=state,
+            transcript=_tx("yes, send it"),
+            needs_apology=False,
+            safety_kind="ok",
+            safety_message="",
+            profile="b2b",
+        )
+    assert state.b2b_autonomy_mode == "conservative"
+
+
+def test_b2b_policy_increases_assertiveness_on_repeated_objections() -> None:
+    state = SlotState()
+    _ = decide_action(
+        state=state,
+        transcript=_tx("hello"),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+
+    action = None
+    for _ in range(4):
+        action = decide_action(
+            state=state,
+            transcript=_tx("not interested"),
+            needs_apology=False,
+            safety_kind="ok",
+            safety_message="",
+            profile="b2b",
+        )
+    assert action is not None
+    assert state.b2b_autonomy_mode in {"baseline", "assertive"}
+    assert state.objection_pressure >= 2
+    if state.b2b_autonomy_mode == "assertive":
+        text = str(action.payload.get("message", "")).strip()
+        # Assertive mode should not add robotic meta-prefixes ("Quick.", "Direct.") anymore.
+        # Instead, enforce that the message stays short and ends as a single question.
+        assert text.endswith("?")
+        assert len(text.split()) <= 18
+
+
+def test_b2b_policy_noop_noise_does_not_replay_on_repeated_inputs() -> None:
+    state = SlotState(
+        b2b_funnel_stage="OPEN",
+        b2b_last_stage="OPEN",
+        b2b_last_signal="NEW_CALL",
+        b2b_last_user_signature="hello",
+        b2b_no_signal_streak=1,
+    )
+
+    first = decide_action(
+        state=state,
+        transcript=_tx("..."),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+    second = decide_action(
+        state=state,
+        transcript=_tx("..."),
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+        profile="b2b",
+    )
+
+    assert first.action_type == "Noop"
+    assert second.action_type == "Noop"
+    assert first.payload.get("message", "") == ""
+    assert second.payload.get("message", "") == ""
+    assert first.payload.get("no_progress") is True
+    assert second.payload.get("no_progress") is True
+    assert first.payload.get("no_signal") is True
+    assert second.payload.get("no_signal") is True
+```
+
+## `tests/test_dialogue_policy_shell_exec.py`
+
+```python
+from __future__ import annotations
+
+from app.dialogue_policy import SlotState, decide_action
+from app.protocol import TranscriptUtterance
+
+
+def test_shell_command_routed_to_tool_request() -> None:
+    state = SlotState()
+    action = decide_action(
+        state=state,
+        transcript=[TranscriptUtterance(role="user", content="/shell python3 -V")],
+        needs_apology=False,
+        safety_kind="none",
+        safety_message="",
+    )
+    assert action.action_type == "Inform"
+    assert action.payload.get("info_type") == "shell_exec"
+    assert len(action.tool_requests) == 1
+    req = action.tool_requests[0]
+    assert req.name == "run_shell_command"
+    assert req.arguments.get("command") == "python3 -V"
+
+
+def test_shell_command_not_triggered_for_normal_message() -> None:
+    state = SlotState()
+    action = decide_action(
+        state=state,
+        transcript=[TranscriptUtterance(role="user", content="Can I get Tuesday availability?")],
+        needs_apology=False,
+        safety_kind="none",
+        safety_message="",
+    )
+    assert not any(r.name == "run_shell_command" for r in action.tool_requests)
+```
+
+## `tests/test_dnc_tool_invocation.py`
+
+```python
+from __future__ import annotations
+
+import asyncio
+import json
+
+from app.config import BrainConfig
+from app.protocol import OutboundResponse, OutboundToolCallInvocation, OutboundToolCallResult
+
+from tests.harness.transport_harness import HarnessSession
+
+
+def test_b2b_explicit_dnc_invokes_mark_dnc_compliant_tool() -> None:
+    async def _run() -> None:
+        session = await HarnessSession.start(
+            cfg=BrainConfig(
+                speak_first=False,
+                conversation_profile="b2b",
+                retell_auto_reconnect=False,
+                idle_timeout_ms=60000,
+            )
+        )
+        try:
+            # Drain initial config + BEGIN terminal response_id=0.
+            await session.recv_outbound()
+            await session.recv_outbound()
+
+            await session.send_inbound_obj(
+                {
+                    "interaction_type": "response_required",
+                    "response_id": 1,
+                    "transcript": [{"role": "user", "content": "stop calling me"}],
+                },
+                expect_ack=False,
+            )
+
+            inv: OutboundToolCallInvocation | None = None
+            res: OutboundToolCallResult | None = None
+            saw_end_call_terminal = False
+
+            for _ in range(50):
+                m = await session.recv_outbound()
+                if isinstance(m, OutboundToolCallInvocation) and m.name == "mark_dnc_compliant":
+                    inv = m
+                if isinstance(m, OutboundToolCallResult) and inv is not None and m.tool_call_id == inv.tool_call_id:
+                    res = m
+                if isinstance(m, OutboundResponse) and m.response_id == 1 and m.content_complete:
+                    if bool(getattr(m, "end_call", False)):
+                        saw_end_call_terminal = True
+                if inv is not None and res is not None and saw_end_call_terminal:
+                    break
+
+            assert inv is not None, "expected tool_call_invocation for mark_dnc_compliant"
+            assert json.loads(inv.arguments or "{}").get("reason") == "USER_REQUEST"
+
+            assert res is not None, "expected tool_call_result for mark_dnc_compliant"
+            payload = json.loads(res.content or "{}")
+            assert payload.get("ok") is True
+            assert payload.get("tool") == "mark_dnc_compliant"
+            assert payload.get("reason") == "USER_REQUEST"
+
+            assert saw_end_call_terminal is True, "expected terminal response with end_call=True"
+        finally:
+            await session.stop()
+
+    asyncio.run(_run())
+```
+
+## `tests/test_epoch_barge_in.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -21262,11 +13320,62 @@ def test_barge_in_hint_drops_same_epoch_queued_chunks() -> None:
 
     asyncio.run(_run())
 
+
+def test_clear_event_drops_same_epoch_queued_chunks() -> None:
+    async def _run() -> None:
+        session = await HarnessSession.start(tool_latencies={"get_pricing": 5000})
+        try:
+            # Drain initial config + BEGIN terminal response_id=0.
+            await session.recv_outbound()
+            await session.recv_outbound()
+
+            # Pause writer output so outbound_q accumulates deterministically.
+            session.transport.send_allowed.clear()
+
+            await session.send_inbound_obj(
+                {
+                    "interaction_type": "response_required",
+                    "response_id": 1,
+                    "transcript": [{"role": "user", "content": "What is your pricing?"}],
+                }
+            )
+            for _ in range(50):
+                await asyncio.sleep(0)
+
+            # Explicit interruption signal.
+            await session.send_inbound_obj({"interaction_type": "clear"}, expect_ack=False)
+            for _ in range(50):
+                await asyncio.sleep(0)
+
+            session.transport.send_allowed.set()
+
+            saw_terminal = False
+            saw_non_terminal = False
+            for _ in range(100):
+                if session.transport.outbound_qsize() == 0:
+                    await asyncio.sleep(0)
+                    continue
+                m = await session.recv_outbound()
+                if isinstance(m, OutboundResponse) and m.response_id == 1:
+                    if m.content_complete:
+                        saw_terminal = True
+                    else:
+                        saw_non_terminal = True
+                if saw_terminal:
+                    break
+
+            assert saw_terminal is True
+            assert saw_non_terminal is False
+            assert session.metrics.get(VIC["stale_segment_dropped_total"]) >= 1
+        finally:
+            await session.stop()
+
+    asyncio.run(_run())
 ```
 
-### `tests/test_fact_guard.py`
+## `tests/test_fact_guard.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -21351,12 +13460,11 @@ def test_fact_guard_fallback_metric_on_invalid_llm_rewrite() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
 ```
 
-### `tests/test_inbound_limits.py`
+## `tests/test_inbound_limits.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -21429,7 +13537,7 @@ def test_bad_json_close_reason_is_deterministic() -> None:
     asyncio.run(_run())
 
 
-def test_bad_schema_close_reason_is_deterministic() -> None:
+def test_bad_schema_is_dropped_and_session_stays_open() -> None:
     async def _run() -> None:
         session = await HarnessSession.start(
             cfg=BrainConfig(
@@ -21442,16 +13550,41 @@ def test_bad_schema_close_reason_is_deterministic() -> None:
             await session.recv_outbound()
             await session.recv_outbound()
 
-            # Missing required "timestamp".
+            # Missing required "timestamp" (schema error) and unknown future event type:
+            # must be dropped without tearing down the websocket.
             await session.transport.push_inbound(
                 json.dumps({"interaction_type": "ping_pong"}, separators=(",", ":"), sort_keys=True)
+            )
+            await session.transport.push_inbound(
+                json.dumps(
+                    {"interaction_type": "future_event", "foo": "bar"},
+                    separators=(",", ":"),
+                    sort_keys=True,
+                )
             )
             for _ in range(100):
                 if session.shutdown_evt.is_set():
                     break
                 await asyncio.sleep(0)
-            assert session.shutdown_evt.is_set() is True
-            assert session.metrics.get("ws.close_reason_total.BAD_SCHEMA") >= 1
+
+            assert session.shutdown_evt.is_set() is False
+            assert session.metrics.get("inbound.bad_schema_total") >= 2
+            assert session.metrics.get("ws.close_reason_total.BAD_SCHEMA") == 0
+
+            # Prove the session remains functional by completing a normal turn.
+            await session.send_inbound_obj(
+                {
+                    "interaction_type": "response_required",
+                    "response_id": 1,
+                    "transcript": [{"role": "user", "content": "Hi"}],
+                }
+            )
+            # Drain until epoch=1 terminal.
+            while True:
+                m = await session.recv_outbound()
+                if getattr(m, "response_type", "") == "response" and getattr(m, "response_id", 0) == 1:
+                    if getattr(m, "content_complete", False):
+                        break
         finally:
             await session.stop()
 
@@ -21496,12 +13629,74 @@ def test_frame_limit_uses_utf8_bytes_not_char_count() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
 ```
 
-### `tests/test_keepalive_priority.py`
+## `tests/test_keepalive_ping_pong.py`
 
+```python
+from __future__ import annotations
+
+import asyncio
+
+from app.protocol import OutboundConfig, OutboundPingPong, OutboundResponse
+
+from tests.harness.transport_harness import HarnessSession
+
+
+def test_keepalive_ping_pong_and_idle_timeout() -> None:
+    async def _run() -> None:
+        session = await HarnessSession.start()
+        try:
+            # On connect: config + BEGIN response_id=0 terminal (speak_first=False).
+            m1 = await session.recv_outbound()
+            assert isinstance(m1, OutboundConfig)
+
+            m2 = await session.recv_outbound()
+            assert isinstance(m2, OutboundResponse)
+            assert m2.response_id == 0
+            assert m2.content_complete is True
+
+            # Inbound ping -> outbound ping echo.
+            await session.send_inbound_obj({"interaction_type": "ping_pong", "timestamp": 123})
+            m3 = await session.recv_outbound()
+            assert isinstance(m3, OutboundPingPong)
+            assert m3.timestamp == 123
+
+            # Idle watchdog ends session deterministically.
+            await session.clock.advance(session.cfg.idle_timeout_ms)
+            await session.trace.wait_for_event_type("conv_state_transition")
+            assert session.shutdown_evt.is_set() is True
+        finally:
+            await session.stop()
+
+    asyncio.run(_run())
+
+
+def test_call_details_then_ping_pong_echo() -> None:
+    async def _run() -> None:
+        session = await HarnessSession.start()
+        try:
+            # On connect: config + BEGIN response_id=0 terminal (speak_first=False).
+            _ = await session.recv_outbound()
+            _ = await session.recv_outbound()
+
+            await session.send_inbound_obj(
+                {"interaction_type": "call_details", "call": {"id": "call_123", "foo": "bar"}},
+                expect_ack=False,
+            )
+            await session.send_inbound_obj({"interaction_type": "ping_pong", "timestamp": 777}, expect_ack=False)
+            m = await session.recv_outbound()
+            assert isinstance(m, OutboundPingPong)
+            assert m.timestamp == 777
+        finally:
+            await session.stop()
+
+    asyncio.run(_run())
 ```
+
+## `tests/test_keepalive_priority.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -21616,12 +13811,11 @@ def test_ping_pong_not_delayed_by_update_only_flood() -> None:
             await asyncio.gather(reader, return_exceptions=True)
 
     asyncio.run(_run())
-
 ```
 
-### `tests/test_latency_defaults.py`
+## `tests/test_latency_defaults.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -21635,11 +13829,11 @@ from tests.harness.transport_harness import HarnessSession
 def test_latency_defaults_and_update_agent_defaults() -> None:
     cfg = BrainConfig()
     assert cfg.use_llm_nlg is False
-    assert cfg.vic_tool_filler_threshold_ms == 45
-    assert cfg.vic_model_filler_threshold_ms == 45
+    assert cfg.vic_tool_filler_threshold_ms == 800
+    assert cfg.vic_model_filler_threshold_ms == 800
     assert cfg.retell_send_update_agent_on_connect is True
-    assert cfg.retell_responsiveness == 1.0
-    assert cfg.retell_interruption_sensitivity == 1.0
+    assert cfg.retell_responsiveness == 0.8
+    assert cfg.retell_interruption_sensitivity == 0.8
     assert cfg.voice_plain_language_mode is True
     assert cfg.voice_no_reasoning_leak is True
     assert cfg.voice_jargon_blocklist_enabled is True
@@ -21840,12 +14034,11 @@ def test_b2b_got_it_ack_noop_has_no_speech_plan_and_no_ack() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
 ```
 
-### `tests/test_latency_masking.py`
+## `tests/test_latency_masking.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -21896,12 +14089,199 @@ def test_latency_masking_ack_and_tool_filler_timing() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
 ```
 
-### `tests/test_llm_stream_cancel_race.py`
+## `tests/test_lead_factory.py`
 
+```python
+from __future__ import annotations
+
+import importlib.util
+import json
+import sys
+import tempfile
+from pathlib import Path
+
+
+def _load_module():
+    p = Path(__file__).resolve().parents[1] / "scripts" / "lead_factory.py"
+    spec = importlib.util.spec_from_file_location("lead_factory", p)
+    assert spec and spec.loader
+    m = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = m
+    spec.loader.exec_module(m)  # type: ignore[attr-defined]
+    return m
+
+
+def test_score_record_high_ticket_ad_active() -> None:
+    m = _load_module()
+    rec = {
+        "business_name": "Prime Smile Dental",
+        "category": "dental clinic",
+        "ad_active": True,
+        "google_ads_monthly": 5000,
+        "employee_count": 10,
+        "reviews_count": 120,
+        "pain_signals": "missed call",
+        "phone": "+13105550101",
+    }
+    s = m.score_record(rec, source="unit")
+    assert s.high_ticket is True
+    assert s.ad_active is True
+    assert s.can_pay_5k_10k is True
+    assert s.pain_signal is True
+    assert s.score >= 80
+
+
+def test_qualified_filters_out_non_icp() -> None:
+    m = _load_module()
+    good = m.score_record(
+        {
+            "business_name": "North Star Plastic Surgery",
+            "category": "plastic surgery",
+            "ad_active": True,
+            "google_ads_monthly": 6000,
+            "employee_count": 16,
+            "reviews_count": 90,
+            "pain_signals": "voicemail",
+        }
+    )
+    bad = m.score_record(
+        {
+            "business_name": "Local Auto Shop",
+            "category": "auto repair",
+            "ad_active": True,
+            "employee_count": 3,
+            "reviews_count": 20,
+        }
+    )
+    got = m._qualified([good, bad], min_score=60.0)
+    assert len(got) == 1
+    assert got[0].business_name == "North Star Plastic Surgery"
+
+
+def test_script_end_to_end_outputs_files() -> None:
+    m = _load_module()
+    fixture = Path(__file__).resolve().parent / "fixtures" / "leads_seed.csv"
+    with tempfile.TemporaryDirectory() as td:
+        out_dir = Path(td) / "out"
+        argv = [
+            "lead_factory.py",
+            "--input",
+            str(fixture),
+            "--out-dir",
+            str(out_dir),
+            "--min-score",
+            "60",
+            "--top-k",
+            "10",
+        ]
+        old = sys.argv[:]
+        try:
+            sys.argv = argv
+            rc = m.main()
+        finally:
+            sys.argv = old
+
+        assert rc == 0
+        summary = json.loads((out_dir / "summary.json").read_text(encoding="utf-8"))
+        assert summary["total_scored"] >= 3
+        assert (out_dir / "qualified.csv").exists()
+        assert (out_dir / "call_queue.jsonl").exists()
 ```
+
+## `tests/test_llm_openai_client.py`
+
+```python
+from __future__ import annotations
+
+import asyncio
+import importlib.util
+import sys
+import types
+
+from app.llm_client import OpenAILLMClient
+
+
+class _FakeStream:
+    def __init__(self, events):
+        self._events = list(events)
+
+    def __aiter__(self):
+        self._i = 0
+        return self
+
+    async def __anext__(self):
+        if self._i >= len(self._events):
+            raise StopAsyncIteration
+        v = self._events[self._i]
+        self._i += 1
+        return v
+
+
+class _FakeResponses:
+    def __init__(self, events):
+        self._events = events
+
+    async def create(self, **kwargs):
+        _ = kwargs
+        return _FakeStream(self._events)
+
+
+class _FakeAsyncOpenAI:
+    def __init__(self, api_key=None):
+        _ = api_key
+        self.closed = False
+        self.responses = _FakeResponses(
+            [
+                {"type": "response.output_text.delta", "delta": "Hello"},
+                {"type": "response.output_text.delta", "delta": " there"},
+                {"type": "response.output_text.delta", "delta": ""},
+            ]
+        )
+
+    async def close(self):
+        self.closed = True
+
+
+def test_openai_client_stream_parses_deltas(monkeypatch) -> None:
+    fake_mod = types.ModuleType("openai")
+    fake_mod.AsyncOpenAI = _FakeAsyncOpenAI
+    monkeypatch.setitem(sys.modules, "openai", fake_mod)
+
+    async def _run() -> None:
+        client = OpenAILLMClient(api_key="k", model="gpt-5-mini")
+        parts = []
+        async for d in client.stream_text(prompt="hi"):
+            parts.append(d)
+        assert "".join(parts) == "Hello there"
+        await client.aclose()
+
+    asyncio.run(_run())
+
+
+def test_openai_client_missing_dependency_raises(monkeypatch) -> None:
+    if importlib.util.find_spec("openai") is not None:
+        # Environment has real package; this contract only applies when dependency is absent.
+        return
+    monkeypatch.delitem(sys.modules, "openai", raising=False)
+
+    async def _run() -> None:
+        client = OpenAILLMClient(api_key="k")
+        try:
+            async for _ in client.stream_text(prompt="x"):
+                pass
+        except RuntimeError as e:
+            assert "optional dependency 'openai'" in str(e)
+            return
+        raise AssertionError("expected RuntimeError")
+
+    asyncio.run(_run())
+```
+
+## `tests/test_llm_stream_cancel_race.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -21988,13 +14368,11 @@ def test_llm_stream_cancel_race_no_stale_chunks_after_barge_in() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
-
 ```
 
-### `tests/test_llm_stream_empty_terminal_chunk.py`
+## `tests/test_llm_stream_empty_terminal_chunk.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -22060,13 +14438,101 @@ def test_llm_stream_ignores_empty_terminal_delta_and_completes_turn() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
-
 ```
 
-### `tests/test_micro_chunking.py`
+## `tests/test_metrics_summary_script.py`
 
+```python
+from __future__ import annotations
+
+import importlib.util
+from pathlib import Path
+
+
+def _load_metrics_summary_module():
+    path = Path(__file__).resolve().parents[1] / "scripts" / "metrics_summary.py"
+    spec = importlib.util.spec_from_file_location("metrics_summary", str(path))
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_metrics_summary_parses_and_formats_required_fields() -> None:
+    mod = _load_metrics_summary_module()
+    prom = """
+# TYPE keepalive_ping_pong_queue_delay_ms histogram
+keepalive_ping_pong_queue_delay_ms_bucket{le="100"} 5
+keepalive_ping_pong_queue_delay_ms_bucket{le="200"} 8
+keepalive_ping_pong_queue_delay_ms_bucket{le="+Inf"} 10
+keepalive_ping_pong_queue_delay_ms_sum 1400
+keepalive_ping_pong_queue_delay_ms_count 10
+# TYPE vic_barge_in_cancel_latency_ms histogram
+vic_barge_in_cancel_latency_ms_bucket{le="150"} 6
+vic_barge_in_cancel_latency_ms_bucket{le="250"} 9
+vic_barge_in_cancel_latency_ms_bucket{le="+Inf"} 10
+vic_barge_in_cancel_latency_ms_sum 1700
+vic_barge_in_cancel_latency_ms_count 10
+# TYPE keepalive_ping_pong_write_timeout_total counter
+keepalive_ping_pong_write_timeout_total 3
+# TYPE ws_write_timeout_total counter
+ws_write_timeout_total 4
+# TYPE memory_transcript_chars_current gauge
+memory_transcript_chars_current 123
+# TYPE memory_transcript_utterances_current gauge
+memory_transcript_utterances_current 12
+# TYPE skills_invocations_total counter
+skills_invocations_total 4
+# TYPE skills_hit_total counter
+skills_hit_total 3
+# TYPE skills_error_total counter
+skills_error_total 1
+# TYPE shell_exec_total counter
+shell_exec_total 8
+# TYPE shell_exec_denied_total counter
+shell_exec_denied_total 2
+# TYPE shell_exec_timeout_total counter
+shell_exec_timeout_total 1
+# TYPE self_improve_cycles_total counter
+self_improve_cycles_total 5
+# TYPE self_improve_proposals_total counter
+self_improve_proposals_total 4
+# TYPE self_improve_applies_total counter
+self_improve_applies_total 1
+# TYPE self_improve_blocked_on_gates_total counter
+self_improve_blocked_on_gates_total 2
+# TYPE context_compactions_total counter
+context_compactions_total 9
+# TYPE context_compaction_tokens_saved_total counter
+context_compaction_tokens_saved_total 8800
+""".strip()
+    counters, gauges, hist = mod.parse_prometheus_text(prom)
+    out = mod.summarize(counters=counters, gauges=gauges, hist=hist)
+
+    assert "keepalive.ping_pong_queue_delay_ms p95=200 p99=200" in out
+    assert "keepalive.ping_pong_write_timeout_total=3" in out
+    assert "ws.write_timeout_total=4" in out
+    assert "vic.barge_in_cancel_latency_ms p95=250 p99=250" in out
+    assert "memory.transcript_chars_current=123" in out
+    assert "memory.transcript_utterances_current=12" in out
+    assert "skills.invocations_total=4" in out
+    assert "skills.hit_total=3" in out
+    assert "skills.hit_rate_pct=75" in out
+    assert "skills.error_total=1" in out
+    assert "shell.exec_total=8" in out
+    assert "shell.exec_denied_total=2" in out
+    assert "shell.exec_timeout_total=1" in out
+    assert "self_improve.cycles_total=5" in out
+    assert "self_improve.proposals_total=4" in out
+    assert "self_improve.applies_total=1" in out
+    assert "self_improve.blocked_on_gates_total=2" in out
+    assert "context.compactions_total=9" in out
+    assert "context.compaction_tokens_saved_total=8800" in out
 ```
+
+## `tests/test_micro_chunking.py`
+
+```python
 from __future__ import annotations
 
 import re
@@ -22143,12 +14609,106 @@ def test_micro_chunking_preserves_word_boundaries_across_segments() -> None:
     norm = re.sub(r"\s+", " ", stitched).strip()
     assert norm == text
     assert "thisor" not in stitched
-
 ```
 
-### `tests/test_phrase_variation_determinism.py`
+## `tests/test_outcome_schema.py`
 
+```python
+from __future__ import annotations
+
+from app.outcome_schema import CallOutcome, detect_objection
+
+
+def test_detect_objection_patterns() -> None:
+    assert detect_objection("This is too expensive") == "price_shock"
+    assert detect_objection("I am too busy for that time") == "timing_conflict"
+    assert detect_objection("I am not sure this is real") == "trust_hesitation"
+    assert detect_objection("I need this asap") == "urgency_pressure"
+    assert detect_objection("hello") is None
+
+
+def test_call_outcome_payload_stable() -> None:
+    outcome = CallOutcome(
+        call_id="c1",
+        turn_id=1,
+        epoch=1,
+        intent="booking",
+        action_type="OfferSlots",
+        objection="timing_conflict",
+        offered_slots_count=3,
+        accepted=False,
+        escalated=False,
+        drop_off_point="",
+        t_ms=123,
+    )
+    payload = outcome.to_payload()
+    assert payload["call_id"] == "c1"
+    assert payload["offered_slots_count"] == 3
+    assert payload["objection"] == "timing_conflict"
 ```
+
+## `tests/test_path_hygiene.py`
+
+```python
+from __future__ import annotations
+
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SCAN_TARGETS = [
+    ROOT / "README.md",
+    ROOT / "docs",
+    ROOT / "scripts",
+    ROOT / "tests",
+]
+FORBIDDEN_PATTERNS = [
+    "/" + "Users" + "/",
+    "/" + "home" + "/",
+    "/" + "Volumes" + "/",
+    "C:" + "\\" + "Users" + "\\",
+]
+SKIP_DIRS = {"__pycache__", ".pytest_cache"}
+SCAN_SUFFIXES = {".md", ".py", ".json", ".toml", ".sh"}
+
+
+def _iter_scan_files() -> list[Path]:
+    files: list[Path] = []
+    for target in SCAN_TARGETS:
+        if not target.exists():
+            continue
+        if target.is_file():
+            files.append(target)
+            continue
+        for p in target.rglob("*"):
+            if not p.is_file():
+                continue
+            if any(part in SKIP_DIRS for part in p.parts):
+                continue
+            if p.suffix not in SCAN_SUFFIXES:
+                continue
+            files.append(p)
+    return files
+
+
+def test_no_machine_specific_absolute_paths_in_docs_scripts_and_tests() -> None:
+    offenders: list[str] = []
+    for p in _iter_scan_files():
+        text = p.read_text(encoding="utf-8", errors="ignore")
+        for pat in FORBIDDEN_PATTERNS:
+            if pat in text:
+                offenders.append(f"{p.relative_to(ROOT)} :: {pat}")
+    assert not offenders, "forbidden absolute path patterns found:\n" + "\n".join(offenders)
+
+
+def test_path_hygiene_scans_fixtures() -> None:
+    files = _iter_scan_files()
+    assert any("tests" in p.parts and "fixtures" in p.parts for p in files)
+```
+
+## `tests/test_phrase_variation_determinism.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -22258,12 +14818,49 @@ def test_phrase_selector_stable_across_pythonhashseed_subprocesses() -> None:
     idx1 = _run("1")
     idx2 = _run("2")
     assert idx1 == idx2
-
 ```
 
-### `tests/test_playbook_policy.py`
+## `tests/test_plain_language_policy.py`
 
+```python
+from __future__ import annotations
+
+from app.dialogue_policy import SlotState, TranscriptUtterance, decide_action
+from app.safety_policy import evaluate_user_text
+from app.voice_guard import readability_grade
+
+
+def test_dialogue_policy_messages_are_plain() -> None:
+    st = SlotState(intent="booking")
+    action = decide_action(
+        state=st,
+        transcript=[TranscriptUtterance(role="user", content="I need an appointment")],
+        needs_apology=False,
+        safety_kind="ok",
+        safety_message="",
+    )
+    if "message" in action.payload:
+        msg = str(action.payload.get("message", ""))
+        assert msg
+        assert readability_grade(msg) <= 8
+        assert len(msg.split()) <= 18
+    else:
+        # Repair/confirm-first flows are acceptable as long as they avoid jargon.
+        assert action.action_type in {"Repair", "Confirm", "Ask"}
+
+
+def test_safety_policy_clinical_boundary_is_plain() -> None:
+    res = evaluate_user_text("What dosage should I take?", clinic_name="Clinic")
+    assert res.kind == "clinical"
+    assert readability_grade(res.message) <= 8
+    low = res.message.lower()
+    assert "consult" not in low
+    assert "book" in low or "visit" in low
 ```
+
+## `tests/test_playbook_policy.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -22329,12 +14926,37 @@ def test_slot_sorting_is_deterministic() -> None:
     ]
     ranked = sort_slots_by_acceptance(slots)
     assert ranked[:3] == ["Tuesday 9:00 AM", "Tuesday 11:30 AM", "Wednesday 2:15 PM"]
-
 ```
 
-### `tests/test_protocol_parsing.py`
+## `tests/test_prom_export_gauge.py`
 
+```python
+from __future__ import annotations
+
+from app.prom_export import PromExporter
+
+
+def test_prom_export_renders_gauge_counter_histogram() -> None:
+    exp = PromExporter(ms_buckets=(100, 500))
+    exp.inc("ws.write_timeout_total", 2)
+    exp.observe("keepalive.ping_pong_queue_delay_ms", 120)
+    exp.observe("keepalive.ping_pong_queue_delay_ms", 700)
+    exp.set("memory.transcript_chars_current", 4321)
+
+    text = exp.render()
+    assert "# TYPE ws_write_timeout_total counter" in text
+    assert "ws_write_timeout_total 2" in text
+    assert "# TYPE keepalive_ping_pong_queue_delay_ms histogram" in text
+    assert 'keepalive_ping_pong_queue_delay_ms_bucket{le="100"} 0' in text
+    assert 'keepalive_ping_pong_queue_delay_ms_bucket{le="500"} 1' in text
+    assert 'keepalive_ping_pong_queue_delay_ms_bucket{le="+Inf"} 2' in text
+    assert "# TYPE memory_transcript_chars_current gauge" in text
+    assert "memory_transcript_chars_current 4321" in text
 ```
+
+## `tests/test_protocol_parsing.py`
+
+```python
 from __future__ import annotations
 
 import json
@@ -22344,6 +14966,7 @@ import pytest
 
 from app.protocol import (
     InboundCallDetails,
+    InboundClear,
     InboundPingPong,
     InboundReminderRequired,
     InboundResponseRequired,
@@ -22375,6 +14998,7 @@ def test_inbound_parsing() -> None:
     assert isinstance(parse_inbound_json(_load("in_update_only.json")), InboundUpdateOnly)
     assert isinstance(parse_inbound_json(_load("in_response_required.json")), InboundResponseRequired)
     assert isinstance(parse_inbound_json(_load("in_reminder_required.json")), InboundReminderRequired)
+    assert isinstance(parse_inbound_json(_load("in_clear.json")), InboundClear)
 
 
 def test_outbound_parsing_and_roundtrip() -> None:
@@ -22405,13 +15029,68 @@ def test_unknown_discriminators_fail() -> None:
         parse_inbound_json(json.dumps({"interaction_type": "nope"}))
     with pytest.raises(Exception):
         parse_outbound_json(json.dumps({"response_type": "nope"}))
-
-
 ```
 
-### `tests/test_replay_determinism.py`
+## `tests/test_provider_selection.py`
 
+```python
+from __future__ import annotations
+
+from app.config import BrainConfig
+from app.provider import build_llm_client
+
+
+def test_provider_selection_disabled_returns_none() -> None:
+    cfg = BrainConfig(use_llm_nlg=False, llm_provider="openai")
+    assert build_llm_client(cfg) is None
+
+
+def test_provider_selection_openai() -> None:
+    cfg = BrainConfig(use_llm_nlg=True, llm_provider="openai", openai_model="gpt-5-mini")
+    client = build_llm_client(cfg)
+    assert client is not None
+    assert client.__class__.__name__ == "OpenAILLMClient"
+
+
+def test_provider_selection_openai_canary_disabled_for_subject() -> None:
+    cfg = BrainConfig(
+        use_llm_nlg=True,
+        llm_provider="openai",
+        openai_model="gpt-5-mini",
+        openai_canary_enabled=True,
+        openai_canary_percent=0,
+    )
+    assert build_llm_client(cfg, session_id="canary-0") is None
+
+
+def test_provider_selection_openai_canary_enabled_for_subject() -> None:
+    cfg = BrainConfig(
+        use_llm_nlg=True,
+        llm_provider="openai",
+        openai_model="gpt-5-mini",
+        openai_canary_enabled=True,
+        openai_canary_percent=100,
+    )
+    client = build_llm_client(cfg, session_id="canary-100")
+    assert client is not None
+    assert client.__class__.__name__ == "OpenAILLMClient"
+
+
+def test_provider_selection_gemini() -> None:
+    cfg = BrainConfig(use_llm_nlg=True, llm_provider="gemini", gemini_model="gemini-3-flash-preview")
+    client = build_llm_client(cfg)
+    assert client is not None
+    assert client.__class__.__name__ == "GeminiLLMClient"
+
+
+def test_provider_selection_fake_returns_none() -> None:
+    cfg = BrainConfig(use_llm_nlg=True, llm_provider="fake")
+    assert build_llm_client(cfg) is None
 ```
+
+## `tests/test_replay_determinism.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -22453,12 +15132,11 @@ def test_replay_determinism_digest_equality() -> None:
     d1 = asyncio.run(run_once())
     d2 = asyncio.run(run_once())
     assert d1 == d2
-
 ```
 
-### `tests/test_retell_learning_loop.py`
+## `tests/test_retell_learning_loop.py`
 
-```
+```python
 from __future__ import annotations
 
 import importlib.util
@@ -22727,12 +15405,11 @@ def test_main_applies_when_threshold_reached(monkeypatch: pytest.MonkeyPatch) ->
         assert rc == 0
         assert applied_cmds, "expected retell_fast_recover apply call once threshold reached"
         assert applied_cmds[0][0] == "bash"
-
 ```
 
-### `tests/test_retell_mode_checklist.py`
+## `tests/test_retell_mode_checklist.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -22801,13 +15478,11 @@ def test_retell_mode_no_server_backchannel_by_default() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
-
 ```
 
-### `tests/test_retell_pause_formatting.py`
+## `tests/test_retell_pause_formatting.py`
 
-```
+```python
 from __future__ import annotations
 
 import re
@@ -22839,12 +15514,11 @@ def test_retell_read_slow_digits_formatting_spacing() -> None:
     assert re.search(r"4\s-\s5\s-\s6\s-\s7", ssml) is not None
     assert "--" not in ssml
     assert re.search(r"\d-\d", ssml) is None, "dash separators must be spaced"
-
 ```
 
-### `tests/test_retell_wire_contract.py`
+## `tests/test_retell_wire_contract.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -22940,12 +15614,113 @@ def test_keepalive_deadline_behavior_under_blocked_send() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
 ```
 
-### `tests/test_security_handshake_gating.py`
+## `tests/test_revenue_ops_loop.py`
 
+```python
+from __future__ import annotations
+
+import importlib.util
+import json
+import sys
+import tempfile
+from pathlib import Path
+
+
+def _load_module():
+    p = Path(__file__).resolve().parents[1] / "scripts" / "revenue_ops_loop.py"
+    spec = importlib.util.spec_from_file_location("revenue_ops_loop", p)
+    assert spec and spec.loader
+    m = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = m
+    spec.loader.exec_module(m)  # type: ignore[attr-defined]
+    return m
+
+
+def _mk_call(*, call_id: str, user_line: str, user_t: float, latency_p50: float = 700.0) -> dict:
+    return {
+        "call_id": call_id,
+        "call_status": "ended",
+        "latency": {"llm": {"p50": latency_p50}},
+        "transcript_object": [
+            {
+                "role": "agent",
+                "content": "Hi, this is Cassidy from Eve Systems.",
+                "words": [{"start": 0.1, "end": 0.8, "word": "Hi"}],
+            },
+            {
+                "role": "user",
+                "content": user_line,
+                "words": [{"start": user_t - 0.2, "end": user_t, "word": "ok"}],
+            },
+        ],
+    }
+
+
+def test_build_summary_core_objective_metrics() -> None:
+    m = _load_module()
+    calls = [
+        _mk_call(call_id="c1", user_line="send to info@clinic.com", user_t=9.0, latency_p50=600),
+        _mk_call(call_id="c2", user_line="use manager@clinic.com", user_t=12.0, latency_p50=800),
+        _mk_call(call_id="c3", user_line="is this sales?", user_t=7.0, latency_p50=1000),
+    ]
+    s = m.build_summary(calls)
+
+    assert s.corpus_total_calls == 3
+    assert s.answered_calls == 3
+    assert s.email_captures == 2
+    assert s.direct_email_captures == 1
+    assert s.generic_email_captures == 1
+    assert abs(s.email_capture_rate - (2 / 3)) < 1e-4
+    assert s.first_response_latency_p95_ms is not None
+    assert s.objection_counts["is_sales"] >= 1
+
+
+def test_spoken_email_detection_is_counted_as_capture() -> None:
+    m = _load_module()
+    calls = [
+        _mk_call(call_id="c1", user_line="it is sara at gmail dot com", user_t=10.5, latency_p50=550),
+    ]
+    s = m.build_summary(calls)
+    assert s.email_captures == 1
+    assert s.direct_email_captures == 1
+
+
+def test_main_writes_report_files() -> None:
+    m = _load_module()
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        calls_dir = root / "calls"
+        out_dir = root / "out"
+        (calls_dir / "call_x").mkdir(parents=True)
+        call = _mk_call(call_id="call_x", user_line="manager@clinic.com", user_t=8.0, latency_p50=500)
+        (calls_dir / "call_x" / "call.json").write_text(json.dumps(call), encoding="utf-8")
+
+        # exercise real CLI entry through argv mutation
+        orig_argv = sys.argv
+        try:
+            sys.argv = [
+                "revenue_ops_loop.py",
+                "--calls-dir",
+                str(calls_dir),
+                "--out-dir",
+                str(out_dir),
+            ]
+            rc2 = m.main()
+        finally:
+            sys.argv = orig_argv
+
+        assert rc2 == 0
+        latest = json.loads((out_dir / "latest.json").read_text(encoding="utf-8"))
+        assert latest["summary"]["email_captures"] == 1
+        assert latest["summary"]["first_response_latency_band"] == "excellent"
+        assert "recommended_actions" in latest
 ```
+
+## `tests/test_security_handshake_gating.py`
+
+```python
 from __future__ import annotations
 
 from app.config import BrainConfig
@@ -23043,12 +15818,339 @@ def test_security_defaults_are_off_and_do_not_block() -> None:
     assert cfg.ws_allowlist_enabled is False
     assert cfg.ws_shared_secret_enabled is False
     assert cfg.ws_query_token == ""
-
 ```
 
-### `tests/test_speculative_planning.py`
+## `tests/test_self_improve_no_apply_on_red.py`
 
+```python
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+def test_self_improve_apply_blocked_when_gates_red() -> None:
+    repo = Path(__file__).resolve().parents[1]
+    env = dict(os.environ)
+    env["SELF_IMPROVE_MODE"] = "apply"
+    env["SHELL_MODE"] = "local"
+
+    cmd = [
+        sys.executable,
+        "scripts/self_improve_cycle.py",
+        "--mode",
+        "apply",
+        "--command",
+        "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false",
+    ]
+    cp = subprocess.run(cmd, cwd=str(repo), env=env, text=True, capture_output=True, check=False)
+    assert cp.returncode == 0, cp.stderr
+
+    hist = repo / "docs/self_improve/history"
+    newest = sorted(hist.glob("*.json"))[-1]
+    payload = json.loads(newest.read_text(encoding="utf-8"))
+    assert payload["mode"] == "apply"
+    assert payload["blocked_on_gates"] is True
+    assert payload["propose_only"] is True
 ```
+
+## `tests/test_self_improve_pipeline.py`
+
+```python
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+def test_self_improve_propose_generates_artifacts() -> None:
+    repo = Path(__file__).resolve().parents[1]
+    env = dict(os.environ)
+    env["SELF_IMPROVE_MODE"] = "propose"
+    env["SHELL_MODE"] = "local"
+
+    cmd = [
+        sys.executable,
+        "scripts/self_improve_cycle.py",
+        "--mode",
+        "propose",
+        "--command",
+        "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+    ]
+    cp = subprocess.run(cmd, cwd=str(repo), env=env, text=True, capture_output=True, check=False)
+    assert cp.returncode == 0, cp.stderr
+
+    last_run = repo / "docs/self_improve/last_run.md"
+    assert last_run.exists()
+    text = last_run.read_text(encoding="utf-8")
+    assert "Self-Improve Cycle" in text
+    assert "Suggested Skill Captures" in text
+
+    hist = repo / "docs/self_improve/history"
+    newest = sorted(hist.glob("*.json"))[-1]
+    payload = json.loads(newest.read_text(encoding="utf-8"))
+    assert payload["mode"] == "propose"
+    assert payload["propose_only"] is True
+```
+
+## `tests/test_self_improve_red_team.py`
+
+```python
+from __future__ import annotations
+
+import importlib.util
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+def _load_module():
+    p = Path(__file__).resolve().parents[1] / "scripts" / "self_improve_cycle.py"
+    spec = importlib.util.spec_from_file_location("self_improve_cycle", p)
+    assert spec and spec.loader
+    m = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = m
+    spec.loader.exec_module(m)  # type: ignore[attr-defined]
+    return m
+
+
+def test_trim_text_tail_bounds_memory() -> None:
+    m = _load_module()
+    text = "a" * 5000
+    got = m._trim_text_tail(text, 1000)
+    assert len(got) == 1000
+    assert got == ("a" * 1000)
+
+
+def test_self_improve_survives_large_command_output() -> None:
+    repo = Path(__file__).resolve().parents[1]
+    env = dict(os.environ)
+    env["SELF_IMPROVE_MODE"] = "propose"
+    env["SHELL_MODE"] = "local"
+    cmd = [
+        sys.executable,
+        "scripts/self_improve_cycle.py",
+        "--mode",
+        "propose",
+        "--command",
+        "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+    ]
+    cp = subprocess.run(cmd, cwd=str(repo), env=env, text=True, capture_output=True, check=False)
+    assert cp.returncode == 0, cp.stderr
+
+    hist = repo / "docs/self_improve/history"
+    newest = sorted(hist.glob("*.json"))[-1]
+    payload = json.loads(newest.read_text(encoding="utf-8"))
+    assert payload["mode"] == "propose"
+    assert payload["propose_only"] is True
+    assert payload["failed_tests"] == ["tests/test_big.py::test_case"]
+```
+
+## `tests/test_shell_executor_modes.py`
+
+```python
+from __future__ import annotations
+
+import asyncio
+
+from app.shell.executor import ShellExecutor
+
+
+def test_local_exec_success(tmp_path) -> None:
+    async def _run() -> None:
+        ex = ShellExecutor(mode="local", workdir=str(tmp_path), log_path=str(tmp_path / "log.jsonl"))
+        r = await ex.execute("python3 -c 'print(123)'", timeout_s=10)
+        assert r.ok is True
+        assert "123" in r.stdout
+
+    asyncio.run(_run())
+
+
+def test_hybrid_hosted_disabled_blocks(tmp_path) -> None:
+    async def _run() -> None:
+        ex = ShellExecutor(mode="hybrid", enable_hosted=False, workdir=str(tmp_path), log_path=str(tmp_path / "log.jsonl"))
+        r = await ex.execute("python3 -V", prefer_hosted=True)
+        assert r.ok is False
+        assert r.reason == "hosted_disabled"
+
+    asyncio.run(_run())
+
+
+def test_timeout(tmp_path) -> None:
+    async def _run() -> None:
+        ex = ShellExecutor(mode="local", workdir=str(tmp_path), log_path=str(tmp_path / "log.jsonl"))
+        r = await ex.execute("python3 -c 'import time; time.sleep(2)'", timeout_s=1)
+        assert r.ok is False
+        assert r.reason == "timeout"
+
+    asyncio.run(_run())
+```
+
+## `tests/test_shell_policy.py`
+
+```python
+from __future__ import annotations
+
+from app.shell.policy import command_name, parse_allowed_commands, validate_command
+
+
+def test_parse_allowed_commands() -> None:
+    s = parse_allowed_commands("python3,pytest , bash")
+    assert s == {"python3", "pytest", "bash"}
+
+
+def test_validate_denies_dangerous_patterns() -> None:
+    d = validate_command("rm -rf /")
+    assert d.allowed is False
+    assert d.reason.startswith("denied_pattern")
+
+
+def test_validate_allowlist() -> None:
+    d1 = validate_command("python3 -V", allowed_commands={"python3"})
+    d2 = validate_command("bash -lc 'echo x'", allowed_commands={"python3"})
+    assert d1.allowed is True
+    assert d2.allowed is False
+
+
+def test_command_name() -> None:
+    assert command_name("python3 -m pytest") == "python3"
+```
+
+## `tests/test_skills_injection_limits.py`
+
+```python
+from __future__ import annotations
+
+from app.skills.retriever import retrieve_skills
+from app.skills.types import Skill
+
+
+def _mk(i: int) -> Skill:
+    return Skill(
+        id=f"s{i}",
+        intent="pricing timeout fallback",
+        inputs="in",
+        outputs="out",
+        constraints="safe",
+        commands="cmd",
+        tests="tests/x",
+        body="pricing timeout fallback",
+        source_path=f"skills/s{i}.md",
+    )
+
+
+def test_retrieve_respects_max_items() -> None:
+    skills = [_mk(i) for i in range(10)]
+    got = retrieve_skills("pricing timeout fallback", skills, max_items=3)
+    assert len(got) == 3
+```
+
+## `tests/test_skills_loader.py`
+
+```python
+from __future__ import annotations
+
+from pathlib import Path
+
+from app.skills.loader import load_skill_file, load_skills, validate_skills
+
+
+def test_load_skill_file(tmp_path: Path) -> None:
+    p = tmp_path / "s.md"
+    p.write_text(
+        """---
+id: s1
+intent: do x
+inputs: in
+outputs: out
+constraints: keep safe
+commands: pytest -q
+tests: tests/test_x.py
+---
+Body text here.
+""",
+        encoding="utf-8",
+    )
+    s = load_skill_file(p)
+    assert s.id == "s1"
+    assert "Body text" in s.body
+
+
+def test_load_skills_and_validate(tmp_path: Path) -> None:
+    d = tmp_path / "skills"
+    d.mkdir()
+    (d / "ok.md").write_text(
+        """---
+id: s_ok
+intent: x
+inputs: i
+outputs: o
+constraints: c
+commands: c
+tests: t
+---
+hello world body
+""",
+        encoding="utf-8",
+    )
+    (d / "bad.md").write_text("not valid", encoding="utf-8")
+    skills = load_skills(d)
+    assert [s.id for s in skills] == ["s_ok"]
+    assert validate_skills(skills) == []
+```
+
+## `tests/test_skills_retriever.py`
+
+```python
+from __future__ import annotations
+
+from app.skills.retriever import render_skills_for_prompt, retrieve_skills
+from app.skills.types import Skill
+
+
+def _skill(sid: str, intent: str, body: str) -> Skill:
+    return Skill(
+        id=sid,
+        intent=intent,
+        inputs="in",
+        outputs="out",
+        constraints="safe",
+        commands="cmd",
+        tests="tests/test_x.py",
+        body=body,
+        source_path=f"skills/{sid}.md",
+    )
+
+
+def test_retrieve_skills_by_overlap() -> None:
+    items = [
+        _skill("pricing_timeout", "Handle pricing timeout", "tool timeout fallback no numbers"),
+        _skill("booking_slots", "Offer booking slots", "offer slots and ask preference"),
+    ]
+    got = retrieve_skills("pricing tool timeout", items, max_items=3)
+    assert got
+    assert got[0].skill.id == "pricing_timeout"
+
+
+def test_render_skills_for_prompt() -> None:
+    items = [_skill("x", "intent x", "body")]
+    got = retrieve_skills("intent", items, max_items=1)
+    txt = render_skills_for_prompt(got)
+    assert "Skill 1: x" in txt
+    assert "Intent: intent x" in txt
+```
+
+## `tests/test_speculative_planning.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -23135,12 +16237,11 @@ def test_speculative_prefetch_does_not_emit_tools_early_and_avoids_filler() -> N
             await session.stop()
 
     asyncio.run(_run())
-
 ```
 
-### `tests/test_tool_grounding.py`
+## `tests/test_tool_grounding.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -23240,12 +16341,102 @@ def test_tool_timeout_falls_back_without_numbers() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
 ```
 
-### `tests/test_transcript_compaction.py`
+## `tests/test_tools_shell_exec.py`
 
+```python
+from __future__ import annotations
+
+import asyncio
+import json
+
+from app.clock import RealClock
+from app.metrics import Metrics
+from app.shell.executor import ShellExecutor
+from app.tools import ToolRegistry
+
+
+def test_shell_tool_disabled_returns_explicit_error(tmp_path) -> None:
+    async def _run() -> None:
+        metrics = Metrics()
+        reg = ToolRegistry(
+            session_id="s-disabled",
+            clock=RealClock(),
+            metrics=metrics,
+            shell_tool_enabled=False,
+        )
+        rec = await reg.invoke(
+            name="run_shell_command",
+            arguments={"command": "python3 -V"},
+            timeout_ms=2_000,
+        )
+        payload = json.loads(rec.content)
+        assert payload["ok"] is False
+        assert payload["error"] == "shell_tool_disabled"
+        assert metrics.get("shell.exec_denied_total") == 1
+
+    asyncio.run(_run())
+
+
+def test_shell_tool_can_execute_command_when_enabled(tmp_path) -> None:
+    async def _run() -> None:
+        log_path = tmp_path / "shell_exec.jsonl"
+        metrics = Metrics()
+        executor = ShellExecutor(
+            mode="local",
+            enable_hosted=False,
+            workdir=str(tmp_path),
+            log_path=str(log_path),
+        )
+        reg = ToolRegistry(
+            session_id="s-enabled",
+            clock=RealClock(),
+            metrics=metrics,
+            shell_executor=executor,
+            shell_tool_enabled=True,
+        )
+        rec = await reg.invoke(
+            name="run_shell_command",
+            arguments={"command": "python3 -c 'print(321)'", "timeout_s": 10},
+            timeout_ms=15_000,
+        )
+        payload = json.loads(rec.content)
+        assert payload["ok"] is True
+        assert payload["returncode"] == 0
+        assert "321" in payload["stdout"]
+        assert metrics.get("shell.exec_total") == 1
+
+    asyncio.run(_run())
+
+
+def test_shell_tool_canary_blocks_when_not_selected(tmp_path) -> None:
+    async def _run() -> None:
+        metrics = Metrics()
+        reg = ToolRegistry(
+            session_id="s-canary-blocked",
+            clock=RealClock(),
+            metrics=metrics,
+            shell_tool_enabled=True,
+            shell_tool_canary_enabled=True,
+            shell_tool_canary_percent=0,
+        )
+        rec = await reg.invoke(
+            name="run_shell_command",
+            arguments={"command": "python3 -V"},
+            timeout_ms=2_000,
+        )
+        payload = json.loads(rec.content)
+        assert payload["ok"] is False
+        assert payload["error"] == "shell_tool_not_in_canary"
+        assert metrics.get("shell.exec_denied_total") == 1
+
+    asyncio.run(_run())
 ```
+
+## `tests/test_transcript_compaction.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -23321,12 +16512,11 @@ def test_compaction_keeps_replay_determinism() -> None:
     d2, c2 = asyncio.run(run_once())
     assert d1 == d2
     assert c1 == c2
-
 ```
 
-### `tests/test_vic_contract.py`
+## `tests/test_vic_contract.py`
 
-```
+```python
 from __future__ import annotations
 
 import asyncio
@@ -24033,12 +17223,64 @@ def test_vic_h03_hold_maneuver_is_interruptible() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
 ```
 
-### `tests/test_writer_backpressure_timeout.py`
+## `tests/test_voice_guard.py`
 
+```python
+from __future__ import annotations
+
+from app.metrics import Metrics, VIC
+from app.voice_guard import enforce_plain_language, guard_user_text, readability_grade, sanitize_reasoning_leak
+
+
+def test_sanitize_reasoning_leak_blocks_patterns() -> None:
+    txt = "Let me think step by step. Here is my reasoning."
+    out, changed = sanitize_reasoning_leak(txt)
+    assert changed is True
+    assert "reasoning" not in out.lower()
+    assert "step by step" not in out.lower()
+
+
+def test_plain_language_rewrites_jargon() -> None:
+    txt = "We will facilitate a consult to optimize eligibility."
+    out, changed = enforce_plain_language(txt)
+    assert changed is True
+    low = out.lower()
+    assert "facilitate" not in low
+    assert "consult" not in low
+    assert "eligibility" not in low
+
+
+def test_plain_language_blocks_intake_and_stress_test_terms() -> None:
+    txt = "This is an intake stress-test of your capacity with an artifact."
+    out, changed = enforce_plain_language(txt)
+    assert changed is True
+    low = out.lower()
+    assert "intake" not in low
+    assert "stress-test" not in low
+    assert "stress test" not in low
+    assert "capacity" not in low
+    assert "artifact" not in low
+
+
+def test_guard_metrics_and_readability() -> None:
+    m = Metrics()
+    out = guard_user_text(
+        text="I am analyzing this. We will initiate a consult procedure.",
+        metrics=m,
+        plain_language_mode=True,
+        no_reasoning_leak=True,
+        jargon_blocklist_enabled=True,
+    )
+    assert out
+    assert m.get_hist(VIC["voice_readability_grade"])
+    assert readability_grade(out) <= 8
 ```
+
+## `tests/test_writer_backpressure_timeout.py`
+
+```python
 from __future__ import annotations
 
 import asyncio
@@ -24143,6 +17385,10551 @@ def test_control_plane_priority_still_holds_when_not_blocked() -> None:
             await session.stop()
 
     asyncio.run(_run())
-
 ```
 
+## `orchestration/eve-v7-harness-run.rb`
+
+```ruby
+#!/usr/bin/env ruby
+require 'yaml'
+
+orch_file = ARGV[0] || 'orchestration/eve-v7-orchestrator.yaml'
+test_file = ARGV[1] || 'orchestration/eve-v7-test-cases.yaml'
+orch = YAML.load_file(orch_file)
+tests = YAML.load_file(test_file)
+
+states = orch.dig('flow', 'states')
+start = orch.dig('flow', 'start')
+contracts = orch['contracts'].map { |c| c['name'] }
+regex_rules = {}
+orch.dig('parser', 'regex')&.each do |name, pattern|
+  begin
+    regex_rules[name.to_sym] = Regexp.new(pattern, Regexp::IGNORECASE)
+  rescue RegexpError => e
+    puts "Invalid regex #{name}: #{e.message}"
+    exit 1
+  end
+end
+
+DNC_PATTERN = /\b(do not call|dont call|stop calls|remove from list|delete my number|unsubscribe|opt out|off the list)\b/i
+
+def infer_intents(text, regex_rules)
+  intents = {}
+  intents[:hostile] = !!(text =~ /hang up|you idiot|f\*+ck|damn|shut up|absolute dumpster fire|trash/i)
+  intents[:dnc] = !!(text =~ DNC_PATTERN)
+  intents[:answering_service] = !!(text =~ /answering service|call center|virtual assistant|\bva\b/i)
+  intents[:is_sales] = !!(text =~ /are you a sales call|this is a sales|marketing agency|sales call/i)
+  intents[:info_email] = !!(text =~ /info@|front desk|frontdesk|generic inbox/i)
+  intents[:ai_disclosure] = !!(text =~ /are you a robot|are you ai|are you a bot|is this a bot|is this ai/i)
+  intents[:skeptical] = !!(text =~ /not interested|not buying|not going to send|sounds like spam/i)
+  intents[:wants_sms] = !!(text =~ /text|sms|message/i)
+  intents[:yes] = !!(text =~ /\byes\b|\byeah\b|\byep\b/i)
+  intents[:no] = !!(text =~ /\bno\b|\bnah\b|\bnope\b/i)
+  intents[:accept_send] = !!(text =~ /send|okay|sure|yes|yeah/i)
+  intents[:email] = !!(text =~ regex_rules[:email]) if regex_rules[:email]
+  intents[:user_provides_direct_email] = intents[:email]
+  intents
+end
+
+def evaluate_transition(state_def, intents, user_text)
+  transitions = state_def['transitions'] || []
+  fallback = nil
+  transitions.each do |t|
+    cond = t['when']
+    case cond
+    when 'sentiment == hostile'
+      return t['goto'] if intents[:hostile]
+    when 'user_intent == ai_disclosure'
+      return t['goto'] if intents[:ai_disclosure]
+    when 'user_intent == dnc'
+      return t['goto'] if intents[:dnc]
+    when 'user_intent in [skeptical, is_sales]'
+      return t['goto'] if intents[:skeptical] || intents[:is_sales]
+    when 'user_intent == answering_service'
+      return t['goto'] if intents[:answering_service]
+    when 'user_intent == info_email'
+      return t['goto'] if intents[:info_email]
+    when 'user_intent == user_accepts_send'
+      return t['goto'] if intents[:accept_send]
+    when 'user_intent == user_wants_sms'
+      return t['goto'] if intents[:wants_sms]
+    when 'user_intent == user_provides_direct_email'
+      return t['goto'] if intents[:user_provides_direct_email]
+    when 'user_reply in [yes, true, admits_pain]'
+      return t['goto'] if intents[:yes] && !intents[:no]
+    when 'user_reply in [no, denies, not_like_that]'
+      return t['goto'] if intents[:no] || intents[:skeptical]
+    when true, 'true'
+      fallback = t['goto']
+    end
+  end
+  fallback
+end
+
+def advance_goto_chain(state, states, transitions, path, tools_seen)
+  loop do
+    state_def = states[state]
+    break unless state_def
+
+    tool_name = state_def['tool']
+    tools_seen << tool_name if tool_name
+
+    goto_state = state_def['goto']
+    break unless goto_state
+
+    transitions << [state, goto_state]
+    state = goto_state
+    path << state
+  end
+  state
+end
+
+cases = tests['tests'] || []
+pass = 0
+
+puts "Harness contract: #{orch_file}"
+puts "Test set:    #{test_file}"
+puts "States:      #{states.keys.size}, start=#{start}"
+puts "Contracts:   #{contracts.join(', ')}"
+puts
+
+cases.each do |tc|
+  state = tc['expected_start_state'] || start
+  path = [state]
+  transitions = []
+  tools_seen = []
+  ok = true
+
+    (tc['turns'] || []).each do |turn|
+      if turn['user']
+        intents = infer_intents(turn['user'], regex_rules)
+        next_state = evaluate_transition(states[state], intents, turn['user'])
+        if next_state.nil?
+          next_state = state
+        end
+        transitions << [state, next_state]
+        state = next_state
+        state = advance_goto_chain(state, states, transitions, path, tools_seen)
+      elsif turn['assistant_state']
+        expected_state = turn['assistant_state']
+        if state != expected_state
+          transitions << [state, expected_state]
+          path << expected_state if path.last != expected_state
+        end
+        state = expected_state
+        state = advance_goto_chain(state, states, transitions, path, tools_seen)
+        if states[state].nil?
+          ok = false
+          puts "  invalid_assistant_state=#{state} in #{tc['id']}"
+        end
+      end
+    end
+
+  if tc['expected_transitions']
+    tc['expected_transitions'].each do |tr|
+      found = transitions.any? { |s, t| s == tr['from'] && t == tr['to'] }
+      ok = false unless found
+    end
+  end
+
+  if tc['expected_tool_calls']
+    tc['expected_tool_calls'].each do |call|
+      call.keys.each do |tool|
+        found = tools_seen.include?(tool)
+        ok = false unless found
+      end
+    end
+  end
+
+  if tc['expected_final_state']
+    ok = false unless state == tc['expected_final_state']
+  end
+
+  pass += 1 if ok
+  puts "#{tc['id']} #{ok ? 'PASS' : 'FAIL'}"
+  puts "  path: #{path.join(' -> ')}"
+  if tc['expected_transitions']
+    tc['expected_transitions'].each do |tr|
+      found = transitions.any? { |s, t| s == tr['from'] && t == tr['to'] }
+      status = found ? 'OK' : 'MISSING'
+      puts "  transition #{tr['from']} -> #{tr['to']} #{status}"
+    end
+  end
+  if tc['expected_tool_calls']
+    tc['expected_tool_calls'].each do |call|
+      call.keys.each do |tool|
+        found = tools_seen.include?(tool)
+        status = found ? 'OK' : 'MISSING'
+        puts "  tool #{tool} #{status}"
+      end
+    end
+  end
+  puts
+end
+
+puts "Summary: #{pass}/#{cases.size} test groups passing"
+```
+
+## `orchestration/eve-v7-orchestrator.yaml`
+
+```yaml
+version: "7.0"
+id: eve_medspa_apex_predator_v7
+name: EVE MedSpa Apex Predator Orchestrator
+mode: deterministic_state_machine
+
+agent:
+  id: eve_medspa_apex_predator_v7
+  name: Cassidy
+  role: Clinical Intake Auditor
+  voice_profile:
+    model: soft_authoritative_female
+    pace: 0.92
+    interruption_sensitivity: MAX
+    post_turn_silence_ms: 1200
+    sentiment_latency_ms:
+      normal: 1200
+      hostile: 2000
+
+contracts:
+  - name: send_evidence_package
+    description: Trigger evidence delivery (email + optional SMS)
+    parameters:
+      type: object
+      required:
+        - recipient_email
+        - delivery_method
+        - artifact_type
+      properties:
+        recipient_email:
+          type: string
+          format: email
+        delivery_method:
+          type: string
+          enum:
+            - EMAIL_ONLY
+            - EMAIL_AND_SMS
+        artifact_type:
+          type: string
+          enum:
+            - AUDIO_LINK
+            - FAILURE_LOG_PDF
+  - name: mark_dnc_compliant
+    description: Adds number to Do-Not-Call list
+    parameters:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: string
+          enum:
+            - USER_REQUEST
+            - WRONG_NUMBER
+            - HOSTILE
+
+compliance:
+  disclosure_if_asked_about_ai: "I'm Cassidy, an automated intake auditor running a capacity test for the clinic."
+  dnc_handler:
+    tool: mark_dnc_compliant
+    default_reason: USER_REQUEST
+  explicit_consent:
+    stop_signal: STOP
+
+state_variables:
+  required:
+    - clinic_name
+    - city
+    - business_name
+    - test_timestamp
+    - evidence_type
+    - contact_number
+  defaults:
+    artifact_type: FAILURE_LOG_PDF
+    missed_treatment: "$1,500 Botox or Morpheus8 consult"
+    emr_system: "Zenoti, Boulevard, or MangoMint"
+
+parser:
+  extraction:
+    clinic_name:
+      sources:
+        - session
+      required: true
+    city:
+      sources:
+        - session
+      required: true
+    business_name:
+      sources:
+        - session
+      required: true
+    test_timestamp:
+      sources:
+        - session
+      required: true
+    evidence_type:
+      sources:
+        - session
+      required: true
+    recipient_email:
+      sources:
+        - session
+        - extracted_entity
+      required: false
+    artifact_type:
+      sources:
+        - evidence_type
+      transform: |
+        if evidence_type in ["AUDIO", "AUDIO_LINK", "VOICE", "call_recording"] -> AUDIO_LINK
+        else -> FAILURE_LOG_PDF
+  regex:
+    email: '(?i)\\b[\\w.%+-]+@[\\w.-]+\\.[a-z]{2,}\\b'
+    dnc: '(?i)\\b(do not call|stop calls|remove from list|delete my number|unsubscrib|opt out)\\b'
+    ai_disclosure: '(?i)\\b(are you a robot|are you ai|are you a bot|is this a bot|is this ai)\\b'
+    hostile: '(?i)\\b(hang up|you idiot|f[\\*]*ck|damn|shut up|you are )\\b'
+    answering_service: '(?i)\\b(answering service|call center|virtual assistant|VA)\\b'
+    is_sales: '(?i)\\b(are you a sales call|this is a sales|sales call|marketing agency)\\b'
+    info_email: '(?i)\\b(info@|front desk|frontdesk|generic inbox)\\b'
+    skeptical: '(?i)\\b(not interested|not buying|not going to send|sounds like spam)\\b'
+
+intent_labels:
+  - name: hostile
+    source: "regex+llm"
+    rules:
+      - type: regex
+        value: dnc
+      - type: regex
+        value: hostile
+      - type: llm_sentiment
+        value: NEGATIVE_HIGH
+  - name: dnc
+    source: "regex+llm"
+    rules:
+      - type: regex
+        value: dnc
+      - type: llm_intent
+        value: do_not_contact
+  - name: ai_disclosure
+    source: regex
+    rules:
+      - type: regex
+        value: ai_disclosure
+  - name: answering_service
+    source: "regex+llm"
+    rules:
+      - type: regex
+        value: answering_service
+      - type: llm_intent
+        value: has_call_handling
+  - name: is_sales
+    source: regex
+    rules:
+      - type: regex
+        value: is_sales
+  - name: info_email
+    source: regex
+    rules:
+      - type: regex
+        value: info_email
+  - name: skeptical
+    source: regex
+    rules:
+      - type: regex
+        value: skeptical
+  - name: user_provides_direct_email
+    source: regex
+    rules:
+      - type: regex
+        value: email
+    capture: extracted_email
+  - name: user_wants_sms
+    source: llm_intent
+    rules:
+      - type: llm_intent
+        value: wants_sms
+  - name: user_accepts_send
+    source: llm_intent
+    rules:
+      - type: llm_intent
+        value: accepts
+
+flow:
+  start: opener
+
+  states:
+    opener:
+      say: |
+        Hi... this is Cassidy.
+        I'm actually looking at a clinical intake audit for {{clinic_name}}, and to be honest, I feel terrible if I'm catching you in the middle of checking out a patient?
+      wait_ms: 1200
+      transitions:
+        - when: sentiment == hostile
+          goto: hostility_handler
+        - when: user_intent == ai_disclosure
+          goto: disclose_ai
+        - when: user_intent == dnc
+          goto: dnc
+        - when: true
+          goto: discovery
+
+    disclose_ai:
+      say: "{{compliance.disclosure_if_asked_about_ai}}"
+      goto: discovery
+
+    hostility_handler:
+      say: |
+        It sounds like today is an absolute dumpster fire at the front desk.
+        Should I just delete this lost patient log and let you go?
+      latency_ms: 2000
+      goto: discovery
+
+    discovery:
+      say: |
+        Okay, thanks for taking a second.
+        I was reviewing a capacity test we ran on your phone lines {{test_timestamp}}.
+        A call for a {{missed_treatment}} completely dropped into voicemail.
+        Quick question—when you unlock the clinic on Monday mornings, are you usually walking into a massive pile of weekend voicemails or is your front desk system airtight?
+      wait_ms: 1200
+      transitions:
+        - when: sentiment == hostile
+          goto: hostility_handler
+        - when: user_reply in [yes, true, admits_pain]
+          goto: pain_admitted
+        - when: user_reply in [no, denies, not_like_that]
+          goto: pain_denied
+        - when: user_intent == dnc
+          goto: dnc
+        - when: true
+          goto: pain_denied
+
+    pain_admitted:
+      say: |
+        That makes sense. The Monday mess is where high-ticket consults often fall through the cracks.
+        I have the {{evidence_type}} file for that dropped patient.
+        I don't want to add to your plate right now—would it be a ridiculous idea to email this log to the Practice Manager so they can see the gap?
+      wait_ms: 1200
+      transitions:
+        - when: user_intent in [skeptical, is_sales]
+          goto: objection_sales
+        - when: user_intent == answering_service
+          goto: objection_answering_service
+        - when: user_intent == info_email
+          goto: objection_info_email
+        - when: user_intent == user_accepts_send
+          goto: send_package_prompt
+        - when: user_intent == dnc
+          goto: dnc
+        - when: true
+          goto: send_package_prompt
+
+    pain_denied:
+      say: |
+        That's actually impressive.
+        Most aesthetic clinics in {{city}} struggle with that.
+        Our data shows 73% of patients that hit voicemail on high-ticket procedures often stop replying and go elsewhere.
+        I have the {{evidence_type}} of where your specific line failed.
+        Would you be opposed to me sending it over to the Medical Director as proof the system leaked?
+      transitions:
+        - when: user_intent in [skeptical, is_sales]
+          goto: objection_sales
+        - when: user_intent == answering_service
+          goto: objection_answering_service
+        - when: user_intent == info_email
+          goto: objection_info_email
+        - when: user_intent == user_accepts_send
+          goto: send_package_prompt
+        - when: user_intent == dnc
+          goto: dnc
+        - when: true
+          goto: send_package_prompt
+
+    objection_answering_service:
+      say: |
+        I hear you. Most 7-figure clinics do.
+        But does your service collect booking deposit and schedule into {{emr_system}},
+        or does it just capture name and number for follow-up call?
+        Right, that message gap is exactly where patients drift away. Should I send it to keep this visible?
+      transitions:
+        - when: true
+          goto: send_package_prompt
+
+    objection_info_email:
+      say: |
+        I can definitely try that inbox.
+        Generic front-desk inboxes often trigger spam filters on audio or logs, so leadership may not see revenue impact.
+        Is there a direct clinical ops or manager email you want me to use instead?
+      transitions:
+        - when: user_intent == user_provides_direct_email
+          set:
+            recipient_email: "{{extracted_email}}"
+          goto: send_package_prompt
+        - when: true
+          goto: send_package_prompt
+
+    objection_sales:
+      say: |
+        It sounds like you get absolutely hammered by marketing agencies, so I get why you're asking.
+        I'm not an agency. I'm a diagnostician sending a missed-lead report.
+        If you are fully booked and don't care about this dropped consult, I can delete it right now.
+        ...completely up to you?
+      transitions:
+        - when: true
+          goto: send_package_prompt
+
+    send_package_prompt:
+      ask: |
+        Great. I can route this now.
+        If I send one evidence copy, should it be email only or email + SMS to make sure it lands?
+      transitions:
+        - when: user_intent == user_wants_sms
+          set:
+            delivery_method: EMAIL_AND_SMS
+          goto: send_package
+        - when: true
+          set:
+            delivery_method: EMAIL_ONLY
+          goto: send_package
+
+    send_package:
+      precondition:
+        require:
+          - variable: recipient_email
+            missing_goto: request_recipient_email
+          - variable: artifact_type
+            assign: "{{artifact_type}}"
+            default: FAILURE_LOG_PDF
+      tool: send_evidence_package
+      tool_args:
+        recipient_email: "{{recipient_email}}"
+        delivery_method: "{{delivery_method}}"
+        artifact_type: "{{artifact_type}}"
+      on_success:
+        say: |
+          Perfect. I'm routing that now.
+          Would it be a terrible idea if I also send a short text with the exact drop timestamp so your team can review it without digging through voicemail?
+      on_failure:
+        say: |
+          I couldn’t send that package in this attempt.
+          Share the direct manager email and I’ll retry immediately.
+      transitions:
+        - when: true
+          goto: done
+
+    request_recipient_email:
+      ask: |
+        I can’t route it until I have a direct manager email.
+        You can send it to me now and I’ll retry immediately.
+      transitions:
+        - when: user_intent == user_provides_direct_email
+          set:
+            recipient_email: "{{extracted_email}}"
+            delivery_method: "{{delivery_method}}"
+            artifact_type: "{{artifact_type}}"
+          goto: send_package
+        - when: true
+          goto: request_recipient_email
+
+    dnc:
+      say: |
+        Done. You’re off the list.
+        For audit notes, do you want me to log 'not taking consults' or 'bad time to reach'?
+      tool: mark_dnc_compliant
+      tool_args:
+        reason: USER_REQUEST
+      goto: done
+
+    done:
+      say: |
+        Appreciate you taking the time.
+        If anything changes, reply STOP to stop contact.
+
+assurance_checks:
+  required_before_send:
+    - assert: recipient_email is present
+    - assert: delivery_method in [EMAIL_ONLY, EMAIL_AND_SMS]
+    - assert: artifact_type in [AUDIO_LINK, FAILURE_LOG_PDF]
+  guardrails:
+    - trigger: dnc intent detected
+      action: mark_dnc_compliant(USER_REQUEST)
+    - trigger: hostile sentiment > 0.85
+      action: route_to hostility_handler and raise latency to 2000
+    - trigger: ai_disclosure request
+      action: disclose policy
+    - trigger: no explicit consent + user says STOP
+      action: route_to dnc
+```
+
+## `orchestration/eve-v7-runtime-harness.md`
+
+```markdown
+# EVE V7.0 Runtime Harness
+
+This package provides a deterministic runtime binding layer for Retell/Vapi while keeping the orchestrator source-of-truth in:
+
+- `orchestration/eve-v7-orchestrator.yaml`
+
+## 1) Retell binding (reference payload)
+
+Use `orchestration/eve-v7-orchestrator.yaml` as the policy source and generate tool schemas from `contracts`.
+
+```json
+{
+  "agent": {
+    "name": "eve_medspa_apex_predator_v7",
+    "model": "gpt-4o-mini",
+    "system_prompt_source": "orchestration/eve-v7-orchestrator.yaml#flow",
+    "voice": {
+      "model": "soft_authoritative_female",
+      "speed": 0.92,
+      "post_processing": {
+        "post_turn_silence_ms": 1200
+      }
+    }
+  },
+  "functions": [
+    {
+      "name": "send_evidence_package",
+      "description": "Triggers the Double-Tap delivery (Email + optional SMS) to the clinic.
+",
+      "parameters": {
+        "recipient_email": { "type": "string", "format": "email" },
+        "delivery_method": { "type": "string", "enum": ["EMAIL_ONLY", "EMAIL_AND_SMS"] },
+        "artifact_type": { "type": "string", "enum": ["AUDIO_LINK", "FAILURE_LOG_PDF"] }
+      },
+      "required": ["recipient_email", "delivery_method", "artifact_type"]
+    },
+    {
+      "name": "mark_dnc_compliant",
+      "description": "Immediate Do-Not-Call add.",
+      "parameters": {
+        "reason": {
+          "type": "string",
+          "enum": ["USER_REQUEST", "WRONG_NUMBER", "HOSTILE"]
+        }
+      },
+      "required": ["reason"]
+    }
+  ],
+  "state_machine": "orchestration/eve-v7-orchestrator.yaml"
+}
+```
+
+## 2) Vapi binding (reference payload)
+
+Use the same state machine JSON and function schema for Vapi tool calls.
+
+```json
+{
+  "assistant": {
+    "name": "Cassidy",
+    "voice": "soft_authoritative_female",
+    "temperature": 0.2,
+    "max_delay_ms": 1200,
+    "system": "orchestration/eve-v7-orchestrator.yaml#flow",
+    "tools": "orchestration/eve-v7-orchestrator.yaml#contracts"
+  },
+  "dialer": {
+    "initial_state": "opener"
+  }
+}
+```
+
+## 3) Runtime contract guards
+
+1. Bind these as non-LLM hard checks before any tool invocation:
+   - `recipient_email` is required for `send_evidence_package`
+   - `delivery_method` must be enum `EMAIL_ONLY` or `EMAIL_AND_SMS`
+   - `artifact_type` must be enum `AUDIO_LINK` or `FAILURE_LOG_PDF`
+
+2. Sentiment hooks:
+   - `hostile` -> route to `hostility_handler` and set `latency_ms` to 2000
+   - `ai_disclosure` -> route to `disclose_ai`
+   - `dnc` -> route to `dnc`
+
+## 4) Local deterministic execution harness
+
+Use `orchestration/eve-v7-harness-run.rb` to simulate test cases without the platform runtime.
+
+```bash
+ruby orchestration/eve-v7-harness-run.rb orchestration/eve-v7-orchestrator.yaml orchestration/eve-v7-test-cases.yaml
+```
+
+This prints per-case transition path and contract/tool expectation checks.
+```
+
+## `orchestration/eve-v7-test-cases.yaml`
+
+```yaml
+tests:
+  - id: TC-01
+    name: Hostile interruption
+    scenario: User interrupts with escalation and asks to stop calls
+    expected_start_state: opener
+    turns:
+      - user: "This is a complete waste of time, take me off the list now"
+      - expected: dnc
+    expected_transitions:
+      - from: opener
+        to: dnc
+    expected_tool_calls:
+      - mark_dnc_compliant:
+          reason: USER_REQUEST
+    expected_final_state: done
+
+  - id: TC-02
+    name: Answering service objection
+    scenario: User says they use an answering service
+    turns:
+      - user: "We have an answering service that answers for us"
+      - user: "Our answering service takes name and number"
+      - assistant_state: objection_answering_service
+      - user: "I guess okay"
+      - assistant_state: send_package_prompt
+    expected_transitions:
+      - from: opener
+        to: discovery
+      - from: discovery
+        to: pain_denied
+      - from: pain_denied
+        to: objection_answering_service
+      - from: objection_answering_service
+        to: send_package_prompt
+    expected_tool_calls: []
+
+  - id: TC-03
+    name: Sales suspicion handling
+    scenario: User challenges if this is a sales call
+    turns:
+      - user: "Are you a sales call?"
+      - user: "It's handled by a marketing agency"
+      - assistant_state: objection_sales
+      - user: "No, don't send it"
+      - assistant_state: send_package_prompt
+    expected_transitions:
+      - from: opener
+        to: discovery
+      - from: discovery
+        to: pain_denied
+      - from: pain_denied
+        to: objection_sales
+      - from: objection_sales
+        to: send_package_prompt
+    expected_guardrails:
+      - no_hard_pressure
+      - no_deceptive_claims
+
+  - id: TC-04
+    name: Email routing override
+    scenario: User gives manager email in response to generic mailbox objection
+    turns:
+      - user: "Send it to info@clinic.com"
+      - assistant_state: objection_info_email
+      - user: "Use manager@clinic.com instead"
+      - assistant_state: request_recipient_email
+      - user: "Send to clinicalops@clinic.com"
+      - assistant_state: send_package
+    expected_tool_calls:
+      - send_evidence_package:
+          required_args:
+            recipient_email: clinicalops@clinic.com
+
+  - id: TC-05
+    name: Short reply latency
+    scenario: User responds with one-word confirmation
+    turns:
+      - user: "yes"
+      - assistant_state: pain_admitted
+    expected_transitions:
+      - from: opener
+        to: discovery
+      - from: discovery
+        to: pain_admitted
+
+  - id: TC-06
+    name: Fallback route
+    scenario: Unclear answer after discovery
+    turns:
+      - user: "maybe maybe"
+      - user: "uhhh send"
+      - assistant_state: send_package_prompt
+    expected_transitions:
+      - from: discovery
+        to: pain_denied
+      - from: pain_denied
+        to: send_package_prompt
+```
+
+## `tools/eval/fixtures/session_a.json`
+
+```json
+{
+  "session_id": "fixture_a",
+  "config": {
+    "turn_timeout_sec": 8,
+    "soft_timeout_enabled": true,
+    "soft_timeout_sec": 0.8,
+    "interruptions_enabled": true,
+    "interruption_sensitivity": 0.6,
+    "turn_eagerness": "NORMAL",
+    "expressive_scope_words": 5,
+    "target_voice_id": "neutral_default"
+  },
+  "steps": [
+    {"kind": "audio", "energy": 4000, "advance_ms": 20},
+    {"kind": "audio", "energy": 4200, "advance_ms": 20},
+    {"kind": "audio", "energy": 4500, "advance_ms": 20},
+    {"kind": "audio", "energy": 0, "advance_ms": 1200},
+    {"kind": "audio", "energy": 0, "advance_ms": 200},
+    {"kind": "audio", "energy": 5000, "advance_ms": 20},
+    {"kind": "audio", "energy": 4500, "advance_ms": 20}
+  ]
+}
+```
+
+## `tools/eval/out/session_a_metrics.json`
+
+```json
+{
+  "metrics": {
+    "counters": {},
+    "gauges": {},
+    "timings": {}
+  },
+  "session_id": "fixture_a",
+  "state": "ENDED"
+}
+```
+
+## `tools/eval/replay.py`
+
+```python
+from __future__ import annotations
+
+import argparse
+import asyncio
+import json
+from pathlib import Path
+import sys
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from src.agent.orchestrator import SessionOrchestrator
+from src.utils.clock import FakeClock
+
+
+async def run_replay(*, input_path: Path) -> dict:
+    data = json.loads(input_path.read_text())
+    clock = FakeClock(start_ms=0)
+    orch = SessionOrchestrator(session_id=data.get("session_id", "replay"), clock=clock)
+    await orch.start()
+
+    await orch.submit_control(
+        {
+            "type": "session.start",
+            "session_id": data.get("session_id", "replay"),
+            "config": data.get("config", {}),
+        }
+    )
+
+    for step in data.get("steps", []):
+        dt = int(step.get("advance_ms", 0))
+        if dt > 0:
+            await clock.advance(dt)
+
+        if step.get("kind") == "audio":
+            energy = int(step.get("energy", 0))
+            frame = _make_frame(energy=energy)
+            await orch.submit_audio(frame)
+        elif step.get("kind") == "control":
+            await orch.submit_control(step.get("payload", {}))
+
+        # let orchestrator process
+        for _ in range(5):
+            await asyncio.sleep(0)
+
+    # Drain outbound briefly
+    drained = 0
+    while drained < 300:
+        await asyncio.sleep(0)
+        drained += 1
+
+    await orch.stop()
+    return {
+        "session_id": data.get("session_id", "replay"),
+        "metrics": orch.metrics.snapshot(),
+        "state": orch.state.value,
+    }
+
+
+def _make_frame(*, energy: int) -> bytes:
+    # 20ms mono PCM16 frame at 16kHz = 320 samples.
+    v = max(-30000, min(30000, int(energy)))
+    return b"".join(int(v).to_bytes(2, "little", signed=True) for _ in range(320))
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="Replay expressive session fixtures and emit metrics JSON.")
+    ap.add_argument("--input", required=True)
+    ap.add_argument("--out", required=True)
+    args = ap.parse_args()
+
+    input_path = Path(args.input)
+    out_path = Path(args.out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    result = asyncio.run(run_replay(input_path=input_path))
+    out_path.write_text(json.dumps(result, indent=2, sort_keys=True))
+    print(json.dumps({"ok": True, "out": str(out_path)}, indent=2))
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## `tools/eval/report.py`
+
+```python
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="Print concise replay report.")
+    ap.add_argument("--input", required=True)
+    args = ap.parse_args()
+
+    data = json.loads(Path(args.input).read_text())
+    metrics = data.get("metrics", {})
+    counters = metrics.get("counters", {})
+    timings = metrics.get("timings", {})
+
+    def p95(name: str) -> int | None:
+        vals = sorted(timings.get(name, []))
+        if not vals:
+            return None
+        idx = int(round(0.95 * (len(vals) - 1)))
+        return vals[idx]
+
+    print("Replay Summary")
+    print("==============")
+    print(f"session_id: {data.get('session_id')}")
+    print(f"state:      {data.get('state')}")
+    print(f"EOU p95:    {p95('turn.eou_detection_ms')}")
+    print(f"FirstTok p95: {p95('turn.first_token_latency_ms')}")
+    print(f"FirstAud p95: {p95('turn.first_audio_latency_ms')}")
+    print(f"Barge p95:    {p95('turn.barge_in_stop_latency_ms')}")
+    print(f"Soft timeout triggers: {counters.get('turn.soft_timeout_trigger_total', 0)}")
+    print(f"False interruptions:   {counters.get('turn.false_interruption_total', 0)}")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## `docs/lead_factory.md`
+
+```markdown
+# Lead Factory (Speed + Ease)
+
+Purpose: build large call-ready lead queues for OpenClaw/Retell from scraped data.
+
+## One-command run
+
+```bash
+make leads INPUT=tests/fixtures/leads_seed.csv
+```
+
+Outputs:
+
+- `data/leads/all_scored.csv`
+- `data/leads/qualified.csv`
+- `data/leads/call_queue.jsonl`
+- `data/leads/summary.json`
+
+## Direct source pull (n8n/HTTP)
+
+```bash
+python3 scripts/lead_factory.py \
+  --source-url https://your-n8n-endpoint/leads \
+  --out-dir data/leads \
+  --min-score 60 \
+  --top-k 500
+```
+
+Expected JSON shape from source URL:
+
+- List of lead objects, or
+- Object with one of: `data`, `items`, `leads`, `records` containing a list.
+
+## Optional push to n8n after scoring
+
+Set:
+
+- `N8N_LEAD_WEBHOOK_URL=https://your-n8n-endpoint/intake`
+
+Then run:
+
+```bash
+make leads INPUT=path/to/your_leads.csv
+```
+
+The script POSTs batches:
+
+```json
+{
+  "batch_size": 25,
+  "leads": [ ...qualified_leads... ]
+}
+```
+
+## ICP filter logic
+
+Qualified leads must satisfy all:
+
+- ad-active signal
+- high-ticket vertical signal (dental/plastic/medspa/etc.)
+- ability-to-pay signal (`5k-10k/mo` fit)
+- score >= `--min-score` (default 60)
+```
+
+## `docs/retell_ws_brain_contract.md`
+
+```markdown
+# Retell WS Brain Contract
+
+Production-grade “Brain” server implementing Retell’s Custom LLM WebSocket contract with deterministic, VIC-gated behavior.
+
+## Endpoints
+
+- WebSocket (canonical): `/llm-websocket/{call_id}`
+- Health: `GET /healthz`
+- Metrics: `GET /metrics` (Prometheus text format; dots are exported as underscores)
+
+## Wire Protocol (Authoritative)
+
+All WebSocket frames are JSON text. Inbound messages are discriminated by `interaction_type` and outbound by `response_type`.
+
+Source of truth:
+- `app/protocol.py`
+
+No invented message types are allowed.
+
+## Connection Flow
+
+On connection open, the server sends:
+1. `config` (optional but enabled by default)
+2. A BEGIN `response` stream for `response_id=0`:
+   - greeting chunks (if `BRAIN_SPEAK_FIRST=true`), then terminal `content_complete=true`, OR
+   - an empty terminal `content_complete=true` if waiting for the user
+
+## Keepalive
+
+- Retell may send inbound `ping_pong`. If `RETELL_AUTO_RECONNECT=true`, we respond with outbound `ping_pong` (echo timestamp).
+- The server also sends periodic outbound `ping_pong` on `BRAIN_PING_INTERVAL_MS` when `RETELL_AUTO_RECONNECT=true`.
+- Keepalive is treated as control-plane traffic:
+  - inbound `ping_pong` is prioritized over update-only backlog
+  - outbound `ping_pong` is dequeued ahead of speech traffic
+  - speech send operations can be preempted when control frames are pending
+  - writes use per-frame deadlines; repeated blocked sends trigger session close with reason `WRITE_TIMEOUT_BACKPRESSURE`
+
+Reference: [Retell LLM WebSocket](https://docs.retellai.com/api-references/llm-websocket).  
+Operational contract: auto-reconnect keepalive cadence is ~2s and Retell may close/reconnect after ~5s without keepalive traffic.
+
+### Write-Timeout Contract
+
+- Each outbound frame send is bounded by `WS_WRITE_TIMEOUT_MS`.
+- On timeout:
+  - `ws.write_timeout_total` increments
+  - `keepalive.ping_pong_write_timeout_total` increments for ping writes
+- On repeated timeouts (`WS_MAX_CONSECUTIVE_WRITE_TIMEOUTS`) and if `WS_CLOSE_ON_WRITE_TIMEOUT=true`:
+  - writer emits `TransportClosed(reason=\"WRITE_TIMEOUT_BACKPRESSURE\")`
+  - orchestrator ends session and closes websocket
+  - Retell can reconnect cleanly
+
+### Inbound Parse/Frame Contract
+
+- Reader rejects oversized frames (`WS_MAX_FRAME_BYTES`) with `TransportClosed(reason=\"FRAME_TOO_LARGE\")`.
+- JSON parse failure produces `TransportClosed(reason=\"BAD_JSON\")`.
+- Schema validation failure increments `inbound.bad_schema_total` and the reader continues (non-fatal; forward compatible).
+- Unknown fields remain forward-compatible via permissive model extras.
+
+## Epoch Cancellation Rule (Hard)
+
+`response_id` is the **epoch**.
+
+When a new `response_required` / `reminder_required` arrives with `response_id=N`:
+- Orchestrator atomically sets current epoch to `N`
+- Cancels any in-flight TurnHandler for older epochs
+- Drops queued outbound messages for stale epochs
+- Writer drops any stale in-flight/queued messages for old epochs
+
+## Same-Epoch Barge-In (Speak-Gen Gate)
+
+When `update_only.turntaking == "user_turn"` arrives while the agent has pending speech:
+- Orchestrator bumps an internal **speak-generation** gate (`speak_gen`)
+- Writer drops/cancels queued/in-flight outbound chunks from the old `speak_gen`
+- Orchestrator immediately emits a terminal empty `response` for the current epoch
+
+This is internal-only; it does **not** change the Retell wire schema.
+
+## Retell Pacing Semantics (Dash Pauses)
+
+Default speech markup mode is **DASH_PAUSE**:
+- pauses are represented by spaced dashes: `" - "`
+- longer pauses use repeated units: `" - " * N` (produces double spaces between dashes)
+- protected digit spans (phone / codes) are rendered read-slowly as: `2 - 1 - 3 - 4`
+
+Reference: [Retell Add Pause](https://docs.retellai.com/build/add-pause).  
+Pause token must keep spaces around `-` (`" - "`).
+
+SSML `<break>` tags are **not** used by default; SSML mode exists only as experimental config.
+
+## Backchanneling
+
+Server-generated backchannels via `agent_interrupt` are considered **experimental** and OFF by default.
+
+Recommended: configure backchanneling in the Retell agent settings (`enable_backchannel`, `backchannel_frequency`, `backchannel_words`).
+
+## Security Contract
+
+- Primary supported hardening: IP/CIDR allowlist.
+- Shared-secret header and query-token checks are optional and OFF by default.
+- Proxy-aware client IP resolution honors `X-Forwarded-For` only when trusted-proxy mode is explicitly enabled and the direct peer is in trusted proxy CIDRs.
+
+References:
+- [Retell Setup WebSocket Server](https://docs.retellai.com/integrate-llm/setup-websocket-server)
+- [Retell Secure Webhook](https://docs.retellai.com/features/secure-webhook)
+```
+
+## `docs/retell_ws_brain_playbook.md`
+
+```markdown
+# Retell WS Brain Playbook
+
+## Install
+
+Recommended (virtualenv):
+
+```bash
+python3 -m pip install -e ".[dev]"
+```
+
+Gemini + ops tooling (optional):
+
+```bash
+python3 -m pip install -e ".[gemini,ops]"
+```
+
+## Run
+
+```bash
+python3 -m uvicorn app.server:app --host 0.0.0.0 --port 8080
+```
+
+## WebSocket Endpoints
+
+- `ws://{host}/llm-websocket/{call_id}` (canonical)
+
+## Retell Platform Semantics (Important)
+
+Pacing/pauses are **dash-based** by default (Retell style), not SSML:
+- pause unit: `" - "`
+- digits read slowly: `2 - 1 - 3 - 4`
+
+Configure with:
+- `SPEECH_MARKUP_MODE=DASH_PAUSE|RAW_TEXT|SSML`
+- `DASH_PAUSE_SCOPE=PROTECTED_ONLY|SEGMENT_BOUNDARY` (default `PROTECTED_ONLY`)
+
+Reference: [Retell Add Pause](https://docs.retellai.com/build/add-pause).  
+Use spaced dash tokens (`" - "`), not compact dashes.
+
+## Gemini (P1)
+
+Enable Gemini streaming NLG (optional):
+- `BRAIN_USE_LLM_NLG=true`
+- `LLM_PROVIDER=gemini`
+
+Gemini Developer API:
+- `GEMINI_API_KEY=...`
+
+Vertex AI:
+- `GEMINI_VERTEXAI=true`
+- `GEMINI_PROJECT=...`
+- `GEMINI_LOCATION=global` (often required for preview models)
+
+Model/tuning:
+- `GEMINI_MODEL=gemini-3-flash-preview`
+- `GEMINI_THINKING_LEVEL=minimal|low|medium|high` (voice default is `minimal`)
+
+## Metrics
+
+- `GET /metrics` returns Prometheus text.
+- Exported names replace dots with underscores (example: `vic.turn_final_to_ack_segment_ms` -> `vic_turn_final_to_ack_segment_ms`).
+
+Key VIC metrics to watch:
+- `vic.turn_final_to_ack_segment_ms` (target <= 300ms in harness)
+- `vic.turn_final_to_first_segment_ms`
+- `vic.barge_in_cancel_latency_ms` (p95 target <= 250ms in harness)
+- `vic.stale_segment_dropped_total` (must increase under preemption tests)
+- `vic.factual_segment_without_tool_evidence_total` (must stay 0)
+- `vic.replay_hash_mismatch_total` (must stay 0)
+
+Keepalive/control-plane metrics:
+- `keepalive.ping_pong_queue_delay_ms` (target p99 < 100ms in non-stalled conditions)
+- `keepalive.ping_pong_missed_deadline_total` (target 0)
+- `keepalive.ping_pong_write_attempt_total` (should track expected ping volume)
+- `keepalive.ping_pong_write_timeout_total` (target 0 in healthy operation)
+- `ws.write_timeout_total` (alert on sustained increase)
+- `ws.close_reason_total.WRITE_TIMEOUT_BACKPRESSURE` (near-zero normal; expected in torture tests)
+- `inbound.queue_evictions_total` (watch for persistent growth under input floods)
+- `memory.transcript_chars_current` / `memory.transcript_utterances_current` (must remain under configured caps)
+- `memory.transcript_compactions_total` (expected to rise in very long calls)
+
+Keepalive reference: [Retell LLM WebSocket](https://docs.retellai.com/api-references/llm-websocket).
+Retell keepalive expectation in production: ping/pong around every 2s, reconnect/close behavior after roughly 5s without traffic.
+
+## Security Hardening (Optional)
+
+Prefer enforcing allowlists/secrets at the reverse proxy. This server supports optional gating:
+- `WS_ALLOWLIST_ENABLED=true`
+- `WS_ALLOWLIST_CIDRS="10.0.0.0/8,192.168.1.0/24"`
+- `WS_TRUSTED_PROXY_ENABLED=true`
+- `WS_TRUSTED_PROXY_CIDRS="10.0.0.0/8"`
+- `WS_SHARED_SECRET_ENABLED=true`
+- `WS_SHARED_SECRET="..."`
+- `WS_SHARED_SECRET_HEADER="X-RETELL-SIGNATURE"`
+- `WS_QUERY_TOKEN="..."`
+- `WS_QUERY_TOKEN_PARAM="token"`
+
+Recommended posture for Retell:
+- use IP allowlisting first (Retell-compatible)
+- keep shared-secret optional/off unless your client can send custom headers
+- trust `X-Forwarded-For` only with trusted-proxy mode and explicit proxy CIDRs
+
+References:
+- [Retell Setup WebSocket Server](https://docs.retellai.com/integrate-llm/setup-websocket-server)
+- [Retell Secure Webhook](https://docs.retellai.com/features/secure-webhook)
+
+## Production Default Baseline
+
+- `BRAIN_INBOUND_QUEUE_MAX=256`
+- `BRAIN_OUTBOUND_QUEUE_MAX=256`
+- `BRAIN_IDLE_TIMEOUT_MS=5000`
+- `BRAIN_PING_INTERVAL_MS=2000`
+- `WS_WRITE_TIMEOUT_MS=400`
+- `WS_CLOSE_ON_WRITE_TIMEOUT=true`
+- `WS_MAX_CONSECUTIVE_WRITE_TIMEOUTS=2`
+- `WS_MAX_FRAME_BYTES=262144`
+- `TRANSCRIPT_MAX_UTTERANCES=200`
+- `TRANSCRIPT_MAX_CHARS=50000`
+- `LLM_PHRASING_FOR_FACTS_ENABLED=false`
+
+Operational note:
+- Priority queues handle ordering under load, but they cannot unblock a stalled kernel send buffer.
+- Write deadlines are the hard escape hatch. When exceeded repeatedly, we close intentionally and rely on Retell reconnect.
+- This close-on-timeout behavior is correct for real backpressure: without it, a blocked writer can deadlock keepalive and cause prolonged wedge behavior.
+
+## Load Testing
+
+Deterministic in-memory acceptance:
+
+```bash
+python3 -m pytest -q tests/acceptance/at_vic_100_sessions.py
+python3 -m pytest -q tests/acceptance/at_no_leak_30min.py
+python3 scripts/load_test.py --sessions 100
+```
+
+Real-socket WebSocket load test (run server first):
+
+```bash
+python3 scripts/ws_load_test.py --sessions 25 --turns 2
+python3 scripts/ws_load_test.py --sessions 10 --turns 2 --torture-pause-reads-ms 1500 --assert-keepalive
+python3 scripts/ws_load_test.py --sessions 10 --duration-sec 300 --turn-interval-ms 250 --torture-pause-reads-ms 1500 --torture-pause-reads-every-turn --assert-keepalive
+python3 scripts/metrics_summary.py --metrics-url http://127.0.0.1:8080/metrics
+bash scripts/ci_hard_gates.sh
+```
+
+## Real Retell Call Validation Checklist
+
+1. Configure Retell to connect to `wss://.../llm-websocket/{call_id}`.
+2. On connect, confirm:
+   - server sends `config`
+   - server sends BEGIN `response` stream for `response_id=0` (greeting or empty terminal)
+3. Confirm keepalive:
+   - Retell sends inbound `ping_pong`
+   - server echoes outbound `ping_pong` promptly (timestamp echoed)
+4. Confirm epoch cancellation:
+   - send `response_required` id=N then id=N+1 mid-stream
+   - no further chunks for id=N should be spoken after id=N+1 starts
+5. Confirm barge-in within epoch:
+   - while agent speaking, user interrupts -> Retell sends `update_only.turntaking=user_turn`
+   - server stops immediately (speak-gen gate)
+6. Confirm pacing audibly:
+   - digits are read slowly: `4 - 5 - 6 - 7`
+   - default output contains no SSML `<break>` tags
+7. Backchanneling:
+   - enable backchannels in Retell agent config (recommended)
+   - server does not emit `agent_interrupt` backchannels by default
+```
+
+## `docs/revenue_ops_loop.md`
+
+```markdown
+# Revenue Ops Loop
+
+This loop is designed to stay simple and executable every day.
+
+## Objective Function
+
+- Maximize: `email_capture_rate`
+- Minimize: `time_to_email_capture`, `turns_to_capture`, `first_response_latency`
+
+## One-command run
+
+```bash
+make money
+```
+
+That runs:
+1. `scripts/retell_learning_loop.py`
+2. `scripts/revenue_ops_loop.py`
+3. `scripts/dogfood_scorecard.py`
+
+## Metrics source
+
+`/data/retell_calls/call_*/call.json`
+
+The loop reads `transcript_object` and latency fields to compute:
+
+- `email_capture_rate`
+- `direct_email_capture_rate`
+- `time_to_email_capture_p50/p95`
+- `turns_to_capture_p50/p95`
+- `first_response_latency_p50/p95`
+- objection counts
+- `first_response_latency_band` where:
+  - `<700ms` => `excellent`
+  - `700-999ms` => `good`
+  - `1000-1499ms` => `warning`
+  - `1500ms+` => `poor`
+
+## Output
+
+- `data/revenue_ops/latest.json`
+- `data/revenue_ops/latest.md`
+
+## Optional n8n push
+
+Set:
+
+- `N8N_OUTCOME_WEBHOOK_URL=https://...`
+
+Then run:
+
+```bash
+python3 scripts/revenue_ops_loop.py --push-webhook "$N8N_OUTCOME_WEBHOOK_URL"
+```
+```
+
+## `docs/self_improve/history/20260212T012144Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": true,
+  "clusters": {
+    "tests": [
+      "tests/test_fail.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false",
+      "duration_ms": 36,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_fail.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 1,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "apply",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_fail.py::test_case'"
+  ],
+  "timestamp": "20260212T012144Z"
+}
+```
+
+## `docs/self_improve/history/20260212T012144Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T012144Z
+- Mode: apply
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_fail.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_fail.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_fail.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_fail.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T012153Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": true,
+  "clusters": {
+    "tests": [
+      "tests/test_fail.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false",
+      "duration_ms": 35,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_fail.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 1,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "apply",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_fail.py::test_case'"
+  ],
+  "timestamp": "20260212T012153Z"
+}
+```
+
+## `docs/self_improve/history/20260212T012153Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T012153Z
+- Mode: apply
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_fail.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_fail.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_fail.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_fail.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T012946Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": true,
+  "clusters": {
+    "tests": [
+      "tests/test_fail.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false",
+      "duration_ms": 35,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_fail.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 1,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "apply",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_fail.py::test_case'"
+  ],
+  "timestamp": "20260212T012946Z"
+}
+```
+
+## `docs/self_improve/history/20260212T012946Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T012946Z
+- Mode: apply
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_fail.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_fail.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_fail.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_fail.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T014043Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": true,
+  "clusters": {
+    "tests": [
+      "tests/test_fail.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false",
+      "duration_ms": 38,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_fail.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 1,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "apply",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_fail.py::test_case'"
+  ],
+  "timestamp": "20260212T014043Z"
+}
+```
+
+## `docs/self_improve/history/20260212T014043Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T014043Z
+- Mode: apply
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_fail.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_fail.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_fail.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_fail.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T014044Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 36,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T014044Z"
+}
+```
+
+## `docs/self_improve/history/20260212T014044Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T014044Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T014114Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 55,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T014114Z"
+}
+```
+
+## `docs/self_improve/history/20260212T014114Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T014114Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T014430Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 35,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T014430Z"
+}
+```
+
+## `docs/self_improve/history/20260212T014430Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T014430Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T015152Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 43,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T015152Z"
+}
+```
+
+## `docs/self_improve/history/20260212T015152Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T015152Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T015349Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 39,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T015349Z"
+}
+```
+
+## `docs/self_improve/history/20260212T015349Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T015349Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T015521Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 39,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T015521Z"
+}
+```
+
+## `docs/self_improve/history/20260212T015521Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T015521Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T015532Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 58,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T015532Z"
+}
+```
+
+## `docs/self_improve/history/20260212T015532Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T015532Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T015624Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 40,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T015624Z"
+}
+```
+
+## `docs/self_improve/history/20260212T015624Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T015624Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T015659Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 42,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T015659Z"
+}
+```
+
+## `docs/self_improve/history/20260212T015659Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T015659Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T022125Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 38,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T022125Z"
+}
+```
+
+## `docs/self_improve/history/20260212T022125Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T022125Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T022158Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 41,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T022158Z"
+}
+```
+
+## `docs/self_improve/history/20260212T022158Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T022158Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T022239Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 41,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T022239Z"
+}
+```
+
+## `docs/self_improve/history/20260212T022239Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T022239Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T022304Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 44,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T022304Z"
+}
+```
+
+## `docs/self_improve/history/20260212T022304Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T022304Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T024907Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 43,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T024907Z"
+}
+```
+
+## `docs/self_improve/history/20260212T024907Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T024907Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T030417Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 34,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T030417Z"
+}
+```
+
+## `docs/self_improve/history/20260212T030417Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T030417Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T030442Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 35,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T030442Z"
+}
+```
+
+## `docs/self_improve/history/20260212T030442Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T030442Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T030752Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 51,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T030752Z"
+}
+```
+
+## `docs/self_improve/history/20260212T030752Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T030752Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T030809Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 47,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T030809Z"
+}
+```
+
+## `docs/self_improve/history/20260212T030809Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T030809Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T031033Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 46,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'"
+  ],
+  "timestamp": "20260212T031033Z"
+}
+```
+
+## `docs/self_improve/history/20260212T031033Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T031033Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests 'tests/test_demo.py::test_case'`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T033426Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": true,
+  "clusters": {
+    "tests": [
+      "tests/test_fail.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false",
+      "duration_ms": 45,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_fail.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 1,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "apply",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_fail.py::test_case"
+  ],
+  "timestamp": "20260212T033426Z"
+}
+```
+
+## `docs/self_improve/history/20260212T033426Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T033426Z
+- Mode: apply
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_fail.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_fail.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_fail.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_fail.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T045806Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 52,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260212T045806Z"
+}
+```
+
+## `docs/self_improve/history/20260212T045806Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T045806Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T214228Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 46,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260212T214228Z"
+}
+```
+
+## `docs/self_improve/history/20260212T214228Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T214228Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T215257Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 45,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260212T215257Z"
+}
+```
+
+## `docs/self_improve/history/20260212T215257Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T215257Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T221535Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": true,
+  "clusters": {
+    "tests": [
+      "tests/test_fail.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false",
+      "duration_ms": 188,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_fail.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 1,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "apply",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_fail.py::test_case"
+  ],
+  "timestamp": "20260212T221535Z"
+}
+```
+
+## `docs/self_improve/history/20260212T221535Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T221535Z
+- Mode: apply
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_fail.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_fail.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_fail.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_fail.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T221536Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 43,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260212T221536Z"
+}
+```
+
+## `docs/self_improve/history/20260212T221536Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T221536Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260212T222539Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 43,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260212T222539Z"
+}
+```
+
+## `docs/self_improve/history/20260212T222539Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260212T222539Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T093626Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 38,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_demo.py::test_case"
+  ],
+  "timestamp": "20260213T093626Z"
+}
+```
+
+## `docs/self_improve/history/20260213T093626Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T093626Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_demo.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T093628Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 46,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T093628Z"
+}
+```
+
+## `docs/self_improve/history/20260213T093628Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T093628Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T104617Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 47,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T104617Z"
+}
+```
+
+## `docs/self_improve/history/20260213T104617Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T104617Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T104818Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 43,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T104818Z"
+}
+```
+
+## `docs/self_improve/history/20260213T104818Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T104818Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T104831Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 41,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T104831Z"
+}
+```
+
+## `docs/self_improve/history/20260213T104831Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T104831Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T125410Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 42,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T125410Z"
+}
+```
+
+## `docs/self_improve/history/20260213T125410Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T125410Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T132216Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 41,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T132216Z"
+}
+```
+
+## `docs/self_improve/history/20260213T132216Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T132216Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T132830Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 46,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T132830Z"
+}
+```
+
+## `docs/self_improve/history/20260213T132830Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T132830Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T132945Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 42,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T132945Z"
+}
+```
+
+## `docs/self_improve/history/20260213T132945Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T132945Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T134816Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 45,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T134816Z"
+}
+```
+
+## `docs/self_improve/history/20260213T134816Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T134816Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T134842Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 42,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T134842Z"
+}
+```
+
+## `docs/self_improve/history/20260213T134842Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T134842Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T170217Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": true,
+  "clusters": {
+    "tests": [
+      "tests/test_fail.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false",
+      "duration_ms": 75,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_fail.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 1,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "apply",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_fail.py::test_case"
+  ],
+  "timestamp": "20260213T170217Z"
+}
+```
+
+## `docs/self_improve/history/20260213T170217Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T170217Z
+- Mode: apply
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_fail.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_fail.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_fail.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_fail.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T170218Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 42,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T170218Z"
+}
+```
+
+## `docs/self_improve/history/20260213T170218Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T170218Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T171003Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 41,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T171003Z"
+}
+```
+
+## `docs/self_improve/history/20260213T171003Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T171003Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T174049Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 42,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T174049Z"
+}
+```
+
+## `docs/self_improve/history/20260213T174049Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T174049Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T174141Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_demo.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false",
+      "duration_ms": 46,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_demo.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_demo.py::test_case"
+  ],
+  "timestamp": "20260213T174141Z"
+}
+```
+
+## `docs/self_improve/history/20260213T174141Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T174141Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_demo.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_demo.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_demo.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_demo.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T174142Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 52,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T174142Z"
+}
+```
+
+## `docs/self_improve/history/20260213T174142Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T174142Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T174806Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 48,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T174806Z"
+}
+```
+
+## `docs/self_improve/history/20260213T174806Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T174806Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T174852Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 46,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T174852Z"
+}
+```
+
+## `docs/self_improve/history/20260213T174852Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T174852Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T174914Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 42,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T174914Z"
+}
+```
+
+## `docs/self_improve/history/20260213T174914Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T174914Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T175036Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 42,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T175036Z"
+}
+```
+
+## `docs/self_improve/history/20260213T175036Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T175036Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T175151Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 41,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T175151Z"
+}
+```
+
+## `docs/self_improve/history/20260213T175151Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T175151Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260213T175234Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 42,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T175234Z"
+}
+```
+
+## `docs/self_improve/history/20260213T175234Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260213T175234Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260214T153148Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 44,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260214T153148Z"
+}
+```
+
+## `docs/self_improve/history/20260214T153148Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260214T153148Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260214T153739Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": true,
+  "clusters": {
+    "tests": [
+      "tests/test_fail.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false",
+      "duration_ms": 78,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_fail.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 1,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "apply",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_fail.py::test_case"
+  ],
+  "timestamp": "20260214T153739Z"
+}
+```
+
+## `docs/self_improve/history/20260214T153739Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260214T153739Z
+- Mode: apply
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('FAILED tests/test_fail.py::test_case')" && false` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_fail.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_fail.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_fail.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260214T153740Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 42,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260214T153740Z"
+}
+```
+
+## `docs/self_improve/history/20260214T153740Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260214T153740Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260214T154001Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 46,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260214T154001Z"
+}
+```
+
+## `docs/self_improve/history/20260214T154001Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260214T154001Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260214T155205Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 49,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260214T155205Z"
+}
+```
+
+## `docs/self_improve/history/20260214T155205Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260214T155205Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/20260214T155830Z.json`
+
+```json
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 44,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260214T155830Z"
+}
+```
+
+## `docs/self_improve/history/20260214T155830Z.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260214T155830Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve/history/shell_exec.jsonl`
+
+```
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 54, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770859304}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 36, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770859304}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 36, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770859313}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 35, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770859313}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 36, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770859786}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 35, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770859786}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 38, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770860443}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 36, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770860444}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 55, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770860474}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 55, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770860670}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 35, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770860670}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 86, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861112}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 43, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861112}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 83, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861229}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 39, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861229}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 83, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861321}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 39, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861321}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 51, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861332}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 58, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861332}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 76, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861384}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 40, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861384}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 55, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861419}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 42, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770861419}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 71, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770862885}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 38, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770862885}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 69, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770862918}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 41, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770862918}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 68, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770862959}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 41, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770862959}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 99, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770862984}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 44, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770862984}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 69, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770864547}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 43, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770864547}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 68, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770865457}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 34, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770865457}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 52, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770865482}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 35, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770865482}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 89, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770865672}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 51, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770865672}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 62, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770865689}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 47, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770865689}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 83, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770865833}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 46, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770865833}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 98, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770867266}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 46, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770867266}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 45, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770867266}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 85, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770872286}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 42, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770872286}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 52, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770872286}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 79, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770932548}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 37, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770932548}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 46, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770932548}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 84, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770933177}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 39, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770933177}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 45, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770933177}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 188, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770934535}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 57, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770934536}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 43, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770934536}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 85, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770935139}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 37, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770935139}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 43, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770935139}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 97, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770975386}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 38, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770975386}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 46, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770975388}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 67, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770979577}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 38, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770979577}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 47, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770979577}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 83, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770979698}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 37, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770979698}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 43, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770979698}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 42, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770979711}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 41, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770979711}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 41, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770979711}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 75, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770987250}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 46, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770987250}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 42, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770987250}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 68, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770988936}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 37, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770988936}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 41, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770988936}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 56, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770989310}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 41, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770989310}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 46, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770989310}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 54, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770989385}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 37, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770989385}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 42, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770989385}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 61, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770990496}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 40, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770990496}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 45, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770990496}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 46, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770990522}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 39, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770990522}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 42, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1770990522}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 75, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771002137}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 39, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771002138}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 42, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771002138}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 72, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771002603}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 37, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771002603}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 41, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771002603}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 75, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004449}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 36, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004449}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 42, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004449}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 101, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004501}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 46, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004501}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 52, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004502}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 90, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004886}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 39, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004886}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 48, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004886}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 101, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004932}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 39, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004932}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 46, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004932}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 70, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004954}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 38, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004954}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 42, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771004954}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 61, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771005036}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 43, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771005036}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 42, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771005036}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 55, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771005111}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 40, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771005111}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 41, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771005111}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 59, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771005154}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 37, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771005154}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 42, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771005154}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 102, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771083108}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 41, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771083108}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 44, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771083108}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 78, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771083459}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 39, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771083460}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 42, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771083460}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 70, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771083601}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 39, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771083601}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 46, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771083601}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 79, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771084325}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 57, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771084325}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 49, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771084325}
+{"command": "python3 -c \"print('FAILED tests/test_fail.py::test_case')\" && false", "duration_ms": 71, "ok": false, "output_sha256": "70d0dd416fe76b75af79a3bf1a7d7e8c3fb110b78054272b479eae0202350c2b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771084710}
+{"command": "python3 -c \"print('FAILED tests/test_demo.py::test_case')\" && false", "duration_ms": 43, "ok": false, "output_sha256": "5c786d6a48dbbbaa65e27d4f48a42c4da557d05c2de52482c01f43c98937633b", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771084710}
+{"command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"", "duration_ms": 44, "ok": false, "output_sha256": "7f0b6e00b26420aebe555985fb22a09f4cf5819d50d9c7b721b71cf01b03d888", "reason": "nonzero_exit", "returncode": 1, "runtime": "local", "ts": 1771084710}
+```
+
+## `docs/self_improve/last_run.md`
+
+```markdown
+# Self-Improve Cycle
+
+- Timestamp: 20260214T155830Z
+- Mode: propose
+- Proposed only: true
+
+## Command Results
+- `python3 -c "print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)"` -> FAIL (nonzero_exit)
+
+## Failed Tests
+- `tests/test_big.py::test_case`
+
+## Root Cause Clusters
+- **tests**: 1
+  - `tests/test_big.py::test_case`
+
+## Suggested Skill Captures
+- `python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case`
+
+## Safety Gates
+- Apply mode is blocked unless all commands are green.
+- Autonomous deploy remains disabled by policy.
+```
+
+## `docs/self_improve_sop.md`
+
+```markdown
+# Self-Improve SOP
+
+## Purpose
+
+Run a safe, evidence-first improvement cycle for OpenClaw without breaking VIC contracts.
+
+## Modes
+
+- `off`: disabled.
+- `propose`: analyze failures and produce recommendations only.
+- `apply`: allowed to apply only when gates are green; otherwise auto-falls back to propose.
+
+## Run
+
+```bash
+python3 scripts/self_improve_cycle.py --mode propose
+```
+
+Optional hard-gate run:
+
+```bash
+python3 scripts/self_improve_cycle.py --mode propose --hard-gates
+```
+
+## Evidence
+
+Artifacts are written to:
+
+- `docs/self_improve/last_run.md`
+- `docs/self_improve/history/<timestamp>.json`
+- `docs/self_improve/history/<timestamp>.md`
+- `docs/self_improve/history/shell_exec.jsonl`
+
+## Review Checklist
+
+1. Confirm failed tests and clusters are accurate.
+2. Confirm skill-capture suggestions map to real recurring failures.
+3. Confirm no forbidden shell commands were executed.
+4. Confirm VIC and acceptance gates remain green before any apply-mode rollout.
+
+## Apply Rules
+
+- Apply mode is blocked automatically if any gate is red.
+- No autonomous deploy is allowed in this flow.
+- If a regression appears, revert and capture a new skill from the incident.
+
+## Rollback
+
+1. Disable with `SELF_IMPROVE_MODE=off`.
+2. Re-run hard gates:
+   - `bash scripts/ci_hard_gates.sh`
+3. Use evidence bundle in `docs/self_improve/history/` to identify the failing change.
+```
+
+## `docs/voice_interaction_contract.md`
+
+```markdown
+# Voice Interaction Contract (VIC) v1.0
+
+See `tests/test_vic_contract.py` for deterministic invariants enforced in CI.
+
+Intermediate artifacts:
+- `SpeechPlan` / `SpeechSegment` in `app/speech_planner.py`
+- `TraceEvent` in `app/trace.py`
+
+## Retell-Accurate Output Semantics
+
+Default speech markup mode is **DASH_PAUSE**:
+- pause token is spaced dashes: `" - "`
+- longer pauses repeat the unit (double spaces appear between dashes)
+- protected digit spans (phone / codes) are rendered read-slowly as: `2 - 1 - 3 - 4`
+- default pause scope is `PROTECTED_ONLY` to avoid choppy generic speech
+- optional `SEGMENT_BOUNDARY` scope can re-enable explicit boundary pauses
+
+Reference: [Retell Add Pause](https://docs.retellai.com/build/add-pause).  
+Dash pause behavior requires spaces around `-` (`" - "`).
+
+SSML `<break>` tags are supported only as an experimental mode and are not used by default.
+
+Deterministic variation:
+- ACK/filler phrase selection is hash-based (`call_id`, `turn_id`, segment kind/index)
+- this adds conversational variation without randomness and preserves replay determinism
+
+Fact-preserving phrasing guard (default off):
+- `LLM_PHRASING_FOR_FACTS_ENABLED=false` keeps factual turns deterministic/tool-rendered.
+- When enabled, factual phrasing uses placeholder-locked templates and validation:
+  - placeholders must survive unchanged
+  - numeric literals outside placeholders are rejected
+  - violations fall back to deterministic templates and increment `llm.fact_guard_fallback_total`
+
+Memory compaction contract:
+- transcript memory is bounded by `TRANSCRIPT_MAX_UTTERANCES` and `TRANSCRIPT_MAX_CHARS`
+- older history compacts into a deterministic summary blob
+- summary keeps minimal PII only (for phone data, only last4)
+
+Optional Retell normalization:
+- `RETELL_NORMALIZE_FOR_SPEECH=true` can improve consistency for numbers/currency/dates
+- tradeoff: may add latency (typically around ~100ms)
+
+## Backchanneling Policy
+
+Server-generated backchannels via `agent_interrupt` are OFF by default because `agent_interrupt`
+is an interruption primitive. Recommended backchannels are configured in the Retell agent itself.
+```
+
+## `scripts/b2b_switch_to_ws_brain.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
+
+if [[ ! -f "$ENV_FILE" ]]; then
+  echo "Missing env file: $ENV_FILE" >&2
+  exit 2
+fi
+
+set -a
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+set +a
+
+: "${RETELL_API_KEY:?RETELL_API_KEY is required}"
+: "${B2B_AGENT_ID:?B2B_AGENT_ID is required}"
+
+# Base URL Retell should connect to. Retell will append /{call_id}.
+# Example: wss://YOUR_DOMAIN/llm-websocket
+BRAIN_WSS_BASE_URL="${BRAIN_WSS_BASE_URL:-${RETELL_LLM_WEBSOCKET_BASE_URL:-}}"
+: "${BRAIN_WSS_BASE_URL:?Set BRAIN_WSS_BASE_URL (e.g. wss://YOUR_DOMAIN/llm-websocket)}"
+
+python3 - <<'PY'
+import json
+import os
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+
+api = os.environ["RETELL_API_KEY"].strip()
+agent_id = os.environ["B2B_AGENT_ID"].strip()
+base_url = os.environ["BRAIN_WSS_BASE_URL"].strip().rstrip("/")
+
+root = Path(__file__).resolve().parents[1]
+backup_dir = root / "data" / "retell_agent_backups"
+backup_dir.mkdir(parents=True, exist_ok=True)
+
+def curl_json(args: list[str]) -> dict:
+    out = subprocess.check_output(args, text=True)
+    return json.loads(out)
+
+def try_patch(payload: dict) -> tuple[bool, dict | None, str]:
+    data = json.dumps(payload)
+    cmd = [
+        "curl",
+        "-sS",
+        "-X",
+        "PATCH",
+        f"https://api.retellai.com/update-agent/{agent_id}",
+        "-H",
+        f"Authorization: Bearer {api}",
+        "-H",
+        "Content-Type: application/json",
+        "--data",
+        data,
+    ]
+    p = subprocess.run(cmd, text=True, capture_output=True)
+    if p.returncode != 0:
+        return False, None, (p.stderr.strip() or p.stdout.strip() or "curl_failed")
+    try:
+        return True, json.loads(p.stdout), ""
+    except Exception:
+        return False, None, (p.stdout.strip() or "bad_json_response")
+
+agent = curl_json(
+    [
+        "curl",
+        "-sS",
+        "-H",
+        f"Authorization: Bearer {api}",
+        f"https://api.retellai.com/get-agent/{agent_id}",
+    ]
+)
+
+stamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+backup_path = backup_dir / f"{agent_id}_{stamp}.json"
+backup_path.write_text(json.dumps(agent, indent=2), encoding="utf-8")
+
+# Best-effort: set response engine to custom LLM websocket.
+# Retell docs have evolved; try a small set of candidate payloads.
+# We do NOT assume unknown fields exist; we probe and require the response to reflect the requested URL.
+
+candidates: list[tuple[str, dict]] = [
+    (
+        "response_engine.type=llm-websocket websocket_url",
+        {"response_engine": {"type": "llm-websocket", "websocket_url": base_url}},
+    ),
+    (
+        "response_engine.type=llm-websocket llm_websocket_url",
+        {"response_engine": {"type": "llm-websocket", "llm_websocket_url": base_url}},
+    ),
+    (
+        "response_engine.type=custom-llm llm_websocket_url",
+        {"response_engine": {"type": "custom-llm", "llm_websocket_url": base_url}},
+    ),
+    (
+        "legacy llm_websocket_url",
+        {"llm_websocket_url": base_url},
+    ),
+]
+
+errors: list[str] = []
+for label, payload in candidates:
+    ok, resp, err = try_patch(payload)
+    if not ok or resp is None:
+        errors.append(f"{label}: {err}")
+        continue
+
+    engine = resp.get("response_engine") or {}
+    # Some APIs may echo under response_engine; some may echo a legacy field.
+    reflected = (
+        (engine.get("websocket_url") == base_url)
+        or (engine.get("llm_websocket_url") == base_url)
+        or (resp.get("llm_websocket_url") == base_url)
+    )
+    if not reflected:
+        errors.append(f"{label}: patch_ok_but_url_not_reflected")
+        continue
+
+    result_path = backup_dir / f"{agent_id}_{stamp}.switched.json"
+    result_path.write_text(json.dumps(resp, indent=2), encoding="utf-8")
+
+    # Print minimal non-sensitive confirmation.
+    print(
+        json.dumps(
+            {
+                "status": "ok",
+                "agent_id": agent_id,
+                "brain_ws_base_url": base_url,
+                "response_engine": resp.get("response_engine"),
+            },
+            indent=2,
+        )
+    )
+    sys.exit(0)
+
+# If we get here, switching failed. Leave agent unchanged (only attempted PATCH calls).
+# Surface candidate errors and point to backup for manual rollback if needed.
+print(
+    json.dumps(
+        {
+            "status": "error",
+            "agent_id": agent_id,
+            "brain_ws_base_url": base_url,
+            "backup_path": str(backup_path.relative_to(root)),
+            "attempt_errors": errors,
+        },
+        indent=2,
+    )
+)
+sys.exit(1)
+PY
+```
+
+## `scripts/build_context_bundle.py`
+
+```python
+#!/usr/bin/env python3
+"""
+Build a single Markdown "context bundle" containing the Voice Agent codebase.
+
+Gemini (and other air-gapped reviewers) can't fetch GitHub branches, so this
+produces a plain-text file that can be copy/pasted.
+"""
+
+from __future__ import annotations
+
+import argparse
+import subprocess
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+
+
+SERVICE_ROOT = Path(__file__).resolve().parents[1]
+
+
+LANG_BY_SUFFIX = {
+    ".py": "python",
+    ".md": "markdown",
+    ".toml": "toml",
+    ".yaml": "yaml",
+    ".yml": "yaml",
+    ".json": "json",
+    ".sh": "bash",
+    ".rb": "ruby",
+    ".txt": "text",
+    ".csv": "csv",
+}
+
+
+EXCLUDE_DIR_NAMES = {
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "node_modules",
+    "dist",
+    "build",
+    ".DS_Store",
+}
+
+
+def _git(cmd: list[str]) -> str | None:
+    try:
+        out = subprocess.check_output(cmd, cwd=SERVICE_ROOT, stderr=subprocess.DEVNULL)
+        return out.decode("utf-8", errors="replace").strip()
+    except Exception:
+        return None
+
+
+def _language_for(path: Path) -> str:
+    return LANG_BY_SUFFIX.get(path.suffix.lower(), "")
+
+
+def _should_skip(path: Path, out_path: Path) -> bool:
+    if path.name in EXCLUDE_DIR_NAMES:
+        return True
+    # Never include the generated output in itself.
+    try:
+        if path.resolve() == out_path.resolve():
+            return True
+    except Exception:
+        pass
+    return False
+
+
+def _iter_files(base: Path, out_path: Path) -> list[Path]:
+    files: list[Path] = []
+    for p in base.rglob("*"):
+        if _should_skip(p, out_path):
+            continue
+        if any(part in EXCLUDE_DIR_NAMES for part in p.parts):
+            continue
+        if p.is_dir():
+            continue
+        files.append(p)
+    files.sort(key=lambda x: str(x).lower())
+    return files
+
+
+@dataclass(frozen=True)
+class BundleSpec:
+    title: str
+    include_paths: list[Path]
+    out_path: Path
+
+
+def build_bundle(spec: BundleSpec) -> None:
+    branch = _git(["git", "branch", "--show-current"])
+    commit = _git(["git", "rev-parse", "HEAD"])
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    out_path = spec.out_path
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+    lines: list[str] = []
+    lines.append(f"# {spec.title}")
+    lines.append("")
+    lines.append("This is a plain-text bundle intended for air-gapped review.")
+    lines.append("")
+    lines.append("## Metadata")
+    lines.append(f"- Generated (UTC): `{generated_at}`")
+    if branch:
+        lines.append(f"- Git branch: `{branch}`")
+    if commit:
+        lines.append(f"- Git commit: `{commit}`")
+    lines.append("")
+    lines.append("## Contents")
+    lines.append("")
+
+    all_files: list[Path] = []
+    for inc in spec.include_paths:
+        if inc.is_file():
+            all_files.append(inc)
+        elif inc.is_dir():
+            all_files.extend(_iter_files(inc, out_path))
+
+    # Dedupe while keeping order.
+    seen: set[str] = set()
+    ordered_files: list[Path] = []
+    for f in all_files:
+        k = str(f)
+        if k in seen:
+            continue
+        seen.add(k)
+        ordered_files.append(f)
+
+    # Table of contents.
+    for f in ordered_files:
+        rel = f.relative_to(SERVICE_ROOT)
+        anchor = str(rel).lower().replace("/", "").replace(".", "")
+        lines.append(f"- `{rel}`")
+    lines.append("")
+
+    # File bodies.
+    for f in ordered_files:
+        rel = f.relative_to(SERVICE_ROOT)
+        lang = _language_for(f)
+        lines.append(f"## `{rel}`")
+        lines.append("")
+        fence = f"```{lang}".rstrip()
+        lines.append(fence)
+        try:
+            content = f.read_text(encoding="utf-8", errors="replace")
+        except Exception as e:
+            content = f"<<FAILED TO READ: {e!r}>>"
+        # Normalize newlines and avoid trailing whitespace explosions.
+        content = content.replace("\r\n", "\n").replace("\r", "\n")
+        lines.append(content.rstrip("\n"))
+        lines.append("```")
+        lines.append("")
+
+    out_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--out",
+        default=str(SERVICE_ROOT / "artifacts" / "retell_websocket_complete_context_bundle_single_file.md"),
+        help="Output markdown file path.",
+    )
+    parser.add_argument(
+        "--include-kb",
+        action="store_true",
+        help="Also include the adjacent Voice Agent kb folder (agents/voice-agent/kb).",
+    )
+    args = parser.parse_args()
+
+    out_path = Path(args.out).expanduser()
+    if not out_path.is_absolute():
+        out_path = (SERVICE_ROOT / out_path).resolve()
+
+    include_paths: list[Path] = []
+    # High-signal top-level docs/configs.
+    for p in ["README.md", "pyproject.toml", "Makefile"]:
+        fp = SERVICE_ROOT / p
+        if fp.exists():
+            include_paths.append(fp)
+    # Runtime and tests.
+    for p in ["app", "src", "tests", "orchestration", "tools", "docs", "scripts"]:
+        dp = SERVICE_ROOT / p
+        if dp.exists():
+            include_paths.append(dp)
+    # Keep lessons learned in the bundle (useful for review).
+    ll = SERVICE_ROOT / "artifacts" / "retell_ws_lessons_learned.md"
+    if ll.exists():
+        include_paths.append(ll)
+
+    if args.include_kb:
+        kb = SERVICE_ROOT.parents[1] / "kb"
+        if kb.exists():
+            include_paths.append(kb)
+
+    build_bundle(
+        BundleSpec(
+            title="Retell WebSocket + Agent Runtime Complete Context Bundle",
+            include_paths=include_paths,
+            out_path=out_path,
+        )
+    )
+    print(str(out_path))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+## `scripts/call_b2b.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
+SUPERVISOR_SCRIPT="${RETELL_WS_SUPERVISOR_SCRIPT:-$ROOT_DIR/scripts/ws_brain_8099_supervisor.sh}"
+PROD_BRAIN_SCRIPT="${RETELL_WS_PROD_SCRIPT:-$ROOT_DIR/scripts/ws_brain_8099_prod.sh}"
+REQUIRED_B2B_AGENT_ID="agent_7a0abb6b0df0e6352fbd236f3b"
+REQUIRED_FROM_NUMBER="+14695998571"
+REQUIRED_WS_BASE="wss://ws.evesystems.org/llm-websocket"
+
+is_remote_non_local_ws_host() {
+  local ws_url="${BRAIN_WSS_BASE_URL:-}"
+  if [[ -z "$ws_url" ]]; then
+    return 1
+  fi
+  if [[ "$ws_url" == *"localhost"* || "$ws_url" == *"127.0.0.1"* ]]; then
+    return 1
+  fi
+  return 0
+}
+
+validate_b2b_ws_base_url() {
+  local base_url="$1"
+  if [[ -z "$base_url" ]]; then
+    return 0
+  fi
+
+  if [[ "${RETELL_ENFORCE_B2B_WS_URL:-true}" != "true" ]]; then
+    return 0
+  fi
+
+  python3 - <<'PY' "$base_url" "$REQUIRED_WS_BASE"
+import sys
+import urllib.parse
+
+base = sys.argv[1].strip()
+required = sys.argv[2].strip()
+
+parsed = urllib.parse.urlparse(base)
+if not parsed.scheme:
+    print("invalid:missing_scheme")
+    sys.exit(2)
+if parsed.scheme not in {"ws", "wss"}:
+    print(f"invalid:scheme:{parsed.scheme}")
+    sys.exit(2)
+
+required = urllib.parse.urlparse(required)
+if parsed.hostname != required.hostname:
+    print(f"invalid:host:{parsed.hostname}")
+    sys.exit(3)
+
+base_path = (parsed.path or "").rstrip("/")
+req_path = (required.path or "").rstrip("/")
+if base_path != req_path:
+    print(f"invalid:path:{base_path}")
+    sys.exit(3)
+print("ok")
+sys.exit(0)
+PY
+}
+
+if [[ ! -f "$ENV_FILE" ]]; then
+  echo "Missing env file: $ENV_FILE" >&2
+  echo "Create it with RETELL_API_KEY, B2B_AGENT_ID, RETELL_FROM_NUMBER, DOGFOOD_TO_NUMBER." >&2
+  exit 2
+fi
+
+set -a
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+set +a
+
+: "${RETELL_API_KEY:?RETELL_API_KEY is required}"
+: "${B2B_AGENT_ID:?B2B_AGENT_ID is required}"
+: "${RETELL_FROM_NUMBER:?RETELL_FROM_NUMBER is required}"
+
+TO_NUMBER="${1:-${DOGFOOD_TO_NUMBER:-}}"
+if [[ -z "${TO_NUMBER:-}" ]]; then
+  echo "Usage: scripts/call_b2b.sh [to_number]" >&2
+  echo "Set DOGFOOD_TO_NUMBER in $ENV_FILE or pass a number like +19859914360" >&2
+  exit 2
+fi
+
+# Optional fast-fail/fallback tuning.
+CALL_AGENT_ID="${B2B_AGENT_ID}"
+if [[ "${RETELL_ENFORCE_B2B_AGENT_ID:-true}" == "true" && "$CALL_AGENT_ID" != "$REQUIRED_B2B_AGENT_ID" ]]; then
+  echo "Error: B2B_AGENT_ID must be '$REQUIRED_B2B_AGENT_ID' for this rollout." >&2
+  echo "Current B2B_AGENT_ID='$CALL_AGENT_ID'." >&2
+  exit 2
+fi
+
+BRAIN_WS_FAILOVER_TO_BACKUP="${RETELL_WS_FAILOVER_TO_BACKUP:-true}"
+B2B_AGENT_ID_BACKUP="${B2B_AGENT_ID_BACKUP:-}"
+AUTO_RESOLVE_CF_WS="${RETELL_AUTO_RESOLVE_CF_WS:-true}"
+RETELL_ENSURE_BRAIN="${RETELL_ENSURE_BRAIN_RUNNING:-true}"
+RETELL_WS_TARGET_PORT="${RETELL_WS_TARGET_PORT:-8099}"
+RETELL_WS_START_TIMEOUT_SEC="${RETELL_WS_START_TIMEOUT_SEC:-20}"
+FORCE_BRAIN_PORT_8099="${RETELL_FORCE_BRAIN_PORT_8099:-auto}"
+
+PRODUCTION_BRAIN_TOPOLOGY=0
+
+is_local_listener() {
+  local port="$1"
+  python3 - <<'PY' "$port"
+import socket
+import sys
+
+port = int(sys.argv[1])
+sock = socket.socket()
+sock.settimeout(0.5)
+try:
+    sock.connect(("127.0.0.1", port))
+    print("local_listener_ok=1")
+    sys.exit(0)
+except Exception:
+    print("local_listener_ok=0")
+    sys.exit(1)
+finally:
+    sock.close()
+PY
+}
+
+ensure_local_brain() {
+  local port="$1"
+  local tries="$2"
+  if is_local_listener "$port" >/dev/null; then
+    return 0
+  fi
+
+  if [[ "$RETELL_ENSURE_BRAIN" != "true" && "$RETELL_ENSURE_BRAIN" != "1" ]]; then
+    echo "Local brain on 127.0.0.1:${port} is not active and RETELL_ENSURE_BRAIN_RUNNING is disabled." >&2
+    return 2
+  fi
+
+  if [[ ! -x "$SUPERVISOR_SCRIPT" ]]; then
+    echo "Brain supervisor not executable: $SUPERVISOR_SCRIPT" >&2
+    echo "Set RETELL_WS_SUPERVISOR_SCRIPT to a valid script." >&2
+    return 2
+  fi
+
+  if [[ "$PRODUCTION_BRAIN_TOPOLOGY" == "1" ]]; then
+    if [[ ! -x "$PROD_BRAIN_SCRIPT" ]]; then
+      echo "Production brain launcher not executable: $PROD_BRAIN_SCRIPT" >&2
+      echo "Set RETELL_WS_PROD_SCRIPT to a valid script." >&2
+      return 2
+    fi
+    echo "Starting production brain watcher on 127.0.0.1:8099..." >&2
+    "$PROD_BRAIN_SCRIPT" --start >/dev/null 2>&1 || {
+      echo "Failed to launch production ws_brain watcher: $PROD_BRAIN_SCRIPT" >&2
+      return 2
+    }
+  else
+    echo "Starting supervised brain on 127.0.0.1:${port}..." >&2
+    "$SUPERVISOR_SCRIPT" --daemon --port "$port" --host "127.0.0.1" >/dev/null 2>&1 || {
+      echo "Failed to launch ws_brain supervisor: $SUPERVISOR_SCRIPT" >&2
+      return 2
+    }
+  fi
+
+  for _ in $(seq 1 "$tries"); do
+    if is_local_listener "$port" >/dev/null 2>&1; then
+      echo "Brain process is listening on 127.0.0.1:${port}." >&2
+      return 0
+    fi
+    sleep 0.5
+  done
+  echo "Local brain did not come up on port ${port} after ${tries} checks." >&2
+  return 3
+}
+
+check_ws_handshake() {
+  local base_url="$1"
+  local msg
+  msg="$(python3 - <<'PY' "$base_url"
+import asyncio
+import sys
+import json
+
+uri = sys.argv[1].strip().rstrip("/")
+call_id = "dogfood-health-check"
+endpoint = f"{uri}/{call_id}"
+
+try:
+    import websockets  # type: ignore
+except Exception:
+    sys.exit(0)
+
+async def _probe() -> int:
+    try:
+        async with websockets.connect(endpoint, open_timeout=5, close_timeout=2) as ws:
+            raw = await asyncio.wait_for(ws.recv(), timeout=5)
+            try:
+                msg = json.loads(raw)
+            except Exception:
+                msg = raw
+            if isinstance(msg, dict) and msg.get("response_type") in {"response", "pong"}:
+                return 0
+            return 0
+    except Exception as exc:
+        print(f"websocket_handshake_check_failed: {exc}")
+        return 2
+
+sys.exit(asyncio.run(_probe()))
+PY
+  )"
+  echo "$msg"
+}
+
+# E.164 validation for dial strings.
+if [[ ! "$TO_NUMBER" =~ ^\+[0-9]{7,15}$ ]]; then
+  echo "Warning: TO_NUMBER '$TO_NUMBER' is not in E.164 format (expected +<country code><number>)." >&2
+  echo "Call may fail if formatting is incorrect." >&2
+fi
+
+if [[ "${RETELL_ENFORCE_B2B_FROM:-true}" == "true" && "$RETELL_FROM_NUMBER" != "$REQUIRED_FROM_NUMBER" ]]; then
+  echo "Error: RETELL_FROM_NUMBER must be '$REQUIRED_FROM_NUMBER' for this rollout." >&2
+  echo "Current RETELL_FROM_NUMBER='$RETELL_FROM_NUMBER'." >&2
+  exit 2
+fi
+
+if [[ ! "$RETELL_FROM_NUMBER" =~ ^\+[0-9]{7,15}$ ]]; then
+  echo "Warning: RETELL_FROM_NUMBER '$RETELL_FROM_NUMBER' is not in E.164 format (expected +<country code><number>)." >&2
+  echo "Call may fail if formatting is incorrect." >&2
+fi
+
+if [[ -n "${BRAIN_WSS_BASE_URL:-}" ]]; then
+  if ! validate_b2b_ws_base_url "$BRAIN_WSS_BASE_URL"; then
+    echo "Error: BRAIN_WSS_BASE_URL must use '$REQUIRED_WS_BASE/{call_id}' for this rollout." >&2
+    echo "Current value: '$BRAIN_WSS_BASE_URL'." >&2
+    echo "Set RETELL_ENFORCE_B2B_WS_URL=false to bypass this check." >&2
+    exit 2
+  fi
+fi
+
+CLOUDFLARE_ENV_FILE="${CLOUDFLARE_ENV_FILE:-$ROOT_DIR/.env.cloudflare.local}"
+
+# If websocket URL is missing or stale, resolve a valid Cloudflare production websocket host automatically.
+resolve_cf_ws_url() {
+  CLOUDFLARE_ENV_FILE="$CLOUDFLARE_ENV_FILE" \
+  python3 - <<'PY'
+import json
+import os
+import socket
+import urllib.request
+from pathlib import Path
+
+env_cf = Path(os.environ["CLOUDFLARE_ENV_FILE"])
+if not env_cf.exists():
+    raise SystemExit(1)
+
+env = {}
+for line in env_cf.read_text(encoding="utf-8").splitlines():
+    if not line or line.lstrip().startswith("#") or "=" not in line:
+        continue
+    k, v = line.split("=", 1)
+    env[k.strip()] = v.strip()
+
+account = env.get("CLOUDFLARE_ACCOUNT_ID", "").strip()
+token = env.get("CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN", "").strip()
+if not account or not token:
+    raise SystemExit(1)
+
+hdr = {"Authorization": f"Bearer {token}"}
+tunnels_url = f"https://api.cloudflare.com/client/v4/accounts/{account}/cfd_tunnel"
+req = urllib.request.Request(tunnels_url, headers=hdr)
+with urllib.request.urlopen(req, timeout=20) as resp:
+    payload = json.loads(resp.read().decode("utf-8"))
+
+if not payload.get("success"):
+    raise SystemExit(1)
+
+best = []
+preferred = []
+for tunnel in payload.get("result", []) or []:
+    tid = tunnel.get("id")
+    if not tid:
+        continue
+    cfg_url = f"https://api.cloudflare.com/client/v4/accounts/{account}/cfd_tunnel/{tid}/configurations"
+    req_cfg = urllib.request.Request(cfg_url, headers=hdr)
+    with urllib.request.urlopen(req_cfg, timeout=20) as cfg_resp:
+        cfg = json.loads(cfg_resp.read().decode("utf-8"))
+    if not cfg.get("success"):
+        continue
+    ingress = (cfg.get("result") or {}).get("config", {}).get("ingress", [])
+    for rule in ingress:
+        host = rule.get("hostname")
+        service = rule.get("service", "")
+        if not service or service.startswith("http_status"):
+            continue
+        try:
+            socket.getaddrinfo(host, 443, type=socket.SOCK_STREAM)
+        except Exception:
+            continue
+        if host.endswith(".evesystems.org"):
+            preferred.append((host, service))
+        else:
+            best.append((host, service))
+
+if preferred:
+    host, service = sorted(preferred, key=lambda x: x[0])[0]
+elif best:
+    host, service = sorted(best, key=lambda x: x[0])[0]
+else:
+    raise SystemExit(1)
+_ = service
+print(f"wss://{host}/llm-websocket")
+PY
+}
+
+# Verify websocket endpoint connectivity (DNS). If broken, optionally fall back to backup agent.
+if [[ -z "${BRAIN_WSS_BASE_URL:-}" && "$AUTO_RESOLVE_CF_WS" == "true" ]]; then
+  echo "BRAIN_WSS_BASE_URL is empty; attempting Cloudflare auto-resolution..." >&2
+  RESOLVED_WS_URL="$(resolve_cf_ws_url || true)"
+  if [[ -n "${RESOLVED_WS_URL:-}" ]]; then
+    BRAIN_WSS_BASE_URL="$RESOLVED_WS_URL"
+    export BRAIN_WSS_BASE_URL
+    echo "Auto-resolved websocket base URL: $BRAIN_WSS_BASE_URL" >&2
+  else
+    echo "Cloudflare auto-resolution failed; continuing with configured BRAIN_WSS_BASE_URL value." >&2
+  fi
+fi
+
+if [[ -n "${BRAIN_WSS_BASE_URL:-}" ]]; then
+  if ! python3 - <<'PY'
+import os, socket, sys, urllib.parse
+
+url = os.environ.get("BRAIN_WSS_BASE_URL", "").strip()
+if not url:
+    sys.exit(0)
+parsed = urllib.parse.urlparse(url)
+host = parsed.hostname
+if not host:
+    print("invalid_b2b_ws_url")
+    sys.exit(2)
+try:
+    socket.getaddrinfo(host, 443, type=socket.SOCK_STREAM)
+except Exception:
+    print("dns_lookup_failed")
+    sys.exit(3)
+sys.exit(0)
+PY
+  then
+    :
+  else
+    RESOLVE_STATUS=$?
+    if [[ "$RESOLVE_STATUS" -eq 3 ]]; then
+      echo "Error: BRAIN_WSS_BASE_URL='$BRAIN_WSS_BASE_URL' is not resolvable from this host." >&2
+      if [[ "$BRAIN_WS_FAILOVER_TO_BACKUP" == "true" && -n "$B2B_AGENT_ID_BACKUP" ]]; then
+        echo "Falling back to backup agent id from B2B_AGENT_ID_BACKUP." >&2
+        CALL_AGENT_ID="$B2B_AGENT_ID_BACKUP"
+      else
+        echo "Fix: start ws_brain_dev_on.sh or set a valid BRAIN_WSS_BASE_URL." >&2
+        exit 2
+      fi
+    elif [[ "$RESOLVE_STATUS" -eq 2 ]]; then
+      echo "Error: BRAIN_WSS_BASE_URL='${BRAIN_WSS_BASE_URL}' is invalid." >&2
+      exit 2
+    fi
+  fi
+else
+  echo "Warning: BRAIN_WSS_BASE_URL is not set; skipping websocket pre-check." >&2
+fi
+
+# Optionally verify the selected agent is wired to this websocket URL.
+if [[ "${RETELL_VERIFY_AGENT_WS_URL:-true}" == "true" && -n "${BRAIN_WSS_BASE_URL:-}" ]]; then
+  AGENT_WS_URL="$(
+    python3 - <<'PY' "$CALL_AGENT_ID" "$BRAIN_WSS_BASE_URL" "$RETELL_API_KEY"
+import json
+import os
+import sys
+import urllib.error
+import urllib.request
+
+agent_id = sys.argv[1].strip()
+api_key = sys.argv[3].strip()
+
+url = f"https://api.retellai.com/get-agent/{agent_id}"
+req = urllib.request.Request(url, headers={"Authorization": f"Bearer {api_key}"})
+try:
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        payload = json.loads(resp.read().decode("utf-8"))
+except urllib.error.HTTPError as exc:
+    body = exc.read().decode("utf-8", errors="ignore")
+    print(f"__retell_http_error__{exc.code}::{body}")
+    raise SystemExit(1)
+except Exception as exc:
+    print(f"__retell_request_failed__{exc}")
+    raise SystemExit(1)
+
+engine = payload.get("response_engine") or {}
+agent_url = (
+    engine.get("websocket_url")
+    or engine.get("llm_websocket_url")
+    or payload.get("llm_websocket_url")
+)
+if agent_url:
+    print(str(agent_url).strip())
+else:
+    print("")
+PY
+  )"
+  if [[ "$AGENT_WS_URL" == __retell_http_error__* || "$AGENT_WS_URL" == __retell_request_failed__* ]]; then
+    echo "Warning: could not read selected agent $CALL_AGENT_ID websocket config. Proceeding with manual override ${CALL_AGENT_ID}." >&2
+  elif [[ -n "$AGENT_WS_URL" && "$AGENT_WS_URL" != *"${BRAIN_WSS_BASE_URL}"* ]]; then
+    echo "Warning: selected agent $CALL_AGENT_ID is configured for websocket '$AGENT_WS_URL'." >&2
+    echo "Expected base: '$BRAIN_WSS_BASE_URL' from env." >&2
+    if [[ "$BRAIN_WS_FAILOVER_TO_BACKUP" == "true" && "$CALL_AGENT_ID" != "$B2B_AGENT_ID" && -n "$B2B_AGENT_ID" ]]; then
+      # already on backup; avoid looping
+      echo "Proceeding with current selected agent; review agent config in Retell dashboard if needed." >&2
+    elif [[ "$BRAIN_WS_FAILOVER_TO_BACKUP" == "true" && -n "$B2B_AGENT_ID_BACKUP" && "$CALL_AGENT_ID" == "$B2B_AGENT_ID" ]]; then
+      echo "Falling back to backup agent id from B2B_AGENT_ID_BACKUP due endpoint mismatch." >&2
+      CALL_AGENT_ID="$B2B_AGENT_ID_BACKUP"
+    fi
+  elif [[ -n "$AGENT_WS_URL" && "$AGENT_WS_URL" != *"llm-websocket"* ]]; then
+    echo "Warning: selected agent $CALL_AGENT_ID websocket URL '$AGENT_WS_URL' is not using the llm-websocket route." >&2
+  fi
+fi
+
+# Select production topology and ensure local brain early (when enabled).
+# - Remote/non-local BRAIN_WSS_BASE_URL implies production path (8099 + production watcher).
+# - Explicit override via RETELL_FORCE_BRAIN_PORT_8099 can force/disable this behavior.
+if [[ "$FORCE_BRAIN_PORT_8099" == "1" || "$FORCE_BRAIN_PORT_8099" == "true" ]]; then
+  PRODUCTION_BRAIN_TOPOLOGY=1
+elif [[ "$FORCE_BRAIN_PORT_8099" == "0" || "$FORCE_BRAIN_PORT_8099" == "false" ]]; then
+  PRODUCTION_BRAIN_TOPOLOGY=0
+elif is_remote_non_local_ws_host; then
+  PRODUCTION_BRAIN_TOPOLOGY=1
+fi
+
+if [[ "$PRODUCTION_BRAIN_TOPOLOGY" == "1" ]]; then
+  RETELL_WS_TARGET_PORT="8099"
+fi
+
+if [[ "$RETELL_ENSURE_BRAIN" == "true" || "$RETELL_ENSURE_BRAIN" == "1" ]]; then
+  WS_HANDSHAKE_LOCAL_PORT="${RETELL_WS_TARGET_PORT}"
+  if ! ensure_local_brain "$WS_HANDSHAKE_LOCAL_PORT" "$RETELL_WS_START_TIMEOUT_SEC"; then
+    echo "Error: local brain on 127.0.0.1:${WS_HANDSHAKE_LOCAL_PORT} is not available." >&2
+    if [[ "$PRODUCTION_BRAIN_TOPOLOGY" == "1" ]]; then
+      echo "Fix: start a persistent production brain instance using ${PROD_BRAIN_SCRIPT}." >&2
+      echo "Example: ${PROD_BRAIN_SCRIPT} --start" >&2
+    else
+      echo "Fix: start a persistent instance using ${SUPERVISOR_SCRIPT}." >&2
+      echo "Example: ${SUPERVISOR_SCRIPT} --daemon --port ${WS_HANDSHAKE_LOCAL_PORT} --host 127.0.0.1" >&2
+    fi
+    exit 2
+  fi
+fi
+
+# Optional local websocket handshake guard.
+# If enabled, verify Retell can connect to this public endpoint directly before creating the call.
+if [[ "${RETELL_VERIFY_WS_HANDSHAKE:-true}" == "true" && -n "${BRAIN_WSS_BASE_URL:-}" ]]; then
+  WS_HANDSHAKE_LOCAL_PORT="${RETELL_WS_TARGET_PORT:-8099}"
+
+  set +e
+  hand_msg="$(check_ws_handshake "$BRAIN_WSS_BASE_URL")"
+  hand_rc=$?
+  set -e
+  if [[ "$hand_rc" -ne 0 ]]; then
+    echo "Error: websocket endpoint handshake check failed for BRAIN_WSS_BASE_URL='$BRAIN_WSS_BASE_URL'." >&2
+    echo "Detail: $hand_msg" >&2
+    echo "Retell will usually return error_llm_websocket_open if this is not fixed." >&2
+    if [[ "${hand_msg}" == *"HTTP 502"* || "${hand_msg}" == *"handshake failed"* ]]; then
+      if ! is_local_listener "$WS_HANDSHAKE_LOCAL_PORT" >/dev/null; then
+        echo "Local listener is not active on 127.0.0.1:${WS_HANDSHAKE_LOCAL_PORT}." >&2
+        echo "Retrying brain startup before failing..." >&2
+        if ! ensure_local_brain "$WS_HANDSHAKE_LOCAL_PORT" "$RETELL_WS_START_TIMEOUT_SEC"; then
+          echo "Start the brain on that port, or set RETELL_WS_TARGET_PORT to your active server port." >&2
+          echo "Fix by ensuring Cloudflare route stays mapped to an active backend and points to your running brain." >&2
+          echo "Run: bash scripts/cloudflare_verify.sh" >&2
+          exit 2
+        fi
+        hand_msg="$(check_ws_handshake "$BRAIN_WSS_BASE_URL")"
+        hand_rc=$?
+        if [[ "$hand_rc" -eq 0 ]]; then
+          echo "Brain restart succeeded; websocket handshake check recovered." >&2
+        else
+          echo "Detail: $hand_msg" >&2
+          echo "Retell will usually return error_llm_websocket_open if this is not fixed." >&2
+          echo "Fix by ensuring Cloudflare route stays mapped to an active backend and points to your running brain." >&2
+          echo "Run: bash scripts/cloudflare_verify.sh" >&2
+          exit 2
+        fi
+      fi
+    fi
+  fi
+fi
+
+# Final explicit endpoint check if fallback also mismatches.
+if [[ "${CALL_AGENT_ID}" != "${B2B_AGENT_ID}" && -n "${BRAIN_WSS_BASE_URL:-}" ]]; then
+  echo "Call will use override agent id: $CALL_AGENT_ID" >&2
+fi
+
+RESP="$(
+  curl -sS -X POST "https://api.retellai.com/v2/create-phone-call" \
+    -H "Authorization: Bearer $RETELL_API_KEY" \
+    -H "Content-Type: application/json" \
+    --data "{\"from_number\":\"$RETELL_FROM_NUMBER\",\"to_number\":\"$TO_NUMBER\",\"override_agent_id\":\"$CALL_AGENT_ID\",\"metadata\":{\"source\":\"dogfood\"}}"
+)"
+
+# Default behavior: do NOT print raw JSON (it can include sensitive fields).
+# Use PRINT_RAW=1 if you explicitly want to see the full API response.
+if [[ "${PRINT_RAW:-0}" == "1" ]]; then
+  echo "$RESP"
+fi
+
+echo "$RESP" | python3 -c 'import json,sys
+try:
+  r=json.load(sys.stdin)
+except Exception as e:
+  print(f"Failed to parse response: {e}", file=sys.stderr)
+  raise SystemExit(1)
+cid=r.get("call_id","")
+status=r.get("call_status","")
+if cid:
+  print(f"Started call_id={cid} status={status}")
+else:
+  print("\nRetell response did not include call_id", file=sys.stderr)
+  raise SystemExit(1)'
+
+CALL_ID="$(echo "$RESP" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("call_id",""))')"
+
+AUTO_LEARN="${RETELL_AUTO_LEARN_ON_CALL:-true}"
+AUTO_LEARN_LOWER="$(printf '%s' "$AUTO_LEARN" | tr '[:upper:]' '[:lower:]')"
+if [[ "$AUTO_LEARN_LOWER" == "true" && -n "$CALL_ID" ]]; then
+  mkdir -p "$ROOT_DIR/data/retell_calls"
+  (
+    POLL_SEC="${RETELL_AUTO_LEARN_POLL_SEC:-5}"
+    POLL_STEPS="${RETELL_AUTO_LEARN_POLL_STEPS:-180}"
+    for _ in $(seq 1 "$POLL_STEPS"); do
+      STATUS="$(
+        curl -sS -H "Authorization: Bearer $RETELL_API_KEY" \
+          "https://api.retellai.com/v2/get-call/$CALL_ID" \
+          | python3 -c 'import json,sys; print((json.load(sys.stdin).get("call_status") or "").strip())'
+      )"
+      if [[ "$STATUS" == "ended" ]]; then
+        break
+      fi
+      sleep "$POLL_SEC"
+    done
+    python3 "$ROOT_DIR/scripts/retell_learning_loop.py" \
+      --limit "${RETELL_LEARN_LIMIT:-100}" \
+      --threshold "${RETELL_LEARN_THRESHOLD:-250}" \
+      > "$ROOT_DIR/data/retell_calls/_last_auto_learn.log" 2>&1
+  ) &
+  echo "Auto-learning queued in background for call_id=$CALL_ID"
+fi
+```
+
+## `scripts/call_status.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
+
+if [[ ! -f "$ENV_FILE" ]]; then
+  echo "Missing env file: $ENV_FILE" >&2
+  echo "Create it with RETELL_API_KEY." >&2
+  exit 2
+fi
+
+set -a
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+set +a
+
+: "${RETELL_API_KEY:?RETELL_API_KEY is required}"
+
+CALL_ID="${1:-}"
+if [[ -z "$CALL_ID" ]]; then
+  echo "Usage: scripts/call_status.sh <call_id>" >&2
+  exit 2
+fi
+
+curl -sS \
+  -H "Authorization: Bearer $RETELL_API_KEY" \
+  "https://api.retellai.com/v2/get-call/$CALL_ID" \
+  | python3 - <<'PY'
+import json
+import sys
+
+raw = sys.stdin.read()
+try:
+    data = json.loads(raw)
+except Exception:
+    print(raw)
+    raise SystemExit(1)
+
+def get(path, default=""):
+    cur = data
+    for key in path:
+        if not isinstance(cur, dict):
+            return default
+        cur = cur.get(key)
+    return cur if cur is not None else default
+
+call_id = get(("call_id",), "")
+status = get(("call_status",), "")
+disconn = get(("disconnection_reason",), "")
+disconn_msg = get(("disconnection_reason_message",), "")
+ended_reason = get(("ended_reason",), "")
+duration = get(("call_duration_ms",), "")
+transcript = get(("transcript",), [])
+last_event = ""
+if isinstance(transcript, list) and transcript:
+    last = transcript[-1]
+    if isinstance(last, dict):
+        last_event = (last.get("content") or "").strip()
+
+print(f"call_id={call_id}")
+print(f"status={status}")
+if disconn:
+    print(f"disconnection_reason={disconn}")
+if disconn_msg:
+    print(f"disconnection_reason_message={disconn_msg}")
+if ended_reason:
+    print(f"ended_reason={ended_reason}")
+if duration != "":
+    print(f"duration_ms={duration}")
+if last_event:
+    print(f"last_transcript={last_event}")
+print("---")
+print(json.dumps(data, indent=2))
+PY
+```
+
+## `scripts/ci_hard_gates.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Ensure a writable Python environment for dependency provisioning.
+if [[ -z "${VIRTUAL_ENV:-}" ]]; then
+  if [[ ! -x ".venv/bin/python3" ]]; then
+    python3 -m venv .venv
+  fi
+  # shellcheck disable=SC1091
+  source .venv/bin/activate
+fi
+
+python3 -m pip install -e ".[dev,ops]"
+
+python3 - <<'PY'
+import importlib.util
+import sys
+
+missing = []
+for mod in ("websockets", "prometheus_client"):
+    if importlib.util.find_spec(mod) is None:
+        missing.append(mod)
+if missing:
+    print(
+        "Missing required optional dependencies for CI hard gates: "
+        + ", ".join(missing)
+        + "\nInstall with: python3 -m pip install -e \".[dev,ops]\"",
+        file=sys.stderr,
+    )
+    raise SystemExit(2)
+PY
+
+python3 -m pytest -q tests tests_expressive
+python3 -m pytest -q -k vic_contract
+python3 -m pytest -q tests/acceptance/at_vic_100_sessions.py
+python3 -m pytest -q tests/acceptance/at_no_leak_30min.py
+python3 -m pytest -q tests/acceptance/at_ws_torture_5min.py
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "npm is required for web hard gates (apps/web)." >&2
+  exit 2
+fi
+
+if [[ -f "apps/web/package.json" ]]; then
+  pushd apps/web >/dev/null
+  npm install
+  npm run test
+  npm run build
+  popd >/dev/null
+fi
+```
+
+## `scripts/cloudflare_verify.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+ENV_FILE_CF="$ROOT_DIR/.env.cloudflare.local"
+if [[ -f "$ENV_FILE_CF" ]]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "$ENV_FILE_CF"
+  set +a
+fi
+
+: "${CLOUDFLARE_ACCOUNT_ID:?CLOUDFLARE_ACCOUNT_ID missing (expected in .env.cloudflare.local)}"
+: "${CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN:?CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN missing (expected in .env.cloudflare.local)}"
+
+# Verify token without printing it.
+resp="$(curl -sS "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/tokens/verify" \
+  -H "Authorization: Bearer ${CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN}")"
+
+CF_VERIFY_JSON="$resp" python3 - <<'PY'
+import json, os, sys
+raw = os.environ.get('CF_VERIFY_JSON','')
+try:
+    j = json.loads(raw)
+except Exception:
+    print('cloudflare_verify: bad_json')
+    sys.exit(1)
+
+ok = bool(j.get('success'))
+print('cloudflare_verify:', 'ok' if ok else 'fail')
+if not ok:
+    errs = j.get('errors') or []
+    # Print only codes/messages.
+    slim = [{'code': e.get('code'), 'message': e.get('message')} for e in errs][:5]
+    print(json.dumps(slim, indent=2))
+    sys.exit(1)
+PY
+
+# Optional tunnel audit (hostnames + DNS reachability).
+audit_resp="$(curl -sS "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/cfd_tunnel" \
+  -H "Authorization: Bearer ${CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN}")"
+
+CF_TUNNELS_JSON="$audit_resp" python3 - <<'PY'
+import json
+import os
+import socket
+import urllib.request
+
+raw = os.environ.get("CF_TUNNELS_JSON", "")
+try:
+    payload = json.loads(raw)
+except Exception:
+    print("cloudflare_tunnel_audit: bad_json")
+    raise SystemExit(0)
+
+if not bool(payload.get("success")):
+    print("cloudflare_tunnel_audit: api_error")
+    raise SystemExit(0)
+
+tunnels = payload.get("result", []) or []
+if not tunnels:
+    print("cloudflare_tunnel_audit: no_tunnels_found")
+    raise SystemExit(0)
+
+def _dns_ok(hostname: str) -> bool:
+    try:
+        socket.getaddrinfo(hostname, 443, type=socket.SOCK_STREAM)
+        return True
+    except Exception:
+        return False
+
+def _fetch_config(account_id: str, token: str, tunnel_id: str) -> dict:
+    req = urllib.request.Request(
+        f"https://api.cloudflare.com/client/v4/accounts/{account_id}/cfd_tunnel/{tunnel_id}/configurations",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+account_id = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "")
+token = os.environ.get("CLOUDFLARE_EVE_TOC_BUILD_API_TOKEN", "")
+
+print("cloudflare_tunnel_audit:")
+for tunnel in tunnels:
+    name = tunnel.get("name")
+    tid = tunnel.get("id")
+    print(f"- {name} ({tid})")
+    ingress = []
+    try:
+        cfg = _fetch_config(account_id, token, tid)
+        if bool(cfg.get("success")):
+            ingress = (cfg.get("result") or {}).get("config", {}).get("ingress", [])
+    except Exception:
+        ingress = []
+
+    if not ingress:
+        print("  status: no_configured_ingress")
+        continue
+    for rule in ingress:
+        hostname = rule.get("hostname")
+        service = rule.get("service")
+        if hostname:
+            print(f"  - {hostname} -> {service} ; dns_ok={_dns_ok(hostname)}")
+        elif service and service != "http_status:404":
+            print(f"  - fallback service without hostname: {service}")
+PY
+```
+
+## `scripts/dogfood_scorecard.py`
+
+```python
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+from metrics_summary import (
+    _fetch_metrics_text,
+    histogram_quantile_from_buckets,
+    parse_prometheus_text,
+)
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="Dogfood scorecard for Retell Brain quality gates.")
+    ap.add_argument("--metrics-url", default="http://127.0.0.1:8080/metrics")
+    ap.add_argument("--metrics-file", default="")
+    args = ap.parse_args()
+
+    text = _fetch_metrics_text(metrics_url=args.metrics_url, metrics_file=(args.metrics_file or None))
+    counters, gauges, hists = parse_prometheus_text(text)
+
+    ack_p95 = histogram_quantile_from_buckets(hists.get("vic_turn_final_to_ack_segment_ms", {}), 0.95)
+    first_p95 = histogram_quantile_from_buckets(hists.get("vic_turn_final_to_first_segment_ms", {}), 0.95)
+    cancel_p95 = histogram_quantile_from_buckets(hists.get("vic_barge_in_cancel_latency_ms", {}), 0.95)
+
+    checks = [
+        ("ACK p95 <= 300ms", (ack_p95 is not None and ack_p95 <= 300), ack_p95),
+        ("First-content p95 <= 700ms", (first_p95 is not None and first_p95 <= 700), first_p95),
+        ("Barge-in cancel p95 <= 250ms", (cancel_p95 is not None and cancel_p95 <= 250), cancel_p95),
+        (
+            "Reasoning leakage == 0",
+            int(counters.get("voice_reasoning_leak_total", 0)) == 0,
+            int(counters.get("voice_reasoning_leak_total", 0)),
+        ),
+        (
+            "Jargon violations == 0",
+            int(counters.get("voice_jargon_violation_total", 0)) == 0,
+            int(counters.get("voice_jargon_violation_total", 0)),
+        ),
+        (
+            "Replay mismatches == 0",
+            int(counters.get("vic_replay_hash_mismatch_total", 0)) == 0,
+            int(counters.get("vic_replay_hash_mismatch_total", 0)),
+        ),
+    ]
+
+    print("Dogfood Scorecard")
+    print("=================")
+    failed = False
+    for name, ok, value in checks:
+        status = "PASS" if ok else "FAIL"
+        if not ok:
+            failed = True
+        print(f"{status:4}  {name:32} value={value}")
+
+    print("\nCurrent Memory")
+    print("--------------")
+    print(f"transcript_chars_current={int(gauges.get('memory_transcript_chars_current', 0))}")
+    print(f"transcript_utterances_current={int(gauges.get('memory_transcript_utterances_current', 0))}")
+    print("\nOpenClaw Runtime Expansion")
+    print("--------------------------")
+    skills_inv = int(counters.get("skills_invocations_total", 0))
+    skills_hit = int(counters.get("skills_hit_total", 0))
+    skills_err = int(counters.get("skills_error_total", 0))
+    if skills_inv > 0:
+        skills_hit_rate = (float(skills_hit) / float(skills_inv)) * 100.0
+        skills_hit_rate_str = f"{skills_hit_rate:.1f}%"
+    else:
+        skills_hit_rate_str = "n/a"
+    print(f"skills.invocations_total={skills_inv}")
+    print(f"skills.hit_total={skills_hit}")
+    print(f"skills.hit_rate_pct={skills_hit_rate_str}")
+    print(f"skills.error_total={skills_err}")
+    print(f"shell.exec_total={int(counters.get('shell_exec_total', 0))}")
+    print(f"shell.exec_denied_total={int(counters.get('shell_exec_denied_total', 0))}")
+    print(f"shell.exec_timeout_total={int(counters.get('shell_exec_timeout_total', 0))}")
+    print(f"self_improve.cycles_total={int(counters.get('self_improve_cycles_total', 0))}")
+    print(f"self_improve.proposals_total={int(counters.get('self_improve_proposals_total', 0))}")
+    print(f"self_improve.applies_total={int(counters.get('self_improve_applies_total', 0))}")
+    print(
+        "self_improve.blocked_on_gates_total="
+        + str(int(counters.get("self_improve_blocked_on_gates_total", 0)))
+    )
+    print(f"context.compactions_total={int(counters.get('context_compactions_total', 0))}")
+    print(
+        "context.compaction_tokens_saved_total="
+        + str(int(counters.get("context_compaction_tokens_saved_total", 0)))
+    )
+
+    if failed:
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## `scripts/lead_factory.py`
+
+```python
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import json
+import math
+import os
+import re
+import sys
+import time
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any
+from urllib.request import Request, urlopen
+
+
+HIGH_TICKET_KEYWORDS = {
+    "dental",
+    "dentist",
+    "implants",
+    "orthodont",
+    "invisalign",
+    "plastic",
+    "cosmetic",
+    "surgery",
+    "medspa",
+    "med spa",
+    "injector",
+    "botox",
+    "filler",
+    "morpheus",
+    "coolsculpt",
+    "ivf",
+    "hair transplant",
+    "pain clinic",
+    "chiropractic",
+    "dermatology",
+    "vision correction",
+}
+
+PAIN_KEYWORDS = {
+    "missed call",
+    "voicemail",
+    "no answer",
+    "busy line",
+    "inbound overflow",
+    "booking backlog",
+    "low show-up",
+    "front desk overloaded",
+}
+
+GENERIC_EMAIL_PREFIXES = {"info", "admin", "contact", "hello", "frontdesk", "office"}
+
+
+def _to_bool(v: Any) -> bool:
+    if isinstance(v, bool):
+        return v
+    if v is None:
+        return False
+    s = str(v).strip().lower()
+    return s in {"1", "true", "yes", "y", "on", "active"}
+
+
+def _to_float(v: Any) -> float:
+    if v is None or v == "":
+        return 0.0
+    try:
+        return float(v)
+    except Exception:
+        return 0.0
+
+
+def _norm_text(v: Any) -> str:
+    return re.sub(r"\s+", " ", str(v or "").strip().lower())
+
+
+def _split_tags(v: Any) -> list[str]:
+    if isinstance(v, list):
+        return [_norm_text(x) for x in v if str(x).strip()]
+    s = str(v or "").strip()
+    if not s:
+        return []
+    if s.startswith("[") and s.endswith("]"):
+        try:
+            arr = json.loads(s)
+            if isinstance(arr, list):
+                return [_norm_text(x) for x in arr if str(x).strip()]
+        except Exception:
+            pass
+    parts = re.split(r"[;,|]", s)
+    return [_norm_text(x) for x in parts if x.strip()]
+
+
+@dataclass(frozen=True, slots=True)
+class LeadScore:
+    lead_id: str
+    business_name: str
+    website: str
+    phone: str
+    email: str
+    city: str
+    state: str
+    vertical: str
+    ad_active: bool
+    high_ticket: bool
+    pain_signal: bool
+    can_pay_5k_10k: bool
+    score: float
+    reasons: list[str]
+    source: str
+
+
+def _load_records(path: Path) -> list[dict[str, Any]]:
+    if path.suffix.lower() == ".json":
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(data, list):
+            return [x for x in data if isinstance(x, dict)]
+        if isinstance(data, dict):
+            for key in ("data", "items", "leads", "records"):
+                v = data.get(key)
+                if isinstance(v, list):
+                    return [x for x in v if isinstance(x, dict)]
+            return [data]
+        return []
+
+    if path.suffix.lower() in {".csv", ".tsv"}:
+        delim = "\t" if path.suffix.lower() == ".tsv" else ","
+        out: list[dict[str, Any]] = []
+        with path.open("r", encoding="utf-8", newline="") as f:
+            reader = csv.DictReader(f, delimiter=delim)
+            for row in reader:
+                out.append(dict(row))
+        return out
+    raise ValueError(f"unsupported input file type: {path}")
+
+
+def _extract_vertical(rec: dict[str, Any]) -> str:
+    cat = _norm_text(rec.get("category") or rec.get("industry") or rec.get("vertical"))
+    name = _norm_text(rec.get("business_name") or rec.get("name"))
+    tags = " ".join(_split_tags(rec.get("services") or rec.get("keywords") or rec.get("tags")))
+    blob = f"{cat} {name} {tags}"
+    for kw in sorted(HIGH_TICKET_KEYWORDS):
+        if kw in blob:
+            return kw
+    return cat or "unknown"
+
+
+def _ad_active(rec: dict[str, Any]) -> bool:
+    candidates = [
+        rec.get("ad_active"),
+        rec.get("google_ads_active"),
+        rec.get("meta_ads_active"),
+        rec.get("facebook_ads_active"),
+        rec.get("ads_running"),
+    ]
+    if any(_to_bool(x) for x in candidates):
+        return True
+    spend = max(
+        _to_float(rec.get("ad_spend_monthly")),
+        _to_float(rec.get("google_ads_monthly")),
+        _to_float(rec.get("meta_ads_monthly")),
+    )
+    return spend > 0
+
+
+def _high_ticket(rec: dict[str, Any]) -> bool:
+    blob = " ".join(
+        [
+            _norm_text(rec.get("business_name") or rec.get("name")),
+            _norm_text(rec.get("category") or rec.get("industry") or rec.get("vertical")),
+            " ".join(_split_tags(rec.get("services") or rec.get("keywords") or rec.get("tags"))),
+        ]
+    )
+    return any(kw in blob for kw in HIGH_TICKET_KEYWORDS)
+
+
+def _pain_signal(rec: dict[str, Any]) -> bool:
+    blob = " ".join(
+        [
+            _norm_text(rec.get("pain_signals")),
+            _norm_text(rec.get("notes")),
+            _norm_text(rec.get("review_snippets")),
+            " ".join(_split_tags(rec.get("problems") or rec.get("objections"))),
+        ]
+    )
+    return any(k in blob for k in PAIN_KEYWORDS)
+
+
+def _can_pay(rec: dict[str, Any]) -> bool:
+    employees = _to_float(rec.get("employee_count") or rec.get("staff_count"))
+    revenue = _to_float(rec.get("annual_revenue") or rec.get("revenue"))
+    reviews = _to_float(rec.get("reviews_count") or rec.get("google_reviews"))
+    locations = _to_float(rec.get("locations_count") or rec.get("num_locations"))
+    rating = _to_float(rec.get("rating"))
+    ad_spend = max(
+        _to_float(rec.get("ad_spend_monthly")),
+        _to_float(rec.get("google_ads_monthly")),
+        _to_float(rec.get("meta_ads_monthly")),
+    )
+    signal = 0
+    signal += 1 if employees >= 5 else 0
+    signal += 1 if revenue >= 750_000 else 0
+    signal += 1 if reviews >= 50 else 0
+    signal += 1 if locations >= 2 else 0
+    signal += 1 if ad_spend >= 2000 else 0
+    signal += 1 if rating >= 4.0 else 0
+    return signal >= 2
+
+
+def _make_id(rec: dict[str, Any]) -> str:
+    phone = re.sub(r"\D", "", str(rec.get("phone") or ""))
+    web = _norm_text(rec.get("website") or rec.get("domain"))
+    name = _norm_text(rec.get("business_name") or rec.get("name"))
+    base = phone or web or name
+    if not base:
+        raw = json.dumps(rec, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        digest = hashlib.sha256(raw).hexdigest()[:16]
+        return f"lead_{digest}"
+    return f"lead_{re.sub(r'[^a-z0-9]+', '_', base)[:64]}"
+
+
+def score_record(rec: dict[str, Any], *, source: str = "") -> LeadScore:
+    name = str(rec.get("business_name") or rec.get("name") or "").strip()
+    website = str(rec.get("website") or rec.get("domain") or "").strip()
+    phone = str(rec.get("phone") or "").strip()
+    email = str(rec.get("email") or "").strip()
+    city = str(rec.get("city") or "").strip()
+    state = str(rec.get("state") or "").strip()
+
+    ad = _ad_active(rec)
+    high = _high_ticket(rec)
+    pain = _pain_signal(rec)
+    pay = _can_pay(rec)
+
+    score = 0.0
+    reasons: list[str] = []
+    if ad:
+        score += 35
+        reasons.append("ad_active")
+    if high:
+        score += 30
+        reasons.append("high_ticket_vertical")
+    if pay:
+        score += 20
+        reasons.append("can_pay_5k_10k")
+    if pain:
+        score += 10
+        reasons.append("pain_signal")
+    if phone:
+        score += 3
+        reasons.append("has_phone")
+    if website:
+        score += 2
+        reasons.append("has_website")
+    if email:
+        score += 3
+        reasons.append("has_email")
+    # Penalize generic-only contact quality slightly.
+    if email and email.split("@", 1)[0].lower() in GENERIC_EMAIL_PREFIXES:
+        score -= 2
+        reasons.append("generic_email")
+
+    score = max(0.0, min(100.0, score))
+
+    return LeadScore(
+        lead_id=_make_id(rec),
+        business_name=name or "unknown",
+        website=website,
+        phone=phone,
+        email=email,
+        city=city,
+        state=state,
+        vertical=_extract_vertical(rec),
+        ad_active=ad,
+        high_ticket=high,
+        pain_signal=pain,
+        can_pay_5k_10k=pay,
+        score=round(score, 2),
+        reasons=reasons,
+        source=source,
+    )
+
+
+def _dedupe(leads: list[LeadScore]) -> list[LeadScore]:
+    seen: set[str] = set()
+    out: list[LeadScore] = []
+    for lead in sorted(leads, key=lambda x: x.score, reverse=True):
+        keys = [
+            re.sub(r"\D", "", lead.phone),
+            _norm_text(lead.website),
+            _norm_text(lead.business_name),
+        ]
+        key = next((k for k in keys if k), "")
+        if not key:
+            key = lead.lead_id
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(lead)
+    return out
+
+
+def _qualified(leads: list[LeadScore], *, min_score: float) -> list[LeadScore]:
+    out: list[LeadScore] = []
+    for lead in leads:
+        if not lead.ad_active:
+            continue
+        if not lead.high_ticket:
+            continue
+        if not lead.can_pay_5k_10k:
+            continue
+        if float(lead.score) < float(min_score):
+            continue
+        out.append(lead)
+    return out
+
+
+def _write_outputs(*, out_dir: Path, all_leads: list[LeadScore], qualified: list[LeadScore], top_k: int) -> None:
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    all_json = out_dir / "all_scored.json"
+    all_csv = out_dir / "all_scored.csv"
+    q_json = out_dir / "qualified.json"
+    q_csv = out_dir / "qualified.csv"
+    call_queue = out_dir / "call_queue.jsonl"
+    summary = out_dir / "summary.json"
+
+    def _rows(items: list[LeadScore]) -> list[dict[str, Any]]:
+        return [asdict(x) for x in items]
+
+    all_json.write_text(json.dumps(_rows(all_leads), indent=2, sort_keys=True), encoding="utf-8")
+    q_json.write_text(json.dumps(_rows(qualified), indent=2, sort_keys=True), encoding="utf-8")
+
+    cols = [
+        "lead_id",
+        "business_name",
+        "website",
+        "phone",
+        "email",
+        "city",
+        "state",
+        "vertical",
+        "ad_active",
+        "high_ticket",
+        "pain_signal",
+        "can_pay_5k_10k",
+        "score",
+        "reasons",
+        "source",
+    ]
+
+    def _write_csv(path: Path, rows: list[LeadScore]) -> None:
+        with path.open("w", encoding="utf-8", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=cols)
+            w.writeheader()
+            for r in rows:
+                obj = asdict(r)
+                obj["reasons"] = ",".join(r.reasons)
+                w.writerow(obj)
+
+    _write_csv(all_csv, all_leads)
+    _write_csv(q_csv, qualified)
+
+    with call_queue.open("w", encoding="utf-8") as f:
+        for lead in qualified[: max(0, int(top_k))]:
+            f.write(json.dumps(asdict(lead), sort_keys=True) + "\n")
+
+    summary_obj = {
+        "total_scored": len(all_leads),
+        "qualified": len(qualified),
+        "top_k": max(0, int(top_k)),
+        "generated_at_unix": int(time.time()),
+    }
+    summary.write_text(json.dumps(summary_obj, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _post_n8n(webhook_url: str, leads: list[LeadScore], batch_size: int) -> tuple[int, int]:
+    sent = 0
+    failed = 0
+    if not webhook_url:
+        return sent, failed
+    if batch_size <= 0:
+        batch_size = 25
+    rows = [asdict(x) for x in leads]
+    for i in range(0, len(rows), batch_size):
+        batch = rows[i : i + batch_size]
+        payload = {"batch_size": len(batch), "leads": batch}
+        req = Request(
+            webhook_url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urlopen(req, timeout=20) as r:
+                _ = r.read()
+            sent += len(batch)
+        except Exception:
+            failed += len(batch)
+    return sent, failed
+
+
+def _load_inputs(input_paths: list[str]) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+    for raw in input_paths:
+        p = Path(raw)
+        if not p.exists():
+            continue
+        rows = _load_records(p)
+        for row in rows:
+            row = dict(row)
+            row.setdefault("_source_file", str(p))
+            records.append(row)
+    return records
+
+
+def _load_from_url(url: str) -> list[dict[str, Any]]:
+    req = Request(url, method="GET")
+    with urlopen(req, timeout=30) as r:
+        raw = r.read().decode("utf-8")
+    data = json.loads(raw)
+    if isinstance(data, list):
+        return [x for x in data if isinstance(x, dict)]
+    if isinstance(data, dict):
+        for key in ("data", "items", "leads", "records"):
+            v = data.get(key)
+            if isinstance(v, list):
+                return [x for x in v if isinstance(x, dict)]
+        return [data]
+    return []
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Lead Factory: score + qualify + export + optional n8n push.")
+    ap.add_argument("--input", action="append", default=[], help="input file(s): .csv/.tsv/.json (repeatable)")
+    ap.add_argument("--source-url", action="append", default=[], help="HTTP JSON source(s) returning lead records")
+    ap.add_argument("--out-dir", default="data/leads")
+    ap.add_argument("--min-score", type=float, default=60.0)
+    ap.add_argument("--top-k", type=int, default=500)
+    ap.add_argument("--n8n-webhook-url", default=os.getenv("N8N_LEAD_WEBHOOK_URL", ""))
+    ap.add_argument("--n8n-batch-size", type=int, default=25)
+    args = ap.parse_args()
+
+    records = _load_inputs(args.input)
+    for url in args.source_url:
+        try:
+            rows = _load_from_url(url)
+        except Exception:
+            rows = []
+        for row in rows:
+            row = dict(row)
+            row.setdefault("_source_file", url)
+            records.append(row)
+    if not records:
+        print("No input records found. Provide --input or --source-url.", file=sys.stderr)
+        return 2
+
+    scored = [score_record(r, source=str(r.get("_source_file") or "input")) for r in records]
+    deduped = _dedupe(scored)
+    qualified = _qualified(deduped, min_score=float(args.min_score))
+
+    out_dir = Path(args.out_dir)
+    _write_outputs(out_dir=out_dir, all_leads=deduped, qualified=qualified, top_k=int(args.top_k))
+
+    sent, failed = _post_n8n(args.n8n_webhook_url, qualified[: max(0, int(args.top_k))], int(args.n8n_batch_size))
+
+    payload = {
+        "status": "ok",
+        "inputs": len(args.input) + len(args.source_url),
+        "records_loaded": len(records),
+        "records_scored": len(deduped),
+        "qualified": len(qualified),
+        "min_score": float(args.min_score),
+        "top_k": int(args.top_k),
+        "n8n_sent": sent,
+        "n8n_failed": failed,
+        "out_dir": str(out_dir),
+    }
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+## `scripts/load_test.py`
+
+```python
+from __future__ import annotations
+
+import argparse
+import asyncio
+import os
+import sys
+from typing import Iterable
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from app.config import BrainConfig
+from app.metrics import VIC
+
+from tests.harness.transport_harness import HarnessSession
+
+
+def _percentile(values: Iterable[int], p: float) -> int | None:
+    v = sorted(int(x) for x in values)
+    if not v:
+        return None
+    if p <= 0:
+        return v[0]
+    if p >= 100:
+        return v[-1]
+    k = int(round((p / 100.0) * (len(v) - 1)))
+    return v[k]
+
+
+async def _run_sessions(n: int) -> None:
+    cfg = BrainConfig(speak_first=False, retell_auto_reconnect=False, idle_timeout_ms=10_000_000)
+    sessions: list[HarnessSession] = []
+    try:
+        for i in range(n):
+            sessions.append(await HarnessSession.start(session_id=f"lt{i}", cfg=cfg))
+
+        # Drain initial config + BEGIN terminal for all sessions.
+        for s in sessions:
+            await s.recv_outbound()
+            await s.recv_outbound()
+
+        # One turn per session.
+        for s in sessions:
+            await s.send_inbound_obj(
+                {
+                    "interaction_type": "response_required",
+                    "response_id": 1,
+                    "transcript": [{"role": "user", "content": "Hi"}],
+                }
+            )
+
+        # Wait deterministically until all sessions have observed ACK latency.
+        for _ in range(5000):
+            if all(s.metrics.get_hist(VIC["turn_final_to_ack_segment_ms"]) for s in sessions):
+                break
+            await asyncio.sleep(0)
+
+        ack_lats: list[int] = []
+        first_lats: list[int] = []
+        stale_drops = 0
+        schema_violations = 0
+        for s in sessions:
+            ack_lats.extend(s.metrics.get_hist(VIC["turn_final_to_ack_segment_ms"]))
+            first_lats.extend(s.metrics.get_hist(VIC["turn_final_to_first_segment_ms"]))
+            stale_drops += s.metrics.get(VIC["stale_segment_dropped_total"])
+            schema_violations += s.trace.schema_violations_total
+
+        print("**Load Test Summary**")
+        print(f"sessions={n}")
+        print(f"schema_violations_total={schema_violations}")
+        print(f"stale_segment_dropped_total={stale_drops}")
+        ack_p50 = _percentile(ack_lats, 50)
+        ack_p95 = _percentile(ack_lats, 95)
+        ack_p99 = _percentile(ack_lats, 99)
+        print(
+            "ack_latency_ms="
+            f"p50={ack_p50 if ack_p50 is not None else 'n/a'} "
+            f"p95={ack_p95 if ack_p95 is not None else 'n/a'} "
+            f"p99={ack_p99 if ack_p99 is not None else 'n/a'}"
+        )
+        first_p50 = _percentile(first_lats, 50)
+        first_p95 = _percentile(first_lats, 95)
+        first_p99 = _percentile(first_lats, 99)
+        print(
+            "first_segment_latency_ms="
+            f"p50={first_p50 if first_p50 is not None else 'n/a'} "
+            f"p95={first_p95 if first_p95 is not None else 'n/a'} "
+            f"p99={first_p99 if first_p99 is not None else 'n/a'}"
+        )
+    finally:
+        await asyncio.gather(*(s.stop() for s in sessions), return_exceptions=True)
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="Deterministic in-memory load test for the Retell WS Brain.")
+    ap.add_argument("--sessions", type=int, default=100, help="number of concurrent sessions to simulate")
+    args = ap.parse_args()
+    asyncio.run(_run_sessions(int(args.sessions)))
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## `scripts/metrics_summary.py`
+
+```python
+from __future__ import annotations
+
+import argparse
+import math
+import re
+import urllib.request
+from pathlib import Path
+
+
+_TYPE_RE = re.compile(r"^#\s*TYPE\s+([a-zA-Z_:][a-zA-Z0-9_:]*)\s+(counter|gauge|histogram)\s*$")
+_SAMPLE_RE = re.compile(r"^([a-zA-Z_:][a-zA-Z0-9_:]*)(\{[^}]*\})?\s+([-+]?[0-9]+(?:\.[0-9]+)?)$")
+_LE_RE = re.compile(r'le="([^"]+)"')
+
+
+def _fetch_metrics_text(*, metrics_url: str, metrics_file: str | None) -> str:
+    if metrics_file:
+        return Path(metrics_file).read_text(encoding="utf-8")
+    with urllib.request.urlopen(metrics_url, timeout=5) as resp:
+        return resp.read().decode("utf-8")
+
+
+def parse_prometheus_text(text: str) -> tuple[dict[str, float], dict[str, float], dict[str, dict[str, float]]]:
+    types: dict[str, str] = {}
+    counters: dict[str, float] = {}
+    gauges: dict[str, float] = {}
+    hist_buckets: dict[str, dict[str, float]] = {}
+
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        m_type = _TYPE_RE.match(line)
+        if m_type:
+            types[m_type.group(1)] = m_type.group(2)
+            continue
+        if line.startswith("#"):
+            continue
+
+        m_sample = _SAMPLE_RE.match(line)
+        if not m_sample:
+            continue
+        name = m_sample.group(1)
+        labels = m_sample.group(2) or ""
+        value = float(m_sample.group(3))
+
+        if name.endswith("_bucket"):
+            base = name[: -len("_bucket")]
+            m_le = _LE_RE.search(labels)
+            if m_le is None:
+                continue
+            le = m_le.group(1)
+            hist_buckets.setdefault(base, {})[le] = value
+            continue
+
+        t = types.get(name, "")
+        if t == "counter":
+            counters[name] = value
+        elif t == "gauge":
+            gauges[name] = value
+
+    return counters, gauges, hist_buckets
+
+
+def histogram_quantile_from_buckets(buckets: dict[str, float], q: float) -> float | None:
+    if not buckets:
+        return None
+    items: list[tuple[float, float]] = []
+    inf_count: float | None = None
+    for le_str, count in buckets.items():
+        if le_str == "+Inf":
+            inf_count = float(count)
+            continue
+        try:
+            items.append((float(le_str), float(count)))
+        except Exception:
+            continue
+    items.sort(key=lambda x: x[0])
+    if inf_count is None:
+        if not items:
+            return None
+        inf_count = items[-1][1]
+    if inf_count <= 0:
+        return None
+
+    target = max(1.0, math.ceil(float(q) * float(inf_count)))
+    for le, cumulative in items:
+        if cumulative >= target:
+            return le
+    # If only +Inf satisfies the quantile target, clamp to the highest finite bucket.
+    if items:
+        return items[-1][0]
+    return None
+
+
+def _fmt(v: float | int | None) -> str:
+    if v is None:
+        return "n/a"
+    if isinstance(v, float):
+        if v.is_integer():
+            return str(int(v))
+        return f"{v:.3f}"
+    return str(v)
+
+
+def summarize(*, counters: dict[str, float], gauges: dict[str, float], hist: dict[str, dict[str, float]]) -> str:
+    k_ping = "keepalive_ping_pong_queue_delay_ms"
+    k_cancel = "vic_barge_in_cancel_latency_ms"
+
+    ping_p95 = histogram_quantile_from_buckets(hist.get(k_ping, {}), 0.95)
+    ping_p99 = histogram_quantile_from_buckets(hist.get(k_ping, {}), 0.99)
+    cancel_p95 = histogram_quantile_from_buckets(hist.get(k_cancel, {}), 0.95)
+    cancel_p99 = histogram_quantile_from_buckets(hist.get(k_cancel, {}), 0.99)
+
+    skills_invocations = float(counters.get("skills_invocations_total", 0))
+    skills_hits = float(counters.get("skills_hit_total", 0))
+    skills_hit_rate = None
+    if skills_invocations > 0:
+        skills_hit_rate = (skills_hits / skills_invocations) * 100.0
+
+    lines = [
+        f"keepalive.ping_pong_queue_delay_ms p95={_fmt(ping_p95)} p99={_fmt(ping_p99)}",
+        "keepalive.ping_pong_write_timeout_total="
+        + _fmt(counters.get("keepalive_ping_pong_write_timeout_total", 0)),
+        "ws.write_timeout_total=" + _fmt(counters.get("ws_write_timeout_total", 0)),
+        f"vic.barge_in_cancel_latency_ms p95={_fmt(cancel_p95)} p99={_fmt(cancel_p99)}",
+        "memory.transcript_chars_current="
+        + _fmt(gauges.get("memory_transcript_chars_current", 0)),
+        "memory.transcript_utterances_current="
+        + _fmt(gauges.get("memory_transcript_utterances_current", 0)),
+        "skills.invocations_total=" + _fmt(counters.get("skills_invocations_total", 0)),
+        "skills.hit_total=" + _fmt(counters.get("skills_hit_total", 0)),
+        "skills.hit_rate_pct=" + _fmt(skills_hit_rate),
+        "skills.error_total=" + _fmt(counters.get("skills_error_total", 0)),
+        "shell.exec_total=" + _fmt(counters.get("shell_exec_total", 0)),
+        "shell.exec_denied_total=" + _fmt(counters.get("shell_exec_denied_total", 0)),
+        "shell.exec_timeout_total=" + _fmt(counters.get("shell_exec_timeout_total", 0)),
+        "self_improve.cycles_total=" + _fmt(counters.get("self_improve_cycles_total", 0)),
+        "self_improve.proposals_total=" + _fmt(counters.get("self_improve_proposals_total", 0)),
+        "self_improve.applies_total=" + _fmt(counters.get("self_improve_applies_total", 0)),
+        "self_improve.blocked_on_gates_total="
+        + _fmt(counters.get("self_improve_blocked_on_gates_total", 0)),
+        "context.compactions_total=" + _fmt(counters.get("context_compactions_total", 0)),
+        "context.compaction_tokens_saved_total="
+        + _fmt(counters.get("context_compaction_tokens_saved_total", 0)),
+    ]
+    return "\n".join(lines)
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="Print key Retell WS Brain SLO metrics summary from /metrics.")
+    ap.add_argument(
+        "--metrics-url",
+        type=str,
+        default="http://127.0.0.1:8080/metrics",
+        help="Prometheus metrics URL.",
+    )
+    ap.add_argument(
+        "--metrics-file",
+        type=str,
+        default="",
+        help="Optional local metrics text file; if set, metrics-url is ignored.",
+    )
+    args = ap.parse_args()
+
+    text = _fetch_metrics_text(metrics_url=args.metrics_url, metrics_file=(args.metrics_file or None))
+    counters, gauges, hists = parse_prometheus_text(text)
+    print(summarize(counters=counters, gauges=gauges, hist=hists))
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## `scripts/prompts/b2b_fast_plain.generated.prompt.txt`
+
+```text
+You are Cassidy from Eve Systems.
+
+Primary objective:
+- Close fast.
+- Be direct and plain.
+- Secure one usable manager/owner inbox and send the report.
+
+Behavior contract:
+- Short lines. One ask per turn.
+- 80%+ of turns are questions to keep a consultative, Socratic flow.
+- Adapt automatically every turn:
+  - If the prospect shows resistance, increase directness and reduce fluff.
+  - If the prospect is receptive, reduce questions and move faster to close.
+- Never explain internal reasoning.
+- No jargon.
+- If interrupted, stop immediately.
+- Ask first, claim second.
+- Never blame the person on the phone.
+- Do not hide your intent. You are trying to send a missed-call overflow report.
+- Do not mention intake lines, stress tests, artifacts, simulation, or bottlenecks.
+
+Important:
+- If user starts first, mirror once: "Hi, this is Cassidy from Eve Systems." then continue with your open question.
+
+NEPQ-style no-first cold-open:
+1) Permission question:
+   - "Hi, this is Cassidy from Eve Systems."
+   - "Is this a bad time for one quick question?"
+2) If they say bad time / no:
+   - "No problem. Should I close this now, or send one short report to the right inbox?"
+3) If yes:
+   - "Are you the person who routes messages to the decision maker?"
+4) If yes:
+   - "After busy periods, do any leads get lost in voicemail before anyone gets back to them?"
+5) Problem framing:
+   - "If callers wait on hold, do you ever hear they couldn’t get through later?"
+6) Consequence framing:
+   - "Does that sound like missed consult revenue you’d rather not have?"
+7) Close:
+   - "Could you give the best email for the manager so I can send this now?"
+
+Rules for flow:
+- Keep each step as one short question.
+- If they answer briefly, move forward one step.
+- If they challenge intent, answer once and return to the next question.
+- If defensive, use one line empathy then return to the task.
+- If hostile, call [end_call] and stop immediately.
+
+Value framing:
+- "What this helps with is not adding work, just making missed leads visible in one short report."
+- "You can send this on to the decision maker in under 60 seconds."
+
+Objection handling:
+1) "Is this sales?"
+   - "No pitch. This is a short missed-call report. What inbox should it go to?"
+2) "Not interested"
+   - "Understood. Want me to close this now, or send a short report to a manager inbox so it stays visible?"
+3) "We're busy / in a meeting"
+   - "Perfect, I can work async. What manager inbox should I send this to right now?"
+4) "Don't have direct email"
+   - "I understand—would a direct manager inbox be easiest, or should I use a routing inbox first?"
+5) Generic inbox provided
+   - Push once: "I can use that, but direct inbox usually gets faster reads. Do you have one?"
+   - If they repeat it, accept it and proceed.
+6) Confusion
+   - "I’m sending a short lead overflow report. What email should get this to leadership fastest?"
+7) "We already handle calls well"
+   - "If you feel this isn’t the right time, what email would leadership prefer for overflow updates?"
+
+Fast close sequence:
+- Confirm email once.
+- "Perfect, confirm that spelling for me?"
+- Call send_evidence_package.
+- Call log_call_outcome.
+- Call set_follow_up_plan with:
+  - followup_window_min=2
+  - followup_window_max=5
+  - trigger="email_open_or_click"
+  - channel_priority="call_then_sms"
+- End call.
+
+Strict language limits:
+- Target 7-12 words per turn.
+- Hard cap 16 words except email spelling.
+
+## LEARNED_CALL_PLAYBOOK_START
+Live optimization notes from recent calls:
+- Corpus size: 1 calls
+- Direct email captures: 0
+- Generic inbox captures: 0
+- Mean LLM p50: 1000.0 ms
+- Mean E2E p50: 1500.0 ms
+## LEARNED_CALL_PLAYBOOK_END
+```
+
+## `scripts/prompts/b2b_fast_plain.prompt.txt`
+
+```text
+You are Cassidy from Eve Systems.
+
+Primary objective:
+- Close fast.
+- Be direct and plain.
+- Secure one usable manager/owner inbox and send the report.
+
+Behavior contract:
+- Short lines. One ask per turn.
+- 80%+ of turns are questions to keep a consultative, Socratic flow.
+- Adapt automatically every turn:
+  - If the prospect shows resistance, increase directness and reduce fluff.
+  - If the prospect is receptive, reduce questions and move faster to close.
+- Never explain internal reasoning.
+- No jargon.
+- If interrupted, stop immediately.
+- Ask first, claim second.
+- Never blame the person on the phone.
+- Do not hide your intent. You are trying to send a missed-call overflow report.
+- Do not mention intake lines, stress tests, artifacts, simulation, or bottlenecks.
+
+Important:
+- If user starts first, mirror once: "Hi, this is Cassidy from Eve Systems." then continue with your open question.
+
+NEPQ-style no-first cold-open:
+1) Permission question:
+   - "Hi, this is Cassidy from Eve Systems."
+   - "Is this a bad time for one quick question?"
+2) If they say bad time / no:
+   - "No problem. Should I close this now, or send one short report to the right inbox?"
+3) If yes:
+   - "Are you the person who routes messages to the decision maker?"
+4) If yes:
+   - "After busy periods, do any leads get lost in voicemail before anyone gets back to them?"
+5) Problem framing:
+   - "If callers wait on hold, do you ever hear they couldn’t get through later?"
+6) Consequence framing:
+   - "Does that sound like missed consult revenue you’d rather not have?"
+7) Close:
+   - "Could you give the best email for the manager so I can send this now?"
+
+Rules for flow:
+- Keep each step as one short question.
+- If they answer briefly, move forward one step.
+- If they challenge intent, answer once and return to the next question.
+- If defensive, use one line empathy then return to the task.
+- If hostile, call [end_call] and stop immediately.
+
+Value framing:
+- "What this helps with is not adding work, just making missed leads visible in one short report."
+- "You can send this on to the decision maker in under 60 seconds."
+
+Objection handling:
+1) "Is this sales?"
+   - "No pitch. This is a short missed-call report. What inbox should it go to?"
+2) "Not interested"
+   - "Understood. Want me to close this now, or send a short report to a manager inbox so it stays visible?"
+3) "We're busy / in a meeting"
+   - "Perfect, I can work async. What manager inbox should I send this to right now?"
+4) "Don't have direct email"
+   - "I understand—would a direct manager inbox be easiest, or should I use a routing inbox first?"
+5) Generic inbox provided
+   - Push once: "I can use that, but direct inbox usually gets faster reads. Do you have one?"
+   - If they repeat it, accept it and proceed.
+6) Confusion
+   - "I’m sending a short lead overflow report. What email should get this to leadership fastest?"
+7) "We already handle calls well"
+   - "If you feel this isn’t the right time, what email would leadership prefer for overflow updates?"
+
+Fast close sequence:
+- Confirm email once.
+- "Perfect, confirm that spelling for me?"
+- Call send_evidence_package.
+- Call log_call_outcome.
+- Call set_follow_up_plan with:
+  - followup_window_min=2
+  - followup_window_max=5
+  - trigger="email_open_or_click"
+  - channel_priority="call_then_sms"
+- End call.
+
+Strict language limits:
+- Target 7-12 words per turn.
+- Hard cap 16 words except email spelling.
+```
+
+## `scripts/replay_session.py`
+
+```python
+from __future__ import annotations
+
+import argparse
+import asyncio
+import hashlib
+import json
+import os
+import sys
+from typing import Any, Iterable
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from tests.harness.transport_harness import HarnessSession
+
+
+def _sha256_hex(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def _digest_from_events(events: Iterable[dict[str, Any]]) -> str:
+    parts: list[str] = []
+    for e in events:
+        parts.append(
+            f"{e.get('seq')}:{e.get('t_ms')}:{e.get('session_id')}:{e.get('call_id')}:"
+            f"{e.get('turn_id')}:{e.get('epoch')}:{e.get('ws_state')}:{e.get('conv_state')}:"
+            f"{e.get('event_type')}:{e.get('payload_hash')}:{e.get('segment_hash') or ''}"
+        )
+    blob = "|".join(parts).encode("utf-8")
+    return _sha256_hex(blob)
+
+
+def _load_jsonl(path: str) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            out.append(json.loads(line))
+    return out
+
+
+async def _run_builtin() -> tuple[str, str]:
+    async def run_once() -> str:
+        session = await HarnessSession.start(session_id="replay", tool_latencies={"get_pricing": 0})
+        try:
+            await session.recv_outbound()
+            await session.recv_outbound()
+            await session.send_inbound_obj(
+                {
+                    "interaction_type": "response_required",
+                    "response_id": 1,
+                    "transcript": [{"role": "user", "content": "How much does it cost?"}],
+                }
+            )
+            for _ in range(200):
+                await asyncio.sleep(0)
+                if any(p.epoch == 1 for p in session.orch.speech_plans):
+                    break
+            assert session.trace.schema_violations_total == 0
+            return session.trace.replay_digest()
+        finally:
+            await session.stop()
+
+    d1 = await run_once()
+    d2 = await run_once()
+    return d1, d2
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="Replay determinism helper (digest comparison).")
+    ap.add_argument("--trace-a", type=str, default="", help="path to trace JSONL A")
+    ap.add_argument("--trace-b", type=str, default="", help="path to trace JSONL B")
+    args = ap.parse_args()
+
+    if args.trace_a and args.trace_b:
+        a = _load_jsonl(args.trace_a)
+        b = _load_jsonl(args.trace_b)
+        da = _digest_from_events(a)
+        db = _digest_from_events(b)
+        print(f"digest_a={da}")
+        print(f"digest_b={db}")
+        if da != db:
+            print("replay_digest_mismatch", file=sys.stderr)
+            raise SystemExit(1)
+        return
+
+    if args.trace_a:
+        a = _load_jsonl(args.trace_a)
+        da = _digest_from_events(a)
+        print(f"digest={da}")
+        return
+
+    d1, d2 = asyncio.run(_run_builtin())
+    print(f"digest_run_1={d1}")
+    print(f"digest_run_2={d2}")
+    if d1 != d2:
+        print("replay_digest_mismatch", file=sys.stderr)
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## `scripts/retell_fast_recover.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
+PROMPT_FILE="${RETELL_PROMPT_FILE:-$ROOT_DIR/scripts/prompts/b2b_fast_plain.prompt.txt}"
+
+if [[ ! -f "$ENV_FILE" ]]; then
+  echo "Missing env file: $ENV_FILE" >&2
+  exit 2
+fi
+if [[ ! -f "$PROMPT_FILE" ]]; then
+  echo "Missing prompt file: $PROMPT_FILE" >&2
+  exit 2
+fi
+
+set -a
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+set +a
+
+: "${RETELL_API_KEY:?RETELL_API_KEY is required}"
+: "${B2B_AGENT_ID:?B2B_AGENT_ID is required}"
+
+BEGIN_AFTER_USER_SILENCE_MS="${BEGIN_AFTER_USER_SILENCE_MS:-10}"
+VOICE_SPEED="${VOICE_SPEED:-1.05}"
+MODEL_TEMPERATURE="${MODEL_TEMPERATURE:-0.03}"
+STT_ENDPOINTING_MS="${STT_ENDPOINTING_MS:-5}"
+MODEL_HIGH_PRIORITY="${MODEL_HIGH_PRIORITY:-true}"
+LLM_MODEL="${LLM_MODEL:-gemini-2.5-flash-lite}"
+START_SPEAKER="${START_SPEAKER:-user}"
+TRIM_TOOLS="${TRIM_TOOLS:-true}"
+export ROOT_DIR
+export RETELL_PROMPT_FILE="$PROMPT_FILE"
+export BEGIN_AFTER_USER_SILENCE_MS
+export VOICE_SPEED
+export MODEL_TEMPERATURE
+export STT_ENDPOINTING_MS
+export MODEL_HIGH_PRIORITY
+export LLM_MODEL
+export START_SPEAKER
+export TRIM_TOOLS
+
+python3 - <<'PY'
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+api = os.environ["RETELL_API_KEY"]
+agent_id = os.environ["B2B_AGENT_ID"]
+prompt_file = Path(os.environ.get("RETELL_PROMPT_FILE") or "")
+if not prompt_file:
+    root = Path(os.environ["ROOT_DIR"])
+    prompt_file = root / "scripts" / "prompts" / "b2b_fast_plain.prompt.txt"
+prompt = prompt_file.read_text(encoding="utf-8")
+
+def curl_json(args: list[str]) -> dict:
+    out = subprocess.check_output(args, text=True)
+    return json.loads(out)
+
+agent = curl_json(
+    [
+        "curl",
+        "-sS",
+        "-H",
+        f"Authorization: Bearer {api}",
+        f"https://api.retellai.com/get-agent/{agent_id}",
+    ]
+)
+llm_id = agent.get("response_engine", {}).get("llm_id")
+if not llm_id:
+    raise SystemExit("Could not resolve llm_id from get-agent response")
+
+llm_payload = {
+    "model": os.environ["LLM_MODEL"],
+    "start_speaker": os.environ["START_SPEAKER"],
+    "general_prompt": prompt,
+    "begin_after_user_silence_ms": int(os.environ["BEGIN_AFTER_USER_SILENCE_MS"]),
+    "model_temperature": float(os.environ["MODEL_TEMPERATURE"]),
+    "model_high_priority": os.environ.get("MODEL_HIGH_PRIORITY", "true").lower() in {"1", "true", "yes", "on"},
+}
+
+if os.environ.get("TRIM_TOOLS", "true").lower() in {"1", "true", "yes", "on"}:
+    current_llm = curl_json(
+        [
+            "curl",
+            "-sS",
+            "-H",
+            f"Authorization: Bearer {api}",
+            f"https://api.retellai.com/get-retell-llm/{llm_id}",
+        ]
+    )
+    keep = {
+        "end_call",
+        "send_evidence_package",
+        "mark_dnc_compliant",
+        "log_call_outcome",
+        "set_follow_up_plan",
+        "set_followup",
+    }
+    tools = current_llm.get("general_tools") or []
+    trimmed = [t for t in tools if (t.get("name") or "") in keep]
+    if trimmed:
+        llm_payload["general_tools"] = trimmed
+llm = curl_json(
+    [
+        "curl",
+        "-sS",
+        "-X",
+        "PATCH",
+        f"https://api.retellai.com/update-retell-llm/{llm_id}",
+        "-H",
+        f"Authorization: Bearer {api}",
+        "-H",
+        "Content-Type: application/json",
+        "--data",
+        json.dumps(llm_payload),
+    ]
+)
+
+agent_payload = {
+    "responsiveness": 1.0,
+    "interruption_sensitivity": 1.0,
+    "begin_message_delay_ms": 0,
+    "enable_backchannel": False,
+    "normalize_for_speech": False,
+    "voice_speed": float(os.environ["VOICE_SPEED"]),
+    "custom_stt_config": {"provider": "deepgram", "endpointing_ms": int(os.environ["STT_ENDPOINTING_MS"])},
+}
+updated_agent = curl_json(
+    [
+        "curl",
+        "-sS",
+        "-X",
+        "PATCH",
+        f"https://api.retellai.com/update-agent/{agent_id}",
+        "-H",
+        f"Authorization: Bearer {api}",
+        "-H",
+        "Content-Type: application/json",
+        "--data",
+        json.dumps(agent_payload),
+    ]
+)
+
+print(
+    json.dumps(
+        {
+            "status": "ok",
+            "agent_id": agent_id,
+            "llm_id": llm_id,
+            "llm_begin_after_user_silence_ms": llm.get("begin_after_user_silence_ms"),
+            "llm_start_speaker": llm.get("start_speaker"),
+            "llm_model": llm.get("model"),
+            "llm_model_temperature": llm.get("model_temperature"),
+            "agent_voice_speed": updated_agent.get("voice_speed"),
+            "agent_responsiveness": updated_agent.get("responsiveness"),
+            "agent_interruption_sensitivity": updated_agent.get("interruption_sensitivity"),
+            "agent_stt_endpointing_ms": (updated_agent.get("custom_stt_config") or {}).get("endpointing_ms"),
+        },
+        indent=2,
+    )
+)
+PY
+```
+
+## `scripts/retell_learning_loop.py`
+
+```python
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+import time
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+from urllib.parse import urlparse
+from urllib.request import urlopen
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+
+EMAIL_RE = re.compile(r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}\b")
+
+OBJECTION_PATTERNS: dict[str, re.Pattern[str]] = {
+    "no_email_policy": re.compile(r"\b(don't|do not|cant|can't)\s+(give|share).*(email)\b", re.I),
+    "busy": re.compile(r"\b(busy|with a patient|in a meeting|call back)\b", re.I),
+    "not_interested": re.compile(r"\b(not interested|we're good|we are good)\b", re.I),
+    "is_sales": re.compile(r"\b(is this sales|sales call|are you selling)\b", re.I),
+    "generic_inbox": re.compile(r"\b(info@|admin@|frontdesk@|contact@|hello@)\b", re.I),
+}
+
+
+@dataclass
+class LearningStats:
+    total_calls: int = 0
+    calls_with_transcript: int = 0
+    calls_with_recording_url: int = 0
+    direct_email_captures: int = 0
+    generic_email_captures: int = 0
+    avg_llm_p50_ms: float = 0.0
+    avg_e2e_p50_ms: float = 0.0
+    objections: dict[str, int] = None  # type: ignore[assignment]
+
+    def __post_init__(self) -> None:
+        if self.objections is None:
+            self.objections = {k: 0 for k in OBJECTION_PATTERNS}
+
+
+def _curl_json(*, api_key: str, method: str, url: str, payload: dict[str, Any] | None = None) -> Any:
+    cmd = [
+        "curl",
+        "-sS",
+        "-X",
+        method,
+        url,
+        "-H",
+        f"Authorization: Bearer {api_key}",
+    ]
+    if payload is not None:
+        cmd += ["-H", "Content-Type: application/json", "--data", json.dumps(payload)]
+    out = subprocess.check_output(cmd, text=True)
+    return json.loads(out)
+
+
+def _load_env_file_fallback() -> None:
+    """
+    Lightweight .env loader so `make learn` works without manual export.
+    Only sets keys that are currently missing in process env.
+    """
+    env_file = os.getenv("RETELL_ENV_FILE") or str(REPO_ROOT / ".env.retell.local")
+    p = Path(env_file)
+    if not p.exists():
+        return
+    for raw in p.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        k = k.strip()
+        v = v.strip().strip("'").strip('"')
+        if k and k not in os.environ:
+            os.environ[k] = v
+
+
+def _safe_ext_from_url(url: str) -> str:
+    path = urlparse(url).path
+    ext = Path(path).suffix.lower()
+    if ext in {".mp3", ".wav", ".m4a", ".ogg"}:
+        return ext
+    return ".bin"
+
+
+def _download(url: str, to_path: Path) -> None:
+    to_path.parent.mkdir(parents=True, exist_ok=True)
+    with urlopen(url, timeout=20) as r:
+        data = r.read()
+    to_path.write_bytes(data)
+
+
+def _persist_call(call: dict[str, Any], out_dir: Path, download_recordings: bool) -> dict[str, Any]:
+    if not isinstance(call, dict):
+        return {"call_id": "", "saved": False, "downloaded": False}
+    call_id = str(call.get("call_id") or "")
+    if not call_id:
+        return {"call_id": "", "saved": False, "downloaded": False}
+    call_dir = out_dir / call_id
+    call_dir.mkdir(parents=True, exist_ok=True)
+
+    (call_dir / "call.json").write_text(json.dumps(call, indent=2, sort_keys=True), encoding="utf-8")
+    transcript = str(call.get("transcript") or "").strip()
+    (call_dir / "transcript.txt").write_text(transcript + ("\n" if transcript else ""), encoding="utf-8")
+    twtc = call.get("transcript_with_tool_calls")
+    if twtc is not None:
+        (call_dir / "transcript_with_tool_calls.json").write_text(
+            json.dumps(twtc, indent=2, sort_keys=True), encoding="utf-8"
+        )
+
+    rec_url = str(call.get("recording_url") or "").strip()
+    downloaded = False
+    if download_recordings and rec_url:
+        ext = _safe_ext_from_url(rec_url)
+        rec_path = call_dir / f"recording{ext}"
+        if not rec_path.exists():
+            try:
+                _download(rec_url, rec_path)
+                downloaded = True
+            except Exception:
+                # Keep loop durable even if signed URL is expired.
+                (call_dir / "recording_download_error.txt").write_text(
+                    f"failed_at={int(time.time())}\nurl={rec_url}\n", encoding="utf-8"
+                )
+    return {"call_id": call_id, "saved": True, "downloaded": downloaded}
+
+
+def _load_call_jsons(out_dir: Path) -> list[dict[str, Any]]:
+    calls: list[dict[str, Any]] = []
+    if not out_dir.exists():
+        return calls
+    for p in sorted(out_dir.glob("*/call.json")):
+        try:
+            calls.append(json.loads(p.read_text(encoding="utf-8")))
+        except Exception:
+            continue
+    return calls
+
+
+def _select_local_calls(
+    calls: list[dict[str, Any]],
+    *,
+    limit: int,
+    agent_id: str,
+    include_non_ended: bool,
+) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for c in calls:
+        if not isinstance(c, dict):
+            continue
+        call_id = str(c.get("call_id") or "").strip()
+        if not call_id or call_id in seen:
+            continue
+        if agent_id and str(c.get("agent_id") or "") != agent_id:
+            continue
+        if not include_non_ended:
+            status = str(c.get("call_status") or "").lower()
+            if status and status != "ended":
+                continue
+        seen.add(call_id)
+        out.append(c)
+        if len(out) >= int(limit):
+            break
+    return out
+
+
+def _extract_agent_lines(transcript: str) -> list[str]:
+    out: list[str] = []
+    for line in transcript.splitlines():
+        line = line.strip()
+        if line.lower().startswith("agent:"):
+            out.append(line[6:].strip())
+    return out
+
+
+def _extract_user_lines(transcript: str) -> list[str]:
+    out: list[str] = []
+    for line in transcript.splitlines():
+        line = line.strip()
+        if line.lower().startswith("user:"):
+            out.append(line[5:].strip())
+    return out
+
+
+def _is_generic_email(email: str) -> bool:
+    local = email.split("@", 1)[0].lower()
+    return local in {"info", "admin", "frontdesk", "contact", "hello"}
+
+
+def _analyze(calls: list[dict[str, Any]]) -> LearningStats:
+    s = LearningStats()
+    llm_p50_vals: list[float] = []
+    e2e_p50_vals: list[float] = []
+
+    for c in calls:
+        if not isinstance(c, dict):
+            continue
+        s.total_calls += 1
+        transcript = str(c.get("transcript") or "")
+        if transcript.strip():
+            s.calls_with_transcript += 1
+        if c.get("recording_url"):
+            s.calls_with_recording_url += 1
+
+        emails = EMAIL_RE.findall(transcript)
+        for e in emails:
+            if _is_generic_email(e):
+                s.generic_email_captures += 1
+            else:
+                s.direct_email_captures += 1
+
+        for u in _extract_user_lines(transcript):
+            for k, pat in OBJECTION_PATTERNS.items():
+                if pat.search(u):
+                    s.objections[k] += 1
+
+        lat = c.get("latency") or {}
+        llm = lat.get("llm") or {}
+        e2e = lat.get("e2e") or {}
+        if isinstance(llm.get("p50"), (int, float)):
+            llm_p50_vals.append(float(llm["p50"]))
+        if isinstance(e2e.get("p50"), (int, float)):
+            e2e_p50_vals.append(float(e2e["p50"]))
+
+    if llm_p50_vals:
+        s.avg_llm_p50_ms = sum(llm_p50_vals) / len(llm_p50_vals)
+    if e2e_p50_vals:
+        s.avg_e2e_p50_ms = sum(e2e_p50_vals) / len(e2e_p50_vals)
+    return s
+
+
+def _build_learned_block(stats: LearningStats) -> str:
+    ranked = sorted(stats.objections.items(), key=lambda kv: kv[1], reverse=True)
+    top = [x for x in ranked if x[1] > 0][:3]
+    lines = [
+        "Live optimization notes from recent calls:",
+        f"- Corpus size: {stats.total_calls} calls",
+        f"- Direct email captures: {stats.direct_email_captures}",
+        f"- Generic inbox captures: {stats.generic_email_captures}",
+        f"- Mean LLM p50: {stats.avg_llm_p50_ms:.1f} ms",
+        f"- Mean E2E p50: {stats.avg_e2e_p50_ms:.1f} ms",
+    ]
+    if top:
+        lines.append("- Top objections and responses:")
+        mapping = {
+            "no_email_policy": "If they refuse direct email, ask for best inbox and proceed.",
+            "busy": "If busy, skip pitch and ask only for routing email.",
+            "not_interested": "Offer archive-or-send binary choice once, then route.",
+            "is_sales": "Use one-line no-pitch reply and return to email ask.",
+            "generic_inbox": "Push back once, then accept generic inbox immediately.",
+        }
+        for k, n in top:
+            lines.append(f"  - {k}: seen {n} times. {mapping.get(k, '')}".rstrip())
+    return "\n".join(lines).strip()
+
+
+def _write_reports(*, stats: LearningStats, out_dir: Path) -> Path:
+    report_dir = out_dir / "analysis"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "total_calls": stats.total_calls,
+        "calls_with_transcript": stats.calls_with_transcript,
+        "calls_with_recording_url": stats.calls_with_recording_url,
+        "direct_email_captures": stats.direct_email_captures,
+        "generic_email_captures": stats.generic_email_captures,
+        "avg_llm_p50_ms": round(stats.avg_llm_p50_ms, 2),
+        "avg_e2e_p50_ms": round(stats.avg_e2e_p50_ms, 2),
+        "objections": stats.objections,
+        "learned_block": _build_learned_block(stats),
+    }
+    json_path = report_dir / "latest.json"
+    md_path = report_dir / "latest.md"
+    json_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    md_lines = [
+        "# Retell Learning Loop Report",
+        "",
+        f"- total_calls: {payload['total_calls']}",
+        f"- calls_with_transcript: {payload['calls_with_transcript']}",
+        f"- calls_with_recording_url: {payload['calls_with_recording_url']}",
+        f"- direct_email_captures: {payload['direct_email_captures']}",
+        f"- generic_email_captures: {payload['generic_email_captures']}",
+        f"- avg_llm_p50_ms: {payload['avg_llm_p50_ms']}",
+        f"- avg_e2e_p50_ms: {payload['avg_e2e_p50_ms']}",
+        "",
+        "## Objection Counts",
+    ]
+    for k, v in sorted(stats.objections.items()):
+        md_lines.append(f"- {k}: {v}")
+    md_lines += ["", "## Learned Block", "", payload["learned_block"], ""]
+    md_path.write_text("\n".join(md_lines), encoding="utf-8")
+    return json_path
+
+
+def _build_generated_prompt(base_prompt: str, learned_block: str) -> str:
+    marker_start = "## LEARNED_CALL_PLAYBOOK_START"
+    marker_end = "## LEARNED_CALL_PLAYBOOK_END"
+    block = f"{marker_start}\n{learned_block}\n{marker_end}"
+    if marker_start in base_prompt and marker_end in base_prompt:
+        pre = base_prompt.split(marker_start, 1)[0].rstrip()
+        post = base_prompt.split(marker_end, 1)[1].lstrip()
+        return f"{pre}\n\n{block}\n\n{post}".strip() + "\n"
+    return base_prompt.rstrip() + "\n\n" + block + "\n"
+
+
+def main() -> int:
+    _load_env_file_fallback()
+
+    def _rel(p: Path) -> str:
+        try:
+            return str(p.relative_to(REPO_ROOT))
+        except Exception:
+            return str(p)
+
+    ap = argparse.ArgumentParser(description="Sync Retell calls and auto-refine prompt after threshold.")
+    ap.add_argument("--limit", type=int, default=100, help="list-calls limit per run")
+    ap.add_argument("--threshold", type=int, default=250, help="minimum call corpus to auto-refine")
+    ap.add_argument("--out-dir", default="data/retell_calls")
+    ap.add_argument(
+        "--local-calls-dir",
+        default=str((REPO_ROOT / "data/retell_calls")),
+        help="offline mode input directory containing call.json files",
+    )
+    ap.add_argument("--offline", action="store_true", default=False, help="analyze local corpus only")
+    ap.add_argument("--agent-id", default=os.getenv("B2B_AGENT_ID", ""))
+    ap.add_argument("--download-recordings", action="store_true", default=True)
+    ap.add_argument("--no-download-recordings", dest="download_recordings", action="store_false")
+    ap.add_argument(
+        "--include-non-ended",
+        action="store_true",
+        default=False,
+        help="include non-ended calls in corpus sync (default false)",
+    )
+    ap.add_argument("--apply", action="store_true", default=True, help="apply refined prompt to live Retell LLM")
+    ap.add_argument("--no-apply", dest="apply", action="store_false")
+    args = ap.parse_args()
+
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    if args.offline:
+        api_key = os.getenv("RETELL_API_KEY", "").strip()
+        if api_key:
+            os.environ["RETELL_API_KEY"] = api_key
+        calls = _select_local_calls(
+            _load_call_jsons(Path(args.local_calls_dir)),
+            limit=int(args.limit),
+            agent_id=args.agent_id,
+            include_non_ended=args.include_non_ended,
+        )
+        stats = _analyze(calls)
+        report_path = _write_reports(stats=stats, out_dir=out_dir)
+
+        generated_prompt = REPO_ROOT / "scripts" / "prompts" / "b2b_fast_plain.generated.prompt.txt"
+        base_prompt_path = REPO_ROOT / "scripts" / "prompts" / "b2b_fast_plain.prompt.txt"
+        base_prompt = base_prompt_path.read_text(encoding="utf-8")
+        learned_block = _build_learned_block(stats)
+        generated_prompt.write_text(_build_generated_prompt(base_prompt, learned_block), encoding="utf-8")
+
+        print(
+            json.dumps(
+                {
+                    "status": "ok",
+                    "mode": "offline",
+                    "saved_calls_this_run": len(calls),
+                    "downloaded_recordings_this_run": 0,
+                    "corpus_total_calls": stats.total_calls,
+                    "threshold": int(args.threshold),
+                    "applied_refinement": False,
+                    "report_json": _rel(report_path),
+                    "generated_prompt": _rel(generated_prompt),
+                },
+                indent=2,
+                    )
+        )
+        return 0
+
+    api_key = os.getenv("RETELL_API_KEY", "").strip()
+    if not api_key:
+        print("RETELL_API_KEY is required", file=sys.stderr)
+        return 2
+
+    state_path = out_dir / "_state.json"
+    state = {}
+    if state_path.exists():
+        try:
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+        except Exception:
+            state = {}
+    seen_ids: set[str] = set(state.get("seen_call_ids", []))
+
+    calls = _curl_json(
+        api_key=api_key,
+        method="POST",
+        url="https://api.retellai.com/v2/list-calls",
+        payload={"limit": int(args.limit)},
+    )
+    if not isinstance(calls, list):
+        print("Unexpected list-calls response shape", file=sys.stderr)
+        return 1
+
+    saved = 0
+    downloaded = 0
+    processed_ids: set[str] = set()
+    for c in calls:
+        if not isinstance(c, dict):
+            continue
+        call_id = str((c or {}).get("call_id") or "")
+        if not call_id:
+            continue
+        if call_id in processed_ids:
+            continue
+        processed_ids.add(call_id)
+        if args.agent_id and str(c.get("agent_id") or "") != args.agent_id:
+            continue
+        if not args.include_non_ended:
+            status = str(c.get("call_status") or "").lower()
+            if status and status != "ended":
+                continue
+        # Refresh call details to capture late-added artifacts.
+        call_full = _curl_json(
+            api_key=api_key,
+            method="GET",
+            url=f"https://api.retellai.com/v2/get-call/{call_id}",
+        )
+        result = _persist_call(call_full, out_dir, args.download_recordings)
+        if result.get("saved"):
+            saved += 1
+            seen_ids.add(call_id)
+        if result.get("downloaded"):
+            downloaded += 1
+
+    state["seen_call_ids"] = sorted(seen_ids)
+    state["last_sync_unix"] = int(time.time())
+    state_path.write_text(json.dumps(state, indent=2, sort_keys=True), encoding="utf-8")
+
+    corpus = _load_call_jsons(out_dir)
+    stats = _analyze(corpus)
+    report_path = _write_reports(stats=stats, out_dir=out_dir)
+
+    generated_prompt = REPO_ROOT / "scripts" / "prompts" / "b2b_fast_plain.generated.prompt.txt"
+    base_prompt_path = REPO_ROOT / "scripts" / "prompts" / "b2b_fast_plain.prompt.txt"
+    base_prompt = base_prompt_path.read_text(encoding="utf-8")
+    learned_block = _build_learned_block(stats)
+    generated_prompt.write_text(_build_generated_prompt(base_prompt, learned_block), encoding="utf-8")
+
+    applied = False
+    if args.apply and stats.total_calls >= int(args.threshold):
+        env = os.environ.copy()
+        env["RETELL_PROMPT_FILE"] = str(generated_prompt)
+        subprocess.check_call(["bash", str(REPO_ROOT / "scripts" / "retell_fast_recover.sh")], env=env)
+        applied = True
+
+    print(
+        json.dumps(
+            {
+                "status": "ok",
+                "mode": "live",
+                "saved_calls_this_run": saved,
+                "downloaded_recordings_this_run": downloaded,
+                "corpus_total_calls": stats.total_calls,
+                "threshold": int(args.threshold),
+                "applied_refinement": applied,
+                "report_json": _rel(report_path),
+                "generated_prompt": _rel(generated_prompt),
+            },
+            indent=2,
+        )
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+## `scripts/retell_restore_agent.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
+BACKUP_JSON="${1:-}"
+
+if [[ -z "$BACKUP_JSON" ]]; then
+  echo "Usage: $0 data/retell_agent_backups/<backup>.json" >&2
+  exit 2
+fi
+if [[ ! -f "$BACKUP_JSON" ]]; then
+  echo "Missing backup file: $BACKUP_JSON" >&2
+  exit 2
+fi
+if [[ ! -f "$ENV_FILE" ]]; then
+  echo "Missing env file: $ENV_FILE" >&2
+  exit 2
+fi
+
+set -a
+# shellcheck disable=SC1090
+source "$ENV_FILE"
+set +a
+
+: "${RETELL_API_KEY:?RETELL_API_KEY is required}"
+
+python3 - <<'PY'
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+api = os.environ["RETELL_API_KEY"].strip()
+backup_path = Path(sys.argv[1]).resolve()
+backup = json.loads(backup_path.read_text(encoding="utf-8"))
+agent_id = str(backup.get("agent_id") or backup.get("id") or "").strip()
+if not agent_id:
+    raise SystemExit("Backup JSON missing agent_id")
+
+payload = {}
+# Restore only the fields we know are safe to patch.
+if "response_engine" in backup and backup["response_engine"] is not None:
+    payload["response_engine"] = backup["response_engine"]
+if "llm_websocket_url" in backup and backup["llm_websocket_url"] is not None:
+    payload["llm_websocket_url"] = backup["llm_websocket_url"]
+
+if not payload:
+    raise SystemExit("Backup JSON had no response_engine/llm_websocket_url to restore")
+
+cmd = [
+    "curl",
+    "-sS",
+    "-X",
+    "PATCH",
+    f"https://api.retellai.com/update-agent/{agent_id}",
+    "-H",
+    f"Authorization: Bearer {api}",
+    "-H",
+    "Content-Type: application/json",
+    "--data",
+    json.dumps(payload),
+]
+
+out = subprocess.check_output(cmd, text=True)
+resp = json.loads(out)
+print(json.dumps({"status": "ok", "agent_id": agent_id, "response_engine": resp.get("response_engine")}, indent=2))
+PY
+"$BACKUP_JSON"
+```
+
+## `scripts/revenue_ops_loop.py`
+
+```python
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import asyncio
+import json
+import os
+import re
+import sys
+import time
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+import random
+from urllib.request import Request, urlopen
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from app.config import BrainConfig
+from app.metrics import VIC
+from tests.harness.transport_harness import HarnessSession
+
+
+EMAIL_RE = re.compile(r"\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}\b")
+GENERIC_LOCAL = {"info", "admin", "frontdesk", "contact", "hello", "office"}
+CLOSE_REQUEST_RE = re.compile(
+    r"\b(close|close this out|close this call|close the call|archive|send it|send this|call me now|hang up|hang up now|end call|end this call)\b",
+    re.I,
+)
+BETA_ALPHA = 2.0
+BETA_BETA = 8.0
+FR_P95_TRIM_FRACTION = 0.08
+LATENCY_CANDIDATES_SAFE_MAX_MS = 5_000.0
+
+# very lightweight fallback matcher for spoken emails like "name at gmail dot com"
+SPOKEN_EMAIL_RE = re.compile(
+    r"\b([a-z0-9._%+-]{1,64})\s+(?:at|@)\s+([a-z0-9.-]{1,128})\s+(?:dot|\.)\s+([a-z]{2,10})\b",
+    re.I,
+)
+
+OBJECTION_PATTERNS: dict[str, re.Pattern[str]] = {
+    "is_sales": re.compile(r"\b(is this sales|sales call|are you selling)\b", re.I),
+    "busy": re.compile(r"\b(busy|with a patient|in a meeting|call back)\b", re.I),
+    "no_email_policy": re.compile(r"\b(don't|do not|cant|can't|won't|will not)\s+(give|share).*(email)\b", re.I),
+    "generic_inbox": re.compile(r"\b(info@|admin@|frontdesk@|contact@|hello@)\b", re.I),
+    "not_interested": re.compile(r"\b(not interested|not right now|we're good|we are good)\b", re.I),
+}
+
+
+def _looks_like_call_record(obj: Any) -> bool:
+    if not isinstance(obj, dict):
+        return False
+    if "call_id" in obj:
+        return True
+    if isinstance(obj.get("latency"), dict):
+        return True
+    if "transcript_object" in obj or "transcript_with_tool_calls" in obj or "transcript" in obj:
+        return True
+    return False
+
+
+@dataclass
+class CallFeatures:
+    call_id: str
+    ended: bool
+    answered: bool
+    first_response_latency_ms: float | None
+    email_captured: bool
+    direct_email_captured: bool
+    close_intent: bool
+    close_to_email_success: bool
+    time_to_email_capture_sec: float | None
+    turns_to_capture: int | None
+    objection_hits: dict[str, int]
+
+
+@dataclass
+class RevenueOpsSummary:
+    corpus_total_calls: int
+    ended_calls: int
+    answered_calls: int
+    email_captures: int
+    direct_email_captures: int
+    generic_email_captures: int
+    email_capture_rate: float
+    direct_email_capture_rate: float
+    close_request_count: int
+    close_to_email_success_count: int
+    close_request_rate: float
+    close_to_email_rate: float
+    first_response_latency_p50_ms: float | None
+    first_response_latency_p95_ms: float | None
+    time_to_email_capture_p50_sec: float | None
+    time_to_email_capture_p95_sec: float | None
+    turns_to_capture_p50: float | None
+    turns_to_capture_p95: float | None
+    objection_counts: dict[str, int]
+    objective_score: float
+
+
+def _quantile(vals: list[float], q: float, *, trim_fraction: float = 0.0) -> float | None:
+    if not vals:
+        return None
+    arr = sorted(float(v) for v in vals if isinstance(v, (int, float)) and v >= 0.0)
+    if not arr:
+        return None
+    if trim_fraction > 0.0:
+        drop = int(len(arr) * trim_fraction)
+        if 2 * drop >= len(arr):
+            drop = max(0, (len(arr) // 2) - 1)
+        if drop > 0:
+            arr = arr[drop : len(arr) - drop]
+    if len(arr) == 1:
+        return float(arr[0])
+    idx = (len(arr) - 1) * q
+    lo = int(idx)
+    hi = min(lo + 1, len(arr) - 1)
+    frac = idx - lo
+    return float(arr[lo] + (arr[hi] - arr[lo]) * frac)
+
+
+def _is_generic_email(email: str) -> bool:
+    local = email.split("@", 1)[0].lower().strip()
+    return local in GENERIC_LOCAL
+
+
+def _extract_text_lines(call: dict[str, Any]) -> list[tuple[str, str, float | None]]:
+    lines: list[tuple[str, str, float | None]] = []
+    tobj = call.get("transcript_object")
+    if isinstance(tobj, list) and tobj:
+        for item in tobj:
+            if not isinstance(item, dict):
+                continue
+            role = str(item.get("role") or "").strip().lower()
+            text = str(item.get("content") or "").strip()
+            t_end: float | None = None
+            words = item.get("words")
+            if isinstance(words, list) and words:
+                last = words[-1]
+                if isinstance(last, dict) and isinstance(last.get("end"), (int, float)):
+                    t_end = float(last["end"])
+            if role and text:
+                lines.append((role, text, t_end))
+        if lines:
+            return lines
+
+    raw = str(call.get("transcript") or "")
+    for line in raw.splitlines():
+        ln = line.strip()
+        if not ln or ":" not in ln:
+            continue
+        role, content = ln.split(":", 1)
+        r = role.strip().lower()
+        if r in {"agent", "user"}:
+            lines.append((r, content.strip(), None))
+    return lines
+
+
+def _find_email_capture(lines: list[tuple[str, str, float | None]]) -> tuple[bool, bool, float | None, int | None]:
+    for idx, (_, text, t_end) in enumerate(lines, start=1):
+        emails = EMAIL_RE.findall(text)
+        if emails:
+            direct = any(not _is_generic_email(e) for e in emails)
+            return True, direct, t_end, idx
+        if SPOKEN_EMAIL_RE.search(text):
+            return True, True, t_end, idx
+    return False, False, None, None
+
+
+def _extract_close_progression(lines: list[tuple[str, str, float | None]]) -> tuple[bool, bool, int, int]:
+    """
+    Detect whether user asks to close and whether any direct email was supplied after that request.
+
+    Returns:
+        (close_intent, close_to_email_success, close_turn_idx, close_email_turn_idx)
+    """
+    close_turn = 0
+    close_intent = False
+    close_to_email_success = False
+    close_success_turn = 0
+    for idx, role, text in [(i + 1, r, t) for i, (r, t, _) in enumerate(lines)]:
+        if role != "user":
+            continue
+        has_email, has_direct_email = _email_in_text(text)
+        if CLOSE_REQUEST_RE.search(text or "") and not close_intent:
+            close_intent = True
+            close_turn = idx
+            if has_email and has_direct_email:
+                close_to_email_success = True
+                close_success_turn = idx
+            continue
+        if not close_intent:
+            continue
+        if has_email and has_direct_email:
+            close_to_email_success = True
+            close_success_turn = idx
+            break
+    if close_turn == 0:
+        return False, False, 0, 0
+    if not close_to_email_success:
+        return True, False, close_turn, close_success_turn
+    return True, True, close_turn, close_success_turn
+
+
+def _email_in_text(text: str) -> tuple[bool, bool]:
+    emails = EMAIL_RE.findall(text)
+    if emails:
+        direct = any(not _is_generic_email(e) for e in emails)
+        return True, direct
+    if SPOKEN_EMAIL_RE.search(text):
+        return True, True
+    return False, False
+
+
+def _first_response_latency_ms(
+    call: dict[str, Any],
+    lines: list[tuple[str, str, float | None]],
+    *,
+    replay_ms: float | None = None,
+) -> float | None:
+    if replay_ms is not None and isinstance(replay_ms, (int, float)):
+        replay_ms_f = float(replay_ms)
+        if 0.0 <= replay_ms_f <= LATENCY_CANDIDATES_SAFE_MAX_MS:
+            return replay_ms_f
+    lat = call.get("latency") or {}
+    candidates = ["llm", "e2e", "asr", "s2s"]
+    for key in candidates:
+        src = lat.get(key) or {}
+        if not isinstance(src, dict):
+            continue
+        p50 = src.get("p50")
+        if isinstance(p50, (int, float)):
+            p50_val = float(p50)
+            if 0.0 <= p50_val <= LATENCY_CANDIDATES_SAFE_MAX_MS:
+                return p50_val
+    return None
+
+
+def _extract_features(call: dict[str, Any], *, replay_ms: float | None = None) -> CallFeatures:
+    call_id = str(call.get("call_id") or "")
+    status = str(call.get("call_status") or "").lower()
+    ended = status == "ended"
+
+    lines = _extract_text_lines(call)
+    answered = any(role == "user" for role, _, _ in lines)
+    fr = _first_response_latency_ms(call, lines, replay_ms=replay_ms)
+
+    captured, direct, t_cap, turns = _find_email_capture(lines)
+    close_intent, close_to_email_success, close_turn, close_success_turn = _extract_close_progression(lines)
+    if close_turn and close_success_turn and close_success_turn < close_turn:
+        close_to_email_success = False
+
+    objection_hits = {k: 0 for k in OBJECTION_PATTERNS}
+    for role, text, _ in lines:
+        if role != "user":
+            continue
+        for name, pat in OBJECTION_PATTERNS.items():
+            if pat.search(text):
+                objection_hits[name] += 1
+
+    return CallFeatures(
+        call_id=call_id,
+        ended=ended,
+        answered=answered,
+        first_response_latency_ms=fr,
+        email_captured=captured,
+        direct_email_captured=(captured and direct),
+        close_intent=close_intent,
+        close_to_email_success=(captured and close_intent and close_to_email_success),
+        time_to_email_capture_sec=t_cap,
+        turns_to_capture=turns,
+        objection_hits=objection_hits,
+    )
+
+
+async def _replay_first_response_ms(call: dict[str, Any], *, profile: str = "b2b") -> float | None:
+    call_id = str(call.get("call_id") or "replay-call")
+    lines = _extract_text_lines(call)
+    if not lines:
+        return None
+
+    cfg = BrainConfig(
+        conversation_profile=profile,
+        speak_first=False,
+        retell_send_update_agent_on_connect=False,
+    )
+    session = await HarnessSession.start(
+        session_id=call_id,
+        cfg=cfg,
+        use_real_clock=True,
+    )
+    metric_key = VIC["turn_final_to_first_segment_ms"]
+
+    try:
+        # Consume startup frames (config + initial empty speech response).
+        _ = await session.recv_outbound()
+        _ = await session.recv_outbound()
+
+        transcript: list[dict[str, str]] = []
+        response_id = 1
+        for role, content, _ in lines:
+            if role not in {"agent", "user"}:
+                continue
+            if not str(content).strip():
+                continue
+            transcript.append({"role": role, "content": content})
+            if role != "user":
+                continue
+
+            before = len(session.metrics.get_hist(metric_key))
+            await session.send_inbound_obj(
+                {
+                    "interaction_type": "response_required",
+                    "response_id": response_id,
+                    "transcript": transcript,
+                },
+                expect_ack=False,
+            )
+            response_id += 1
+
+            for _ in range(240):
+                observed = session.metrics.get_hist(metric_key)
+                if len(observed) > before:
+                    samples = [
+                        float(v)
+                        for v in observed[before:]
+                        if isinstance(v, (int, float))
+                    ]
+                    if samples:
+                        return float(samples[0])
+                await asyncio.sleep(0)
+    finally:
+        await session.stop()
+    return None
+
+
+async def _replay_latency_map(
+    calls: list[dict[str, Any]],
+    *,
+    seed: int | None = None,
+    default_profile: str = "b2b",
+) -> dict[str, float]:
+    ordered = _apply_call_order(calls, seed=seed)
+    result: dict[str, float] = {}
+    for call in ordered:
+        cid = str(call.get("call_id") or "").strip()
+        if not cid:
+            continue
+        profile = str(call.get("conversation_profile") or default_profile).lower()
+        if profile not in {"b2b", "clinic"}:
+            profile = default_profile
+        latency_ms = await _replay_first_response_ms(call, profile=profile)
+        if isinstance(latency_ms, (int, float)):
+            result[cid] = float(latency_ms)
+    return result
+
+
+def _load_calls(calls_dir: Path) -> list[dict[str, Any]]:
+    calls: list[dict[str, Any]] = []
+    if not calls_dir.exists():
+        return calls
+    seen_call_ids: set[str] = set()
+    for p in sorted(calls_dir.rglob("*.json")):
+        try:
+            obj = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if not _looks_like_call_record(obj):
+            continue
+
+        # Deduplicate by call_id when both legacy and alt layouts are present.
+        call_id = str((obj or {}).get("call_id", "")).strip()
+        if call_id and call_id in seen_call_ids:
+            continue
+        if call_id:
+            seen_call_ids.add(call_id)
+        calls.append(obj)
+    return calls
+
+
+def _apply_call_order(
+    calls: list[dict[str, Any]], *, seed: int | None = None
+) -> list[dict[str, Any]]:
+    ordered = list(calls)
+    if seed is not None:
+        rng = random.Random(int(seed))
+        rng.shuffle(ordered)
+    return ordered
+
+
+def _objective_score(
+    *,
+    answered_calls: int,
+    email_capture_count: int,
+    direct_email_capture_count: int,
+    close_request_count: int,
+    close_to_email_success_count: int,
+    first_response_latency_p95_ms: float | None,
+    turns_to_capture_p50: float | None,
+    time_to_capture_p50_sec: float | None,
+) -> float:
+    # 0..100 score with shrinkage to prevent small samples overfitting.
+    fr_penalty = min(1.0, (first_response_latency_p95_ms or 4000.0) / 2500.0)
+    turns_penalty = min(1.0, (turns_to_capture_p50 or 12.0) / 12.0)
+    tcap_penalty = min(1.0, (time_to_capture_p50_sec or 120.0) / 120.0)
+
+    email_capture_rate = _beta_success_rate(email_capture_count, answered_calls)
+    direct_email_capture_rate = _beta_success_rate(direct_email_capture_count, answered_calls)
+    close_request_rate = _beta_success_rate(close_request_count, answered_calls, default=0.0)
+    close_to_email_rate = _beta_success_rate(
+        close_to_email_success_count,
+        close_request_count,
+        default=0.0,
+    )
+
+    base = (
+        0.30 * email_capture_rate
+        + 0.20 * direct_email_capture_rate
+        + 0.20 * close_to_email_rate
+        + 0.10 * close_request_rate
+        + 0.10 * (1.0 - fr_penalty)
+        + 0.05 * (1.0 - turns_penalty)
+        + 0.05 * (1.0 - tcap_penalty)
+    )
+    return round(max(0.0, min(100.0, base * 100.0)), 2)
+
+
+def _beta_success_rate(successes: int, trials: int, *, default: float = 0.0) -> float:
+    if trials <= 0:
+        return float(default)
+    return (BETA_ALPHA + successes) / (BETA_ALPHA + BETA_BETA + trials)
+
+
+def _speed_grade(first_response_latency_p95_ms: float | None) -> str:
+    if first_response_latency_p95_ms is None:
+        return "unknown"
+    if first_response_latency_p95_ms < 700:
+        return "excellent"
+    if first_response_latency_p95_ms < 1000:
+        return "good"
+    if first_response_latency_p95_ms < 1500:
+        return "warning"
+    return "poor"
+
+
+def build_summary(
+    calls: list[dict[str, Any]],
+    *,
+    replay_latencies: dict[str, float] | None = None,
+) -> RevenueOpsSummary:
+    replay_latencies = replay_latencies or {}
+    features = [
+        _extract_features(c, replay_ms=replay_latencies.get(str(c.get("call_id") or "")))
+        for c in calls
+    ]
+
+    ended_calls = [f for f in features if f.ended]
+    answered_calls = [f for f in ended_calls if f.answered]
+
+    email_caps = [f for f in answered_calls if f.email_captured]
+    direct_caps = [f for f in answered_calls if f.direct_email_captured]
+    close_reqs = [f for f in answered_calls if f.close_intent]
+    close_success = [f for f in close_reqs if f.close_to_email_success]
+    generic_caps = len(email_caps) - len(direct_caps)
+
+    fr_vals = [f.first_response_latency_ms for f in answered_calls if f.first_response_latency_ms is not None]
+    tcap_vals = [f.time_to_email_capture_sec for f in email_caps if f.time_to_email_capture_sec is not None]
+    turns_vals = [float(f.turns_to_capture) for f in email_caps if f.turns_to_capture is not None]
+
+    objection_counts = {k: 0 for k in OBJECTION_PATTERNS}
+    for f in answered_calls:
+        for k, v in f.objection_hits.items():
+            objection_counts[k] += int(v)
+
+    denom = len(answered_calls)
+    email_rate = len(email_caps) / denom if denom else 0.0
+    direct_rate = len(direct_caps) / denom if denom else 0.0
+    fr_p50 = _quantile([float(x) for x in fr_vals], 0.50)
+    fr_p95 = _quantile([float(x) for x in fr_vals], 0.95, trim_fraction=FR_P95_TRIM_FRACTION)
+    tcap_p50 = _quantile([float(x) for x in tcap_vals], 0.50, trim_fraction=FR_P95_TRIM_FRACTION)
+    tcap_p95 = _quantile([float(x) for x in tcap_vals], 0.95, trim_fraction=FR_P95_TRIM_FRACTION)
+    turns_p50 = _quantile([float(x) for x in turns_vals], 0.50, trim_fraction=FR_P95_TRIM_FRACTION)
+    turns_p95 = _quantile([float(x) for x in turns_vals], 0.95, trim_fraction=FR_P95_TRIM_FRACTION)
+
+    score = _objective_score(
+        answered_calls=denom,
+        email_capture_count=len(email_caps),
+        direct_email_capture_count=len(direct_caps),
+        close_request_count=len(close_reqs),
+        close_to_email_success_count=len(close_success),
+        first_response_latency_p95_ms=fr_p95,
+        turns_to_capture_p50=turns_p50,
+        time_to_capture_p50_sec=tcap_p50,
+    )
+
+    return RevenueOpsSummary(
+        corpus_total_calls=len(features),
+        ended_calls=len(ended_calls),
+        answered_calls=len(answered_calls),
+        email_captures=len(email_caps),
+        direct_email_captures=len(direct_caps),
+        generic_email_captures=generic_caps,
+        email_capture_rate=round(email_rate, 4),
+        direct_email_capture_rate=round(direct_rate, 4),
+        close_request_count=len(close_reqs),
+        close_to_email_success_count=len(close_success),
+        close_request_rate=round(len(close_reqs) / denom, 4) if denom else 0.0,
+        close_to_email_rate=round(len(close_success) / max(1, len(close_reqs)), 4) if len(close_reqs) else 0.0,
+        first_response_latency_p50_ms=fr_p50,
+        first_response_latency_p95_ms=fr_p95,
+        time_to_email_capture_p50_sec=tcap_p50,
+        time_to_email_capture_p95_sec=tcap_p95,
+        turns_to_capture_p50=turns_p50,
+        turns_to_capture_p95=turns_p95,
+        objection_counts=objection_counts,
+        objective_score=score,
+    )
+
+
+def _recommend_actions(s: RevenueOpsSummary) -> list[str]:
+    actions: list[str] = []
+
+    if s.first_response_latency_p95_ms is None or s.first_response_latency_p95_ms > 1000:
+        actions.append(
+            "Latency: first response p95 is too high. Keep start_speaker=user, trim prompt opening, and stay on gemini-2.5-flash-lite."
+        )
+
+    if s.email_capture_rate < 0.20:
+        actions.append(
+            "Capture: email capture rate is low. Force one-question flow: identity -> value in 8 words -> direct email ask."
+        )
+
+    if s.direct_email_capture_rate < 0.10:
+        actions.append(
+            "Direct inbox: push once for direct manager email, then accept best routing inbox immediately to avoid dead turns."
+        )
+
+    if s.close_request_rate < 0.60:
+        actions.append(
+            "Progression: close-or-send path is under-triggered. Keep asking 'close this out or send a short manager email' every 1-2 turns."
+        )
+
+    if s.close_request_count > 0 and s.close_to_email_rate < 0.70:
+        actions.append(
+            "Close completion: close requests are not converting. Add a forced one-turn retry and transfer to inbox fallback only after two failed manager-email turns."
+        )
+
+    if (s.turns_to_capture_p50 or 99) > 6:
+        actions.append(
+            "Efficiency: median turns to capture is high. Cap to one objection response + one binary close (archive vs send)."
+        )
+
+    if s.objection_counts.get("is_sales", 0) > 0:
+        actions.append(
+            "Objection 'is sales' is recurring. Use one-liner: 'No pitch. Just sending the missed-call report.' then ask email again."
+        )
+
+    if s.objection_counts.get("no_email_policy", 0) > 0:
+        actions.append(
+            "No-email policy hit detected. Add fallback close: ask who to address in subject line and send to provided inbox."
+        )
+
+    if not actions:
+        actions.append("Maintain current script/settings; objective metrics are inside target bands.")
+    return actions
+
+
+def _summary_to_dict(s: RevenueOpsSummary) -> dict[str, Any]:
+    return {
+        "corpus_total_calls": s.corpus_total_calls,
+        "ended_calls": s.ended_calls,
+        "answered_calls": s.answered_calls,
+        "email_captures": s.email_captures,
+        "direct_email_captures": s.direct_email_captures,
+        "generic_email_captures": s.generic_email_captures,
+        "email_capture_rate": s.email_capture_rate,
+        "direct_email_capture_rate": s.direct_email_capture_rate,
+        "close_request_count": s.close_request_count,
+        "close_to_email_success_count": s.close_to_email_success_count,
+        "close_request_rate": s.close_request_rate,
+        "close_to_email_rate": s.close_to_email_rate,
+        "time_to_email_capture_p50_sec": s.time_to_email_capture_p50_sec,
+        "time_to_email_capture_p95_sec": s.time_to_email_capture_p95_sec,
+        "turns_to_capture_p50": s.turns_to_capture_p50,
+        "turns_to_capture_p95": s.turns_to_capture_p95,
+        "first_response_latency_p50_ms": s.first_response_latency_p50_ms,
+        "first_response_latency_p95_ms": s.first_response_latency_p95_ms,
+        "first_response_latency_band": _speed_grade(s.first_response_latency_p95_ms),
+        "objection_counts": s.objection_counts,
+        "objective_score": s.objective_score,
+    }
+
+
+def _write_report(*, out_dir: Path, summary: RevenueOpsSummary, actions: list[str]) -> tuple[Path, Path]:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "ts_unix": int(time.time()),
+        "objective_function": {
+            "maximize": ["email_capture_rate", "direct_email_capture_rate", "close_request_rate", "close_to_email_rate"],
+            "minimize": ["time_to_email_capture", "turns_to_capture", "first_response_latency"],
+        },
+        "summary": _summary_to_dict(summary),
+        "recommended_actions": actions,
+    }
+    json_path = out_dir / "latest.json"
+    md_path = out_dir / "latest.md"
+    json_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+
+    lines = [
+        "# Revenue Ops Report",
+        "",
+        f"- objective_score: {summary.objective_score}",
+        f"- email_capture_rate: {summary.email_capture_rate}",
+        f"- direct_email_capture_rate: {summary.direct_email_capture_rate}",
+        f"- close_request_rate: {summary.close_request_rate}",
+        f"- close_to_email_rate: {summary.close_to_email_rate}",
+        f"- first_response_latency_p95_ms: {summary.first_response_latency_p95_ms}",
+        f"- first_response_latency_band: {_speed_grade(summary.first_response_latency_p95_ms)}",
+        f"- turns_to_capture_p50: {summary.turns_to_capture_p50}",
+        f"- time_to_email_capture_p50_sec: {summary.time_to_email_capture_p50_sec}",
+        "",
+        "## Recommended Next Actions",
+    ]
+    for i, a in enumerate(actions, start=1):
+        lines.append(f"{i}. {a}")
+    lines.append("")
+    md_path.write_text("\n".join(lines), encoding="utf-8")
+    return json_path, md_path
+
+
+def _post_json(url: str, payload: dict[str, Any], timeout_s: float = 10.0) -> None:
+    req = Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urlopen(req, timeout=timeout_s) as r:
+        _ = r.read()
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Revenue Ops loop from Retell call corpus.")
+    ap.add_argument("--calls-dir", default="data/retell_calls", help="Directory containing call_*/call.json")
+    ap.add_argument("--out-dir", default="data/revenue_ops", help="Where to write latest report")
+    ap.add_argument("--limit", type=int, default=0, help="Optional max calls to include; 0 disables.")
+    ap.add_argument("--max-calls", type=int, default=0, help="Optional hard cap on calls; 0 disables.")
+    ap.add_argument("--min-calls", type=int, default=0, help="Fail if fewer calls are available.")
+    ap.add_argument("--seed", type=int, default=None, help="Optional deterministic seed for call ordering.")
+    ap.add_argument(
+        "--replay-latency",
+        action="store_true",
+        default=False,
+        help="Replay call transcripts offline with deterministic local run to compute first-response latency.",
+    )
+    ap.add_argument("--push-webhook", default=os.getenv("N8N_OUTCOME_WEBHOOK_URL", ""), help="Optional webhook URL")
+    ap.add_argument("--print-json", action="store_true", default=True)
+    ap.add_argument("--no-print-json", dest="print_json", action="store_false")
+    args = ap.parse_args()
+
+    calls = _load_calls(Path(args.calls_dir))
+    calls = _apply_call_order(calls, seed=None if args.seed is None else int(args.seed))
+
+    if args.max_calls and args.max_calls > 0 and args.limit and args.limit > 0:
+        calls = calls[: min(int(args.max_calls), int(args.limit))]
+    elif args.max_calls and args.max_calls > 0:
+        calls = calls[: int(args.max_calls)]
+    elif args.limit and args.limit > 0:
+        calls = calls[: int(args.limit)]
+    if args.min_calls and args.min_calls > 0 and len(calls) < int(args.min_calls):
+        return 2
+
+    replay_latencies: dict[str, float] = {}
+    if args.replay_latency:
+        replay_latencies = asyncio.run(_replay_latency_map(calls, seed=args.seed))
+
+    summary = build_summary(calls, replay_latencies=replay_latencies)
+    actions = _recommend_actions(summary)
+    json_path, md_path = _write_report(out_dir=Path(args.out_dir), summary=summary, actions=actions)
+
+    out = {
+        "status": "ok",
+        "report_json": str(json_path),
+        "report_md": str(md_path),
+        "summary": _summary_to_dict(summary),
+        "recommended_actions": actions,
+    }
+
+    if args.push_webhook:
+        _post_json(args.push_webhook, out)
+        out["webhook_pushed"] = True
+
+    if args.print_json:
+        print(json.dumps(out, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+## `scripts/run_dashboard.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
+if [ -f "$ENV_FILE" ]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "$ENV_FILE"
+  set +a
+fi
+
+# Default to B2B profile for dogfood voice calls unless explicitly overridden.
+export CONVERSATION_PROFILE="${CONVERSATION_PROFILE:-b2b}"
+
+PYTHON_BIN="python3"
+if [ -x "$ROOT_DIR/.venv/bin/python" ]; then
+  PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
+fi
+
+PORT="${PORT:-8080}"
+URL="http://127.0.0.1:${PORT}/dashboard/"
+
+if command -v open >/dev/null 2>&1; then
+  open "$URL" >/dev/null 2>&1 || true
+fi
+
+echo "Eve dashboard: $URL"
+exec "$PYTHON_BIN" -m uvicorn app.server:app --host 0.0.0.0 --port "$PORT"
+```
+
+## `scripts/self_improve_cycle.py`
+
+```python
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import asyncio
+import datetime as dt
+import json
+import os
+import re
+import shlex
+import sys
+from pathlib import Path
+
+# Allow direct script execution from repo root without editable install.
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from app.config import BrainConfig  # noqa: E402
+from app.metrics import VIC  # noqa: E402
+from app.shell.executor import ShellExecutor  # noqa: E402
+
+
+_FAILED_TEST_RE = re.compile(r"FAILED\s+([\w./:-]+)")
+_MAX_COMBINED_OUT_CHARS = 2_000_000
+
+
+def now_stamp() -> str:
+    return dt.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+
+
+def parse_failed_tests(text: str) -> list[str]:
+    out: list[str] = []
+    for m in _FAILED_TEST_RE.finditer(text or ""):
+        out.append(m.group(1))
+    # de-dupe preserve order
+    seen: set[str] = set()
+    dedup: list[str] = []
+    for x in out:
+        if x in seen:
+            continue
+        seen.add(x)
+        dedup.append(x)
+    return dedup
+
+
+def _trim_text_tail(text: str, max_chars: int) -> str:
+    if len(text) <= max_chars:
+        return text
+    return text[-max_chars:]
+
+
+def root_cause_clusters(failed_tests: list[str]) -> dict[str, list[str]]:
+    buckets: dict[str, list[str]] = {}
+    for t in failed_tests:
+        top = t.split("/")[0] if "/" in t else t.split("::")[0]
+        buckets.setdefault(top, []).append(t)
+    return buckets
+
+
+def build_markdown_report(payload: dict) -> str:
+    lines: list[str] = []
+    lines.append("# Self-Improve Cycle")
+    lines.append("")
+    lines.append(f"- Timestamp: {payload['timestamp']}")
+    lines.append(f"- Mode: {payload['mode']}")
+    lines.append(f"- Proposed only: {str(payload['propose_only']).lower()}")
+    lines.append("")
+
+    lines.append("## Command Results")
+    for c in payload.get("commands", []):
+        lines.append(f"- `{c['command']}` -> {'PASS' if c['ok'] else 'FAIL'} ({c['reason']})")
+    lines.append("")
+
+    failed = payload.get("failed_tests", [])
+    lines.append("## Failed Tests")
+    if failed:
+        for t in failed:
+            lines.append(f"- `{t}`")
+    else:
+        lines.append("- none")
+    lines.append("")
+
+    lines.append("## Root Cause Clusters")
+    clusters = payload.get("clusters", {})
+    if clusters:
+        for k, vals in clusters.items():
+            lines.append(f"- **{k}**: {len(vals)}")
+            for v in vals:
+                lines.append(f"  - `{v}`")
+    else:
+        lines.append("- none")
+    lines.append("")
+
+    lines.append("## Suggested Skill Captures")
+    suggestions = payload.get("skill_capture_suggestions", [])
+    if suggestions:
+        for s in suggestions:
+            lines.append(f"- `{s}`")
+    else:
+        lines.append("- none")
+    lines.append("")
+
+    lines.append("## Safety Gates")
+    lines.append("- Apply mode is blocked unless all commands are green.")
+    lines.append("- Autonomous deploy remains disabled by policy.")
+    return "\n".join(lines) + "\n"
+
+
+def main() -> int:
+    cfg = BrainConfig.from_env()
+
+    ap = argparse.ArgumentParser(description="Offline self-improvement cycle (safe by default).")
+    ap.add_argument("--mode", choices=["off", "propose", "apply"], default=cfg.self_improve_mode)
+    ap.add_argument("--hard-gates", action="store_true", help="Run scripts/ci_hard_gates.sh instead of lightweight pytest.")
+    ap.add_argument("--maxfail", type=int, default=10)
+    ap.add_argument(
+        "--command",
+        action="append",
+        default=[],
+        help="Override default gate command(s). Can be passed multiple times.",
+    )
+    args = ap.parse_args()
+
+    mode = args.mode
+    if mode == "off":
+        print("SELF_IMPROVE_MODE=off; no action.")
+        return 0
+
+    repo = Path(__file__).resolve().parents[1]
+    hist_dir = repo / "docs" / "self_improve" / "history"
+    hist_dir.mkdir(parents=True, exist_ok=True)
+
+    shell = ShellExecutor(
+        mode=cfg.shell_mode,
+        enable_hosted=cfg.shell_enable_hosted,
+        allowed_commands=cfg.shell_allowed_commands,
+        workdir=str(repo),
+        log_path=str(hist_dir / "shell_exec.jsonl"),
+    )
+
+    commands: list[str] = list(args.command or [])
+    if not commands and args.hard_gates:
+        commands.append("bash scripts/ci_hard_gates.sh")
+    if not commands:
+        commands.append(f"python3 -m pytest -q --maxfail={max(1, int(args.maxfail))}")
+
+    command_results = []
+    combined_out = ""
+    for cmd in commands:
+        result = asyncio.run(shell.execute(cmd, timeout_s=1800))
+        command_results.append(
+            {
+                "command": cmd,
+                "ok": result.ok,
+                "reason": result.reason,
+                "returncode": result.returncode,
+                "duration_ms": result.duration_ms,
+            }
+        )
+        combined_out += (result.stdout or "") + "\n" + (result.stderr or "") + "\n"
+        combined_out = _trim_text_tail(combined_out, _MAX_COMBINED_OUT_CHARS)
+
+    failed_tests = parse_failed_tests(combined_out)
+    clusters = root_cause_clusters(failed_tests)
+
+    suggestions: list[str] = []
+    for bucket, tests in clusters.items():
+        sample = tests[0]
+        sid = f"self_improve_{bucket.replace('/', '_').replace('.', '_')}"
+        q_sid = shlex.quote(sid)
+        q_sample = shlex.quote(sample)
+        suggestions.append(
+            "python3 scripts/skills/capture_skill.py "
+            f"--id {q_sid} "
+            f"--intent {shlex.quote(f'Fix recurring failures in {bucket}')} "
+            f"--tests {q_sample}"
+        )
+
+    all_green = all(bool(x.get("ok")) for x in command_results) if command_results else True
+    propose_only = True
+    blocked_on_gates = False
+    if mode == "apply":
+        if all_green:
+            propose_only = False
+        else:
+            propose_only = True
+            blocked_on_gates = True
+
+    payload = {
+        "timestamp": now_stamp(),
+        "mode": mode,
+        "propose_only": propose_only,
+        "all_green": all_green,
+        "blocked_on_gates": blocked_on_gates,
+        "commands": command_results,
+        "failed_tests": failed_tests,
+        "clusters": clusters,
+        "skill_capture_suggestions": suggestions,
+        "metrics": {
+            VIC["self_improve_cycles_total"]: 1,
+            VIC["self_improve_proposals_total"]: 1 if propose_only else 0,
+            VIC["self_improve_applies_total"]: 0 if propose_only else 1,
+            VIC["self_improve_blocked_on_gates_total"]: 1 if blocked_on_gates else 0,
+        },
+    }
+
+    stamp = payload["timestamp"]
+    json_path = hist_dir / f"{stamp}.json"
+    md_path = hist_dir / f"{stamp}.md"
+    json_path.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
+    md_path.write_text(build_markdown_report(payload), encoding="utf-8")
+
+    last_run = repo / "docs" / "self_improve" / "last_run.md"
+    last_run.parent.mkdir(parents=True, exist_ok=True)
+    last_run.write_text(md_path.read_text(encoding="utf-8"), encoding="utf-8")
+
+    print(str(last_run))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+## `scripts/setup_shell_commands.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+BIN_DIR="${HOME}/.local/bin"
+mkdir -p "${BIN_DIR}"
+
+cat > "${BIN_DIR}/openclaw-self-improve" <<EOF
+#!/usr/bin/env bash
+set -euo pipefail
+cd "${ROOT}"
+python3 scripts/self_improve_cycle.py "\$@"
+EOF
+chmod +x "${BIN_DIR}/openclaw-self-improve"
+
+cat > "${BIN_DIR}/openclaw-skill-capture" <<EOF
+#!/usr/bin/env bash
+set -euo pipefail
+cd "${ROOT}"
+python3 scripts/skills/capture_skill.py "\$@"
+EOF
+chmod +x "${BIN_DIR}/openclaw-skill-capture"
+
+cat > "${BIN_DIR}/openclaw-skill-validate" <<EOF
+#!/usr/bin/env bash
+set -euo pipefail
+cd "${ROOT}"
+python3 scripts/skills/validate_skill.py "\$@"
+EOF
+chmod +x "${BIN_DIR}/openclaw-skill-validate"
+
+echo "Installed commands to ${BIN_DIR}:"
+echo "  openclaw-self-improve"
+echo "  openclaw-skill-capture"
+echo "  openclaw-skill-validate"
+echo "If needed, add this to your shell profile:"
+echo "  export PATH=\"${BIN_DIR}:\$PATH\""
+```
+
+## `scripts/ws_brain_8099_prod.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+SUPERVISOR_SCRIPT="${RETELL_WS_SUPERVISOR_SCRIPT:-$ROOT_DIR/scripts/ws_brain_8099_supervisor.sh}"
+PORT="${WS_BRAIN_PORT:-8099}"
+HOST="${WS_BRAIN_HOST:-127.0.0.1}"
+
+usage() {
+  cat <<'EOF'
+Usage: ws_brain_8099_prod.sh [--start|--stop|--status|--restart]
+
+This is the production command wrapper for the LLM websocket brain on 8099.
+It forces/reinforces the continuous watcher mode and waits for readiness.
+EOF
+}
+
+is_listening() {
+  python3 - <<'PY' "$1"
+import socket
+import sys
+
+port = int(sys.argv[1])
+sock = socket.socket()
+sock.settimeout(0.25)
+try:
+    sock.connect(("127.0.0.1", port))
+    sock.close()
+    print("1")
+except Exception:
+    print("0")
+PY
+}
+
+wait_for_listener() {
+  local max_checks="$1"
+  local attempt=0
+
+  while (( attempt < max_checks )); do
+    if [[ "$(is_listening "$PORT")" == "1" ]]; then
+      return 0
+    fi
+    sleep 0.25
+    attempt=$((attempt + 1))
+  done
+  return 1
+}
+
+action="start"
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --start|--status|--stop|--restart)
+      action="${1#--}"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown arg: $1" >&2
+      usage
+      exit 2
+      ;;
+  esac
+done
+
+case "$action" in
+  start)
+    "$SUPERVISOR_SCRIPT" --daemon --port "$PORT" --host "$HOST" >/dev/null 2>&1
+    if ! wait_for_listener 40; then
+      echo "ERROR: brain did not become reachable on ${HOST}:${PORT} after startup checks." >&2
+      echo "Inspect log: $ROOT_DIR/logs/ws_brain_${PORT}.log" >&2
+      "$SUPERVISOR_SCRIPT" --status --port "$PORT" --host "$HOST" || true
+      exit 2
+    fi
+    echo "LLM websocket brain watcher running and listening on ${HOST}:${PORT}"
+    ;;
+  status)
+    "$SUPERVISOR_SCRIPT" --status --port "$PORT" --host "$HOST"
+    ;;
+  stop)
+    "$SUPERVISOR_SCRIPT" --stop --port "$PORT" --host "$HOST"
+    ;;
+  restart)
+    "$SUPERVISOR_SCRIPT" --stop --port "$PORT" --host "$HOST"
+    "$SUPERVISOR_SCRIPT" --daemon --port "$PORT" --host "$HOST" >/dev/null 2>&1
+    if ! wait_for_listener 40; then
+      echo "ERROR: brain did not become reachable on ${HOST}:${PORT} after restart." >&2
+      echo "Inspect log: $ROOT_DIR/logs/ws_brain_${PORT}.log" >&2
+      exit 2
+    fi
+    echo "LLM websocket brain restarted and listening on ${HOST}:${PORT}"
+    ;;
+esac
+```
+
+## `scripts/ws_brain_8099_supervisor.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+usage() {
+  cat <<'EOF'
+Usage: ws_brain_8099_supervisor.sh [--port PORT] [--host HOST] [--daemon|--status|--stop|--start-once]
+
+Modes:
+  --watch      : run process watcher loop (default).
+  --daemon     : start watcher in background and return.
+  --status     : print current supervisor status.
+  --stop       : stop running supervisor.
+  --start-once : start uvicorn once (no watch/restart).
+EOF
+}
+
+PORT="${WS_BRAIN_PORT:-8099}"
+HOST="${WS_BRAIN_HOST:-127.0.0.1}"
+MODE="watch"
+PYTHON_BIN="python3"
+if [ -x "$ROOT_DIR/.venv/bin/python" ]; then
+  PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
+fi
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --port)
+      PORT="$2"
+      shift 2
+      ;;
+    --host)
+      HOST="$2"
+      shift 2
+      ;;
+    --daemon|--status|--stop|--start-once|--watch)
+      MODE="${1#--}"
+      shift
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      echo "Unknown arg: $1" >&2
+      usage
+      exit 2
+      ;;
+  esac
+done
+
+PID_DIR="$ROOT_DIR/.run"
+LOG_DIR="$ROOT_DIR/logs"
+mkdir -p "$PID_DIR" "$LOG_DIR"
+SUPERVISOR_PID_FILE="$PID_DIR/ws_brain_supervisor_${PORT}.pid"
+SERVER_PID_FILE="$PID_DIR/ws_brain_server_${PORT}.pid"
+LOG_FILE="$LOG_DIR/ws_brain_${PORT}.log"
+
+_port_from_pid_is_listening() {
+  python3 - <<'PY' "$1"
+import socket
+import sys
+
+port = int(sys.argv[1])
+sock = socket.socket()
+sock.settimeout(0.5)
+try:
+    sock.connect(("127.0.0.1", port))
+    sock.close()
+    print("1")
+except Exception:
+    print("0")
+PY
+}
+
+_is_listening() {
+  [ "$(_port_from_pid_is_listening "$PORT")" = "1" ]
+}
+
+_is_running() {
+  local pid_file="$1"
+  if [[ -s "$pid_file" ]]; then
+    local pid
+    pid="$(cat "$pid_file")"
+    if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
+      return 0
+    fi
+  fi
+  return 1
+}
+
+_stop_pid_file() {
+  local pid_file="$1"
+  if [[ -s "$pid_file" ]]; then
+    local pid
+    pid="$(cat "$pid_file")"
+    if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
+      kill "$pid" >/dev/null 2>&1 || true
+    fi
+    rm -f "$pid_file"
+  fi
+}
+
+_start_server_once() {
+  if _is_listening; then
+    echo "WARN: refusing to start new server because ${HOST}:${PORT} is already bound." >&2
+    if [[ -s "$SERVER_PID_FILE" ]]; then
+      return 0
+    fi
+    # If listener exists but pid file is stale/missing, avoid respawn storm until explicit stop.
+    return 0
+  fi
+  "$PYTHON_BIN" -m uvicorn app.server:app --host "$HOST" --port "$PORT" \
+    --proxy-headers --forwarded-allow-ips '*' \
+    >>"$LOG_FILE" 2>&1 &
+  local server_pid=$!
+  echo "$server_pid" >"$SERVER_PID_FILE"
+  return 0
+}
+
+_wait_for_listener() {
+  local max_checks="$1"
+  local wait_ms="${2:-0.5}"
+  local attempt=0
+
+  while (( attempt < max_checks )); do
+    if _is_listening; then
+      return 0
+    fi
+    sleep "$wait_ms"
+    attempt=$(( attempt + 1 ))
+  done
+  return 1
+}
+
+_watch() {
+  while true; do
+    if ! _is_running "$SERVER_PID_FILE" || ! _is_listening; then
+      _stop_pid_file "$SERVER_PID_FILE"
+      _start_server_once
+      if ! _wait_for_listener 20 0.25; then
+        echo "WARN: server did not bind within startup grace, restarting in 1s" >&2
+        _stop_pid_file "$SERVER_PID_FILE"
+        sleep 1
+        continue
+      fi
+    fi
+    # Wait for server to exit (normal crash or manual stop), then loop and restart.
+    local server_pid=""
+    if [[ -f "$SERVER_PID_FILE" ]]; then
+      read -r server_pid < "$SERVER_PID_FILE"
+    fi
+    if [[ -n "$server_pid" ]] && kill -0 "$server_pid" 2>/dev/null; then
+      wait "$server_pid" || true
+    fi
+  done
+}
+
+case "$MODE" in
+  daemon)
+    if _is_running "$SUPERVISOR_PID_FILE"; then
+      echo "Supervisor already running (pid=$(<$SUPERVISOR_PID_FILE))" >&2
+      exit 0
+    fi
+    nohup "$0" --watch --port "$PORT" --host "$HOST" >>"$LOG_FILE" 2>&1 &
+    local_pid=$!
+    echo "$local_pid" >"$SUPERVISOR_PID_FILE"
+    echo "Started ws brain supervisor pid=$local_pid on ${HOST}:${PORT}"
+    ;;
+  stop)
+    _stop_pid_file "$SUPERVISOR_PID_FILE"
+    _stop_pid_file "$SERVER_PID_FILE"
+    echo "Stopped supervisor and server for ${HOST}:${PORT} (if present)."
+    ;;
+  status)
+    printf 'supervisor=%s\n' "$(_is_running "$SUPERVISOR_PID_FILE" && echo yes || echo no)"
+    printf 'server=%s\n' "$(_is_running "$SERVER_PID_FILE" && echo yes || echo no)"
+    printf 'listening=%s\n' "$(_is_listening && echo yes || echo no)"
+    printf 'supervisor_pid_file=%s\n' "$SUPERVISOR_PID_FILE"
+    printf 'server_pid_file=%s\n' "$SERVER_PID_FILE"
+    printf 'log_file=%s\n' "$LOG_FILE"
+    ;;
+  start-once)
+    _start_server_once
+    if ! _wait_for_listener 120 0.1; then
+      echo "WARN: ws brain failed to bind within 12s on startup." >&2
+      if [[ -s "$SERVER_PID_FILE" ]]; then
+        tail -n 80 "$LOG_FILE" 2>/dev/null | sed 's/^/[ws-brain log] /'
+      fi
+      exit 2
+    fi
+    echo "Started single-instance ws brain pid=$(<"$SERVER_PID_FILE") on ${HOST}:${PORT}"
+    ;;
+  watch|*)
+    echo "$$" >"$SUPERVISOR_PID_FILE"
+    trap '_stop_pid_file "$SERVER_PID_FILE"; _stop_pid_file "$SUPERVISOR_PID_FILE"' EXIT INT TERM
+    _watch
+    ;;
+esac
+```
+
+## `scripts/ws_brain_dev_on.sh`
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# One-command local dev:
+# 1) start the brain server
+# 2) expose it with a temporary public WSS URL (cloudflared)
+# 3) switch the B2B agent to point at that brain
+#
+# This is intended for fast dogfooding. For production, use a stable domain.
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+ENV_FILE="${RETELL_ENV_FILE:-$ROOT_DIR/.env.retell.local}"
+if [ -f "$ENV_FILE" ]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "$ENV_FILE"
+  set +a
+fi
+
+PORT="${PORT:-8080}"
+LOCAL_URL="http://127.0.0.1:${PORT}"
+
+PYTHON_BIN="python3"
+if [ -x "$ROOT_DIR/.venv/bin/python" ]; then
+  PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
+fi
+
+cleanup() {
+  if [ -n "${TUNNEL_PID:-}" ]; then
+    kill "$TUNNEL_PID" >/dev/null 2>&1 || true
+  fi
+  if [ -n "${SERVER_PID:-}" ]; then
+    kill "$SERVER_PID" >/dev/null 2>&1 || true
+  fi
+}
+trap cleanup EXIT
+
+# Start server.
+"$PYTHON_BIN" -m uvicorn app.server:app --host 0.0.0.0 --port "$PORT" >/dev/null 2>&1 &
+SERVER_PID=$!
+
+# Start tunnel.
+TUNNEL_LOG="$(mktemp)"
+cloudflared tunnel --url "$LOCAL_URL" --no-autoupdate --loglevel info --logfile "$TUNNEL_LOG" >/dev/null 2>&1 &
+TUNNEL_PID=$!
+
+# Wait for the public URL.
+PUBLIC_HTTPS=""
+for _ in $(seq 1 200); do
+  PUBLIC_HTTPS="$(grep -Eo 'https://[A-Za-z0-9-]+\.trycloudflare\.com' "$TUNNEL_LOG" | head -n 1 || true)"
+  if [ -n "$PUBLIC_HTTPS" ]; then
+    break
+  fi
+  sleep 0.05
+done
+
+if [ -z "$PUBLIC_HTTPS" ]; then
+  echo "Failed to get public URL from cloudflared" >&2
+  exit 1
+fi
+
+PUBLIC_WSS="wss://${PUBLIC_HTTPS#https://}"
+export BRAIN_WSS_BASE_URL="$PUBLIC_WSS/llm-websocket"
+
+echo "Public brain base URL: $BRAIN_WSS_BASE_URL"
+
+# Persist the base URL for future commands (local env file, not committed).
+if [ -f "$ENV_FILE" ]; then
+  tmp_env="$(mktemp)"
+  # Remove any prior value then append the new one.
+  grep -v '^BRAIN_WSS_BASE_URL=' "$ENV_FILE" >"$tmp_env" || true
+  echo "BRAIN_WSS_BASE_URL=$BRAIN_WSS_BASE_URL" >>"$tmp_env"
+  mv "$tmp_env" "$ENV_FILE"
+fi
+
+# Switch B2B agent to websocket brain.
+./scripts/b2b_switch_to_ws_brain.sh >/dev/null
+
+echo "B2B agent switched to brain."
+echo "Dashboard: http://127.0.0.1:${PORT}/dashboard/"
+echo "Next: make call"
+
+# Keep processes running.
+wait
+```
+
+## `scripts/ws_load_test.py`
+
+```python
+from __future__ import annotations
+
+import argparse
+import asyncio
+import json
+import time
+from dataclasses import dataclass
+from typing import Iterable
+
+
+def _now_ms() -> int:
+    return int(time.time() * 1000)
+
+
+def _mono_ms() -> int:
+    return int(time.monotonic() * 1000)
+
+
+def _percentile(values: Iterable[int], p: float) -> int | None:
+    v = sorted(int(x) for x in values)
+    if not v:
+        return None
+    if p <= 0:
+        return v[0]
+    if p >= 100:
+        return v[-1]
+    k = int(round((p / 100.0) * (len(v) - 1)))
+    return v[k]
+
+
+@dataclass(slots=True)
+class SessionStats:
+    ack_ms: list[int]
+    cancel_ms: list[int]
+    ping_echo_ms: list[int]
+    keepalive_misses: int
+    protocol_errors: int = 0
+    close_reason: str = ""
+    closed_early: bool = False
+    hung: bool = False
+
+
+async def _recv_until_begin_complete(ws) -> None:
+    # Drain config + BEGIN response_id=0 stream (greeting or empty terminal).
+    for _ in range(200):
+        raw = await ws.recv()
+        try:
+            msg = json.loads(raw)
+        except Exception:
+            continue
+
+        if msg.get("response_type") == "response" and int(msg.get("response_id", -1)) == 0:
+            if bool(msg.get("content_complete")):
+                return
+
+
+async def _run_one(
+    *,
+    idx: int,
+    base_url: str,
+    turns: int,
+    duration_sec: int,
+    turn_interval_ms: int,
+    torture_pause_reads_ms: int,
+    torture_pause_reads_every_turn: bool,
+    keepalive_deadline_ms: int,
+) -> SessionStats:
+    try:
+        import websockets  # type: ignore[import-not-found]
+    except Exception as e:
+        raise RuntimeError(
+            "scripts/ws_load_test.py requires the optional dependency 'websockets'. "
+            "Install with: python3 -m pip install websockets"
+        ) from e
+
+    call_id = f"wslt{idx}"
+    uri = f"{base_url.rstrip('/')}/{call_id}"
+    ack_ms: list[int] = []
+    cancel_ms: list[int] = []
+    ping_echo_ms: list[int] = []
+    keepalive_misses = 0
+    protocol_errors = 0
+    pending_pings: dict[int, int] = {}
+    close_reason = ""
+    closed_early = False
+    start_ms = _mono_ms()
+
+    def _record_close(exc: Exception) -> None:
+        nonlocal close_reason, closed_early
+        if close_reason:
+            return
+        reason = str(getattr(exc, "reason", "") or "").strip()
+        code = getattr(exc, "code", None)
+        if reason:
+            close_reason = reason
+        elif code is not None:
+            close_reason = f"code={code}"
+        else:
+            close_reason = type(exc).__name__
+        closed_early = True
+
+    async with websockets.connect(uri, open_timeout=5, close_timeout=2) as ws:
+        try:
+            await _recv_until_begin_complete(ws)
+        except websockets.exceptions.ConnectionClosed as e:  # type: ignore[attr-defined]
+            _record_close(e)
+            return SessionStats(
+                ack_ms=ack_ms,
+                cancel_ms=cancel_ms,
+                ping_echo_ms=ping_echo_ms,
+                keepalive_misses=keepalive_misses,
+                protocol_errors=protocol_errors + 1,
+                close_reason=close_reason,
+                closed_early=closed_early,
+            )
+
+        # Keepalive: send ping_pong periodically (Retell -> server direction).
+        async def ping_loop() -> None:
+            try:
+                while True:
+                    await asyncio.sleep(2.0)
+                    ts = _now_ms()
+                    pending_pings[ts] = _mono_ms()
+                    await ws.send(
+                        json.dumps(
+                            {"interaction_type": "ping_pong", "timestamp": ts},
+                            separators=(",", ":"),
+                            sort_keys=True,
+                        )
+                    )
+            except asyncio.CancelledError:
+                return
+            except websockets.exceptions.ConnectionClosed as e:  # type: ignore[attr-defined]
+                _record_close(e)
+                return
+            except Exception:
+                return
+
+        ping_task = asyncio.create_task(ping_loop())
+        try:
+            rid = 1
+            while True:
+                if int(duration_sec) > 0:
+                    if (_mono_ms() - start_ms) >= int(duration_sec) * 1000:
+                        break
+                else:
+                    if rid > int(turns):
+                        break
+
+                # Send response_required.
+                t0 = _mono_ms()
+                expected_rid = int(rid)
+                t_barge: int | None = None
+                try:
+                    await ws.send(
+                        json.dumps(
+                            {
+                                "interaction_type": "response_required",
+                                "response_id": int(rid),
+                                "transcript": [{"role": "user", "content": "Hi"}],
+                            },
+                            separators=(",", ":"),
+                            sort_keys=True,
+                        )
+                    )
+                except websockets.exceptions.ConnectionClosed as e:  # type: ignore[attr-defined]
+                    _record_close(e)
+                    break
+
+                do_torture = bool(
+                    int(torture_pause_reads_ms) > 0
+                    and (rid == 1 or bool(torture_pause_reads_every_turn))
+                )
+                if do_torture:
+                    # Pause reads to pressure server writes, then barge-in and advance epoch.
+                    await asyncio.sleep(int(torture_pause_reads_ms) / 1000.0)
+                    try:
+                        t_barge = _mono_ms()
+                        await ws.send(
+                            json.dumps(
+                                {
+                                    "interaction_type": "update_only",
+                                    "transcript": [{"role": "user", "content": "Wait"}],
+                                    "turntaking": "user_turn",
+                                },
+                                separators=(",", ":"),
+                                sort_keys=True,
+                            )
+                        )
+                        expected_rid = int(rid) + 1
+                        await ws.send(
+                            json.dumps(
+                                {
+                                    "interaction_type": "response_required",
+                                    "response_id": int(expected_rid),
+                                    "transcript": [{"role": "user", "content": "Actually, can you repeat?"}],
+                                },
+                                separators=(",", ":"),
+                                sort_keys=True,
+                            )
+                        )
+                        rid = int(expected_rid)
+                    except websockets.exceptions.ConnectionClosed as e:  # type: ignore[attr-defined]
+                        _record_close(e)
+                        break
+
+                # Wait for first chunk + terminal for expected_rid.
+                saw_first = False
+                saw_terminal = False
+                for _ in range(2000):
+                    try:
+                        raw = await ws.recv()
+                    except websockets.exceptions.ConnectionClosed as e:  # type: ignore[attr-defined]
+                        _record_close(e)
+                        break
+                    try:
+                        msg = json.loads(raw)
+                    except Exception:
+                        protocol_errors += 1
+                        continue
+
+                    if msg.get("response_type") == "ping_pong":
+                        ts = int(msg.get("timestamp", -1))
+                        sent_at = pending_pings.pop(ts, None)
+                        if sent_at is not None:
+                            delay = max(0, _mono_ms() - int(sent_at))
+                            ping_echo_ms.append(delay)
+                            if delay > int(keepalive_deadline_ms):
+                                keepalive_misses += 1
+                        continue
+
+                    if msg.get("response_type") != "response":
+                        continue
+                    if int(msg.get("response_id", -1)) != int(expected_rid):
+                        continue
+
+                    if not saw_first and not bool(msg.get("content_complete")):
+                        saw_first = True
+                        ack_ms.append(_mono_ms() - t0)
+                    if bool(msg.get("content_complete")):
+                        saw_terminal = True
+                        if t_barge is not None:
+                            cancel_ms.append(max(0, _mono_ms() - int(t_barge)))
+                        break
+
+                if closed_early:
+                    break
+                if not saw_first:
+                    protocol_errors += 1
+                if not saw_terminal:
+                    protocol_errors += 1
+
+                rid += 1
+                if int(turn_interval_ms) > 0:
+                    await asyncio.sleep(int(turn_interval_ms) / 1000.0)
+
+        finally:
+            ping_task.cancel()
+            await asyncio.gather(ping_task, return_exceptions=True)
+
+    now = _mono_ms()
+    for _, sent_at in list(pending_pings.items()):
+        if (now - int(sent_at)) > int(keepalive_deadline_ms):
+            keepalive_misses += 1
+
+    return SessionStats(
+        ack_ms=ack_ms,
+        cancel_ms=cancel_ms,
+        ping_echo_ms=ping_echo_ms,
+        keepalive_misses=keepalive_misses,
+        protocol_errors=protocol_errors,
+        close_reason=close_reason,
+        closed_early=closed_early,
+    )
+
+
+async def _main_async(args) -> None:
+    timeout_sec: float | None = None
+    if int(args.duration_sec) > 0:
+        timeout_sec = float(args.duration_sec) + max(30.0, float(args.keepalive_deadline_ms) / 1000.0 + 10.0)
+
+    async def _run_with_watchdog(i: int) -> SessionStats:
+        try:
+            coro = _run_one(
+                idx=i,
+                base_url=args.url,
+                turns=int(args.turns),
+                duration_sec=int(args.duration_sec),
+                turn_interval_ms=int(args.turn_interval_ms),
+                torture_pause_reads_ms=int(args.torture_pause_reads_ms),
+                torture_pause_reads_every_turn=bool(args.torture_pause_reads_every_turn),
+                keepalive_deadline_ms=int(args.keepalive_deadline_ms),
+            )
+            if timeout_sec is None:
+                return await coro
+            return await asyncio.wait_for(coro, timeout=timeout_sec)
+        except asyncio.TimeoutError:
+            return SessionStats(
+                ack_ms=[],
+                cancel_ms=[],
+                ping_echo_ms=[],
+                keepalive_misses=1,
+                protocol_errors=1,
+                close_reason="WATCHDOG_TIMEOUT",
+                closed_early=True,
+                hung=True,
+            )
+
+    stats = await asyncio.gather(*[_run_with_watchdog(i) for i in range(int(args.sessions))])
+
+    ack_all: list[int] = []
+    cancel_all: list[int] = []
+    ping_all: list[int] = []
+    keepalive_misses = 0
+    errs = 0
+    write_timeout_backpressure_closes_total = 0
+    unexpected_closes_total = 0
+    hung_sessions_total = 0
+    for s in stats:
+        ack_all.extend(s.ack_ms)
+        cancel_all.extend(s.cancel_ms)
+        ping_all.extend(s.ping_echo_ms)
+        keepalive_misses += int(s.keepalive_misses)
+        errs += int(s.protocol_errors)
+        if s.hung:
+            hung_sessions_total += 1
+        if s.closed_early:
+            if "WRITE_TIMEOUT_BACKPRESSURE" in str(s.close_reason):
+                write_timeout_backpressure_closes_total += 1
+            else:
+                unexpected_closes_total += 1
+
+    print("**WS Load Test Summary**")
+    print(f"url={args.url}")
+    print(
+        f"sessions={args.sessions} turns={args.turns} "
+        f"duration_sec={args.duration_sec} turn_interval_ms={args.turn_interval_ms}"
+    )
+    print(f"protocol_errors_total={errs}")
+    print(f"keepalive_misses_total={keepalive_misses}")
+    print(f"write_timeout_backpressure_closes_total={write_timeout_backpressure_closes_total}")
+    print(f"unexpected_closes_total={unexpected_closes_total}")
+    print(f"hung_sessions_total={hung_sessions_total}")
+    print(
+        "ack_latency_ms="
+        f"p50={_percentile(ack_all, 50)} p95={_percentile(ack_all, 95)} p99={_percentile(ack_all, 99)}"
+    )
+    print(
+        "cancel_latency_ms="
+        f"p50={_percentile(cancel_all, 50)} p95={_percentile(cancel_all, 95)} p99={_percentile(cancel_all, 99)}"
+    )
+    print(
+        "ping_echo_delay_ms="
+        f"p50={_percentile(ping_all, 50)} p95={_percentile(ping_all, 95)} p99={_percentile(ping_all, 99)}"
+    )
+    if args.assert_keepalive:
+        if keepalive_misses > 0:
+            raise SystemExit(
+                "keepalive deadline misses observed: "
+                f"{keepalive_misses} > 0 (deadline={args.keepalive_deadline_ms}ms)"
+            )
+        if hung_sessions_total > 0:
+            raise SystemExit(f"hung sessions observed: {hung_sessions_total} > 0")
+        if unexpected_closes_total > 0:
+            raise SystemExit(f"unexpected closes observed: {unexpected_closes_total} > 0")
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="Real-socket WebSocket load test (Retell-style message flow).")
+    ap.add_argument(
+        "--url",
+        type=str,
+        default="ws://127.0.0.1:8080/llm-websocket",
+        help="base ws URL (no trailing call_id), e.g. ws://127.0.0.1:8080/llm-websocket",
+    )
+    ap.add_argument("--sessions", type=int, default=25, help="number of concurrent WS sessions")
+    ap.add_argument("--turns", type=int, default=2, help="number of turns per session when duration-sec=0")
+    ap.add_argument(
+        "--duration-sec",
+        type=int,
+        default=0,
+        help="if >0, ignore --turns and run each session loop for this wall-clock duration",
+    )
+    ap.add_argument(
+        "--turn-interval-ms",
+        type=int,
+        default=250,
+        help="delay between turns in duration mode (and after each turn in turns mode)",
+    )
+    ap.add_argument(
+        "--torture-pause-reads-ms",
+        type=int,
+        default=0,
+        help="if >0, pause reads for this duration to create send backpressure",
+    )
+    ap.add_argument(
+        "--torture-pause-reads-every-turn",
+        action="store_true",
+        help="apply pause-reads torture on every turn (default is first turn only)",
+    )
+    ap.add_argument(
+        "--keepalive-deadline-ms",
+        type=int,
+        default=5000,
+        help="deadline for ping echo latency and unresolved ping checks",
+    )
+    ap.add_argument(
+        "--assert-keepalive",
+        action="store_true",
+        help="fail non-zero exit if keepalive misses, hangs, or unexpected closes are observed",
+    )
+    args = ap.parse_args()
+    asyncio.run(_main_async(args))
+
+
+if __name__ == "__main__":
+    main()
+```
+
+## `artifacts/retell_ws_lessons_learned.md`
+
+```markdown
+# Retell WebSocket Hardening: Lessons Learned
+
+This document captures the root causes, fixes, and guardrails from the Retell websocket production-hardening pass.
+
+## Root Causes (By Layer)
+
+### Protocol Layer (`app/protocol.py`)
+- **Schema drift closed sessions**: inbound frames that were valid JSON but not recognized by the inbound union caused validation errors that previously cascaded into session termination.
+- **Missing `clear` event in the inbound union**: Retell’s explicit interruption signal (`interaction_type="clear"`) was not represented in the inbound parse union, forcing validation errors.
+
+### Transport Layer (`app/transport_ws.py`)
+- **Over-eager fatal error policy**: schema validation errors were treated as fatal (`TransportClosed(BAD_SCHEMA)`), causing unnecessary websocket closure on forward-compatible/unknown frames.
+- **Need to keep hard-fails hard**: oversized frames and invalid JSON should still terminate to avoid runaway memory usage and undefined state.
+
+### Orchestration Layer (`app/orchestrator.py`)
+- **Waiter lifecycle hazards**: per-turn queue/task churn can strand a waiter on an orphaned queue. Without an explicit “active turn output queue” swap rule, the run loop can hang.
+- **Interruption correctness**: barge-in/clear must cancel turn work, drop stale chunks, and avoid replay/overlap.
+- **State rollback needs to be interruption-aware**: rolling back state on every new epoch can break confirmation flows when a user responds quickly before the terminal frame.
+
+### Turn Execution Layer (`app/turn_handler.py`)
+- **Streaming zombie risk**: shielded streaming patterns can keep producers alive after cancellation and leak tasks.
+- **Prompt completeness**: the TurnHandler needs full transcript history injected to build consistent prompts (and to support EVE v7 constraints when enabled).
+
+### Server Layer (`app/server.py`)
+- **Route drift**: multiple websocket routes (`/ws/{call_id}` vs canonical) can create production inconsistency and client misconfiguration.
+
+### Tooling & Policy (`app/tools.py`, `app/dialogue_policy.py`, `orchestration/eve-v7-orchestrator.yaml`)
+- **Tool name drift**: legacy `mark_dnc` references needed normalization to canonical `mark_dnc_compliant`.
+- **DNC compliance must be explicit**: explicit “stop calling me” style signals must trigger a tool invocation and an end-call terminal response.
+
+## Fixes (Concrete Changes)
+
+### 1) Protocol: add `clear` and tolerate future schemas
+- Added `InboundClear` with `interaction_type="clear"` so inbound validation succeeds.
+- Kept outbound models unchanged.
+- Files:
+  - `app/protocol.py`
+
+### 2) Transport: schema errors are non-fatal, JSON/size remain fatal
+- Replaced `socket_reader` behavior so:
+  - **Schema errors** increment `inbound.bad_schema_total` and continue reading (no websocket close).
+  - **Frame too large** and **invalid JSON** remain hard-fail and close.
+- Preserved the drop/evict strategy for `update_only`, `response_required`, `reminder_required`, `ping_pong`.
+- Files:
+  - `app/transport_ws.py`
+
+### 3) Orchestrator: persistent waiters + required caveat + barge-in safety
+- Replaced the run-loop with a **persistent waiter** model:
+  - persistent inbound waiter
+  - persistent speculative waiter
+  - bounded turn-output consumer waiter
+- Implemented the REQUIRED caveat:
+  - track `active_turn_q`
+  - if `self._turn_output_q is not active_turn_q`, cancel the existing consumer task and recreate it against the new queue
+- Added explicit `InboundClear` handling that routes to the barge-in cancel path.
+- Kept stale-chunk suppression with epoch + speak-generation gating.
+- Adjusted SlotState rollback semantics to avoid breaking confirmation flows when the old epoch has already emitted chunks:
+  - rollback-on-new-epoch only when the old epoch had not emitted a segment yet
+- Added B2B stage sync for canonical opener to keep fast-path cache stable under duplicate/reordered transcript snapshots.
+- Files:
+  - `app/orchestrator.py`
+
+### 4) Config defaults updated (cloud-safe and latency-targeted)
+- Updated defaults:
+  - `retell_responsiveness=0.8`
+  - `retell_interruption_sensitivity=0.8`
+  - `retell_reminder_trigger_ms=3000`
+  - `vic_tool_filler_threshold_ms=800`
+  - `vic_model_filler_threshold_ms=800`
+- Forced OFF in `from_env()`:
+  - `safe_pre_ack_on_response_required_enabled=False`
+  - `interrupt_pre_ack_on_agent_turn_enabled=False`
+  - `ultra_fast_pre_ack_enabled=False`
+- Files:
+  - `app/config.py`
+
+### 5) TurnHandler: transcript injection + streaming stability
+- Injected full transcript history into `TurnHandler` and `_build_llm_prompt`.
+- Removed shield-based cleanup; streaming now uses task/queue lifecycle that exits cleanly on cancel.
+- Ensured ACK emission is deterministic even when `action.payload["message"]` is empty (tool-first turns).
+- Files:
+  - `app/turn_handler.py`
+  - (signature compatibility validated) `app/llm_client.py`, `app/conversation_memory.py`, `app/eve_prompt.py`
+
+### 6) Policy: stronger B2B objections + DNC tool path
+- Updated objection messages and opener framing.
+- Added DNC tool invocation path (`mark_dnc_compliant`) for explicit rejection.
+- Fixed greeting/noise classification edge cases and ontology precedence.
+- Files:
+  - `app/dialogue_policy.py`
+
+### 7) Server route: canonical enforcement
+- Enforced canonical websocket route: `/llm-websocket/{call_id}`
+- Removed/neutralized alias drift for `/ws/{call_id}` (default no drift).
+- Files:
+  - `app/server.py`
+
+### 8) Tools + Orchestration YAML: EVE v7 names and compatibility
+- Verified tool map includes:
+  - `send_evidence_package`
+  - `mark_dnc_compliant`
+- Kept compatibility normalization for legacy `mark_dnc` -> `mark_dnc_compliant` where strictly needed.
+- Normalized EVE v7 YAML references to `mark_dnc_compliant`.
+- Files:
+  - `app/tools.py`
+  - `orchestration/eve-v7-orchestrator.yaml`
+
+### 9) Tests: coverage for protocol robustness and interruption safety
+- Updated latency default assertions for new thresholds.
+- Added/updated coverage for:
+  - unknown inbound schema does not close websocket
+  - `clear` enters barge-in cancellation path
+  - no overlap/replay on epoch interruption
+  - `mark_dnc_compliant` invocation path
+  - connect upgrade + heartbeat ping/pong
+- Files:
+  - `tests/test_inbound_limits.py`
+  - `tests/test_epoch_barge_in.py`
+  - `tests/test_keepalive_ping_pong.py`
+  - `tests/test_protocol_parsing.py`
+  - `tests/test_dnc_tool_invocation.py`
+  - `tests/test_latency_defaults.py`
+
+## Guardrails
+
+### Pre-merge checklist
+1. `python3 -m pytest -q`
+2. Verify websocket route is **only** `/llm-websocket/{call_id}`.
+3. Send an unknown-but-valid JSON inbound frame and confirm:
+   - session stays open
+   - `inbound.bad_schema_total` increments
+4. Confirm `clear`:
+   - cancels active speaking
+   - drops queued non-terminal chunks for the epoch
+   - emits an empty terminal chunk to close the epoch cleanly
+5. Confirm epoch preemption:
+   - no epoch N chunks appear after epoch N+1 begins
+6. Confirm tool naming:
+   - no active policy path references legacy `mark_dnc`
+   - EVE v7 yaml uses `mark_dnc_compliant`
+
+### Metrics to watch in production
+- `inbound.bad_schema_total` (should be non-zero over time; should not correlate with ws closes)
+- `ws_close_reason_total.*` (watch for spikes, especially schema-related)
+- `stale_segment_dropped_total` (should exist but not explode)
+- `barge_in_cancel_latency_ms`
+
+## If The Symptom Reappears, Inspect This First
+
+- **Websocket closes after a new inbound event type appears**:
+  - `app/protocol.py` inbound union coverage
+  - `app/transport_ws.py` schema-error handling path
+- **Agent overlaps/replays speech after interruption**:
+  - `app/orchestrator.py` `_barge_in_cancel()` + speak-generation gate + stale-drop logic
+  - `tests/test_epoch_barge_in.py`
+- **Orchestrator hangs with no outbound after interruptions**:
+  - `app/orchestrator.py` `active_turn_q` swap logic in `run()`
+- **DNC path not firing**:
+  - `app/dialogue_policy.py` explicit rejection classifier + tool request
+  - `app/tools.py` tool registry + legacy alias normalization
+
+## Metadata
+- Date: 2026-02-14
+- Branch: `voice-agent`
+- Branch URL: https://github.com/Elijah-Wallis/eve-toc-build/tree/voice-agent
+- Commit: 67ad919643a8ce2230fcab7156c2e995f991bcc3
+```

@@ -61,3 +61,26 @@ def resolve_generated_dir() -> Path:
             "repo-local generated output is disabled; set OPENCLAW_ALLOW_REPO_GENERATED=1 to opt in explicitly"
         )
     return target
+
+
+def _enforce_repo_artifact_policy(target: Path, var_name: str) -> None:
+    repo_root = resolve_repo_root()
+    allow_repo_artifacts = str(os.environ.get("OPENCLAW_ALLOW_REPO_ARTIFACTS", "")).strip() == "1"
+    if (target == repo_root or repo_root in target.parents) and not allow_repo_artifacts:
+        raise RuntimeError(
+            f"{var_name} resolves under REPO_ROOT; set OPENCLAW_ALLOW_REPO_ARTIFACTS=1 to opt in explicitly"
+        )
+
+
+def resolve_reports_dir() -> Path:
+    override = str(os.environ.get("OPENCLAW_REPORTS_DIR", "")).strip()
+    target = Path(override).expanduser().resolve() if override else state_path("reports")
+    _enforce_repo_artifact_policy(target, "OPENCLAW_REPORTS_DIR")
+    return target
+
+
+def resolve_proposals_dir() -> Path:
+    override = str(os.environ.get("OPENCLAW_PROPOSALS_DIR", "")).strip()
+    target = Path(override).expanduser().resolve() if override else state_path("proposals")
+    _enforce_repo_artifact_policy(target, "OPENCLAW_PROPOSALS_DIR")
+    return target
