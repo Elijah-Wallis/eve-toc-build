@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import subprocess
+import re
 from pathlib import Path
 
 
@@ -13,11 +13,6 @@ def test_secret_scanner_script_exists() -> None:
 def test_secret_pattern_detects_bad_token(tmp_path: Path) -> None:
     bad = tmp_path / "bad.txt"
     bad.write_text("token=ghp_abcdefghijklmnopqrstuvwxyz1234567890AB\n", encoding="utf-8")
-    proc = subprocess.run(
-        ["rg", "-n", r"ghp_[0-9A-Za-z]{36,}", str(bad)],
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    assert proc.returncode == 0
-    assert "ghp_" in proc.stdout
+    # Keep this test hermetic: don't require ripgrep to be installed in CI.
+    text = bad.read_text(encoding="utf-8")
+    assert re.search(r"ghp_[0-9A-Za-z]{36,}", text) is not None
