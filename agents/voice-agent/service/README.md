@@ -107,6 +107,13 @@ WebSocket endpoints:
 
 - `ws://{host}/llm-websocket/{call_id}` (canonical)
 
+## Cloudflare (Dogfood + Prod)
+
+If you use Cloudflare, the simplest production-grade way to expose this service
+without opening inbound ports is **Cloudflare Tunnel**.
+
+See: `deploy/cloudflare/README.md`.
+
 Retell pacing defaults:
 
 - Speech pauses are represented by spaced dashes: `" - "` (not SSML by default).
