@@ -1,0 +1,43 @@
+name: acceptance
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  acceptance-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Repo bloat guard
+        env:
+          CI: "1"
+        run: |
+          bash scripts/check_repo_bloat.sh
+      - name: Core acceptance gates
+        run: |
+          python3 scripts/acceptance/run_acceptance.py --ids AT-001,AT-002,AT-003,AT-007,AT-009,AT-011,AT-012,AT-013A,AT-013B,AT-021A,AT-021B,AT-024A,AT-024B,AT-PRO-001,AT-PRO-002,AT-PRO-003,AT-PRO-004,AT-REV-001,AT-ING-001,AT-LEDGER-001,AT-SEC-002
+
+  acceptance-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Repo bloat guard
+        env:
+          CI: "1"
+        run: |
+          bash scripts/check_repo_bloat.sh
+      - name: Docker-backed acceptance gates
+        run: |
+          python3 scripts/acceptance/run_acceptance.py --ids AT-018B,AT-034B,AT-035B

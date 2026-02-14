@@ -1,0 +1,4 @@
+routing_success_rate_min: 0.6
+evidence_delivery_success_rate_min: 0.75
+dnc_compliance_rate_min: 0.99
+outcome_completeness_rate_min: 0.95

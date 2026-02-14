@@ -1,0 +1,10 @@
+canary:
+  description: Safe default profile for daily autonomous review.
+  max_top_proposals: 10
+  proposal_selftest_default: none
+  allow_online_checks: false
+prod:
+  description: Expanded analysis profile for manual deep operations.
+  max_top_proposals: 20
+  proposal_selftest_default: tiers_ab
+  allow_online_checks: true

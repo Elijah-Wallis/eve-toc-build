@@ -1,0 +1,8 @@
+{
+  "metrics": {
+    "routing_success_rate": 0.72,
+    "evidence_delivery_success_rate": 0.81,
+    "dnc_compliance_rate": 1.0,
+    "outcome_completeness_rate": 0.97
+  }
+}

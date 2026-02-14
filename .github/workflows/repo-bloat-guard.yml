@@ -1,0 +1,21 @@
+name: repo-bloat-guard
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  bloat-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generated directory CI bloat guard
+        env:
+          CI: "1"
+        run: |
+          bash scripts/check_repo_bloat.sh

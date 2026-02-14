@@ -12,17 +12,17 @@ Date: 2026-02-06
   - Hooked from `src/runtime/env_loader.py` when `OPENCLAW_CAPTURE_TRAFFIC` is enabled.
 - Added compiler:
   - `scripts/compile_mcp_from_traffic.py`
-  - Inputs: `~/.openclaw-eve/runtime/api_traffic.jsonl`
-  - Outputs: `generated/mcp_from_traffic/<tool_name>/...`
+  - Inputs: `${OPENCLAW_STATE_DIR}/runtime/api_traffic.jsonl`
+  - Outputs: `${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic/<tool_name>/...`
   - Auto-updates `SKILLS.md` with generated MCP tool entries.
 - Added full pipeline runner:
   - `scripts/run_traffic_to_mcp_pipeline.py`
   - Steps: generate traffic -> compile -> npm install/build per tool -> python harness execution.
-  - Uses venv at `generated/mcp_from_traffic/.venv` for `mcp` dependency isolation.
+  - Uses venv at `${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic/.venv` for `mcp` dependency isolation.
 
 ## Verification
 - Executed full pipeline end-to-end.
-- Pipeline report: `generated/mcp_from_traffic/pipeline_report.json` (ignored from git).
+- Pipeline report: `${OPENCLAW_STATE_DIR}/generated/mcp_from_traffic/pipeline_report.json` (ignored from git).
 - Final status: all generated tools returned `npm_install=0`, `npm_build=0`, `client=0`.
 
 ## Generated Tool Families
