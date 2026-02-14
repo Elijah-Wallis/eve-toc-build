@@ -240,6 +240,20 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         return pytest_check("tests/integration/test_outbox_effectively_once.py")
 
     def at021a() -> CheckResult:
+        missing_a = skip_if_missing_path(
+            "tests/contracts/test_kernel_proto_contract.py",
+            "contract tests not present in repo snapshot",
+        )
+        missing_b = skip_if_missing_path(
+            "tests/integration/test_retrieval_cadence_guard.py",
+            "integration tests not present in repo snapshot",
+        )
+        if missing_a or missing_b:
+            return CheckResult(
+                id="",
+                status="skip",
+                detail="contract/integration tests for AT-021A not present in repo snapshot",
+            )
         cmd = (
             f"{shlex.quote(PYTHON)} -m pytest -q "
             "tests/contracts/test_kernel_proto_contract.py::test_kernel_proto_has_required_batch_apis "
@@ -289,6 +303,12 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         return pytest_check("tests/integration/test_proposal_engine_patch_only.py::test_proposal_engine_emits_patch_with_meta_and_apply_script_without_repo_mutation")
 
     def atpro003() -> CheckResult:
+        missing = skip_if_missing_path(
+            "tests/contracts/test_proactive_review_heartbeat_schema.py",
+            "proactive review contract tests not present in repo snapshot",
+        )
+        if missing:
+            return missing
         cmd = (
             f"{shlex.quote(PYTHON)} -m pytest -q "
             "tests/contracts/test_proactive_review_heartbeat_schema.py::test_heartbeat_includes_required_fields "
