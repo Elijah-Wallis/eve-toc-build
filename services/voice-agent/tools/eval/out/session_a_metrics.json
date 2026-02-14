@@ -1,0 +1,9 @@
+{
+  "metrics": {
+    "counters": {},
+    "gauges": {},
+    "timings": {}
+  },
+  "session_id": "fixture_a",
+  "state": "ENDED"
+}

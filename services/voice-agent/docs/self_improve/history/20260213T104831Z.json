@@ -1,0 +1,33 @@
+{
+  "all_green": false,
+  "blocked_on_gates": false,
+  "clusters": {
+    "tests": [
+      "tests/test_big.py::test_case"
+    ]
+  },
+  "commands": [
+    {
+      "command": "python3 -c \"print('x'*2500000); print('FAILED tests/test_big.py::test_case'); raise SystemExit(1)\"",
+      "duration_ms": 41,
+      "ok": false,
+      "reason": "nonzero_exit",
+      "returncode": 1
+    }
+  ],
+  "failed_tests": [
+    "tests/test_big.py::test_case"
+  ],
+  "metrics": {
+    "self_improve.applies_total": 0,
+    "self_improve.blocked_on_gates_total": 0,
+    "self_improve.cycles_total": 1,
+    "self_improve.proposals_total": 1
+  },
+  "mode": "propose",
+  "propose_only": true,
+  "skill_capture_suggestions": [
+    "python3 scripts/skills/capture_skill.py --id self_improve_tests --intent 'Fix recurring failures in tests' --tests tests/test_big.py::test_case"
+  ],
+  "timestamp": "20260213T104831Z"
+}
