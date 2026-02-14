@@ -15,9 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.runtime.acceptance.trends import update_trends
-
-PYTHON = os.environ.get("OPENCLAW_ACCEPTANCE_PYTHON") or os.environ.get("PYTHON", "python3")
+PYTHON = os.environ.get("OPENCLAW_ACCEPTANCE_PYTHON") or os.environ.get("PYTHON") or sys.executable
 
 
 @dataclass
@@ -47,6 +45,51 @@ def run_cmd(command: str, timeout: int = 180) -> CheckResult:
 def pytest_check(nodeid: str) -> CheckResult:
     cmd = f"{shlex.quote(PYTHON)} -m pytest -q {shlex.quote(nodeid)}"
     return run_cmd(cmd, timeout=240)
+
+
+def _bootstrap_into_venv_if_needed() -> None:
+    """
+    Acceptance checks depend on third-party libs. In CI we start from a clean
+    interpreter; if imports fail, create a venv, install deps, and re-exec this
+    script under the venv python so downstream imports work.
+    """
+
+    if os.environ.get("OPENCLAW_ACCEPTANCE_BOOTSTRAPPED") == "1":
+        return
+
+    try:
+        import pytest  # noqa: F401
+        import requests  # noqa: F401
+        import pydantic  # noqa: F401
+        import websocket  # noqa: F401
+        import nats  # noqa: F401
+        return
+    except Exception:
+        pass
+
+    venv_dir = os.environ.get("OPENCLAW_ACCEPTANCE_VENV", "/tmp/eve-acceptance-venv")
+    python_bin = Path(venv_dir) / "bin" / "python"
+    pip_bin = Path(venv_dir) / "bin" / "pip"
+
+    if not python_bin.exists():
+        subprocess.run(["python3", "-m", "venv", venv_dir], cwd=ROOT, check=True)
+
+    subprocess.run(
+        [
+            str(pip_bin),
+            "install",
+            "pytest",
+            "requests",
+            "pydantic",
+            "websocket-client",
+            "nats-py",
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+
+    os.environ["OPENCLAW_ACCEPTANCE_BOOTSTRAPPED"] = "1"
+    os.execv(str(python_bin), [str(python_bin), str(Path(__file__).resolve())] + sys.argv[1:])
 
 
 def ensure_test_runtime() -> None:
@@ -296,8 +339,11 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    _bootstrap_into_venv_if_needed()
     args = parse_args()
     ensure_test_runtime()
+    from src.runtime.acceptance.trends import update_trends
+
     checks = build_checks(live=args.live)
     selected = [x.strip().upper() for x in args.ids.split(",") if x.strip()] or list(checks.keys())
     results: List[CheckResult] = []
