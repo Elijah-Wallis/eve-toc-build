@@ -33,7 +33,7 @@ Three test files (`test_telegram_contracts.py`, `test_proactive_execution_profil
 cd agents/voice-agent/service && python3 -m pytest -q
 ```
 
-Many voice agent tests depend on `app.skills` (missing from repo snapshot) via `tests/harness/transport_harness.py`. Tests that don't import from the harness run fine (~88 pass). The voice agent Makefile target `make test` also works for the subset.
+Run from `agents/voice-agent/service/`. Nearly all tests pass (158/159). The single failure (`test_dashboard_routes_smoke`) is due to a missing `dashboard/` static files directory. The voice agent Makefile target `make test` also works.
 
 ### Lint and security checks
 
@@ -43,9 +43,9 @@ Many voice agent tests depend on `app.skills` (missing from repo snapshot) via `
 
 ### Known repo snapshot gaps
 
-- `app/skills.py` is missing from `agents/voice-agent/service/app/`, which prevents the voice agent FastAPI server from starting and causes ~24 harness-based tests to fail at collection time
 - Several `tests/contracts/` and `tests/integration/` directories/files referenced by the acceptance harness don't exist; the harness skips them gracefully
 - `src/runtime/proactive_review/memory.py` and `src/runtime/config_adapter.py` are missing, causing 3 root-level test files to fail at import
+- The `dashboard/` static files directory is absent from `agents/voice-agent/service/`, so `/dashboard/` returns 404 (1 test affected: `test_dashboard_routes_smoke`)
 
 ### Services and external dependencies
 
