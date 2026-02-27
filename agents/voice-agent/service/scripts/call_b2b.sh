@@ -7,7 +7,7 @@ SUPERVISOR_SCRIPT="${RETELL_WS_SUPERVISOR_SCRIPT:-$ROOT_DIR/scripts/ws_brain_809
 PROD_BRAIN_SCRIPT="${RETELL_WS_PROD_SCRIPT:-$ROOT_DIR/scripts/ws_brain_8099_prod.sh}"
 REQUIRED_B2B_AGENT_ID="agent_7a0abb6b0df0e6352fbd236f3b"
 REQUIRED_FROM_NUMBER="+14695998571"
-REQUIRED_WS_BASE="wss://ws.evesystems.org/llm-websocket"
+REQUIRED_WS_BASES="wss://voice-agent.evesystems.org/llm-websocket,wss://ws.evesystems.org/llm-websocket"
 
 is_remote_non_local_ws_host() {
   local ws_url="${BRAIN_WSS_BASE_URL:-}"
@@ -30,7 +30,7 @@ validate_b2b_ws_base_url() {
     return 0
   fi
 
-  python3 - <<'PY' "$base_url" "$REQUIRED_WS_BASE"
+  python3 - <<'PY' "$base_url" "$REQUIRED_WS_BASES"
 import sys
 import urllib.parse
 
@@ -45,15 +45,27 @@ if parsed.scheme not in {"ws", "wss"}:
     print(f"invalid:scheme:{parsed.scheme}")
     sys.exit(2)
 
-required = urllib.parse.urlparse(required)
-if parsed.hostname != required.hostname:
-    print(f"invalid:host:{parsed.hostname}")
-    sys.exit(3)
+required_items = [x.strip() for x in required.split(",") if x.strip()]
+required_hosts_paths = []
+for item in required_items:
+    req = urllib.parse.urlparse(item)
+    if req.hostname:
+        required_hosts_paths.append((req.hostname, (req.path or "").rstrip("/")))
 
 base_path = (parsed.path or "").rstrip("/")
-req_path = (required.path or "").rstrip("/")
-if base_path != req_path:
-    print(f"invalid:path:{base_path}")
+if not required_hosts_paths:
+    print("invalid:required_empty")
+    sys.exit(3)
+
+valid = False
+for req_host, req_path in required_hosts_paths:
+    if parsed.hostname == req_host and base_path == req_path:
+        valid = True
+        break
+
+if not valid:
+    allowed = ", ".join(f"{h}/llm-websocket" for h, _ in required_hosts_paths)
+    print(f"invalid:host_or_path:{parsed.hostname}{base_path}; allowed={allowed}")
     sys.exit(3)
 print("ok")
 sys.exit(0)

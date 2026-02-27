@@ -2,12 +2,20 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 import requests
+
+from n8n_workflow_lifecycle import (
+    force_reregister_workflow_webhooks,
+    list_webhook_paths,
+    n8n_webhook_base,
+    verify_webhook_paths_registered,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,10 +27,17 @@ BINDING_SPECS: Dict[str, Dict[str, Any]] = {
     "RETELL_AI_KEY": {"env": "RETELL_AI_KEY"},
     "RETELL_FROM_NUMBER": {"env": "RETELL_FROM_NUMBER"},
     "RETELL_AGENT_B2B_ID": {"env": "RETELL_AGENT_B2B_ID"},
+    "RETELL_AGENT_B2B_V6_ID": {"env": "RETELL_AGENT_B2B_V6_ID", "default": ""},
     "RETELL_AGENT_B2C_ID": {"env": "RETELL_AGENT_B2C_ID"},
+    "OPENCLAW_B2B_CANARY_MODE": {"env": "OPENCLAW_B2B_CANARY_MODE", "default": "off"},
+    "OPENCLAW_B2B_CANARY_SOURCE_REGEX": {"env": "OPENCLAW_B2B_CANARY_SOURCE_REGEX", "default": "^tx-medspa-"},
+    "OPENCLAW_B2B_CANARY_SAMPLE_PCT": {"env": "OPENCLAW_B2B_CANARY_SAMPLE_PCT", "default": "50"},
     "TWILIO_ACCOUNT_SID": {"env": "TWILIO_ACCOUNT_SID"},
     "TWILIO_AUTH_TOKEN": {"env": "TWILIO_AUTH_TOKEN"},
     "TWILIO_FROM_NUMBER": {"env": "TWILIO_FROM_NUMBER"},
+    "EVIDENCE_EMAIL_PROVIDER_URL": {"env": "EVIDENCE_EMAIL_PROVIDER_URL", "default": ""},
+    "EVIDENCE_EMAIL_API_KEY": {"env": "EVIDENCE_EMAIL_API_KEY", "default": ""},
+    "EVIDENCE_EMAIL_FROM": {"env": "EVIDENCE_EMAIL_FROM", "default": "ops@eve-systems.ai"},
     "APIFY_API_TOKEN": {"env": "APIFY_API_TOKEN"},
     "APIFY_ACTOR_ID": {"env": "APIFY_ACTOR_ID", "default": "compass/crawler-google-places"},
     "N8N_PUBLIC_WEBHOOK_BASE": {"env": "N8N_PUBLIC_WEBHOOK_BASE", "default": "https://elijah-wallis.app.n8n.cloud"},
@@ -97,6 +112,12 @@ def _binding_expr(name: str, mode: str) -> str | None:
 def _patch_workflow(workflow: Dict[str, Any], mode: str) -> Tuple[Dict[str, Any], List[str]]:
     touched: List[str] = []
     for node in workflow.get("nodes", []):
+        if node.get("type") == "n8n-nodes-base.webhook":
+            path = str(((node.get("parameters") or {}).get("path") or "")).strip().lstrip("/")
+            if path and not node.get("webhookId"):
+                node["webhookId"] = hashlib.md5(path.encode("utf-8")).hexdigest().upper()
+                touched.append(f"webhookId:{path}")
+
         if node.get("type") == "n8n-nodes-base.set" and node.get("name") == "Config":
             values = ((node.get("parameters") or {}).get("values") or {})
             strings = values.get("string") or []
@@ -194,15 +215,28 @@ def _update_remote_workflow(workflow_id: str, workflow: Dict[str, Any]) -> None:
     resp.raise_for_status()
 
 
+def _get_remote_workflow(workflow_id: str) -> Dict[str, Any]:
+    resp = requests.get(f"{_base()}/workflows/{workflow_id}", headers=_headers(), timeout=30)
+    resp.raise_for_status()
+    body = resp.json()
+    data = body.get("data", body)
+    if not isinstance(data, dict):
+        raise RuntimeError(f"unexpected workflow payload for {workflow_id}")
+    return data
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Patch n8n workflow Config bindings (env/vars/literal).")
     parser.add_argument("--apply-remote", action="store_true", help="Also patch matching workflows in remote n8n")
     parser.add_argument("--remote-only", action="store_true", help="Patch remote workflows only; do not edit local files")
     parser.add_argument("--prefix", default="openclaw_", help="Workflow name prefix to patch")
+    default_mode = os.environ.get("OPENCLAW_N8N_BINDING_MODE", "env").strip().lower()
+    if default_mode not in {"env", "vars", "literal"}:
+        default_mode = "literal"
     parser.add_argument(
         "--mode",
         choices=["env", "vars", "literal"],
-        default="env",
+        default=default_mode,
         help="Binding mode for Config values",
     )
     args = parser.parse_args()
@@ -220,6 +254,7 @@ def main() -> int:
             local_report.append({"file": str(path), "patched_keys": sorted(set(touched))})
 
     remote_report: List[Dict[str, Any]] = []
+    remote_verify_failed = False
     if args.apply_remote:
         remote_index = _list_remote_workflows()
         local_by_name: Dict[str, Dict[str, Any]] = {}
@@ -239,11 +274,22 @@ def main() -> int:
             if not workflow_id:
                 remote_report.append({"name": name, "status": "missing"})
                 continue
-            source_wf = local_by_name.get(name)
-            if not source_wf:
-                remote_report.append({"name": name, "id": workflow_id, "status": "missing_local_source"})
+            try:
+                remote_wf = _get_remote_workflow(workflow_id)
+            except requests.HTTPError as exc:
+                body = ""
+                if exc.response is not None:
+                    body = (exc.response.text or "")[:300]
+                remote_report.append(
+                    {
+                        "name": name,
+                        "id": workflow_id,
+                        "status": "error",
+                        "error": body or str(exc),
+                    }
+                )
                 continue
-            patched_remote, touched = _patch_workflow(source_wf, args.mode)
+            patched_remote, touched = _patch_workflow(remote_wf, args.mode)
             if touched:
                 try:
                     _update_remote_workflow(workflow_id, patched_remote)
@@ -272,6 +318,76 @@ def main() -> int:
                         }
                     )
                     continue
+                webhook_paths = list_webhook_paths(patched_remote)
+                if webhook_paths:
+                    probe_payloads = {
+                        "openclaw-retell-dispatch": {"source_filter": "__probe_noop__", "lead_limit": 0, "max_calls": 0},
+                        "openclaw-nurture-run": {"source_filter": "__probe_noop__", "lead_limit": 0},
+                        "openclaw-retell-postcall": {"call_id": "probe-call", "to_number": "+10000000000"},
+                        "openclaw-retell-fn-log-insight": {
+                            "lead_id": "00000000-0000-0000-0000-000000000000",
+                            "notes": "env_bindings_probe",
+                            "idempotency_key": "env-bindings-probe",
+                        },
+                        "openclaw-retell-fn-set-followup": {
+                            "lead_id": "00000000-0000-0000-0000-000000000000",
+                            "status": "NURTURE",
+                            "next_touch_at": "2026-02-10T00:00:00+00:00",
+                        },
+                        "openclaw-retell-fn-enrich-intel": {
+                            "lead_id": "00000000-0000-0000-0000-000000000000",
+                            "business_name": "probe",
+                            "city": "probe",
+                            "state": "TX",
+                        },
+                        "openclaw-retell-fn-mark-dnc": {"phone": "000"},
+                    }
+                    try:
+                        reregister = force_reregister_workflow_webhooks(workflow_id)
+                        verify = verify_webhook_paths_registered(
+                            base_webhook_url=n8n_webhook_base(),
+                            paths=webhook_paths,
+                            probe_payloads=probe_payloads,
+                        )
+                    except Exception as exc:  # noqa: BLE001
+                        remote_report.append(
+                            {
+                                "name": name,
+                                "id": workflow_id,
+                                "status": "error",
+                                "error": f"webhook_reregister_failed:{type(exc).__name__}:{exc}",
+                                "patched_keys": sorted(set(touched)),
+                            }
+                        )
+                        remote_verify_failed = True
+                        continue
+
+                    if verify.get("status") != "ok":
+                        remote_report.append(
+                            {
+                                "name": name,
+                                "id": workflow_id,
+                                "status": "error",
+                                "error": "webhook_verify_failed",
+                                "patched_keys": sorted(set(touched)),
+                                "reregister": reregister,
+                                "verify": verify,
+                            }
+                        )
+                        remote_verify_failed = True
+                        continue
+
+                    remote_report.append(
+                        {
+                            "name": name,
+                            "id": workflow_id,
+                            "status": "updated",
+                            "patched_keys": sorted(set(touched)),
+                            "reregister": reregister,
+                            "verify": verify,
+                        }
+                    )
+                    continue
                 remote_report.append(
                     {"name": name, "id": workflow_id, "status": "updated", "patched_keys": sorted(set(touched))}
                 )
@@ -285,6 +401,8 @@ def main() -> int:
         "remote": remote_report,
     }
     print(json.dumps(output, ensure_ascii=True))
+    if remote_verify_failed:
+        return 2
     return 0
 
 

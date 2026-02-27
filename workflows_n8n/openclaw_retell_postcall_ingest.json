@@ -1,6 +1,6 @@
 {
   "name": "openclaw_retell_postcall_ingest",
-  "active": false,
+  "active": true,
   "nodes": [
     {
       "parameters": {
@@ -12,6 +12,7 @@
       "id": "1",
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
+      "webhookId": "10D67D313D9E7B55DFCF12919B3BE28D",
       "typeVersion": 1,
       "position": [
         -320,
@@ -20,7 +21,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const root = items[0].json || {};\nconst payload = root.body || root;\nconst callId = payload.call_id || payload.callId || payload.id || null;\nconst toNumber = payload.to_number || payload.customer_number || payload.to || payload.customerNumber || null;\nconst analysis = payload.call_analysis || payload.analysis || {};\nconst cad = analysis.custom_analysis_data || {};\nconst rawOutcome = cad.call_outcome || analysis.call_outcome || analysis.disposition || payload.call_outcome || '';\nconst rawText = `${rawOutcome} ${(analysis.call_summary || payload.call_summary || '')}`.toLowerCase();\nlet outcome = rawOutcome ? String(rawOutcome).toUpperCase() : '';\nif (!['GRANTED','STALLED','REVOKED','VOICEMAIL','GATEKEEPER'].includes(outcome)) {\n  if (rawText.includes('voicemail')) outcome = 'VOICEMAIL';\n  else if (rawText.includes('gatekeeper') || rawText.includes('reception')) outcome = 'GATEKEEPER';\n  else if (rawText.includes('stop') || rawText.includes('not interested') || rawText.includes('do not call')) outcome = 'REVOKED';\n  else if (rawText.includes('grant') || rawText.includes('email') || rawText.includes('demo')) outcome = 'GRANTED';\n  else outcome = 'STALLED';\n}\nconst summary = analysis.call_summary || payload.call_summary || '';\nconst duration = payload.call_duration || payload.duration || null;\nconst email = cad.email || analysis.email || payload.email || null;\nreturn [{ json: { call_id: callId, to_number: toNumber, outcome, summary, duration, email, raw: payload } }];"
+        "functionCode": "const root = items[0].json || {};\nconst payload = root.body || root;\nconst callId = payload.call_id || payload.callId || payload.id || null;\nconst toNumber = payload.to_number || payload.customer_number || payload.to || payload.customerNumber || null;\nconst analysis = payload.call_analysis || payload.analysis || {};\nconst cad = analysis.custom_analysis_data || {};\nconst dyn = payload.retell_llm_dynamic_variables || payload.dynamic_variables || {};\nconst leadId = cad.lead_id || payload.lead_id || dyn.lead_id || null;\nconst rawOutcome = cad.call_outcome || analysis.call_outcome || analysis.disposition || payload.call_outcome || '';\nconst rawText = `${rawOutcome} ${(analysis.call_summary || payload.call_summary || '')}`.toLowerCase();\nlet outcome = rawOutcome ? String(rawOutcome).toUpperCase() : '';\nif (!['GRANTED','STALLED','REVOKED','VOICEMAIL','GATEKEEPER'].includes(outcome)) {\n  if (rawText.includes('voicemail')) outcome = 'VOICEMAIL';\n  else if (rawText.includes('gatekeeper') || rawText.includes('reception')) outcome = 'GATEKEEPER';\n  else if (rawText.includes('stop') || rawText.includes('not interested') || rawText.includes('do not call')) outcome = 'REVOKED';\n  else if (rawText.includes('grant') || rawText.includes('email') || rawText.includes('demo')) outcome = 'GRANTED';\n  else outcome = 'STALLED';\n}\nconst summary = analysis.call_summary || payload.call_summary || '';\nconst duration = payload.call_duration || payload.duration || null;\nconst email = cad.email || analysis.email || payload.email || null;\nreturn [{ json: { call_id: callId, to_number: toNumber, lead_id: leadId, outcome, summary, duration, email, raw: payload } }];"
       },
       "id": "2",
       "name": "Normalize Outcome",
@@ -53,7 +54,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const lead = ($items('Lookup Lead')[0] && $items('Lookup Lead')[0].json) || {};\nconst norm = $node['Normalize Outcome'].json;\nconst outcome = norm.outcome;\nlet status = 'NURTURE';\nif (outcome === 'GRANTED') status = 'QUALIFIED';\nif (outcome === 'STALLED') status = 'NURTURE';\nif (outcome === 'REVOKED') status = 'DNC';\nif (outcome === 'VOICEMAIL') status = 'RETRY';\nif (outcome === 'GATEKEEPER') status = 'HOLD';\nconst positive = (outcome === 'GRANTED' || outcome === 'STALLED');\nconst dmConfirmed = outcome === 'GRANTED';\nreturn [{ json: {\n  lead_id: lead.id || null,\n  place_id: lead.place_id || null,\n  outcome,\n  status,\n  positive_signal: positive,\n  decision_maker_confirmed: dmConfirmed,\n  dm_email: norm.email || null,\n  call_id: norm.call_id,\n  summary: norm.summary,\n  duration: norm.duration,\n  raw: norm.raw\n}}];"
+        "functionCode": "const lead = ($items('Lookup Lead')[0] && $items('Lookup Lead')[0].json) || {};\nconst norm = $node['Normalize Outcome'].json;\nconst outcome = norm.outcome;\nlet status = 'NURTURE';\nif (outcome === 'GRANTED') status = 'QUALIFIED';\nif (outcome === 'STALLED') status = 'NURTURE';\nif (outcome === 'REVOKED') status = 'DNC';\nif (outcome === 'VOICEMAIL') status = 'RETRY';\nif (outcome === 'GATEKEEPER') status = 'HOLD';\nconst positive = (outcome === 'GRANTED' || outcome === 'STALLED');\nconst dmConfirmed = outcome === 'GRANTED';\nconst leadId = lead.id || norm.lead_id || null;\nreturn [{ json: {\n  lead_id: leadId,\n  place_id: lead.place_id || null,\n  outcome,\n  status,\n  positive_signal: positive,\n  decision_maker_confirmed: dmConfirmed,\n  dm_email: norm.email || null,\n  call_id: norm.call_id,\n  summary: norm.summary,\n  duration: norm.duration,\n  raw: norm.raw\n}}];"
       },
       "id": "4",
       "name": "Build Updates",
@@ -237,6 +238,10 @@
             {
               "name": "SUPABASE_URL",
               "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "NURTURE_SMS_ENABLED",
+              "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
             }
           ],
           "number": [],

@@ -16,7 +16,8 @@
       "position": [
         -360,
         0
-      ]
+      ],
+      "webhookId": "4B855130F2F7FB8F023FEDB876E9DA1C"
     },
     {
       "parameters": {
@@ -40,7 +41,7 @@
     },
     {
       "parameters": {
-        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,source,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD)&phone=not.is.null{{$node[\"Webhook Trigger\"].json.source_filter ? '&source=eq.' + encodeURIComponent($node[\"Webhook Trigger\"].json.source_filter) : ''}}&order=created_at.asc&limit={{$node[\"Webhook Trigger\"].json.lead_limit || 25}}",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,source,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD)&phone=not.is.null{{$node[\"Webhook Trigger\"].json.source_filter ? '&source=eq.' + encodeURIComponent($node[\"Webhook Trigger\"].json.source_filter) : ''}}&order=created_at.asc&limit={{$node[\"Webhook Trigger\"].json.lead_limit || $node[\"Config\"].json.DISPATCH_LEAD_LIMIT || 250}}",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
@@ -60,7 +61,7 @@
     },
     {
       "parameters": {
-        "batchSize": 1
+        "batchSize": "={{$node[\"Config\"].json.DISPATCH_BATCH_SIZE || 25}}"
       },
       "id": "4",
       "name": "Split Leads",
@@ -127,7 +128,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const lead = $node[\"Filter Leads\"].json || {};\nconst agentType = lead.decision_maker_confirmed ? 'B2C' : 'B2B';\nconst agentId = agentType === 'B2C' ? $node[\"Config\"].json.RETELL_AGENT_B2C_ID : $node[\"Config\"].json.RETELL_AGENT_B2B_ID;\nconst fromNumber = $node[\"Config\"].json.RETELL_FROM_NUMBER;\nif (!fromNumber || !lead.phone) return [];\nreturn [{ json: {\n  lead,\n  agent_id: agentId,\n  agent_type: agentType,\n  from_number: fromNumber,\n  request_body: {\n    from_number: fromNumber,\n    to_number: lead.phone,\n    override_agent_id: agentId,\n    retell_llm_dynamic_variables: {\n      business_name: lead.business_name || '',\n      city: lead.city || '',\n      state: lead.state || '',\n      website: lead.website || '',\n      category: Array.isArray(lead.categories) ? (lead.categories[0] || '') : '',\n      rating: String(lead.rating ?? ''),\n      reviews_count: String(lead.reviews_count ?? ''),\n      touch_count: String(lead.touch_count ?? 0),\n      lead_id: lead.id || '',\n      source: lead.source || ''\n    }\n  }\n} }];"
+        "functionCode": "const lead = $node[\"Filter Leads\"].json || {};\nconst cfg = $node[\"Config\"].json || {};\nconst isB2C = !!lead.decision_maker_confirmed;\nlet agentType = isB2C ? 'B2C' : 'B2B';\nlet agentId = isB2C ? cfg.RETELL_AGENT_B2C_ID : cfg.RETELL_AGENT_B2B_ID;\nif (!isB2C) {\n  const override = String($node[\"Webhook Trigger\"].json.b2b_agent_override_id || '').trim();\n  const mode = String(cfg.OPENCLAW_B2B_CANARY_MODE || 'off').toLowerCase();\n  const v6Id = String(cfg.RETELL_AGENT_B2B_V6_ID || '').trim();\n  const source = String(lead.source || '');\n  const sourceRegexRaw = String(cfg.OPENCLAW_B2B_CANARY_SOURCE_REGEX || '^tx-medspa-');\n  let sourceMatch = false;\n  try { sourceMatch = new RegExp(sourceRegexRaw).test(source); } catch (e) { sourceMatch = source.startsWith('tx-medspa-'); }\n  const samplePct = Math.max(0, Math.min(100, Number(cfg.OPENCLAW_B2B_CANARY_SAMPLE_PCT || 50)));\n  const hashSeed = String(lead.id || lead.phone || source || '');\n  const hash = [...hashSeed].reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % 100;\n  const inSample = hash < samplePct;\n  if (override) {\n    agentId = override;\n    agentType = 'B2B_OVERRIDE';\n  } else if (mode === 'force_v6' && v6Id) {\n    agentId = v6Id;\n    agentType = 'B2B_V6';\n  } else if (mode === 'canary' && v6Id && sourceMatch && inSample) {\n    agentId = v6Id;\n    agentType = 'B2B_V6';\n  }\n}\nconst fromNumber = $node[\"Config\"].json.RETELL_FROM_NUMBER;\nif (!fromNumber || !lead.phone) return [];\nreturn [{ json: {\n  lead,\n  agent_id: agentId,\n  agent_type: agentType,\n  from_number: fromNumber,\n  request_body: {\n    from_number: fromNumber,\n    to_number: lead.phone,\n    override_agent_id: agentId,\n    retell_llm_dynamic_variables: {\n      business_name: lead.business_name || '',\n      city: lead.city || '',\n      state: lead.state || '',\n      website: lead.website || '',\n      category: Array.isArray(lead.categories) ? (lead.categories[0] || '') : '',\n      rating: String(lead.rating ?? ''),\n      reviews_count: String(lead.reviews_count ?? ''),\n      touch_count: String(lead.touch_count ?? 0),\n      lead_id: lead.id || '',\n      source: lead.source || '',\n      b2b_agent_variant: agentType,\n      canary_mode: String(cfg.OPENCLAW_B2B_CANARY_MODE || 'off')\n    }\n  }\n} }];"
       },
       "id": "8",
       "name": "Build Call Payload",
@@ -306,16 +307,44 @@
             {
               "name": "SUPABASE_URL",
               "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "RETELL_AGENT_B2B_V6_ID",
+              "value": "={{$env.RETELL_AGENT_B2B_V6_ID || ''}}"
+            },
+            {
+              "name": "OPENCLAW_B2B_CANARY_MODE",
+              "value": "={{$env.OPENCLAW_B2B_CANARY_MODE || 'off'}}"
+            },
+            {
+              "name": "OPENCLAW_B2B_CANARY_SOURCE_REGEX",
+              "value": "={{$env.OPENCLAW_B2B_CANARY_SOURCE_REGEX || '^tx-medspa-'}}"
+            },
+            {
+              "name": "OPENCLAW_B2B_CANARY_SAMPLE_PCT",
+              "value": "={{$env.OPENCLAW_B2B_CANARY_SAMPLE_PCT || '50'}}"
+            },
+            {
+              "name": "NURTURE_SMS_ENABLED",
+              "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
             }
           ],
           "number": [
             {
               "name": "MAX_CALLS_PER_DAY",
-              "value": 50
+              "value": 500
             },
             {
               "name": "MIN_HOURS_BETWEEN_TOUCHES",
               "value": 72
+            },
+            {
+              "name": "DISPATCH_LEAD_LIMIT",
+              "value": 250
+            },
+            {
+              "name": "DISPATCH_BATCH_SIZE",
+              "value": 25
             }
           ],
           "boolean": []

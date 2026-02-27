@@ -15,7 +15,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN npm install -g openclaw@2026.2.2-3 --no-audit --loglevel=error
 
-RUN useradd -m -u 10001 openclaw && mkdir -p /repo /template && chown -R openclaw:openclaw /home/openclaw
+RUN useradd -M -u 10001 -d /var/lib/openclaw openclaw \
+  && mkdir -p /repo /template /var/lib/openclaw \
+  && chown -R openclaw:openclaw /var/lib/openclaw
 
 COPY docker/openclaw/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# Target repo for public handoff (standalone repo; source lives in eve-toc-build at reviews/toc-build/)
 DEFAULT_REPO="Elijah-Wallis/eve-toc-build-review"
 TARGET_REPO="$DEFAULT_REPO"
 PUSH_CHANGES="false"

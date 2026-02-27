@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional
 from urllib.parse import parse_qs, urlsplit
 
 import requests
+from .runtime_paths import state_path
 
 _LOCK = threading.Lock()
 _INSTALLED = False
@@ -77,7 +78,8 @@ def install_requests_traffic_recorder(path: Optional[str] = None) -> None:
         if _INSTALLED:
             return
 
-        target = Path(os.path.expanduser(path or os.environ.get("OPENCLAW_API_TRAFFIC_FILE", "~/.openclaw-eve/runtime/api_traffic.jsonl")))
+        default_path = str(state_path("runtime", "api_traffic.jsonl"))
+        target = Path(os.path.expanduser(path or os.environ.get("OPENCLAW_API_TRAFFIC_FILE", default_path)))
         target.parent.mkdir(parents=True, exist_ok=True)
 
         _ORIGINAL_REQUEST = requests.sessions.Session.request
@@ -140,4 +142,3 @@ def install_requests_traffic_recorder(path: Optional[str] = None) -> None:
 
         requests.sessions.Session.request = _wrapped_request
         _INSTALLED = True
-

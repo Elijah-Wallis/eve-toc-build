@@ -1,0 +1,197 @@
+{
+  "version": 1,
+  "system_map": [
+    {
+      "id": "identity_constraints",
+      "name": "Identity and Constraints",
+      "desc": {
+        "laymen": "The rules that keep Eve grounded in reality and aligned with your intent.",
+        "technical": "Policy and identity files. Canonical workspace state is symlinked into templates."
+      },
+      "links": [
+        { "label": "SOUL.md (template symlink)", "href": "/api/open?path=openclaw_workspace_template/SOUL.md" },
+        { "label": "soul.md (repo)", "href": "/api/open?path=soul.md" }
+      ]
+    },
+    {
+      "id": "capabilities_skills",
+      "name": "Capabilities (Skills)",
+      "desc": {
+        "laymen": "What Eve can do: tools, behaviors, and operational powers.",
+        "technical": "SKILLS.md plus the .agents/skills implementations."
+      },
+      "links": [
+        { "label": "SKILLS.md", "href": "/api/open?path=SKILLS.md" },
+        { "label": ".agents/skills/", "href": "/api/open?path=.agents/skills/" }
+      ]
+    },
+    {
+      "id": "runtime_core",
+      "name": "Runtime Core",
+      "desc": {
+        "laymen": "The engine that decides what to do next.",
+        "technical": "Python runtime modules and orchestrator entrypoints."
+      },
+      "links": [
+        { "label": "ARCHITECTURE.md", "href": "/api/open?path=ARCHITECTURE.md" },
+        { "label": "src/runtime/", "href": "/api/open?path=src/runtime/" }
+      ]
+    },
+    {
+      "id": "config_policy",
+      "name": "Config and Policy",
+      "desc": {
+        "laymen": "Settings that wire Eve to external systems.",
+        "technical": "openclaw.json, config/, policy/ and env handling."
+      },
+      "links": [
+        { "label": "openclaw.json", "href": "/api/open?path=openclaw.json" },
+        { "label": "config/", "href": "/api/open?path=config/" },
+        { "label": "policy/", "href": "/api/open?path=policy/" }
+      ]
+    },
+    {
+      "id": "workflows_n8n",
+      "name": "Workflows (n8n)",
+      "desc": {
+        "laymen": "Automation flows that execute real-world actions.",
+        "technical": "workflows_n8n/*.json plus deployment/patch tooling."
+      },
+      "links": [
+        { "label": "workflows_n8n/", "href": "/api/open?path=workflows_n8n/" },
+        { "label": "scripts/deploy_retell_b2c_workflows.py", "href": "/api/open?path=scripts/deploy_retell_b2c_workflows.py" }
+      ]
+    },
+    {
+      "id": "knowledge_base",
+      "name": "Knowledge Base",
+      "desc": {
+        "laymen": "What Eve knows (prompts, lexicon, manuals).",
+        "technical": "knowledge_base/raw/* and vector store artifacts."
+      },
+      "links": [
+        { "label": "knowledge_base/raw/", "href": "/api/open?path=knowledge_base/raw/" },
+        { "label": "knowledge_base/chroma_db/", "href": "/api/open?path=knowledge_base/chroma_db/" }
+      ]
+    },
+    {
+      "id": "acceptance_gates",
+      "name": "Acceptance Gates",
+      "desc": {
+        "laymen": "The go/no-go checks before you let Eve execute real actions.",
+        "technical": "scripts/acceptance/run_acceptance.py and the contract/integration tests it orchestrates."
+      },
+      "links": [
+        { "label": "scripts/acceptance/run_acceptance.py", "href": "/api/open?path=scripts/acceptance/run_acceptance.py" },
+        { "label": "tests/contracts/", "href": "/api/open?path=tests/contracts/" }
+      ]
+    },
+    {
+      "id": "storage_schema",
+      "name": "Storage and Schema",
+      "desc": {
+        "laymen": "Where Eve stores memory and structure.",
+        "technical": "Supabase schema and upgrades."
+      },
+      "links": [
+        { "label": "supabase/schema.sql", "href": "/api/open?path=supabase/schema.sql" },
+        { "label": "supabase/", "href": "/api/open?path=supabase/" }
+      ]
+    },
+    {
+      "id": "ops_deploy",
+      "name": "Operations and Deployment",
+      "desc": {
+        "laymen": "How Eve runs on machines and servers.",
+        "technical": "Docker, launchd scripts, ops docs."
+      },
+      "links": [
+        { "label": "docker/compose.yaml", "href": "/api/open?path=docker/compose.yaml" },
+        { "label": "scripts/verify_elijah_evebot_launchd.sh", "href": "/api/open?path=scripts/verify_elijah_evebot_launchd.sh" }
+      ]
+    }
+  ],
+  "repo_tour": [
+    {
+      "id": "tour_readme",
+      "name": "README",
+      "desc": {
+        "laymen": "What Eve is, what it does, and how to run it.",
+        "technical": "Top-level usage and operational notes."
+      },
+      "link": { "label": "README.md", "href": "/api/open?path=README.md" }
+    },
+    {
+      "id": "tour_sop",
+      "name": "SOP (Methodology)",
+      "desc": {
+        "laymen": "The operating methodology: how Eve stays safe, run-ready, and improvable.",
+        "technical": "Operator runbook: phases, gates, evidence paths, and change management."
+      },
+      "link": { "label": "SOP", "href": "/sop" }
+    },
+    {
+      "id": "tour_architecture",
+      "name": "Architecture",
+      "desc": {
+        "laymen": "The system map in words.",
+        "technical": "Subsystem boundaries, responsibilities, and flows."
+      },
+      "link": { "label": "ARCHITECTURE.md", "href": "/api/open?path=ARCHITECTURE.md" }
+    },
+    {
+      "id": "tour_runtime",
+      "name": "Runtime Source",
+      "desc": {
+        "laymen": "The decision engine and safety rails.",
+        "technical": "src/runtime/* modules."
+      },
+      "link": { "label": "src/runtime/", "href": "/api/open?path=src/runtime/" }
+    },
+    {
+      "id": "tour_workflows",
+      "name": "Workflows",
+      "desc": {
+        "laymen": "The automations that touch the real world.",
+        "technical": "n8n workflow JSON files and deployment scripts."
+      },
+      "link": { "label": "workflows_n8n/", "href": "/api/open?path=workflows_n8n/" }
+    },
+    {
+      "id": "tour_business_code",
+      "name": "Business Code",
+      "desc": {
+        "laymen": "Playbooks and go-to-market logic that drives outcomes.",
+        "technical": "Business_Code/*.md (scripts, prompts, strategy)."
+      },
+      "link": { "label": "Business_Code/", "href": "/api/open?path=Business_Code/" }
+    },
+    {
+      "id": "tour_contracts",
+      "name": "Contracts",
+      "desc": {
+        "laymen": "Guardrails that prevent regressions.",
+        "technical": "tests/contracts/* and acceptance runner."
+      },
+      "link": { "label": "tests/contracts/", "href": "/api/open?path=tests/contracts/" }
+    },
+    {
+      "id": "tour_acceptance_runner",
+      "name": "Acceptance Runner",
+      "desc": {
+        "laymen": "One command that runs the go/no-go gates.",
+        "technical": "scripts/acceptance/run_acceptance.py orchestrates AT-* checks and writes trends to the state dir."
+      },
+      "link": { "label": "scripts/acceptance/run_acceptance.py", "href": "/api/open?path=scripts/acceptance/run_acceptance.py" }
+    },
+    {
+      "id": "tour_templates",
+      "name": "Policy and Templates",
+      "desc": {
+        "laymen": "The rules and canonical identity files.",
+        "technical": "openclaw_workspace_template/ plus symlink invariants."
+      },
+      "link": { "label": "openclaw_workspace_template/", "href": "/api/open?path=openclaw_workspace_template/" }
+    }
+  ]
+}

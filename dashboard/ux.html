@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Eve | UX View</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./app.css" />
+    <link rel="stylesheet" href="./ux.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-title">Eve</div>
+        <div class="brand-sub">UI/UX vs Code (CPOM-safe lens)</div>
+      </div>
+      <div class="controls">
+        <a class="btn" href="/">Back</a>
+        <div class="seg" role="group" aria-label="Audience Toggle">
+          <button class="seg-btn" data-audience="laymen">Laymen</button>
+          <button class="seg-btn" data-audience="technical">Technical</button>
+        </div>
+        <div class="seg" role="group" aria-label="Tab Toggle">
+          <button class="seg-btn" data-tab="uiux">UI/UX</button>
+          <button class="seg-btn" data-tab="code">Code</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="panel">
+        <div class="panel-title title-row">
+          <span id="title">Loading...</span>
+          <span class="title-controls mono" id="meta"></span>
+        </div>
+        <div class="panel-body">
+          <div id="content" class="ux-content">Loading...</div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./ux.js"></script>
+  </body>
+</html>
+

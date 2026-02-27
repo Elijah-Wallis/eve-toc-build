@@ -15,6 +15,38 @@
   - Tools: `twilio.send_sms`, `twilio.create_call`
 - `intelligence_mcp` (local): `python3 -m mcp_servers.intelligence_mcp.server`
   - Tools: `intelligence.lead_snapshot`, `intelligence.recent_events`
+- `cloudflare_mcp` (local): `python3 -m mcp_servers.cloudflare_mcp.server`
+  - Tools:
+    - `cloudflare.verify_token`
+    - `cloudflare.list_zones`
+    - `cloudflare.list_tunnels`
+    - `cloudflare.create_tunnel`
+    - `cloudflare.create_tunnel_token`
+    - `cloudflare.upsert_dns_cname`
+
+## Cloudflare Skill (Named Tunnel + DNS, low-friction)
+
+Set once:
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_ZONE_ID`
+- `CF_TUNNEL_NAME` (default: `retell-brain`)
+- `CF_TUNNEL_HOSTNAME` (example: `ws.example.com`)
+
+Start Cloudflare MCP:
+- `python3 -m mcp_servers.cloudflare_mcp.server`
+
+Verify token:
+- `curl -sS -X POST http://127.0.0.1:${CLOUDFLARE_MCP_PORT:-7086}/mcp -H 'Content-Type: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"cloudflare.verify_token","arguments":{}}}' | python3 -m json.tool`
+
+Create tunnel + DNS route:
+- Create tunnel:
+  - `curl -sS -X POST http://127.0.0.1:${CLOUDFLARE_MCP_PORT:-7086}/mcp -H 'Content-Type: application/json' -d "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"cloudflare.create_tunnel\",\"arguments\":{\"name\":\"${CF_TUNNEL_NAME:-retell-brain}\"}}}" | python3 -m json.tool`
+- Upsert DNS CNAME:
+  - `curl -sS -X POST http://127.0.0.1:${CLOUDFLARE_MCP_PORT:-7086}/mcp -H 'Content-Type: application/json' -d "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"cloudflare.upsert_dns_cname\",\"arguments\":{\"zone_id\":\"${CLOUDFLARE_ZONE_ID}\",\"hostname\":\"${CF_TUNNEL_HOSTNAME}\",\"target\":\"<TUNNEL_ID>.cfargotunnel.com\",\"proxied\":true}}}" | python3 -m json.tool`
+
+Then set websocket URL:
+- `RETELL_LLM_WEBSOCKET_URL=wss://${CF_TUNNEL_HOSTNAME}/ws`
 
 ## Auto-Generated MCP Skills (Traffic Compiler)
 

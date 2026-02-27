@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Eve | Doc</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/app.css" />
+    <link rel="stylesheet" href="/doc.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-title">Eve</div>
+        <div class="brand-sub">Document (UI/UX + Code)</div>
+      </div>
+      <div class="controls">
+        <a class="btn" id="back" href="/">Dashboard</a>
+        <a class="btn" id="explore" href="/open?path=">Explore</a>
+        <a class="btn" id="rawlink" href="/api/open?path=" target="_blank" rel="noreferrer">Raw</a>
+        <div class="seg" role="group" aria-label="Audience Toggle">
+          <button class="seg-btn" data-audience="laymen">Laymen</button>
+          <button class="seg-btn" data-audience="technical">Technical</button>
+        </div>
+        <div class="seg" role="group" aria-label="View Toggle">
+          <button class="seg-btn" data-view="uiux">UI/UX</button>
+          <button class="seg-btn" data-view="split">Split</button>
+          <button class="seg-btn" data-view="code">Code</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap doc">
+      <section class="panel doc-head">
+        <div class="panel-title title-row">
+          <span id="title">Loading...</span>
+          <span class="title-controls mono" id="meta"></span>
+        </div>
+        <div class="panel-body">
+          <div class="lede" id="lede">Loading...</div>
+          <div class="actions">
+            <button id="copy-path" class="mini-btn">Copy Path</button>
+            <button id="copy-raw" class="mini-btn">Copy Raw</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid2 doc-grid">
+        <aside class="panel toc-panel" id="toc-panel">
+          <div class="panel-title">Outline</div>
+          <div class="panel-body">
+            <div id="toc" class="toc mono">Loading...</div>
+          </div>
+        </aside>
+
+        <section class="panel content-panel">
+          <div class="panel-title title-row">
+            <span>Content</span>
+            <span class="title-controls mono" id="topic"></span>
+          </div>
+          <div class="panel-body">
+            <div class="stack" id="stack">
+              <div class="card" id="card-vision">
+                <div class="h">Vision (CPOM-safe)</div>
+                <div class="b" id="vision">Loading...</div>
+              </div>
+              <div class="card" id="card-uiux">
+                <div class="h">UI/UX Read</div>
+                <div class="b doc-body" id="uiux">(loading)</div>
+              </div>
+              <div class="card" id="card-code">
+                <div class="h">Code (Raw)</div>
+                <pre class="mono pre doc-pre" id="raw">(loading)</pre>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/doc.js"></script>
+  </body>
+</html>
+

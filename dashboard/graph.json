@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "edges": [
+    ["identity_constraints", "config_policy"],
+    ["identity_constraints", "runtime_core"],
+    ["identity_constraints", "acceptance_gates"],
+
+    ["config_policy", "workflows_n8n"],
+    ["config_policy", "storage_schema"],
+
+    ["capabilities_skills", "runtime_core"],
+    ["capabilities_skills", "workflows_n8n"],
+
+    ["knowledge_base", "runtime_core"],
+    ["storage_schema", "runtime_core"],
+
+    ["runtime_core", "workflows_n8n"],
+    ["runtime_core", "acceptance_gates"],
+
+    ["workflows_n8n", "acceptance_gates"],
+    ["acceptance_gates", "ops_deploy"],
+
+    ["ops_deploy", "workflows_n8n"]
+  ]
+}
+

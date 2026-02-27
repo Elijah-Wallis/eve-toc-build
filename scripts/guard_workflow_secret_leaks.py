@@ -23,12 +23,24 @@ SENSITIVE_CONFIG_KEYS = {
     "N8N_MCP_ACCESS_TOKEN",
     "OPENCLAW_TELEGRAM_BOT_TOKEN",
     "TELEGRAM_BOT_TOKEN",
+    "EVIDENCE_EMAIL_API_KEY",
 }
 
 
-def _is_secret_expr(value: str) -> bool:
+def _binding_mode() -> str:
+    return os.environ.get("OPENCLAW_N8N_BINDING_MODE", "env").strip().lower()
+
+
+def _is_valid_secret_binding(value: str) -> bool:
     stripped = value.strip()
-    return stripped.startswith("={{$env.") or stripped.startswith("={{$vars.")
+    mode = _binding_mode()
+    if mode == "env":
+        return stripped.startswith("={{$env.")
+    if mode == "vars":
+        return stripped.startswith("={{$vars.")
+    if mode == "literal":
+        return bool(stripped) and not stripped.startswith("={{$env.") and not stripped.startswith("={{$vars.")
+    return False
 
 
 def _scan_workflow_nodes(workflow: Dict[str, Any], source: str) -> List[Dict[str, str]]:
@@ -42,7 +54,7 @@ def _scan_workflow_nodes(workflow: Dict[str, Any], source: str) -> List[Dict[str
             if key not in SENSITIVE_CONFIG_KEYS:
                 continue
             value = str(row.get("value") or "")
-            if not _is_secret_expr(value):
+            if not _is_valid_secret_binding(value):
                 findings.append(
                     {
                         "source": source,
@@ -92,7 +104,7 @@ def _scan_remote(prefix: str) -> Tuple[List[Dict[str, str]], int]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Fail-fast guard for literal secrets in workflow Config nodes.")
+    parser = argparse.ArgumentParser(description="Fail-fast guard for workflow secret bindings.")
     parser.add_argument("--check-remote", action="store_true", help="Also scan remote n8n workflows via API")
     parser.add_argument("--prefix", default="openclaw_", help="Workflow name prefix to scan")
     parser.add_argument("--allow-findings", action="store_true", help="Always return 0 even when findings exist")
@@ -106,9 +118,11 @@ def main() -> int:
 
     findings = local_findings + remote_findings
     allow_literal_runtime = os.environ.get("OPENCLAW_ALLOW_LITERAL_WORKFLOW_SECRETS", "0") == "1"
-    ok = len(findings) == 0 or allow_literal_runtime
+    mode = _binding_mode()
+    ok = len(findings) == 0 or (allow_literal_runtime and mode == "literal")
     report = {
         "ok": ok,
+        "binding_mode": mode,
         "allow_literal_runtime": allow_literal_runtime,
         "local_findings": local_findings,
         "remote_findings": remote_findings,
@@ -119,7 +133,7 @@ def main() -> int:
         },
     }
     print(json.dumps(report, ensure_ascii=True))
-    if findings and not args.allow_findings and not allow_literal_runtime:
+    if findings and not args.allow_findings and not (allow_literal_runtime and mode == "literal"):
         return 2
     return 0
 

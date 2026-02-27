@@ -1,6 +1,8 @@
 # Retell WS Brain (Deterministic, Actor Model, VIC-Gated)
 
-This repo contains a production-grade "Brain" server for Retell's Custom LLM WebSocket integration.
+**Monorepo:** This project lives in [eve-toc-build](https://github.com/Elijah-Wallis/eve-toc-build) at `policies/`. The standalone repo `eve-legal-policies` is archived there.
+
+This directory contains a production-grade "Brain" server for Retell's Custom LLM WebSocket integration.
 
 ## Dumb-Simple Commands
 

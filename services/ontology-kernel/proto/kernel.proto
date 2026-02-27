@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package ontology.kernel.v1;
+
+message PredicateIri {
+  string iri = 1;
+}
+
+message SubjectPredicatePair {
+  int64 subject_id = 1;
+  int64 predicate_id = 2;
+}
+
+message TriplePattern {
+  int64 subject_id = 1;
+  int64 predicate_id = 2;
+  int64 object_id = 3;
+  bool subject_bound = 4;
+  bool predicate_bound = 5;
+  bool object_bound = 6;
+}
+
+message BatchResolvePredicatesRequest {
+  repeated PredicateIri iris = 1;
+}
+
+message BatchResolvePredicatesResponse {
+  repeated int64 predicate_ids = 1;
+}
+
+message ObjectIdList {
+  repeated int64 object_ids = 1;
+}
+
+message BatchLookupEdgesRequest {
+  repeated SubjectPredicatePair pairs = 1;
+}
+
+message BatchLookupEdgesResponse {
+  repeated ObjectIdList object_id_lists = 1;
+}
+
+message BatchTriplePatternsRequest {
+  repeated TriplePattern patterns = 1;
+}
+
+message Rowset {
+  repeated int64 subject_ids = 1;
+  repeated int64 predicate_ids = 2;
+  repeated int64 object_ids = 3;
+}
+
+message BatchTriplePatternsResponse {
+  repeated Rowset rowsets = 1;
+}
+
+message ExecutePlanRequest {
+  bytes plan_bytes = 1;
+}
+
+message ExecutePlanResponse {
+  repeated Rowset rowsets = 1;
+  int64 rows_scanned = 2;
+  int64 rows_returned = 3;
+}
+
+service OntologyKernel {
+  rpc BatchResolvePredicates(BatchResolvePredicatesRequest) returns (BatchResolvePredicatesResponse);
+  rpc BatchLookupEdges(BatchLookupEdgesRequest) returns (BatchLookupEdgesResponse);
+  rpc BatchTriplePatterns(BatchTriplePatternsRequest) returns (BatchTriplePatternsResponse);
+  rpc ExecutePlan(ExecutePlanRequest) returns (ExecutePlanResponse);
+}

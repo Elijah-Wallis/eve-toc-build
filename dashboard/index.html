@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0b0d12" />
+    <title>Eve</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/app.css" />
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <a class="brand-link" href="/" data-nav>
+            <span class="brand-title">Eve</span>
+            <span class="orb" id="presence-orb" aria-hidden="true"></span>
+          </a>
+          <div class="brand-sub" id="brand-sub">Reality-grounded operations</div>
+        </div>
+
+        <nav class="nav">
+          <a class="nav-link" href="/" data-nav data-navkey="home">Dashboard</a>
+          <a class="nav-link" href="/deck" data-nav data-navkey="deck">Deck</a>
+          <a class="nav-link" href="/sop" data-nav data-navkey="sop">SOP</a>
+          <a class="nav-link" href="/open?path=" data-nav data-navkey="open">Explore</a>
+        </nav>
+
+        <div class="controls">
+          <div class="seg" role="group" aria-label="Audience">
+            <button class="seg-btn" id="aud-laymen" data-audience="laymen" type="button">Laymen</button>
+            <button class="seg-btn" id="aud-technical" data-audience="technical" type="button">Technical</button>
+          </div>
+
+          <div class="seg" id="lens-seg" role="group" aria-label="Lens">
+            <button class="seg-btn" id="lens-uiux" data-lens="uiux" type="button">Vision</button>
+            <button class="seg-btn" id="lens-split" data-lens="split" type="button">Split</button>
+            <button class="seg-btn" id="lens-code" data-lens="code" type="button">Code</button>
+          </div>
+
+          <div class="run-controls" id="run-controls">
+            <div class="select">
+              <label class="select-label" for="bundle">Bundle</label>
+              <select id="bundle" class="select-input">
+                <option value="">Fast (defaults)</option>
+                <option value="smoke">Acceptance: Smoke</option>
+                <option value="patched_prod">Acceptance: Patched Prod</option>
+                <option value="hardening">Acceptance: Hardening (Docker)</option>
+                <option value="ops">Acceptance: Ops Baseline</option>
+                <option value="contracts">Contracts</option>
+                <option value="full">Full Deep</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="run" type="button">Run</button>
+            <button class="btn" id="refresh" type="button">Refresh</button>
+          </div>
+
+          <button class="btn btn-quiet" id="cmdk" type="button" aria-label="Command palette">
+            <span class="mono">⌘K</span>
+          </button>
+        </div>
+      </header>
+
+      <main id="app-root" class="wrap" tabindex="-1"></main>
+    </div>
+
+    <div class="palette" id="palette" hidden>
+      <div class="palette-backdrop" data-palette-close></div>
+      <div class="palette-card" role="dialog" aria-modal="true" aria-label="Command palette">
+        <div class="palette-top">
+          <input
+            class="palette-input"
+            id="palette-input"
+            type="text"
+            placeholder="Search: topics, docs, actions…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="palette-hint mono">ESC</div>
+        </div>
+        <div class="palette-list" id="palette-list"></div>
+        <div class="palette-foot mono" id="palette-foot">Tip: type a file name to open a doc. Use arrows + Enter.</div>
+      </div>
+    </div>
+
+    <script type="module" src="/main.mjs"></script>
+  </body>
+</html>

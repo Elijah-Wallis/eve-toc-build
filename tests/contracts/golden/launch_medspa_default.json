@@ -1,0 +1,13 @@
+{
+  "required_keys": [
+    "status",
+    "campaign_tag",
+    "mode",
+    "profile",
+    "overrides",
+    "task"
+  ],
+  "status": "queued",
+  "mode": "manual",
+  "profile": "balanced"
+}

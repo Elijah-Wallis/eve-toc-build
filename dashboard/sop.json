@@ -1,0 +1,320 @@
+{
+  "version": 1,
+  "title": "Eve SOP",
+  "subtitle": "Repo-wide methodology: how Eve stays grounded, run-ready, and improvable.",
+  "principles": [
+    {
+      "id": "least_action",
+      "title": "Principle of Least Action",
+      "text": {
+        "laymen": "Prefer the simplest path that works. Reduce friction, but never break safety.",
+        "technical": "Minimize unnecessary work and moving parts. Avoid auto-running expensive checks; require explicit intent for side effects."
+      }
+    },
+    {
+      "id": "reality_grounded",
+      "title": "Reality Grounding",
+      "text": {
+        "laymen": "Green/red status must reflect real sensors, not vibes.",
+        "technical": "Every dashboard state must map to a concrete endpoint, file, or contract. No fake intelligence."
+      }
+    },
+    {
+      "id": "cpom",
+      "title": "CPOM Separation",
+      "text": {
+        "laymen": "Vision and procedure are readable without code literacy.",
+        "technical": "Technical view exposes commands, evidence paths, and raw links only with explicit intent."
+      }
+    },
+    {
+      "id": "gates_before_autonomy",
+      "title": "Gates Before Autonomy",
+      "text": {
+        "laymen": "If a gate is red, you do not let Eve run real-world actions.",
+        "technical": "Acceptance bundles are the go/no-go barrier. When a gate fails, fix the first failure and rerun."
+      }
+    }
+  ],
+  "docs": [
+    { "label": "README (operational entrypoint)", "path": "README.md" },
+    { "label": "Architecture map", "path": "ARCHITECTURE.md" },
+    { "label": "SOP: IP protection", "path": "Business_Code/SOP_IP.md" },
+    { "label": "SOP: Traffic-to-MCP compiler", "path": "Business_Code/SOP_TRAFFIC_TO_MCP_COMPILER.md" }
+  ],
+  "phases": [
+    {
+      "id": "orientation",
+      "name": "Orientation (Identity + CPOM)",
+      "goal": {
+        "laymen": "Keep Eve grounded in reality and role-separated for safe operation.",
+        "technical": "Ensure policy/identity is canonical and constraints propagate via symlink invariants."
+      },
+      "why": {
+        "laymen": "If the rules drift, the whole system becomes untrustworthy.",
+        "technical": "Constraint drift increases hallucination risk and breaks repeatability across workspaces."
+      },
+      "output": {
+        "laymen": "You can trust what green/red means.",
+        "technical": "Policy symlinks and repo hygiene invariants are satisfied."
+      },
+      "steps": [
+        {
+          "title": "Verify identity and constraint substrate",
+          "gates": ["policy_symlinks", "no_absolute_paths"],
+          "links": [
+            { "label": "soul.md", "path": "soul.md" },
+            { "label": "AGENTS.md", "path": "AGENTS.md" },
+            { "label": "Template SOUL.md", "path": "openclaw_workspace_template/SOUL.md" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "preflight",
+      "name": "Preflight (Environment + Wiring)",
+      "goal": {
+        "laymen": "Confirm the machine and wiring are real before you trust outputs.",
+        "technical": "Ensure required env/config exists and secrets are not hardcoded into workflows."
+      },
+      "why": {
+        "laymen": "Most failures are wiring failures, not logic failures.",
+        "technical": "Missing env/config and secret leakage are the highest-frequency and highest-risk failure modes."
+      },
+      "output": {
+        "laymen": "The system is connected and safe to test.",
+        "technical": "Preflight checks and secret-binding policy pass."
+      },
+      "steps": [
+        {
+          "title": "Run strict preflight and validate runtime config",
+          "gates": ["worldclass_preflight_strict", "runtime_config_valid", "workflow_secret_bindings"],
+          "commands": [
+            "bash scripts/ops/worldclass_preflight_strict.sh",
+            "python3 scripts/validate_runtime_config.py"
+          ],
+          "links": [
+            { "label": "README: key validation commands", "path": "README.md" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "readiness",
+      "name": "Readiness (Go/No-Go)",
+      "goal": {
+        "laymen": "Prove the system is run-ready before executing real-world actions.",
+        "technical": "Run acceptance bundles appropriate to the risk and environment; preserve last-green evidence."
+      },
+      "why": {
+        "laymen": "Autonomy without proof is gambling.",
+        "technical": "Bundles encode different confidence levels; last-green baselines prevent silent regressions."
+      },
+      "output": {
+        "laymen": "A clear green/red signal for go/no-go.",
+        "technical": "Acceptance evidence exists in the state dir, and failures are actionable."
+      },
+      "steps": [
+        {
+          "title": "Run smoke / patched prod / ops baseline gates as needed",
+          "gates": ["acceptance_smoke", "acceptance_patched_prod", "acceptance_ops_baseline", "contract_suite"],
+          "commands": [
+            "python3 scripts/acceptance/run_acceptance.py --ids AT-001,AT-002,AT-003,AT-007,AT-009",
+            "python3 scripts/acceptance/run_acceptance.py --ids AT-013A,AT-018,AT-021A,AT-024A,AT-034A,AT-035A",
+            "python3 scripts/acceptance/run_acceptance.py --ids AT-PRO-004,AT-REV-001,AT-ING-001,AT-LEDGER-001,AT-SEC-002",
+            "bash scripts/acceptance/run_contract_suite.sh"
+          ],
+          "evidence": [
+            "${OPENCLAW_STATE_DIR:-$HOME/.openclaw-eve}/acceptance/trends/last_7.json"
+          ],
+          "links": [
+            { "label": "Acceptance runner", "path": "scripts/acceptance/run_acceptance.py" },
+            { "label": "Contracts", "path": "tests/contracts/" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operation",
+      "name": "Operation (Runtime + Workflows)",
+      "goal": {
+        "laymen": "Operate Eve with clear signals: run, observe, fix, rerun.",
+        "technical": "Use the dashboard to run checks; use runbooks for deployments and operational probes."
+      },
+      "why": {
+        "laymen": "The system improves by addressing the first real failure.",
+        "technical": "Fast feedback loops reduce risk; avoid changing multiple subsystems without gates."
+      },
+      "output": {
+        "laymen": "Stable operation and predictable improvements.",
+        "technical": "Validated runtime + workflow behavior under acceptance constraints."
+      },
+      "steps": [
+        {
+          "title": "Use the dashboard as the operator console",
+          "gates": ["worldclass_preflight_strict", "runtime_config_valid"],
+          "links": [
+            { "label": "Dashboard server", "path": "scripts/dashboard/health_server.py" },
+            { "label": "Workflows", "path": "workflows_n8n/" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "evidence",
+      "name": "Evidence & Integrity",
+      "goal": {
+        "laymen": "Prove what happened using durable evidence, not memory.",
+        "technical": "Ensure transcript integrity and schema migrations remain deterministic and auditable."
+      },
+      "why": {
+        "laymen": "You can’t improve what you can’t verify.",
+        "technical": "Truth tables (DB) and immutable logs reduce ambiguity and adverse side effects."
+      },
+      "output": {
+        "laymen": "Evidence-backed confidence for each claim.",
+        "technical": "Transcript proof and schema sources of truth are verified."
+      },
+      "steps": [
+        {
+          "title": "Verify transcript proof and schema sources of truth",
+          "gates": ["transcripts_recording_url_proof"],
+          "commands": [
+            "python3 scripts/ops/sync_call_transcripts.py --lookback-hours 168 --repair-call-sessions"
+          ],
+          "links": [
+            { "label": "Supabase schema", "path": "supabase/schema.sql" },
+            { "label": "Supabase transcript upgrade", "path": "supabase/upgrade_transcripts.sql" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "change_management",
+      "name": "Change Management (Improve Safely)",
+      "goal": {
+        "laymen": "Make the smallest change that moves the system forward, then prove it.",
+        "technical": "Change one subsystem at a time, run the relevant gates, and add regression tests when fixing bugs."
+      },
+      "why": {
+        "laymen": "Big changes are hard to debug and risky.",
+        "technical": "Regression tests prevent repeats; gates ensure run readiness before autonomy."
+      },
+      "output": {
+        "laymen": "Faster improvements with fewer surprises.",
+        "technical": "Verified change with evidence and a test to prevent recurrence."
+      },
+      "steps": [
+        {
+          "title": "When fixing a bug, add a regression test when it fits",
+          "gates": ["contract_suite"],
+          "links": [
+            { "label": "Contracts folder", "path": "tests/contracts/" }
+          ]
+        }
+      ]
+    }
+  ],
+  "component_guidance": [
+    {
+      "topic": "identity_constraints",
+      "failure_modes": {
+        "laymen": "Rules drift and you can’t trust what Eve will do.",
+        "technical": "Constraint/policy drift; templates no longer reference the canonical substrate; increased hallucination risk."
+      },
+      "change_safely": {
+        "gates": ["policy_symlinks", "no_absolute_paths"],
+        "evidence": []
+      }
+    },
+    {
+      "topic": "capabilities_skills",
+      "failure_modes": {
+        "laymen": "Eve can’t do the thing you expect (missing capability).",
+        "technical": "Connector/tool mapping missing or miswired; skills registry drifts from implementation."
+      },
+      "change_safely": {
+        "gates": ["runtime_config_valid"],
+        "evidence": []
+      }
+    },
+    {
+      "topic": "runtime_core",
+      "failure_modes": {
+        "laymen": "The engine fails, stalls, or behaves unpredictably.",
+        "technical": "Runtime modules break orchestration, task execution, or guardrails; acceptance contracts fail."
+      },
+      "change_safely": {
+        "gates": ["runtime_config_valid", "acceptance_smoke", "contract_suite"],
+        "evidence": ["${OPENCLAW_STATE_DIR:-$HOME/.openclaw-eve}/acceptance/trends/last_7.json"]
+      }
+    },
+    {
+      "topic": "config_policy",
+      "failure_modes": {
+        "laymen": "The system can’t connect to the real world safely.",
+        "technical": "Missing env/config; secrets accidentally committed; workflow bindings broken."
+      },
+      "change_safely": {
+        "gates": ["runtime_config_valid", "workflow_secret_bindings", "no_absolute_paths"],
+        "evidence": []
+      }
+    },
+    {
+      "topic": "workflows_n8n",
+      "failure_modes": {
+        "laymen": "Automations do the wrong thing or stop working.",
+        "technical": "Workflow contract drift; hardcoded secrets; deployment scripts out of sync with workflow JSON."
+      },
+      "change_safely": {
+        "gates": ["workflow_secret_bindings", "contract_suite"],
+        "evidence": []
+      }
+    },
+    {
+      "topic": "knowledge_base",
+      "failure_modes": {
+        "laymen": "Eve’s references are stale or wrong.",
+        "technical": "Ingestion/provenance drift; non-deterministic updates; untracked sources."
+      },
+      "change_safely": {
+        "gates": ["no_absolute_paths"],
+        "evidence": []
+      }
+    },
+    {
+      "topic": "acceptance_gates",
+      "failure_modes": {
+        "laymen": "You lose the go/no-go safety barrier.",
+        "technical": "Acceptance runner and contracts no longer represent reality; false greens or noisy reds."
+      },
+      "change_safely": {
+        "gates": ["acceptance_smoke", "acceptance_patched_prod", "acceptance_ops_baseline", "contract_suite"],
+        "evidence": ["${OPENCLAW_STATE_DIR:-$HOME/.openclaw-eve}/acceptance/trends/last_7.json"]
+      }
+    },
+    {
+      "topic": "storage_schema",
+      "failure_modes": {
+        "laymen": "Memory and evidence become unreliable.",
+        "technical": "Schema mismatch, migration drift, missing fields for durability; transcript capture breaks."
+      },
+      "change_safely": {
+        "gates": ["transcripts_recording_url_proof", "acceptance_ops_baseline"],
+        "evidence": []
+      }
+    },
+    {
+      "topic": "ops_deploy",
+      "failure_modes": {
+        "laymen": "Eve isn’t online when you need her.",
+        "technical": "Process supervision broken (launchd/pm2), docker wiring broken, operational probes fail."
+      },
+      "change_safely": {
+        "gates": ["worldclass_preflight_strict", "launchd_eve_agent"],
+        "evidence": []
+      }
+    }
+  ]
+}
+

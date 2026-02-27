@@ -1,0 +1,12 @@
+{
+  "required_keys": [
+    "status",
+    "cron",
+    "job",
+    "task"
+  ],
+  "allowed_status": [
+    "scheduled",
+    "scheduled_with_warning"
+  ]
+}

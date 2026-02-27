@@ -49,6 +49,10 @@
             {
               "name": "B2C_CREDENTIALS_BLURB",
               "value": "={{$env.B2C_CREDENTIALS_BLURB || 'Board-certified clinical team and medical director oversight'}}"
+            },
+            {
+              "name": "NURTURE_SMS_ENABLED",
+              "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
             }
           ],
           "number": [],

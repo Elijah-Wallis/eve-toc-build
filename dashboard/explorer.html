@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Eve | Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/app.css" />
+    <link rel="stylesheet" href="/explorer.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-title">Eve</div>
+        <div class="brand-sub">Explorer (Vision + Raw)</div>
+      </div>
+      <div class="controls">
+        <a class="btn" href="/">Dashboard</a>
+        <a class="btn" href="/deck">Pitch Deck</a>
+        <div class="seg" role="group" aria-label="Audience Toggle">
+          <button class="seg-btn" data-audience="laymen">Laymen</button>
+          <button class="seg-btn" data-audience="technical">Technical</button>
+        </div>
+        <div class="seg" id="mode-toggle" role="group" aria-label="Mode Toggle">
+          <button class="seg-btn" data-mode="read">Read</button>
+          <button class="seg-btn" data-mode="raw">Raw</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap explorer">
+      <section class="panel explorer-head">
+        <div class="panel-title title-row">
+          <span id="crumbs" class="crumbs">Loading...</span>
+          <span class="title-controls">
+            <button id="copy-path" class="btn">Copy Path</button>
+          </span>
+        </div>
+        <div class="panel-body explorer-head-body">
+          <div class="lede" id="lede">Loading...</div>
+          <div class="sub mono" id="meta"></div>
+        </div>
+      </section>
+
+      <section class="grid2 explorer-grid">
+        <div class="panel">
+          <div class="panel-title title-row">
+            <span>Navigator</span>
+            <span class="title-controls">
+              <input id="filter" class="filter" placeholder="Filter (type to search)" />
+            </span>
+          </div>
+          <div class="panel-body">
+            <div id="list" class="list">Loading...</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title title-row">
+            <span>Focus</span>
+            <span class="title-controls mono" id="focus-tag"></span>
+          </div>
+	          <div class="panel-body">
+	            <div class="focus-stack">
+	              <div class="focus-card">
+	                <div class="focus-h">Vision (CPOM-safe)</div>
+	                <div id="vision" class="focus-body">Loading...</div>
+	              </div>
+	              <div class="focus-card" id="read-card">
+	                <div class="focus-h">Read (Human)</div>
+	                <div id="read" class="focus-body">(select a file to preview)</div>
+	              </div>
+	              <div class="focus-card" id="raw-card">
+	                <div class="focus-h">Raw (Builder)</div>
+	                <div class="toolbar">
+	                  <button id="copy-raw" class="mini-btn">Copy</button>
+	                  <a id="open-raw" class="mini-btn" href="#" target="_blank" rel="noreferrer">Open Raw</a>
+                </div>
+                <pre id="raw" class="mono pre focus-pre">(select a file to preview)</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/explorer.js"></script>
+  </body>
+</html>

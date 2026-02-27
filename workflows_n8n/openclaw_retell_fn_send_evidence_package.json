@@ -1,0 +1,765 @@
+{
+  "name": "openclaw_retell_fn_send_evidence_package",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "openclaw-retell-fn-send-evidence-package",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        20,
+        20
+      ],
+      "webhookId": "13A1F850DA1C99C7AFE647186E7CF563"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "SUPABASE_URL",
+              "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "SUPABASE_SERVICE_ROLE_KEY",
+              "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "TWILIO_ACCOUNT_SID",
+              "value": "={{$env.TWILIO_ACCOUNT_SID}}"
+            },
+            {
+              "name": "TWILIO_AUTH_TOKEN",
+              "value": "={{$env.TWILIO_AUTH_TOKEN}}"
+            },
+            {
+              "name": "TWILIO_FROM_NUMBER",
+              "value": "={{$env.TWILIO_FROM_NUMBER}}"
+            },
+            {
+              "name": "EVIDENCE_EMAIL_PROVIDER_URL",
+              "value": "={{$env.EVIDENCE_EMAIL_PROVIDER_URL || ''}}"
+            },
+            {
+              "name": "EVIDENCE_EMAIL_API_KEY",
+              "value": "={{$env.EVIDENCE_EMAIL_API_KEY || ''}}"
+            },
+            {
+              "name": "EVIDENCE_EMAIL_FROM",
+              "value": "={{$env.EVIDENCE_EMAIL_FROM || 'ops@eve-systems.ai'}}"
+            },
+            {
+              "name": "NURTURE_SMS_ENABLED",
+              "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "RATE_LIMIT_LOG_INSIGHT_30M",
+              "value": 6
+            },
+            {
+              "name": "RATE_LIMIT_SET_FOLLOWUP_60M",
+              "value": 4
+            },
+            {
+              "name": "RATE_LIMIT_ENRICH_6H",
+              "value": 3
+            },
+            {
+              "name": "RATE_LIMIT_SEND_EVIDENCE_30M",
+              "value": 1800
+            },
+            {
+              "name": "TWILIO_SMS_MAX_PER_SECOND",
+              "value": 1
+            }
+          ],
+          "boolean": []
+        },
+        "options": {},
+        "keepOnlySet": false
+      },
+      "id": "2",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        220,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const req = items[0]?.json || {};\nconst a = (req.body && typeof req.body === 'object') ? req.body : req;\nconst recipientEmail = String(a.recipient_email || '').trim().toLowerCase();\nconst emailOk = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(recipientEmail);\nif (!emailOk) {\n  return [{json:{guardrail_ok:false,reason_code:'invalid_recipient_email',reason_detail:'recipient_email must be valid'}}];\n}\nconst deliveryMethod = String(a.delivery_method || 'EMAIL_ONLY').trim().toUpperCase();\nif (!['EMAIL_ONLY','EMAIL_AND_SMS'].includes(deliveryMethod)) {\n  return [{json:{guardrail_ok:false,reason_code:'invalid_delivery_method',reason_detail:'delivery_method must be EMAIL_ONLY or EMAIL_AND_SMS'}}];\n}\nconst artifactType = String(a.artifact_type || '').trim().toUpperCase();\nif (!['AUDIO_LINK','FAILURE_LOG_PDF'].includes(artifactType)) {\n  return [{json:{guardrail_ok:false,reason_code:'invalid_artifact_type',reason_detail:'artifact_type must be AUDIO_LINK or FAILURE_LOG_PDF'}}];\n}\nconst evidenceUrl = String(a.evidence_url || a.artifact_url || '').trim();\nif (!evidenceUrl) {\n  return [{json:{guardrail_ok:false,reason_code:'missing_artifact_url',reason_detail:'evidence_url is required'}}];\n}\nconst digits = String(a.phone || '').replace(/\\D/g, '');\nlet phone = null;\nif (digits.length === 10) phone = '+1' + digits;\nif (digits.length === 11 && digits[0] === '1') phone = '+' + digits;\nif (deliveryMethod === 'EMAIL_AND_SMS' && !phone) {\n  return [{json:{guardrail_ok:false,reason_code:'invalid_phone_for_sms',reason_detail:'phone required for EMAIL_AND_SMS'}}];\n}\nconst leadId = String(a.lead_id || '').trim() || null;\nconst managerName = String(a.manager_name || '').trim() || 'Practice Manager';\nconst campaignTag = String(a.campaign_tag || '').trim() || null;\nconst subject = String(a.subject_hint || '').trim() || (artifactType === 'AUDIO_LINK' ? 'URGENT: Intake Failure Recording' : 'URGENT: Intake Failure Log');\nconst idemBase = String(a.idempotency_key || '').trim() || `${leadId || recipientEmail}-${artifactType}`;\nconst packageKey = `${idemBase}-pkg`;\nconst rateWindowStart = new Date(Date.now() - 30*60*1000).toISOString();\nconst summaryLine = artifactType === 'AUDIO_LINK' ? 'Missed-call recording attached for review.' : 'Timestamped failure log attached for review.';\nconst smsBody = `EVE alert: ${summaryLine} Link: ${evidenceUrl}`;\nconst emailText = `Hi ${managerName},\\n\\n${summaryLine}\\nArtifact: ${evidenceUrl}\\n\\nPlease confirm receipt and preferred follow-up window.\\n\\n- Eve Systems`;\nreturn [{json:{guardrail_ok:true,lead_id:leadId,campaign_tag:campaignTag,recipient_email:recipientEmail,recipient_name:managerName,delivery_method:deliveryMethod,artifact_type:artifactType,evidence_url:evidenceUrl,phone,subject,sms_body:smsBody,email_text:emailText,package_idempotency_key:packageKey,email_event_key:`${idemBase}-email`,sms_event_key:`${idemBase}-sms`,rate_window_start:rateWindowStart,rate_bypass:!leadId}}];"
+      },
+      "id": "3",
+      "name": "Normalize Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        440,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{((($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true') ? 1 : 0)}}",
+              "operation": "equal",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "Guardrail OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        660,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'invalid_payload',reason_detail:$json.reason_detail || 'guardrail_reject'}}];"
+      },
+      "id": "5",
+      "name": "Reject Invalid",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{((($json.rate_bypass) === true || ($json.rate_bypass) === 'true') ? 1 : 0)}}",
+              "operation": "equal",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "6",
+      "name": "Rate Bypass?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        880,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{count:0}}];"
+      },
+      "id": "7",
+      "name": "Set Rate Count Zero",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?select=count&lead_id=eq.{{$node[\"Normalize Request\"].json.lead_id}}&event_type=eq.retell_evidence_package&created_at=gte.{{$node[\"Normalize Request\"].json.rate_window_start}}",
+        "method": "GET",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: 'Bearer ' + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY})}}",
+        "sendBody": false,
+        "specifyBody": "json",
+        "jsonBody": "{}",
+        "bodyParametersJson": "{}"
+      },
+      "id": "8",
+      "name": "Fetch Recent Package Count",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1100,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{Number($json.count || 0) >= Number($node[\"Config\"].json.RATE_LIMIT_SEND_EVIDENCE_30M || 1800)}}",
+              "operation": "isTrue"
+            }
+          ]
+        }
+      },
+      "id": "9",
+      "name": "Rate Limited?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const limit = Number($node[\"Config\"].json.RATE_LIMIT_SEND_EVIDENCE_30M || 1800);\nreturn [{json:{status:'rejected',ok:false,reason_code:'rate_limited_send_evidence',reason_detail:`Exceeded ${limit} package requests in 30m`}}];"
+      },
+      "id": "10",
+      "name": "Reject Rate Limit",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const src = $node['Normalize Request'].json;\nconst cfg = $node['Config'].json;\nif (!cfg.EVIDENCE_EMAIL_PROVIDER_URL || !cfg.EVIDENCE_EMAIL_API_KEY || !cfg.EVIDENCE_EMAIL_FROM) {\n  return [{json:{guardrail_ok:false,reason_code:'missing_email_provider_config',reason_detail:'EVIDENCE_EMAIL_PROVIDER_URL/EVIDENCE_EMAIL_API_KEY/EVIDENCE_EMAIL_FROM are required'}}];\n}\nreturn [{json:{guardrail_ok:true,email_body:{to:src.recipient_email,from:cfg.EVIDENCE_EMAIL_FROM,subject:src.subject,text:src.email_text,metadata:{lead_id:src.lead_id,campaign_tag:src.campaign_tag,artifact_type:src.artifact_type,evidence_url:src.evidence_url}}}}];"
+      },
+      "id": "11",
+      "name": "Prepare Email Delivery",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{((($json.guardrail_ok) === true || ($json.guardrail_ok) === 'true') ? 1 : 0)}}",
+              "operation": "equal",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "12",
+      "name": "Email Config OK?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'missing_email_provider_config',reason_detail:$json.reason_detail || 'email provider not configured'}}];"
+      },
+      "id": "13",
+      "name": "Reject Email Config",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.EVIDENCE_EMAIL_PROVIDER_URL}}",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 120000
+        },
+        "headerParametersJson": "={{JSON.stringify({Authorization: 'Bearer ' + $node[\"Config\"].json.EVIDENCE_EMAIL_API_KEY, 'Content-Type': 'application/json'})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({Authorization: 'Bearer ' + $node[\"Config\"].json.EVIDENCE_EMAIL_API_KEY, 'Content-Type': 'application/json'})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($node[\"Prepare Email Delivery\"].json.email_body)}}",
+        "bodyParametersJson": "={{JSON.stringify($node[\"Prepare Email Delivery\"].json.email_body)}}"
+      },
+      "id": "14",
+      "name": "Send Evidence Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1980,
+        120
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "functionCode": "const src = $node['Normalize Request'].json;\nconst resp = $node['Send Evidence Email'].json || {};\nconst err = String(resp.error || '').trim();\nconst code = Number(resp.statusCode || resp.status || 0) || null;\nconst ok = !err && (!code || (code >= 200 && code < 300));\nreturn [{json:{lead_id:src.lead_id,place_id:null,event_type:'retell_evidence_email',idempotency_key:src.email_event_key,payload_json:{ok,status_code:code,error:err || null,recipient_email:src.recipient_email,artifact_type:src.artifact_type,evidence_url:src.evidence_url}}}];"
+      },
+      "id": "15",
+      "name": "Prepare Email Event",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($json)}}",
+        "bodyParametersJson": "={{JSON.stringify($json)}}"
+      },
+      "id": "16",
+      "name": "Insert Email Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2420,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{((($node[\"Normalize Request\"].json.delivery_method === 'EMAIL_AND_SMS') === true || ($node[\"Normalize Request\"].json.delivery_method === 'EMAIL_AND_SMS') === 'true') ? 1 : 0)}}",
+              "operation": "equal",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "id": "17",
+      "name": "Should Send SMS?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const src = $node['Normalize Request'].json;\nconst sid = String($node['Config'].json.TWILIO_ACCOUNT_SID || '').trim();\nconst token = String($node['Config'].json.TWILIO_AUTH_TOKEN || '').trim();\nconst from = String($node['Config'].json.TWILIO_FROM_NUMBER || '').trim();\nif (!sid || !token || !from) {\n  return [{json:{skip:true,reason:'missing_twilio_config'}}];\n}\nconst maxPerSecond = Math.max(1, Number($node['Config'].json.TWILIO_SMS_MAX_PER_SECOND || 1));\nconst minGapMs = Math.ceil(1000 / maxPerSecond);\nconst globalState = this.getWorkflowStaticData('global');\nconst now = Date.now();\nconst last = Number(globalState.twilio_last_sms_at || 0);\nconst waitMs = Math.max(0, minGapMs - (now - last));\nif (waitMs > 0) {\n  const until = Date.now() + waitMs;\n  while (Date.now() < until) {}\n}\nglobalState.twilio_last_sms_at = Date.now();\nconst auth = Buffer.from(`${sid}:${token}`).toString('base64');\nreturn [{json:{skip:false,auth,to:src.phone,from,body:src.sms_body,throttle_wait_ms:waitMs}}];"
+      },
+      "id": "18",
+      "name": "Prepare SMS Delivery",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        2860,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.twilio.com/2010-04-01/Accounts/{{$node[\"Config\"].json.TWILIO_ACCOUNT_SID}}/Messages.json",
+        "method": "POST",
+        "jsonParameters": false,
+        "options": {
+          "timeout": 120000
+        },
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "To",
+              "value": "={{$json.to}}"
+            },
+            {
+              "name": "From",
+              "value": "={{$json.from}}"
+            },
+            {
+              "name": "Body",
+              "value": "={{$json.body}}"
+            }
+          ]
+        },
+        "headerParametersJson": "={{JSON.stringify({Authorization: `Basic ${$json.auth}`})}}"
+      },
+      "id": "19",
+      "name": "Send Evidence SMS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3080,
+        40
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "functionCode": "const src = $node['Normalize Request'].json;\nconst prep = $node['Prepare SMS Delivery'].json || {};\nif (prep.skip) {\n  return [{json:{lead_id:src.lead_id,place_id:null,event_type:'retell_evidence_sms',idempotency_key:src.sms_event_key,payload_json:{ok:false,skipped:true,reason:prep.reason || 'skipped'}}}];\n}\nconst resp = $node['Send Evidence SMS'].json || {};\nconst err = String(resp.error || '').trim();\nconst code = Number(resp.statusCode || resp.status || 0) || null;\nconst ok = !err && (!code || (code >= 200 && code < 300));\nreturn [{json:{lead_id:src.lead_id,place_id:null,event_type:'retell_evidence_sms',idempotency_key:src.sms_event_key,payload_json:{ok,status_code:code,error:err || null,to:src.phone}}}];"
+      },
+      "id": "20",
+      "name": "Prepare SMS Event",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        3300,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($json)}}",
+        "bodyParametersJson": "={{JSON.stringify($json)}}"
+      },
+      "id": "21",
+      "name": "Insert SMS Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3520,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const src = $node['Normalize Request'].json;\nconst email = ($items('Prepare Email Event', 0, 0)?.[0]?.json || {}).payload_json || {};\nlet sms;\nif (src.delivery_method === 'EMAIL_ONLY') {\n  sms = {ok:false,skipped:true,reason:'email_only'};\n} else {\n  sms = ($items('Prepare SMS Event', 0, 0)?.[0]?.json || {}).payload_json || {ok:false,skipped:true,reason:'sms_not_recorded'};\n}\nconst status = (email.ok === true && (sms.ok === true || sms.skipped === true)) ? 'delivered' : 'partial';\nreturn [{json:{lead_id:src.lead_id,place_id:null,event_type:'retell_evidence_package',idempotency_key:src.package_idempotency_key,payload_json:{status,email_status:email,sms_status:sms,recipient_email:src.recipient_email,delivery_method:src.delivery_method,artifact_type:src.artifact_type,evidence_url:src.evidence_url}}}];"
+      },
+      "id": "22",
+      "name": "Prepare Package Event",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        3300,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "={{JSON.stringify({apikey: $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Authorization: \"Bearer \" + $node[\"Config\"].json.SUPABASE_SERVICE_ROLE_KEY, Prefer: \"resolution=merge-duplicates,return=representation\"})}}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($json)}}",
+        "bodyParametersJson": "={{JSON.stringify($json)}}"
+      },
+      "id": "23",
+      "name": "Insert Package Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3520,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const pkg = $node['Prepare Package Event'].json || {};\nconst p = pkg.payload_json || {};\nreturn [{json:{status:p.status || 'partial',ok:true,email_status:p.email_status || null,sms_status:p.sms_status || null,idempotency_key:pkg.idempotency_key || null}}];"
+      },
+      "id": "24",
+      "name": "Acknowledge",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        3740,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Normalize Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Request": {
+      "main": [
+        [
+          {
+            "node": "Guardrail OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrail OK?": {
+      "main": [
+        [
+          {
+            "node": "Rate Bypass?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Bypass?": {
+      "main": [
+        [
+          {
+            "node": "Set Rate Count Zero",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch Recent Package Count",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Rate Count Zero": {
+      "main": [
+        [
+          {
+            "node": "Rate Limited?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Recent Package Count": {
+      "main": [
+        [
+          {
+            "node": "Rate Limited?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rate Limited?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Email Delivery",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Rate Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Email Delivery": {
+      "main": [
+        [
+          {
+            "node": "Email Config OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Config OK?": {
+      "main": [
+        [
+          {
+            "node": "Send Evidence Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Email Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Evidence Email": {
+      "main": [
+        [
+          {
+            "node": "Prepare Email Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Email Event": {
+      "main": [
+        [
+          {
+            "node": "Insert Email Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Email Event": {
+      "main": [
+        [
+          {
+            "node": "Should Send SMS?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Should Send SMS?": {
+      "main": [
+        [
+          {
+            "node": "Prepare SMS Delivery",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Package Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare SMS Delivery": {
+      "main": [
+        [
+          {
+            "node": "Send Evidence SMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Evidence SMS": {
+      "main": [
+        [
+          {
+            "node": "Prepare SMS Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare SMS Event": {
+      "main": [
+        [
+          {
+            "node": "Insert SMS Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert SMS Event": {
+      "main": [
+        [
+          {
+            "node": "Prepare Package Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Package Event": {
+      "main": [
+        [
+          {
+            "node": "Insert Package Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Package Event": {
+      "main": [
+        [
+          {
+            "node": "Acknowledge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

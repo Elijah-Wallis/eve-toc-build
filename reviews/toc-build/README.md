@@ -1,6 +1,8 @@
 # Retell WS Brain (Deterministic, Actor Model, VIC-Gated)
 
-This repo contains a production-grade "Brain" server for Retell's Custom LLM WebSocket integration.
+**Monorepo:** This project lives in [eve-toc-build](https://github.com/Elijah-Wallis/eve-toc-build) at `reviews/toc-build/`. The standalone repo `eve-toc-build-review` is archived there.
+
+This directory contains a production-grade "Brain" server for Retell's Custom LLM WebSocket integration.
 
 ## Dumb-Simple Commands
 
@@ -187,6 +189,7 @@ Failure triage:
 Use the canonical export script to publish a review-safe snapshot that preserves `.env.example` while excluding real local secrets and runtime artifacts:
 
 ```bash
+# From this directory (reviews/toc-build):
 bash scripts/export_public_handoff.sh --repo Elijah-Wallis/eve-toc-build-review --push
 ```
 
@@ -200,8 +203,8 @@ Handoff policy:
 Quick evaluator validation (fresh clone):
 
 ```bash
-git clone https://github.com/Elijah-Wallis/eve-toc-build-review
-cd eve-toc-build-review
+git clone https://github.com/Elijah-Wallis/eve-toc-build
+cd eve-toc-build/reviews/toc-build
 test -f .env.example
 cp .env.example .env
 # fill placeholders, then:

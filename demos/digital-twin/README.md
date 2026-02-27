@@ -1,5 +1,7 @@
 # Eve Digital Twin Demonstration
 
+**Monorepo:** This project lives in [eve-toc-build](https://github.com/Elijah-Wallis/eve-toc-build) at `demos/digital-twin/`. The standalone repo `digital-twin-demonstration` is archived there.
+
 ## Overview
 
 The flagship B2B lead magnet for Eve L5_Medspa_IaC. Clinic owners input 5 KPIs and instantly receive a live "Digital Twin" of their practice running under full autonomous ontology — revenue projections, staff reduction, hidden leaks, and a downloadable branded PDF report.

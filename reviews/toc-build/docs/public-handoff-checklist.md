@@ -1,5 +1,7 @@
 # Public Evaluation Handoff Checklist
 
+**Monorepo:** This project lives in [eve-toc-build](https://github.com/Elijah-Wallis/eve-toc-build) at `reviews/toc-build/`. The standalone repo `eve-toc-build-review` is archived there.
+
 Use this checklist before giving a public GitHub URL to an external evaluator (Grok, Cursor, another engineer).
 
 ## What the public handoff should contain
@@ -29,6 +31,7 @@ Use this checklist before giving a public GitHub URL to an external evaluator (G
 ## Canonical export command
 
 ```bash
+# From repo root (eve-toc-build): cd reviews/toc-build first, then:
 bash scripts/export_public_handoff.sh --repo Elijah-Wallis/eve-toc-build-review --push
 ```
 
@@ -44,8 +47,8 @@ If it aborts:
 ## Evaluator quick validation (fresh clone)
 
 ```bash
-git clone https://github.com/Elijah-Wallis/eve-toc-build-review
-cd eve-toc-build-review
+git clone https://github.com/Elijah-Wallis/eve-toc-build
+cd eve-toc-build/reviews/toc-build
 test -f .env.example
 cp .env.example .env
 # fill placeholders in .env

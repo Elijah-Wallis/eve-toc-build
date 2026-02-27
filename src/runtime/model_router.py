@@ -25,6 +25,8 @@ class ModelRouter:
 
     def _load_defaults(self) -> None:
         defaults = [
+            ModelSpec("openrouter/moonshotai/kimi-k2.5", "openrouter", 128000, True),
+            ModelSpec("openrouter/moonshotai/kimi-k2", "openrouter", 128000, True),
             ModelSpec("openrouter/auto", "openrouter", 200000, True),
             ModelSpec("openrouter/anthropic/claude-3.5-sonnet", "openrouter", 200000, True),
             ModelSpec("anthropic/claude-3-5-sonnet-20240620", "anthropic", 200000, True),
@@ -74,7 +76,7 @@ class ModelRouter:
             return os.environ.get("ANTHROPIC_MODEL_FALLBACK", "anthropic/claude-3-5-sonnet-20240620")
         if provider == "openai":
             return os.environ.get("OPENAI_MODEL_FALLBACK", "openai/gpt-4o")
-        return os.environ.get("OPENROUTER_MODEL_FALLBACK", "openrouter/anthropic/claude-3.5-sonnet")
+        return os.environ.get("OPENROUTER_MODEL_FALLBACK", "openrouter/moonshotai/kimi-k2.5")
 
     def _log_event(self, event: str, payload: Dict[str, object]) -> None:
         if not self._ledger:

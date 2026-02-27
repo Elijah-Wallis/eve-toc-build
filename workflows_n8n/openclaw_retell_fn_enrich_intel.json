@@ -41,6 +41,10 @@
             {
               "name": "APIFY_ACTOR_ID",
               "value": "={{$env.APIFY_ACTOR_ID || 'compass/crawler-google-places'}}"
+            },
+            {
+              "name": "NURTURE_SMS_ENABLED",
+              "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
             }
           ],
           "number": [

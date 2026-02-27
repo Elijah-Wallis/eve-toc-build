@@ -1,25 +1,53 @@
 {
-  "agent": {
-    "name": "Eve",
-    "role": "Lead Systems Architect",
-    "protocol": "Always check n8n MCP tools first before writing code."
+  "meta": {
+    "schemaVersion": "2",
+    "runtimeProfile": "eve-runtime-compat",
+    "lastTouchedAt": "2026-02-07T00:00:00Z",
+    "systemInstructionProfile": "UNIVERSAL_RECONSTRUCTION_ENGINE_v6",
+    "systemInstructionSource": "CODEX.md + OpenClaw AGENTS.md"
   },
-  "llm": {
-    "provider": "anthropic",
-    "model": "claude-3-5-sonnet-20240620",
-    "apiKeyEnv": "ANTHORPIC_API_KEY"
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openrouter/moonshotai/kimi-k2.5"
+      },
+      "workspace": "${REPO_ROOT}",
+      "maxConcurrent": 256
+    }
   },
-  "skills": {
+  "channels": {
     "telegram": {
-      "enabled": true,
-      "botTokenEnv": "OPENCLAW_BOT_TOKEN"
+      "enabled": false,
+      "tokenFile": "${OPENCLAW_STATE_DIR}/credentials/telegram/token"
+    }
+  },
+  "gateway": {
+    "port": 19001,
+    "bind": "loopback",
+    "mode": "local",
+    "auth": {
+      "mode": "token"
     }
   },
   "paths": {
-    "rootDirectory": "/Users/elijah/Developer/eve-toc-build",
-    "knowledgeBaseDirectory": "/Users/elijah/Developer/eve-toc-build/knowledge_base",
-    "ontologyDirectory": "/Users/elijah/Developer/eve-toc-build/ontology",
-    "commandQueueFile": "/Users/elijah/eve_godmode/command_queue.txt",
-    "dashboardFile": "/Users/elijah/eve_godmode/eve-toc-build/eve_dashboard.py"
+    "rootDirectory": "${REPO_ROOT}",
+    "knowledgeBaseDirectory": "${REPO_ROOT}/knowledge_base",
+    "ontologyDirectory": "${REPO_ROOT}/ontology",
+    "commandQueueFile": "${OPENCLAW_STATE_DIR}/runtime/command_queue.txt",
+    "dashboardFile": "${REPO_ROOT}/eve_dashboard.py"
+  },
+  "compat": {
+    "envAliases": {
+      "ANTHROPIC_API_KEY": [
+        "ANTHORPIC_API_KEY"
+      ],
+      "OPENCLAW_TELEGRAM_BOT_TOKEN": [
+        "OPENCLAW_BOT_TOKEN",
+        "TELEGRAM_BOT_TOKEN"
+      ],
+      "OPENCLAW_TELEGRAM_USER_ID": [
+        "MY_TELEGRAM_ID"
+      ]
+    }
   }
 }
