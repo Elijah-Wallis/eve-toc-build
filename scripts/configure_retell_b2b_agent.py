@@ -12,7 +12,8 @@ import requests
 
 V5_PROMPT_FILE = "Business_Code/retell_system_prompt_medspa_b2b_v50_golden_master.md"
 V6_PROMPT_FILE = "Business_Code/retell_system_prompt_medspa_b2b_v60_diamond.md"
-DEFAULT_PROMPT_VERSION = "v6"
+V133_PROMPT_FILE = "mcp_servers/b2b_workflow.yaml"
+DEFAULT_PROMPT_VERSION = "v13.3"
 DEFAULT_N8N_WEBHOOK_BASE = "https://elijah-wallis.app.n8n.cloud"
 DEFAULT_N8N_MCP_URL = "https://elijah-wallis.app.n8n.cloud/mcp-server/http"
 DEFAULT_RETELL_AGENT_UPDATE_BASE = "https://api.retellai.com"
@@ -119,6 +120,8 @@ def _resolve_prompt_file(prompt_version: str) -> str:
     version = (prompt_version or DEFAULT_PROMPT_VERSION).strip().lower()
     if version == "v5":
         return V5_PROMPT_FILE
+    if version in {"v13", "v13.3", "v133"}:
+        return V133_PROMPT_FILE
     return V6_PROMPT_FILE
 
 
@@ -336,7 +339,7 @@ def main() -> int:
     parser.add_argument("--agent-id", required=True)
     parser.add_argument("--kb-file", default="Business_Code/retell_kb_medspa_b2b.md")
     parser.add_argument("--kb-name", default="MedSpa B2B TX Knowledge Base")
-    parser.add_argument("--prompt-version", choices=["v5", "v6"], default=DEFAULT_PROMPT_VERSION)
+    parser.add_argument("--prompt-version", choices=["v5", "v6", "v13.3"], default=DEFAULT_PROMPT_VERSION)
     parser.add_argument("--prompt-file", default="", help="Optional explicit prompt file override.")
     parser.add_argument("--skip-kb-upload", action="store_true")
     parser.add_argument("--websocket-url", default="", help="Custom LLM websocket URL for bidirectional mode.")

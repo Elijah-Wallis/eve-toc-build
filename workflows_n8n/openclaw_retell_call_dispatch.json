@@ -41,7 +41,7 @@
     },
     {
       "parameters": {
-        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,source,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD)&phone=not.is.null{{$node[\"Webhook Trigger\"].json.source_filter ? '&source=eq.' + encodeURIComponent($node[\"Webhook Trigger\"].json.source_filter) : ''}}&order=created_at.asc&limit={{$node[\"Webhook Trigger\"].json.lead_limit || $node[\"Config\"].json.DISPATCH_LEAD_LIMIT || 250}}",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,source,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,paused_until,current_promo_service,promo_details,opening_time,website,categories,rating,reviews_count&status=in.(NEW,NURTURE,RETRY,HOLD)&phone=not.is.null{{$node[\"Webhook Trigger\"].json.source_filter ? '&source=eq.' + encodeURIComponent($node[\"Webhook Trigger\"].json.source_filter) : ''}}&order=created_at.asc&limit={{$node[\"Webhook Trigger\"].json.lead_limit || $node[\"Config\"].json.DISPATCH_LEAD_LIMIT || 250}}",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
@@ -128,7 +128,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const lead = $node[\"Filter Leads\"].json || {};\nconst cfg = $node[\"Config\"].json || {};\nconst isB2C = !!lead.decision_maker_confirmed;\nlet agentType = isB2C ? 'B2C' : 'B2B';\nlet agentId = isB2C ? cfg.RETELL_AGENT_B2C_ID : cfg.RETELL_AGENT_B2B_ID;\nif (!isB2C) {\n  const override = String($node[\"Webhook Trigger\"].json.b2b_agent_override_id || '').trim();\n  const mode = String(cfg.OPENCLAW_B2B_CANARY_MODE || 'off').toLowerCase();\n  const v6Id = String(cfg.RETELL_AGENT_B2B_V6_ID || '').trim();\n  const source = String(lead.source || '');\n  const sourceRegexRaw = String(cfg.OPENCLAW_B2B_CANARY_SOURCE_REGEX || '^tx-medspa-');\n  let sourceMatch = false;\n  try { sourceMatch = new RegExp(sourceRegexRaw).test(source); } catch (e) { sourceMatch = source.startsWith('tx-medspa-'); }\n  const samplePct = Math.max(0, Math.min(100, Number(cfg.OPENCLAW_B2B_CANARY_SAMPLE_PCT || 50)));\n  const hashSeed = String(lead.id || lead.phone || source || '');\n  const hash = [...hashSeed].reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % 100;\n  const inSample = hash < samplePct;\n  if (override) {\n    agentId = override;\n    agentType = 'B2B_OVERRIDE';\n  } else if (mode === 'force_v6' && v6Id) {\n    agentId = v6Id;\n    agentType = 'B2B_V6';\n  } else if (mode === 'canary' && v6Id && sourceMatch && inSample) {\n    agentId = v6Id;\n    agentType = 'B2B_V6';\n  }\n}\nconst fromNumber = $node[\"Config\"].json.RETELL_FROM_NUMBER;\nif (!fromNumber || !lead.phone) return [];\nreturn [{ json: {\n  lead,\n  agent_id: agentId,\n  agent_type: agentType,\n  from_number: fromNumber,\n  request_body: {\n    from_number: fromNumber,\n    to_number: lead.phone,\n    override_agent_id: agentId,\n    retell_llm_dynamic_variables: {\n      business_name: lead.business_name || '',\n      city: lead.city || '',\n      state: lead.state || '',\n      website: lead.website || '',\n      category: Array.isArray(lead.categories) ? (lead.categories[0] || '') : '',\n      rating: String(lead.rating ?? ''),\n      reviews_count: String(lead.reviews_count ?? ''),\n      touch_count: String(lead.touch_count ?? 0),\n      lead_id: lead.id || '',\n      source: lead.source || '',\n      b2b_agent_variant: agentType,\n      canary_mode: String(cfg.OPENCLAW_B2B_CANARY_MODE || 'off')\n    }\n  }\n} }];"
+        "functionCode": "const lead = $node[\"Filter Leads\"].json || {};\nconst cfg = $node[\"Config\"].json || {};\nconst isB2C = !!lead.decision_maker_confirmed;\nlet agentType = isB2C ? 'B2C' : 'B2B';\nlet agentId = isB2C ? cfg.RETELL_AGENT_B2C_ID : cfg.RETELL_AGENT_B2B_ID;\nif (!isB2C) {\n  const override = String($node[\"Webhook Trigger\"].json.b2b_agent_override_id || '').trim();\n  const mode = String(cfg.OPENCLAW_B2B_CANARY_MODE || 'off').toLowerCase();\n  const v6Id = String(cfg.RETELL_AGENT_B2B_V6_ID || '').trim();\n  const source = String(lead.source || '');\n  const sourceRegexRaw = String(cfg.OPENCLAW_B2B_CANARY_SOURCE_REGEX || '^tx-medspa-');\n  let sourceMatch = false;\n  try { sourceMatch = new RegExp(sourceRegexRaw).test(source); } catch (e) { sourceMatch = source.startsWith('tx-medspa-'); }\n  const samplePct = Math.max(0, Math.min(100, Number(cfg.OPENCLAW_B2B_CANARY_SAMPLE_PCT || 50)));\n  const hashSeed = String(lead.id || lead.phone || source || '');\n  const hash = [...hashSeed].reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % 100;\n  const inSample = hash < samplePct;\n  if (override) {\n    agentId = override;\n    agentType = 'B2B_OVERRIDE';\n  } else if (mode === 'force_v6' && v6Id) {\n    agentId = v6Id;\n    agentType = 'B2B_V6';\n  } else if (mode === 'canary' && v6Id && sourceMatch && inSample) {\n    agentId = v6Id;\n    agentType = 'B2B_V6';\n  }\n}\nconst fromNumber = $node[\"Config\"].json.RETELL_FROM_NUMBER;\nif (!fromNumber || !lead.phone) return [];\nconst promoServiceRaw = String(lead.current_promo_service || '').trim();\nconst promoDetailsRaw = String(lead.promo_details || '').trim();\nconst openingTimeRaw = String(lead.opening_time || '').trim();\nconst promoService = promoServiceRaw || 'your current promotion';\nconst promoDetails = promoDetailsRaw || 'your featured service';\nconst openingTime = openingTimeRaw || 'during your listed hours';\nif (!promoServiceRaw) console.log(`[dispatch:null-var] lead=${lead.id || 'unknown'} key=current_promo_service fallback=${promoService}`);\nif (!promoDetailsRaw) console.log(`[dispatch:null-var] lead=${lead.id || 'unknown'} key=promo_details fallback=${promoDetails}`);\nif (!openingTimeRaw) console.log(`[dispatch:null-var] lead=${lead.id || 'unknown'} key=opening_time fallback=${openingTime}`);\nreturn [{ json: {\n  lead,\n  agent_id: agentId,\n  agent_type: agentType,\n  from_number: fromNumber,\n  request_body: {\n    from_number: fromNumber,\n    to_number: lead.phone,\n    override_agent_id: agentId,\n    retell_llm_dynamic_variables: {\n      business_name: lead.business_name || '',\n      city: lead.city || '',\n      state: lead.state || '',\n      website: lead.website || '',\n      category: Array.isArray(lead.categories) ? (lead.categories[0] || '') : '',\n      rating: String(lead.rating ?? ''),\n      reviews_count: String(lead.reviews_count ?? ''),\n      touch_count: String(lead.touch_count ?? 0),\n      lead_id: lead.id || '',\n      source: lead.source || '',\n      current_promo_service: promoService,\n      promo_service: promoService,\n      promo_details: promoDetails,\n      opening_time: openingTime,\n      b2b_agent_variant: agentType,\n      canary_mode: String(cfg.OPENCLAW_B2B_CANARY_MODE || 'off')\n    }\n  }\n} }];"
       },
       "id": "8",
       "name": "Build Call Payload",
@@ -266,6 +266,52 @@
     },
     {
       "parameters": {
+        "url": "={{($node[\"Config\"].json.N8N_PUBLIC_WEBHOOK_BASE || 'https://elijah-wallis.app.n8n.cloud') + '/webhook/openclaw-apify-ingest'}}",
+        "method": "POST",
+        "jsonParameters": true,
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({source_filter: $node[\"Webhook Trigger\"].json.source_filter || '', force_kb_sync: true, sync_reason: 'prebatch_retell_dispatch'})}}"
+      },
+      "id": "15",
+      "name": "Pre-Batch KB Sync",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        420,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{Number($node[\"Webhook Trigger\"].json.kb_sync_wait_seconds || $node[\"Config\"].json.KB_SYNC_WAIT_SECONDS || 60)}}",
+        "unit": "seconds"
+      },
+      "id": "16",
+      "name": "Wait For KB Sync",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        620,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const abortOnMissing = String($node[\"Webhook Trigger\"].json.abort_on_missing_promo_fields ?? $node[\"Config\"].json.ABORT_ON_MISSING_PROMO_FIELDS ?? '1').toLowerCase() !== '0';\nconst missing = [];\nfor (const item of items) {\n  const lead = item.json || {};\n  const missingKeys = [];\n  if (!String(lead.current_promo_service || '').trim()) missingKeys.push('current_promo_service');\n  if (!String(lead.promo_details || '').trim()) missingKeys.push('promo_details');\n  if (!String(lead.opening_time || '').trim()) missingKeys.push('opening_time');\n  if (missingKeys.length) {\n    const row = { lead_id: lead.id || null, business_name: lead.business_name || null, missing_keys: missingKeys };\n    missing.push(row);\n    console.log(`[dispatch:promo-missing] ${JSON.stringify(row)}`);\n  }\n}\nif (missing.length && abortOnMissing) {\n  throw new Error(`prebatch_validation_failed_missing_promo_fields=${JSON.stringify(missing)}`);\n}\nreturn items;"
+      },
+      "id": "17",
+      "name": "Validate Promo Fields",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
         "values": {
           "string": [
             {
@@ -327,6 +373,14 @@
             {
               "name": "NURTURE_SMS_ENABLED",
               "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
+            },
+            {
+              "name": "N8N_PUBLIC_WEBHOOK_BASE",
+              "value": "={{$env.N8N_PUBLIC_WEBHOOK_BASE || 'https://elijah-wallis.app.n8n.cloud'}}"
+            },
+            {
+              "name": "ABORT_ON_MISSING_PROMO_FIELDS",
+              "value": "={{$env.ABORT_ON_MISSING_PROMO_FIELDS || '1'}}"
             }
           ],
           "number": [
@@ -345,6 +399,10 @@
             {
               "name": "DISPATCH_BATCH_SIZE",
               "value": 25
+            },
+            {
+              "name": "KB_SYNC_WAIT_SECONDS",
+              "value": 60
             }
           ],
           "boolean": []
@@ -386,6 +444,17 @@
       ]
     },
     "Fetch Leads": {
+      "main": [
+        [
+          {
+            "node": "Validate Promo Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Promo Fields": {
       "main": [
         [
           {
@@ -490,6 +559,28 @@
       ]
     },
     "Under Daily Cap?": {
+      "main": [
+        [
+          {
+            "node": "Pre-Batch KB Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pre-Batch KB Sync": {
+      "main": [
+        [
+          {
+            "node": "Wait For KB Sync",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait For KB Sync": {
       "main": [
         [
           {

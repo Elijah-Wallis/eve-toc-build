@@ -140,6 +140,9 @@ class MedspaLaunch:
                 "lead_limit": canary_lead_count,
                 "max_calls": canary_lead_count,
                 "source_filter": campaign_tag,
+                "require_kb_sync": True,
+                "kb_sync_wait_seconds": 60,
+                "abort_on_missing_promo_fields": True,
             },
         )
         time.sleep(max(1, observation_seconds))
@@ -184,6 +187,9 @@ class MedspaLaunch:
                 "campaign_tag": campaign_tag,
                 "max_calls": full_dispatch_max_calls,
                 "source_filter": campaign_tag,
+                "require_kb_sync": True,
+                "kb_sync_wait_seconds": 60,
+                "abort_on_missing_promo_fields": True,
             },
         )
         nurture = self._trigger_n8n(
@@ -243,6 +249,9 @@ class MedspaLaunch:
                 "campaign_tag": campaign_tag,
                 "max_calls": full_dispatch_max_calls,
                 "source_filter": campaign_tag,
+                "require_kb_sync": True,
+                "kb_sync_wait_seconds": 60,
+                "abort_on_missing_promo_fields": True,
             },
         )
         nurture = self._trigger_n8n(

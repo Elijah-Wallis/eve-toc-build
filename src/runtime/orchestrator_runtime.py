@@ -82,8 +82,27 @@ class OrchestratorRuntime:
             now,
             interval_minutes=60,
             tasks=[
-                {"type": "n8n.trigger", "payload": {"workflow": "openclaw-apify-ingest", "data": {}}},
-                {"type": "n8n.trigger", "payload": {"workflow": "openclaw-retell-dispatch", "data": {}}},
+                {
+                    "type": "n8n.trigger",
+                    "payload": {
+                        "workflow": "openclaw-apify-ingest",
+                        "data": {
+                            "sync_reason": "prebatch_kb_sync",
+                            "force_kb_sync": True,
+                        },
+                    },
+                },
+                {
+                    "type": "n8n.trigger",
+                    "payload": {
+                        "workflow": "openclaw-retell-dispatch",
+                        "data": {
+                            "require_kb_sync": True,
+                            "kb_sync_wait_seconds": 60,
+                            "abort_on_missing_promo_fields": True,
+                        },
+                    },
+                },
                 {"type": "n8n.trigger", "payload": {"workflow": "openclaw-nurture-run", "data": {}}},
             ],
         )
