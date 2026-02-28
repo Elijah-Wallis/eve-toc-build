@@ -13,3 +13,5 @@ def test_retell_config_defaults_to_v133_prompt_and_supports_explicit_version_fla
     assert "mcp_servers/b2b_workflow.yaml" in text
     assert "--prompt-version" in text
     assert "choices=[\"v5\", \"v6\", \"v13.3\"]" in text
+    assert "--force" in text
+    assert "--agent-id is required when --prompt-version is used." in text

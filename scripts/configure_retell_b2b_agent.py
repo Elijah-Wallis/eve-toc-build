@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -326,8 +327,8 @@ def _build_tools(webhook_base: str) -> List[Dict[str, Any]]:
     ]
 
 
-def _resolve_general_prompt(current_prompt: str, prompt_file: Path) -> str:
-    if prompt_file.exists():
+def _resolve_general_prompt(current_prompt: str, prompt_file: Optional[Path]) -> str:
+    if prompt_file and prompt_file.exists():
         loaded = prompt_file.read_text(encoding="utf-8").strip()
         if loaded:
             return loaded
@@ -335,13 +336,24 @@ def _resolve_general_prompt(current_prompt: str, prompt_file: Path) -> str:
 
 
 def main() -> int:
+    raw_argv = sys.argv[1:]
     parser = argparse.ArgumentParser(description="Configure Retell B2B agent with KB + personalization tools.")
-    parser.add_argument("--agent-id", required=True)
+    parser.add_argument("--agent-id", default="", help="Retell agent ID to update (required when using --prompt-version).")
     parser.add_argument("--kb-file", default="Business_Code/retell_kb_medspa_b2b.md")
     parser.add_argument("--kb-name", default="MedSpa B2B TX Knowledge Base")
-    parser.add_argument("--prompt-version", choices=["v5", "v6", "v13.3"], default=DEFAULT_PROMPT_VERSION)
+    parser.add_argument(
+        "--prompt-version",
+        choices=["v5", "v6", "v13.3"],
+        default=None,
+        help="Prompt bundle version to apply. If set, --agent-id is required.",
+    )
     parser.add_argument("--prompt-file", default="", help="Optional explicit prompt file override.")
     parser.add_argument("--skip-kb-upload", action="store_true")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Bypass preflight file checks and push immediately to Retell where possible.",
+    )
     parser.add_argument("--websocket-url", default="", help="Custom LLM websocket URL for bidirectional mode.")
     parser.add_argument(
         "--bidirectional-mode",
@@ -354,7 +366,16 @@ def main() -> int:
         action="store_true",
         help="Fail if websocket agent update is requested but cannot be applied.",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(raw_argv)
+
+    prompt_version_was_provided = "--prompt-version" in raw_argv
+    if prompt_version_was_provided and not args.agent_id.strip():
+        parser.error("--agent-id is required when --prompt-version is used.")
+    if not args.agent_id.strip():
+        parser.error("--agent-id is required to update a Retell agent.")
+
+    args.agent_id = args.agent_id.strip()
+    effective_prompt_version = args.prompt_version or DEFAULT_PROMPT_VERSION
 
     api_key = os.environ.get("RETELL_AI_KEY", "")
     if not api_key:
@@ -363,11 +384,25 @@ def main() -> int:
     project_root = Path(__file__).resolve().parents[1]
     kb_file = Path(args.kb_file).resolve()
     if not kb_file.exists() and not args.skip_kb_upload:
-        raise FileNotFoundError(f"Knowledge base file not found: {kb_file}")
-    prompt_rel = args.prompt_file.strip() or _resolve_prompt_file(args.prompt_version)
+        if args.force:
+            print(
+                f"[force] KB file missing; continuing without KB upload: {kb_file}",
+                file=sys.stderr,
+            )
+            args.skip_kb_upload = True
+        else:
+            raise FileNotFoundError(f"Knowledge base file not found: {kb_file}")
+    prompt_rel = args.prompt_file.strip() or _resolve_prompt_file(effective_prompt_version)
     prompt_file = (project_root / prompt_rel).resolve()
     if not prompt_file.exists():
-        raise FileNotFoundError(f"Prompt file not found: {prompt_file}")
+        if args.force:
+            print(
+                f"[force] Prompt file missing; keeping existing Retell general_prompt: {prompt_file}",
+                file=sys.stderr,
+            )
+            prompt_file = None
+        else:
+            raise FileNotFoundError(f"Prompt file not found: {prompt_file}")
 
     webhook_base = os.environ.get("N8N_PUBLIC_WEBHOOK_BASE", DEFAULT_N8N_WEBHOOK_BASE).strip().rstrip("/")
     if not webhook_base:
@@ -463,11 +498,12 @@ def main() -> int:
                 "knowledge_base_ids": updated.get("knowledge_base_ids"),
                 "tool_count": len(updated.get("general_tools", [])),
                 "mcp_count": len(updated.get("mcps", [])),
-                "prompt_version": args.prompt_version,
-                "prompt_file": str(prompt_file),
+                "prompt_version": effective_prompt_version,
+                "prompt_file": str(prompt_file) if prompt_file else None,
                 "webhook_base": webhook_base,
                 "websocket_url": websocket_url or None,
                 "bidirectional_mode": "on" if bidirectional_enabled else "off",
+                "force": args.force,
                 "agent_update": agent_update_result or {"status": "skipped", "reason": "no_websocket_url"},
             },
             ensure_ascii=True,
