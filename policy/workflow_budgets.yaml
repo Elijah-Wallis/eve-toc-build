@@ -1,0 +1,35 @@
+version: 1
+defaults:
+  latency_ms:
+    target: 900
+    hard_cap: 1400
+  token_budget:
+    soft_cap: 1200
+    hard_cap: 1800
+  coordination_ratio:
+    soft_cap: 0.30
+    hard_cap: 0.40
+  safety:
+    unauthorized_tier3_actions: 0
+
+workflows:
+  retell_b2b_call:
+    latency_ms:
+      target: 900
+      hard_cap: 1400
+    token_budget:
+      soft_cap: 1200
+      hard_cap: 1800
+    coordination_ratio:
+      soft_cap: 0.30
+      hard_cap: 0.40
+  medspa_launch:
+    latency_ms:
+      target: 1200
+      hard_cap: 2000
+    token_budget:
+      soft_cap: 900
+      hard_cap: 1500
+    coordination_ratio:
+      soft_cap: 0.25
+      hard_cap: 0.35

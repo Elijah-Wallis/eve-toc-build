@@ -7,8 +7,15 @@ from typing import Any, Dict, Iterable, List
 
 import requests
 
+from .n8n_webhooks import post_with_auto_heal
+
 
 ALLOWED_STATUSES = "in.(NEW,NURTURE,RETRY,HOLD)"
+LAUNCH_PROFILES: Dict[str, Dict[str, int]] = {
+    "conservative": {"canary_size": 3, "max_calls": 20, "observation_seconds": 90},
+    "balanced": {"canary_size": 5, "max_calls": 50, "observation_seconds": 60},
+    "aggressive": {"canary_size": 8, "max_calls": 120, "observation_seconds": 45},
+}
 SENSITIVE_CONFIG_KEYS = {
     "SUPABASE_SERVICE_ROLE_KEY",
     "RETELL_AI_KEY",
@@ -61,14 +68,35 @@ class MedspaLaunch:
         color = str(((preflight.get("overall_spatial") or {}).get("color") or "")).upper()
         return color == "GREEN" or str(preflight.get("overall") or "").lower() == "ok"
 
+    @staticmethod
+    def supported_modes() -> List[str]:
+        return ["auto", "manual"]
+
+    @staticmethod
+    def supported_profiles() -> List[str]:
+        return sorted(LAUNCH_PROFILES.keys())
+
+    @staticmethod
+    def profile_defaults(profile: str | None) -> Dict[str, int]:
+        key = str(profile or "balanced").strip().lower()
+        if key not in LAUNCH_PROFILES:
+            key = "balanced"
+        return dict(LAUNCH_PROFILES[key])
+
     def launch(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         campaign_tag = str(payload.get("campaign_tag") or "").strip()
         if not campaign_tag:
             raise RuntimeError("campaign_tag is required")
 
-        canary_size = int(payload.get("canary_size", 5))
-        observation_seconds = int(payload.get("observation_seconds", 60))
-        full_dispatch_max_calls = int(payload.get("max_calls", 50))
+        profile = str(payload.get("profile") or "balanced").strip().lower()
+        defaults = self.profile_defaults(profile)
+        mode = str(payload.get("mode") or "manual").strip().lower()
+        if mode not in self.supported_modes():
+            raise RuntimeError(f"mode must be one of: {', '.join(self.supported_modes())}")
+
+        canary_size = int(payload.get("canary_size", defaults["canary_size"]))
+        observation_seconds = int(payload.get("observation_seconds", defaults["observation_seconds"]))
+        full_dispatch_max_calls = int(payload.get("max_calls", defaults["max_calls"]))
         if canary_size <= 0:
             raise RuntimeError("canary_size must be >= 1")
 
@@ -78,6 +106,8 @@ class MedspaLaunch:
                 "status": "blocked",
                 "campaign_tag": campaign_tag,
                 "reason": "preflight_failed",
+                "mode": mode,
+                "profile": profile,
                 "preflight": preflight,
             }
         candidates = self._fetch_campaign_candidates(campaign_tag)
@@ -86,6 +116,8 @@ class MedspaLaunch:
                 "status": "blocked",
                 "campaign_tag": campaign_tag,
                 "reason": "no_eligible_leads",
+                "mode": mode,
+                "profile": profile,
                 "preflight": preflight,
             }
 
@@ -108,6 +140,9 @@ class MedspaLaunch:
                 "lead_limit": canary_lead_count,
                 "max_calls": canary_lead_count,
                 "source_filter": campaign_tag,
+                "require_kb_sync": True,
+                "kb_sync_wait_seconds": 60,
+                "abort_on_missing_promo_fields": True,
             },
         )
         time.sleep(max(1, observation_seconds))
@@ -118,9 +153,27 @@ class MedspaLaunch:
                 "status": "blocked",
                 "campaign_tag": campaign_tag,
                 "reason": "canary_failed",
+                "mode": mode,
+                "profile": profile,
                 "preflight": preflight,
                 "canary_dispatch": canary_dispatch,
                 "canary": canary_assessment,
+            }
+
+        if mode == "manual":
+            hold_until = _iso(_now_utc() + timedelta(hours=12))
+            self._patch_leads(filters={"source": f"eq.{campaign_tag}"}, patch={"paused_until": hold_until})
+            return {
+                "status": "awaiting_manual_approval",
+                "campaign_tag": campaign_tag,
+                "mode": mode,
+                "profile": profile,
+                "preflight": preflight,
+                "canary_dispatch": canary_dispatch,
+                "canary": canary_assessment,
+                "hold_until": hold_until,
+                "next_command": f"/launch-medspa-approve {campaign_tag} --profile {profile}",
+                "summary": self.campaign_status(campaign_tag),
             }
 
         # Full ramp: unpause campaign and run dispatch + nurture.
@@ -134,6 +187,9 @@ class MedspaLaunch:
                 "campaign_tag": campaign_tag,
                 "max_calls": full_dispatch_max_calls,
                 "source_filter": campaign_tag,
+                "require_kb_sync": True,
+                "kb_sync_wait_seconds": 60,
+                "abort_on_missing_promo_fields": True,
             },
         )
         nurture = self._trigger_n8n(
@@ -144,9 +200,71 @@ class MedspaLaunch:
         return {
             "status": "launched",
             "campaign_tag": campaign_tag,
+            "mode": mode,
+            "profile": profile,
             "preflight": preflight,
             "canary_dispatch": canary_dispatch,
             "canary": canary_assessment,
+            "full_dispatch": full_dispatch,
+            "nurture": nurture,
+            "summary": self.campaign_status(campaign_tag),
+        }
+
+    def approve_ramp(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        campaign_tag = str(payload.get("campaign_tag") or "").strip()
+        if not campaign_tag:
+            raise RuntimeError("campaign_tag is required")
+
+        profile = str(payload.get("profile") or "balanced").strip().lower()
+        defaults = self.profile_defaults(profile)
+        full_dispatch_max_calls = int(payload.get("max_calls", defaults["max_calls"]))
+        min_recent_calls = int(payload.get("min_recent_canary_calls", 1))
+        lookback_hours = int(payload.get("canary_lookback_hours", 6))
+
+        preflight = self._preflight()
+        if not self._is_preflight_green(preflight):
+            return {
+                "status": "blocked",
+                "campaign_tag": campaign_tag,
+                "reason": "preflight_failed",
+                "profile": profile,
+                "preflight": preflight,
+            }
+
+        recent = self._recent_campaign_calls(campaign_tag, lookback_hours=lookback_hours)
+        if recent["call_session_count"] < min_recent_calls:
+            return {
+                "status": "blocked",
+                "campaign_tag": campaign_tag,
+                "reason": "insufficient_recent_canary_signal",
+                "profile": profile,
+                "preflight": preflight,
+                "recent_canary": recent,
+            }
+
+        self._patch_leads(filters={"source": f"eq.{campaign_tag}"}, patch={"paused_until": None})
+        full_dispatch = self._trigger_n8n(
+            "openclaw-retell-dispatch",
+            {
+                "campaign_tag": campaign_tag,
+                "max_calls": full_dispatch_max_calls,
+                "source_filter": campaign_tag,
+                "require_kb_sync": True,
+                "kb_sync_wait_seconds": 60,
+                "abort_on_missing_promo_fields": True,
+            },
+        )
+        nurture = self._trigger_n8n(
+            "openclaw-nurture-run",
+            {"campaign_tag": campaign_tag, "source_filter": campaign_tag},
+        )
+        return {
+            "status": "launched",
+            "campaign_tag": campaign_tag,
+            "mode": "manual-approved",
+            "profile": profile,
+            "preflight": preflight,
+            "recent_canary": recent,
             "full_dispatch": full_dispatch,
             "nurture": nurture,
             "summary": self.campaign_status(campaign_tag),
@@ -202,6 +320,43 @@ class MedspaLaunch:
             "stoplist_violations": violations,
         }
 
+    def _recent_campaign_calls(self, campaign_tag: str, lookback_hours: int) -> Dict[str, Any]:
+        leads = self._get(
+            "/rest/v1/leads",
+            {
+                "select": "id,phone",
+                "source": f"eq.{campaign_tag}",
+                "limit": "1000",
+            },
+        )
+        ids = [str(row.get("id") or "") for row in leads if row.get("id")]
+        if not ids:
+            return {"campaign_tag": campaign_tag, "lookback_hours": lookback_hours, "call_session_count": 0, "stoplist_violations": []}
+        calls = self._get(
+            "/rest/v1/call_sessions",
+            {
+                "select": "id,lead_id,created_at,outcome",
+                "lead_id": _in_filter(ids),
+                "created_at": f"gte.{_iso(_now_utc() - timedelta(hours=max(1, lookback_hours)))}",
+                "order": "created_at.desc",
+                "limit": "500",
+            },
+        )
+        stoplist = self._get("/rest/v1/stoplist", {"select": "phone"})
+        stopset = {s.get("phone") for s in stoplist}
+        phone_by_id = {str(row.get("id")): row.get("phone") for row in leads if row.get("id")}
+        violations = [
+            phone_by_id.get(str(call.get("lead_id")))
+            for call in calls
+            if phone_by_id.get(str(call.get("lead_id"))) in stopset
+        ]
+        return {
+            "campaign_tag": campaign_tag,
+            "lookback_hours": lookback_hours,
+            "call_session_count": len(calls),
+            "stoplist_violations": [v for v in violations if v],
+        }
+
     def _preflight(self) -> Dict[str, Any]:
         sup = requests.get(
             f"{self.supabase_url}/rest/v1/tasks?select=id&limit=1",
@@ -234,6 +389,7 @@ class MedspaLaunch:
                 "status": "skipped",
                 "reason": "blocked_by_n8n_env_expression_runtime",
             }
+        launch_webhook_probe = self._probe_launch_webhook_registry()
         blockers = []
         if (sup.status_code != 200) or (n8n_status.get("status") != "ok"):
             blockers.append("core_connectivity")
@@ -243,6 +399,8 @@ class MedspaLaunch:
             blockers.append("secret_hygiene")
         if guardrail_probe.get("status") == "error":
             blockers.append("guardrail_workflows")
+        if launch_webhook_probe.get("status") == "error":
+            blockers.append("launch_webhook_registry")
         overall = "ok" if not blockers else "error"
 
         return {
@@ -254,6 +412,7 @@ class MedspaLaunch:
             "n8n_env_expression_runtime": env_expression_runtime,
             "secret_hygiene": secret_guard,
             "guardrail_probe": guardrail_probe,
+            "launch_webhook_probe": launch_webhook_probe,
             "twilio_sms": twilio_sms,
             "n8n_webhook_base": self.n8n_webhook_base,
         }
@@ -451,6 +610,47 @@ class MedspaLaunch:
             return {"status": "error", "failures": failures, "results": results}
         return {"status": "ok", "results": results}
 
+    def _probe_launch_webhook_registry(self) -> Dict[str, Any]:
+        probes = [
+            {
+                "workflow": "openclaw-retell-dispatch",
+                "payload": {"source_filter": "__probe_noop__", "lead_limit": 0, "max_calls": 0},
+            },
+            {
+                "workflow": "openclaw-nurture-run",
+                "payload": {"source_filter": "__probe_noop__", "lead_limit": 0},
+            },
+        ]
+        results: List[Dict[str, Any]] = []
+        failures: List[str] = []
+        for probe in probes:
+            workflow = str(probe["workflow"])
+            try:
+                res = self._post_webhook(workflow, probe["payload"], timeout=30)
+            except Exception as exc:  # noqa: BLE001
+                failures.append(f"{workflow}:transport_error")
+                results.append({"workflow": workflow, "status": "error", "error": str(exc)})
+                continue
+
+            status_code = int(res.get("status_code") or 0)
+            if 200 <= status_code < 300:
+                results.append({"workflow": workflow, "status": "ok", "status_code": status_code})
+                continue
+
+            failures.append(f"{workflow}:status_{status_code}")
+            results.append(
+                {
+                    "workflow": workflow,
+                    "status": "error",
+                    "status_code": status_code,
+                    "response": res.get("body"),
+                }
+            )
+
+        if failures:
+            return {"status": "error", "failures": failures, "results": results}
+        return {"status": "ok", "results": results}
+
     def _sample_probe_lead_id(self) -> str | None:
         try:
             rows = self._get("/rest/v1/leads", {"select": "id", "limit": "1", "order": "created_at.asc"})
@@ -527,27 +727,16 @@ class MedspaLaunch:
         return res
 
     def _post_webhook(self, workflow: str, data: Dict[str, Any], timeout: int) -> Dict[str, Any]:
-        url = f"{self.n8n_webhook_base.rstrip('/')}/{workflow.lstrip('/')}"
-        candidates = [url]
-        if "/webhook" not in self.n8n_webhook_base:
-            candidates.append(f"{self.n8n_webhook_base.rstrip('/')}/webhook/{workflow.lstrip('/')}")
-            candidates.append(f"{self.n8n_webhook_base.rstrip('/')}/webhook-test/{workflow.lstrip('/')}")
-
-        errors = []
-        for target in candidates:
-            try:
-                resp = requests.post(target, json=data, timeout=timeout)
-                if resp.status_code == 404:
-                    errors.append(f"404:{target}")
-                    continue
-                try:
-                    body = resp.json()
-                except ValueError:
-                    body = {"response": resp.text}
-                return {"url": target, "status_code": resp.status_code, "body": body}
-            except requests.RequestException as exc:
-                errors.append(f"{type(exc).__name__}:{target}")
-        raise RuntimeError(f"n8n trigger failed for {workflow}; attempts={errors}")
+        n8n_api_base = os.environ.get("N8N_API_BASE", "https://elijah-wallis.app.n8n.cloud/api/v1").rstrip("/")
+        n8n_api_key = os.environ.get("N8N_API_KEY", "")
+        return post_with_auto_heal(
+            webhook_base=self.n8n_webhook_base,
+            workflow_path=workflow,
+            data=data,
+            timeout=timeout,
+            n8n_api_base=n8n_api_base,
+            n8n_api_key=n8n_api_key,
+        )
 
     def _patch_leads(self, filters: Dict[str, str], patch: Dict[str, Any]) -> None:
         params = "&".join(f"{k}={v}" for k, v in filters.items())

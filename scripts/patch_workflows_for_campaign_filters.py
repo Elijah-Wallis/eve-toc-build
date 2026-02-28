@@ -2,12 +2,20 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
 from typing import Any, Dict, List
 
 import requests
+
+from n8n_workflow_lifecycle import (
+    force_reregister_workflow_webhooks,
+    list_webhook_paths,
+    n8n_webhook_base,
+    verify_webhook_paths_registered,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -68,9 +76,33 @@ DISPATCH_FILTER_LEADS_FUNCTION = (
 
 DISPATCH_BUILD_CALL_PAYLOAD_FUNCTION = (
     "const lead = $node[\"Filter Leads\"].json || {};\n"
-    "const agentType = lead.decision_maker_confirmed ? 'B2C' : 'B2B';\n"
-    "const agentId = agentType === 'B2C' ? $node[\"Config\"].json.RETELL_AGENT_B2C_ID : "
-    "$node[\"Config\"].json.RETELL_AGENT_B2B_ID;\n"
+    "const cfg = $node[\"Config\"].json || {};\n"
+    "const isB2C = !!lead.decision_maker_confirmed;\n"
+    "let agentType = isB2C ? 'B2C' : 'B2B';\n"
+    "let agentId = isB2C ? cfg.RETELL_AGENT_B2C_ID : cfg.RETELL_AGENT_B2B_ID;\n"
+    "if (!isB2C) {\n"
+    "  const override = String($node[\"Webhook Trigger\"].json.b2b_agent_override_id || '').trim();\n"
+    "  const mode = String(cfg.OPENCLAW_B2B_CANARY_MODE || 'off').toLowerCase();\n"
+    "  const v6Id = String(cfg.RETELL_AGENT_B2B_V6_ID || '').trim();\n"
+    "  const source = String(lead.source || '');\n"
+    "  const sourceRegexRaw = String(cfg.OPENCLAW_B2B_CANARY_SOURCE_REGEX || '^tx-medspa-');\n"
+    "  let sourceMatch = false;\n"
+    "  try { sourceMatch = new RegExp(sourceRegexRaw).test(source); } catch (e) { sourceMatch = source.startsWith('tx-medspa-'); }\n"
+    "  const samplePct = Math.max(0, Math.min(100, Number(cfg.OPENCLAW_B2B_CANARY_SAMPLE_PCT || 50)));\n"
+    "  const hashSeed = String(lead.id || lead.phone || source || '');\n"
+    "  const hash = [...hashSeed].reduce((acc, ch) => acc + ch.charCodeAt(0), 0) % 100;\n"
+    "  const inSample = hash < samplePct;\n"
+    "  if (override) {\n"
+    "    agentId = override;\n"
+    "    agentType = 'B2B_OVERRIDE';\n"
+    "  } else if (mode === 'force_v6' && v6Id) {\n"
+    "    agentId = v6Id;\n"
+    "    agentType = 'B2B_V6';\n"
+    "  } else if (mode === 'canary' && v6Id && sourceMatch && inSample) {\n"
+    "    agentId = v6Id;\n"
+    "    agentType = 'B2B_V6';\n"
+    "  }\n"
+    "}\n"
     "const fromNumber = $node[\"Config\"].json.RETELL_FROM_NUMBER;\n"
     "if (!fromNumber || !lead.phone) return [];\n"
     "return [{ json: {\n"
@@ -92,7 +124,9 @@ DISPATCH_BUILD_CALL_PAYLOAD_FUNCTION = (
     "      reviews_count: String(lead.reviews_count ?? ''),\n"
     "      touch_count: String(lead.touch_count ?? 0),\n"
     "      lead_id: lead.id || '',\n"
-    "      source: lead.source || ''\n"
+    "      source: lead.source || '',\n"
+    "      b2b_agent_variant: agentType,\n"
+    "      canary_mode: String(cfg.OPENCLAW_B2B_CANARY_MODE || 'off')\n"
     "    }\n"
     "  }\n"
     "} }];"
@@ -108,7 +142,13 @@ def _find_node(workflow: Dict[str, Any], name: str) -> Dict[str, Any]:
     raise KeyError(f"node not found: {name}")
 
 
+def _stable_webhook_id(path: str) -> str:
+    return hashlib.md5(path.encode("utf-8")).hexdigest().upper()
+
+
 def _patch_dispatch(workflow: Dict[str, Any]) -> Dict[str, Any]:
+    webhook = _find_node(workflow, "Webhook Trigger")
+    webhook["webhookId"] = _stable_webhook_id("openclaw-retell-dispatch")
     fetch = _find_node(workflow, "Fetch Leads")
     fetch["parameters"]["url"] = DISPATCH_FETCH_LEADS_URL
     daily = _find_node(workflow, "Fetch Daily Calls")
@@ -123,6 +163,21 @@ def _patch_dispatch(workflow: Dict[str, Any]) -> Dict[str, Any]:
     filt["parameters"]["functionCode"] = DISPATCH_FILTER_LEADS_FUNCTION
     build = _find_node(workflow, "Build Call Payload")
     build["parameters"]["functionCode"] = DISPATCH_BUILD_CALL_PAYLOAD_FUNCTION
+    config = _find_node(workflow, "Config")
+    values = ((config.get("parameters") or {}).get("values") or {}).get("string") or []
+    by_name = {str(row.get("name") or ""): row for row in values}
+    required = {
+        "RETELL_AGENT_B2B_V6_ID": os.environ.get("RETELL_AGENT_B2B_V6_ID", "").strip(),
+        "OPENCLAW_B2B_CANARY_MODE": os.environ.get("OPENCLAW_B2B_CANARY_MODE", "off").strip() or "off",
+        "OPENCLAW_B2B_CANARY_SOURCE_REGEX": os.environ.get("OPENCLAW_B2B_CANARY_SOURCE_REGEX", "^tx-medspa-").strip()
+        or "^tx-medspa-",
+        "OPENCLAW_B2B_CANARY_SAMPLE_PCT": os.environ.get("OPENCLAW_B2B_CANARY_SAMPLE_PCT", "50").strip() or "50",
+    }
+    for key, value in required.items():
+        if key in by_name:
+            by_name[key]["value"] = value
+        else:
+            values.append({"name": key, "value": value})
     retell = _find_node(workflow, "Retell Create Call")
     retell["parameters"]["bodyParametersJson"] = "{}"
     retell["parameters"]["jsonBody"] = DISPATCH_RETELL_JSON_BODY_EXPR
@@ -130,6 +185,8 @@ def _patch_dispatch(workflow: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def _patch_nurture(workflow: Dict[str, Any]) -> Dict[str, Any]:
+    webhook = _find_node(workflow, "Manual Webhook")
+    webhook["webhookId"] = _stable_webhook_id("openclaw-nurture-run")
     fetch = _find_node(workflow, "Fetch Leads")
     fetch["parameters"]["url"] = NURTURE_FETCH_LEADS_URL
     return workflow
@@ -202,7 +259,26 @@ def main() -> int:
         nurture_remote = _patch_nurture(nurture_remote)
         _update_remote_workflow(dispatch_remote)
         _update_remote_workflow(nurture_remote)
+        report["remote_reregister"] = [
+            force_reregister_workflow_webhooks(str(dispatch_remote["_id"])),
+            force_reregister_workflow_webhooks(str(nurture_remote["_id"])),
+        ]
+        all_paths = sorted(set(list_webhook_paths(dispatch_remote) + list_webhook_paths(nurture_remote)))
+        probe_payloads = {
+            "openclaw-retell-dispatch": {"source_filter": "__probe_noop__", "lead_limit": 0, "max_calls": 0},
+            "openclaw-nurture-run": {"source_filter": "__probe_noop__", "lead_limit": 0},
+        }
+        verify = verify_webhook_paths_registered(
+            base_webhook_url=n8n_webhook_base(),
+            paths=all_paths,
+            probe_payloads=probe_payloads,
+            require_2xx=True,
+        )
+        report["remote_webhook_verify"] = verify
         report["remote_updated"] = ["openclaw_retell_call_dispatch", "openclaw_nurture_engine"]
+        if verify.get("status") != "ok":
+            print(json.dumps(report, ensure_ascii=True))
+            return 2
     print(json.dumps(report, ensure_ascii=True))
     return 0
 

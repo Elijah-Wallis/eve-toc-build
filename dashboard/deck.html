@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Eve | Pitch Deck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./app.css" />
+    <link rel="stylesheet" href="./deck.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+    <div class="deck-bg"></div>
+
+    <header class="topbar deck-topbar">
+      <div class="brand">
+        <div class="brand-title">Eve</div>
+        <div class="brand-sub">Pitch Deck (Vision-first, CPOM-safe)</div>
+      </div>
+      <div class="controls">
+        <a class="btn" href="/">Dashboard</a>
+        <div class="seg" role="group" aria-label="Audience Toggle">
+          <button class="seg-btn" data-audience="laymen">Laymen</button>
+          <button class="seg-btn" data-audience="technical">Technical</button>
+        </div>
+        <div class="seg" role="group" aria-label="Tab Toggle">
+          <button class="seg-btn" data-tab="uiux">Vision</button>
+          <button class="seg-btn" data-tab="code">Code</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="deck">
+      <aside class="rail">
+        <div class="rail-title mono">Sections</div>
+        <nav class="rail-nav" id="rail-nav"></nav>
+        <div class="rail-foot mono">
+          Keys: <span class="code">J/K</span> or <span class="code">Down/Up</span>
+        </div>
+      </aside>
+
+      <section class="stage" id="stage">
+        <div class="hero-slide slide" id="hero">
+          <div class="hero-kicker mono">10-second story</div>
+          <h1 class="hero-title">Reality-grounded AGI partner.</h1>
+          <p class="hero-sub">
+            Eve is built for least-action execution: fast, low-friction, evidence-backed operations.
+            The dashboard enforces gates so autonomy only happens when the system is run-ready.
+          </p>
+          <div class="hero-actions">
+            <a class="pill" href="#s-tour_readme">Start the tour</a>
+            <a class="pill ghost" href="/ux?topic=identity_constraints&audience=laymen&tab=uiux">Identity (CPOM-safe)</a>
+          </div>
+          <div class="hero-meta mono" id="hero-meta">Loading repo facts...</div>
+        </div>
+
+        <div id="slides"></div>
+      </section>
+    </main>
+
+    <script src="./deck.js"></script>
+  </body>
+</html>
+

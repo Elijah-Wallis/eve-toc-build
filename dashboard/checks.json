@@ -1,0 +1,221 @@
+{
+  "version": 1,
+  "checks": [
+  {
+    "id": "worldclass_preflight_strict",
+    "group": "Ops",
+    "name": "Worldclass preflight (strict)",
+    "purpose": {
+      "laymen": "Fail-closed go/no-go. Must be fully green (no warnings) before Monday ops.",
+      "technical": "Runs scripts/ops/worldclass_preflight.sh and requires FAIL=0 WARN=0."
+    },
+    "how_to_fix": {
+      "laymen": "Fix the first warning and rerun until it is fully green.",
+      "technical": "Run: bash scripts/ops/worldclass_preflight.sh. Resolve any WARN lines; WARN must be 0."
+    },
+    "kind": "shell",
+    "command": "scripts/ops/worldclass_preflight_strict.sh",
+    "timeout_s": 30,
+    "default": true
+  },
+  {
+    "id": "transcripts_recording_url_proof",
+    "group": "Supabase",
+    "name": "Transcript recording_url proof (strict)",
+    "purpose": {
+      "laymen": "Proves transcript storage is real: at least one transcript row has a non-empty recording URL.",
+      "technical": "Queries call_transcripts for recording_url not null and requires at least one row."
+    },
+    "how_to_fix": {
+      "laymen": "Run transcript sync/backfill so recordings get stored.",
+      "technical": "Run: eve transcripts 168 (or python3 scripts/ops/sync_call_transcripts.py --lookback-hours 168 --repair-call-sessions)."
+    },
+    "kind": "python",
+    "command": "scripts/dashboard/check_transcripts_recording_proof.py",
+    "timeout_s": 20,
+    "default": true
+  },
+  {
+    "id": "policy_symlinks",
+    "group": "Policy",
+    "name": "Policy symlink invariants",
+    "purpose": {
+      "laymen": "Ensures Eve's core rules are one canonical source of truth (changes propagate everywhere).",
+        "technical": "Verifies openclaw_workspace_template policy files remain symlinks to the canonical workspace state."
+      },
+      "how_to_fix": {
+        "laymen": "Re-link the policy files back to the canonical workspace.",
+        "technical": "Run scripts/verify_policy_symlinks.sh and fix any non-symlink policy files in openclaw_workspace_template/."
+      },
+      "kind": "shell",
+      "command": "scripts/verify_policy_symlinks.sh",
+      "timeout_s": 3,
+      "default": true
+    },
+    {
+      "id": "no_absolute_paths",
+      "group": "Repo Hygiene",
+      "name": "No hardcoded absolute user paths",
+      "purpose": {
+        "laymen": "Prevents machine-specific paths from breaking deployments and sharing.",
+        "technical": "Scans tracked files for /Users/, /home/, or C:\\\\Users\\\\ to avoid host-leaking paths."
+      },
+      "how_to_fix": {
+        "laymen": "Replace personal paths with relative paths or environment variables.",
+        "technical": "Replace offending paths with repo-relative paths or env vars; re-run scripts/scan_absolute_paths.sh."
+      },
+      "kind": "shell",
+      "command": "scripts/scan_absolute_paths.sh",
+      "timeout_s": 10,
+      "default": true
+    },
+    {
+      "id": "runtime_config_valid",
+      "group": "Runtime",
+      "name": "Runtime config resolvable",
+      "purpose": {
+        "laymen": "Ensures Eve knows where its brain and memory live (state dir, queue path, config path).",
+        "technical": "Runs scripts/validate_runtime_config.py and requires ok=true."
+      },
+      "how_to_fix": {
+        "laymen": "Set the missing settings so Eve can run.",
+        "technical": "Inspect the JSON report and resolve warnings (missing state dir, missing queue path, missing config)."
+      },
+      "kind": "python",
+      "command": "scripts/validate_runtime_config.py",
+      "timeout_s": 10,
+      "default": true,
+      "expect_json_ok": true
+    },
+    {
+      "id": "workflow_secret_bindings",
+      "group": "Workflows",
+      "name": "Workflow secrets not hardcoded",
+      "purpose": {
+        "laymen": "Protects secrets: workflows must not contain real passwords/tokens in plain text.",
+        "technical": "Scans workflows_n8n/*.json Config nodes for sensitive keys and requires env/vars expressions (={{$env.*}} or ={{$vars.*}})."
+      },
+      "how_to_fix": {
+        "laymen": "Move secrets to env/vars bindings and remove any real tokens from workflow JSON.",
+        "technical": "Patch workflows: python3 scripts/patch_workflow_env_bindings.py --mode env (or --mode vars). Ensure n8n provides the env/vars at runtime. Literal tokens in workflow JSON are forbidden."
+      },
+      "kind": "python",
+      "command": "scripts/dashboard/check_workflow_secret_bindings.py",
+      "timeout_s": 10,
+      "default": true,
+      "expect_json_ok": true
+    },
+    {
+      "id": "contract_suite",
+      "group": "Contracts",
+      "name": "Contract suite (deep)",
+      "purpose": {
+        "laymen": "Runs Eve's safety contracts so changes do not silently break the system.",
+        "technical": "Executes scripts/acceptance/run_contract_suite.sh (pytest-based)."
+      },
+      "how_to_fix": {
+        "laymen": "Open the failing contract and fix the broken rule.",
+        "technical": "Run scripts/acceptance/run_contract_suite.sh and fix failing tests under tests/contracts/."
+      },
+      "kind": "shell",
+      "command": "scripts/acceptance/run_contract_suite.sh",
+      "timeout_s": 120,
+      "default": false,
+      "bundles": ["contracts"]
+    },
+    {
+      "id": "acceptance_smoke",
+      "group": "Acceptance",
+      "name": "Acceptance smoke (deep)",
+      "purpose": {
+        "laymen": "Quick pass/fail: are the core gates green before you run real commands?",
+        "technical": "Runs scripts/acceptance/run_acceptance.py for AT-001,002,003,007,009."
+      },
+      "how_to_fix": {
+        "laymen": "Open the failing gate output and fix what it says is broken.",
+        "technical": "Run: python3 scripts/acceptance/run_acceptance.py --ids AT-001,AT-002,AT-003,AT-007,AT-009"
+      },
+      "kind": "shell",
+      "command": "python3 scripts/acceptance/run_acceptance.py --ids AT-001,AT-002,AT-003,AT-007,AT-009",
+      "timeout_s": 600,
+      "default": false,
+      "bundles": ["smoke"],
+      "expect_json_ok": true
+    },
+    {
+      "id": "acceptance_patched_prod",
+      "group": "Acceptance",
+      "name": "Patched production gates (deep)",
+      "purpose": {
+        "laymen": "Checks the production-critical constraints without the slow docker-heavy steps.",
+        "technical": "Runs scripts/acceptance/run_acceptance.py for AT-013A,018,021A,024A,034A,035A."
+      },
+      "how_to_fix": {
+        "laymen": "Fix the first failing gate; rerun until green.",
+        "technical": "Run: python3 scripts/acceptance/run_acceptance.py --ids AT-013A,AT-018,AT-021A,AT-024A,AT-034A,AT-035A"
+      },
+      "kind": "shell",
+      "command": "python3 scripts/acceptance/run_acceptance.py --ids AT-013A,AT-018,AT-021A,AT-024A,AT-034A,AT-035A",
+      "timeout_s": 900,
+      "default": false,
+      "bundles": ["patched_prod"],
+      "expect_json_ok": true
+    },
+    {
+      "id": "acceptance_hardening_docker",
+      "group": "Acceptance",
+      "name": "Hardening verification (deep, docker)",
+      "purpose": {
+        "laymen": "Slow but high confidence: proves the docker-backed integrations can run.",
+        "technical": "Runs scripts/acceptance/run_acceptance.py for AT-013B,018B,021B,024B,034B,035B (docker required)."
+      },
+      "how_to_fix": {
+        "laymen": "Start Docker, then fix failing gates until all pass.",
+        "technical": "Run: python3 scripts/acceptance/run_acceptance.py --ids AT-013B,AT-018B,AT-021B,AT-024B,AT-034B,AT-035B"
+      },
+      "kind": "shell",
+      "command": "python3 scripts/acceptance/run_acceptance.py --ids AT-013B,AT-018B,AT-021B,AT-024B,AT-034B,AT-035B",
+      "timeout_s": 2400,
+      "default": false,
+      "bundles": ["hardening"],
+      "expect_json_ok": true
+    },
+    {
+      "id": "acceptance_ops_baseline",
+      "group": "Acceptance",
+      "name": "Ops baseline deterministic gates (deep)",
+      "purpose": {
+        "laymen": "Proves the system is operationally safe to run (integrity, security hygiene, ingestion, revenue ops).",
+        "technical": "Runs scripts/acceptance/run_acceptance.py for AT-PRO-004, AT-REV-001, AT-ING-001, AT-LEDGER-001, AT-SEC-002."
+      },
+      "how_to_fix": {
+        "laymen": "Fix the first failing safety gate and rerun.",
+        "technical": "Run: python3 scripts/acceptance/run_acceptance.py --ids AT-PRO-004,AT-REV-001,AT-ING-001,AT-LEDGER-001,AT-SEC-002"
+      },
+      "kind": "shell",
+      "command": "python3 scripts/acceptance/run_acceptance.py --ids AT-PRO-004,AT-REV-001,AT-ING-001,AT-LEDGER-001,AT-SEC-002",
+      "timeout_s": 1200,
+      "default": false,
+      "bundles": ["ops"],
+      "expect_json_ok": true
+    },
+    {
+      "id": "launchd_eve_agent",
+      "group": "Host",
+      "name": "Launchd agent running (deep, macOS)",
+      "purpose": {
+        "laymen": "Checks whether Eve is running on this machine.",
+        "technical": "Uses launchctl list to see if ai.openclaw.eve is loaded."
+      },
+      "how_to_fix": {
+        "laymen": "Reinstall or restart the Eve service.",
+        "technical": "Use scripts/install_elijah_evebot_launchd.sh or launchctl bootstrap/kickstart the agent."
+      },
+      "kind": "shell",
+      "command": "launchctl list | rg -n \"ai\\.openclaw\\.eve\"",
+      "timeout_s": 5,
+      "default": false,
+      "host_only": true
+    }
+  ]
+}

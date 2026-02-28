@@ -26,7 +26,7 @@
     },
     {
       "parameters": {
-        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,source,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,next_touch_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD,QUALIFIED){{$node[\"Manual Webhook\"].json.source_filter ? '&source=eq.' + encodeURIComponent($node[\"Manual Webhook\"].json.source_filter) : ''}}&order=created_at.asc&limit={{$node[\"Manual Webhook\"].json.lead_limit || 200}}",
+        "url": "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/leads?select=id,place_id,business_name,phone,email,city,state,zip,status,source,lead_type,decision_maker_confirmed,positive_signal,touch_count,first_contacted_at,last_contacted_at,next_touch_at,paused_until&status=in.(NEW,NURTURE,RETRY,HOLD,QUALIFIED){{$node[\"Manual Webhook\"].json.source_filter ? '&source=eq.' + encodeURIComponent($node[\"Manual Webhook\"].json.source_filter) : ''}}&order=created_at.asc&limit={{$node[\"Manual Webhook\"].json.lead_limit || $node[\"Config\"].json.NURTURE_LEAD_LIMIT || 1000}}",
         "method": "GET",
         "jsonParameters": true,
         "options": {},
@@ -46,7 +46,7 @@
     },
     {
       "parameters": {
-        "batchSize": 1
+        "batchSize": "={{$node[\"Config\"].json.NURTURE_DISPATCH_BATCH_SIZE || 25}}"
       },
       "id": "3",
       "name": "Split Leads",
@@ -96,7 +96,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const lead = $json.lead;\nconst sid = $node[\"Config\"].json.TWILIO_ACCOUNT_SID || '';\nconst token = $node[\"Config\"].json.TWILIO_AUTH_TOKEN || '';\nconst auth = Buffer.from(`${sid}:${token}`).toString('base64');\nconst url = $node[\"Config\"].json.AUDIT_REPORT_URL || '';\nconst reportText = url ? `Value report: ${url}` : 'Value report ready.';\nconst body = `Audit ready for ${lead.business_name || 'your practice'}. ${reportText} Reply to confirm best email.`;\nreturn [{ json: { auth, to: lead.phone, from: $node[\"Config\"].json.TWILIO_FROM_NUMBER, body, lead } }];"
+        "functionCode": "const lead = $json.lead;\nconst sid = $node['Config'].json.TWILIO_ACCOUNT_SID || '';\nconst token = $node['Config'].json.TWILIO_AUTH_TOKEN || '';\nconst maxPerSecond = Math.max(1, Number($node['Config'].json.TWILIO_SMS_MAX_PER_SECOND || 1));\nconst minGapMs = Math.ceil(1000 / maxPerSecond);\nconst globalState = this.getWorkflowStaticData('global');\nconst now = Date.now();\nconst last = Number(globalState.twilio_last_sms_at || 0);\nconst waitMs = Math.max(0, minGapMs - (now - last));\nif (waitMs > 0) {\n  const until = Date.now() + waitMs;\n  while (Date.now() < until) {}\n}\nglobalState.twilio_last_sms_at = Date.now();\nconst auth = Buffer.from(`${sid}:${token}`).toString('base64');\nconst url = $node['Config'].json.AUDIT_REPORT_URL || '';\nconst reportText = url ? `Value report: ${url}` : 'Value report ready.';\nconst body = `Audit ready for ${lead.business_name || 'your practice'}. ${reportText} Reply to confirm best email.`;\nreturn [{ json: { auth, to: lead.phone, from: $node['Config'].json.TWILIO_FROM_NUMBER, body, lead, throttle_wait_ms: waitMs } }];"
       },
       "id": "7",
       "name": "Build SMS",
@@ -270,7 +270,7 @@
             },
             {
               "name": "NURTURE_SMS_ENABLED",
-              "value": "0"
+              "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
             },
             {
               "name": "TWILIO_FROM_NUMBER",
@@ -281,6 +281,18 @@
             {
               "name": "TOUCH_GAP_DAYS",
               "value": 3
+            },
+            {
+              "name": "NURTURE_LEAD_LIMIT",
+              "value": 1000
+            },
+            {
+              "name": "NURTURE_DISPATCH_BATCH_SIZE",
+              "value": 25
+            },
+            {
+              "name": "TWILIO_SMS_MAX_PER_SECOND",
+              "value": 1
             }
           ],
           "boolean": []
@@ -311,7 +323,8 @@
       "position": [
         -400,
         -200
-      ]
+      ],
+      "webhookId": "63D1D7A6B6C771DD7BAE4DD1244896D5"
     },
     {
       "parameters": {

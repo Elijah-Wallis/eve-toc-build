@@ -9,6 +9,14 @@ from typing import Any, Dict, List, Tuple
 
 import requests
 
+from n8n_workflow_lifecycle import (
+    force_reregister_workflow_webhooks,
+    get_workflow_by_name,
+    list_webhook_paths,
+    n8n_webhook_base,
+    verify_webhook_paths_registered,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS_DIR = ROOT / "workflows_n8n"
@@ -32,7 +40,12 @@ def _env_expr(name: str, default: str | None = None) -> str:
     return "={{$env." + name + " || '" + escaped + "'}}"
 
 
-def _cfg_node(node_id: str, position: List[int], include_providers: bool = False) -> Dict[str, Any]:
+def _cfg_node(
+    node_id: str,
+    position: List[int],
+    include_providers: bool = False,
+    include_evidence: bool = False,
+) -> Dict[str, Any]:
     strings: List[Dict[str, Any]] = [
         {"name": "SUPABASE_URL", "value": _env_expr("SUPABASE_URL")},
         {"name": "SUPABASE_SERVICE_ROLE_KEY", "value": _env_expr("SUPABASE_SERVICE_ROLE_KEY")},
@@ -43,6 +56,26 @@ def _cfg_node(node_id: str, position: List[int], include_providers: bool = False
                 {"name": "N8N_PUBLIC_WEBHOOK_BASE", "value": _env_expr("N8N_PUBLIC_WEBHOOK_BASE", "https://elijah-wallis.app.n8n.cloud")},
                 {"name": "APIFY_API_TOKEN", "value": _env_expr("APIFY_API_TOKEN")},
                 {"name": "APIFY_ACTOR_ID", "value": _env_expr("APIFY_ACTOR_ID", "compass/crawler-google-places")},
+            ]
+        )
+    if include_evidence:
+        strings.extend(
+            [
+                {"name": "TWILIO_ACCOUNT_SID", "value": _env_expr("TWILIO_ACCOUNT_SID")},
+                {"name": "TWILIO_AUTH_TOKEN", "value": _env_expr("TWILIO_AUTH_TOKEN")},
+                {"name": "TWILIO_FROM_NUMBER", "value": _env_expr("TWILIO_FROM_NUMBER")},
+                {
+                    "name": "EVIDENCE_EMAIL_PROVIDER_URL",
+                    "value": _env_expr("EVIDENCE_EMAIL_PROVIDER_URL"),
+                },
+                {
+                    "name": "EVIDENCE_EMAIL_API_KEY",
+                    "value": _env_expr("EVIDENCE_EMAIL_API_KEY"),
+                },
+                {
+                    "name": "EVIDENCE_EMAIL_FROM",
+                    "value": _env_expr("EVIDENCE_EMAIL_FROM", "ops@eve-systems.ai"),
+                },
             ]
         )
     return {
@@ -503,6 +536,252 @@ def _workflow_set_followup() -> Dict[str, Any]:
     }
 
 
+def _workflow_send_evidence_package() -> Dict[str, Any]:
+    normalize = (
+        "const req = items[0]?.json || {};\n"
+        "const a = (req.body && typeof req.body === 'object') ? req.body : req;\n"
+        "const recipientEmail = String(a.recipient_email || '').trim().toLowerCase();\n"
+        "const emailOk = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(recipientEmail);\n"
+        "if (!emailOk) {\n"
+        "  return [{json:{guardrail_ok:false,reason_code:'invalid_recipient_email',reason_detail:'recipient_email must be valid'}}];\n"
+        "}\n"
+        "const deliveryMethod = String(a.delivery_method || 'EMAIL_ONLY').trim().toUpperCase();\n"
+        "if (!['EMAIL_ONLY','EMAIL_AND_SMS'].includes(deliveryMethod)) {\n"
+        "  return [{json:{guardrail_ok:false,reason_code:'invalid_delivery_method',reason_detail:'delivery_method must be EMAIL_ONLY or EMAIL_AND_SMS'}}];\n"
+        "}\n"
+        "const artifactType = String(a.artifact_type || '').trim().toUpperCase();\n"
+        "if (!['AUDIO_LINK','FAILURE_LOG_PDF'].includes(artifactType)) {\n"
+        "  return [{json:{guardrail_ok:false,reason_code:'invalid_artifact_type',reason_detail:'artifact_type must be AUDIO_LINK or FAILURE_LOG_PDF'}}];\n"
+        "}\n"
+        "const evidenceUrl = String(a.evidence_url || a.artifact_url || '').trim();\n"
+        "if (!evidenceUrl) {\n"
+        "  return [{json:{guardrail_ok:false,reason_code:'missing_artifact_url',reason_detail:'evidence_url is required'}}];\n"
+        "}\n"
+        "const digits = String(a.phone || '').replace(/\\D/g, '');\n"
+        "let phone = null;\n"
+        "if (digits.length === 10) phone = '+1' + digits;\n"
+        "if (digits.length === 11 && digits[0] === '1') phone = '+' + digits;\n"
+        "if (deliveryMethod === 'EMAIL_AND_SMS' && !phone) {\n"
+        "  return [{json:{guardrail_ok:false,reason_code:'invalid_phone_for_sms',reason_detail:'phone required for EMAIL_AND_SMS'}}];\n"
+        "}\n"
+        "const leadId = String(a.lead_id || '').trim() || null;\n"
+        "const managerName = String(a.manager_name || '').trim() || 'Practice Manager';\n"
+        "const campaignTag = String(a.campaign_tag || '').trim() || null;\n"
+        "const subject = String(a.subject_hint || '').trim() || (artifactType === 'AUDIO_LINK' ? 'URGENT: Intake Failure Recording' : 'URGENT: Intake Failure Log');\n"
+        "const idemBase = String(a.idempotency_key || '').trim() || `${leadId || recipientEmail}-${artifactType}`;\n"
+        "const packageKey = `${idemBase}-pkg`;\n"
+        "const rateWindowStart = new Date(Date.now() - 30*60*1000).toISOString();\n"
+        "const summaryLine = artifactType === 'AUDIO_LINK' ? 'Missed-call recording attached for review.' : 'Timestamped failure log attached for review.';\n"
+        "const smsBody = `EVE alert: ${summaryLine} Link: ${evidenceUrl}`;\n"
+        "const emailText = `Hi ${managerName},\\n\\n${summaryLine}\\nArtifact: ${evidenceUrl}\\n\\nPlease confirm receipt and preferred follow-up window.\\n\\n- Eve Systems`;\n"
+        "return [{json:{guardrail_ok:true,lead_id:leadId,campaign_tag:campaignTag,recipient_email:recipientEmail,recipient_name:managerName,delivery_method:deliveryMethod,artifact_type:artifactType,evidence_url:evidenceUrl,phone,subject,sms_body:smsBody,email_text:emailText,package_idempotency_key:packageKey,email_event_key:`${idemBase}-email`,sms_event_key:`${idemBase}-sms`,rate_window_start:rateWindowStart,rate_bypass:!leadId}}];"
+    )
+    reject_invalid = (
+        "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'invalid_payload',reason_detail:$json.reason_detail || 'guardrail_reject'}}];"
+    )
+    set_rate_zero = "return [{json:{count:0}}];"
+    reject_rate = (
+        "const limit = Number($node[\"Config\"].json.RATE_LIMIT_SEND_EVIDENCE_30M || 3);\n"
+        "return [{json:{status:'rejected',ok:false,reason_code:'rate_limited_send_evidence',reason_detail:`Exceeded ${limit} package requests in 30m`}}];"
+    )
+    prep_email = (
+        "const src = $node['Normalize Request'].json;\n"
+        "const cfg = $node['Config'].json;\n"
+        "if (!cfg.EVIDENCE_EMAIL_PROVIDER_URL || !cfg.EVIDENCE_EMAIL_API_KEY || !cfg.EVIDENCE_EMAIL_FROM) {\n"
+        "  return [{json:{guardrail_ok:false,reason_code:'missing_email_provider_config',reason_detail:'EVIDENCE_EMAIL_PROVIDER_URL/EVIDENCE_EMAIL_API_KEY/EVIDENCE_EMAIL_FROM are required'}}];\n"
+        "}\n"
+        "return [{json:{guardrail_ok:true,email_body:{to:src.recipient_email,from:cfg.EVIDENCE_EMAIL_FROM,subject:src.subject,text:src.email_text,metadata:{lead_id:src.lead_id,campaign_tag:src.campaign_tag,artifact_type:src.artifact_type,evidence_url:src.evidence_url}}}}];"
+    )
+    reject_email_cfg = (
+        "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'missing_email_provider_config',reason_detail:$json.reason_detail || 'email provider not configured'}}];"
+    )
+    prep_email_event = (
+        "const src = $node['Normalize Request'].json;\n"
+        "const resp = $node['Send Evidence Email'].json || {};\n"
+        "const err = String(resp.error || '').trim();\n"
+        "const code = Number(resp.statusCode || resp.status || 0) || null;\n"
+        "const ok = !err && (!code || (code >= 200 && code < 300));\n"
+        "return [{json:{lead_id:src.lead_id,place_id:null,event_type:'retell_evidence_email',idempotency_key:src.email_event_key,payload_json:{ok,status_code:code,error:err || null,recipient_email:src.recipient_email,artifact_type:src.artifact_type,evidence_url:src.evidence_url}}}];"
+    )
+    prep_sms = (
+        "const src = $node['Normalize Request'].json;\n"
+        "const sid = String($node['Config'].json.TWILIO_ACCOUNT_SID || '').trim();\n"
+        "const token = String($node['Config'].json.TWILIO_AUTH_TOKEN || '').trim();\n"
+        "const from = String($node['Config'].json.TWILIO_FROM_NUMBER || '').trim();\n"
+        "if (!sid || !token || !from) {\n"
+        "  return [{json:{skip:true,reason:'missing_twilio_config'}}];\n"
+        "}\n"
+        "const auth = Buffer.from(`${sid}:${token}`).toString('base64');\n"
+        "return [{json:{skip:false,auth,to:src.phone,from,body:src.sms_body}}];"
+    )
+    prep_sms_event = (
+        "const src = $node['Normalize Request'].json;\n"
+        "const prep = $node['Prepare SMS Delivery'].json || {};\n"
+        "if (prep.skip) {\n"
+        "  return [{json:{lead_id:src.lead_id,place_id:null,event_type:'retell_evidence_sms',idempotency_key:src.sms_event_key,payload_json:{ok:false,skipped:true,reason:prep.reason || 'skipped'}}}];\n"
+        "}\n"
+        "const resp = $node['Send Evidence SMS'].json || {};\n"
+        "const err = String(resp.error || '').trim();\n"
+        "const code = Number(resp.statusCode || resp.status || 0) || null;\n"
+        "const ok = !err && (!code || (code >= 200 && code < 300));\n"
+        "return [{json:{lead_id:src.lead_id,place_id:null,event_type:'retell_evidence_sms',idempotency_key:src.sms_event_key,payload_json:{ok,status_code:code,error:err || null,to:src.phone}}}];"
+    )
+    prep_package_event = (
+        "const src = $node['Normalize Request'].json;\n"
+        "const email = ($items('Prepare Email Event', 0, 0)?.[0]?.json || {}).payload_json || {};\n"
+        "let sms;\n"
+        "if (src.delivery_method === 'EMAIL_ONLY') {\n"
+        "  sms = {ok:false,skipped:true,reason:'email_only'};\n"
+        "} else {\n"
+        "  sms = ($items('Prepare SMS Event', 0, 0)?.[0]?.json || {}).payload_json || {ok:false,skipped:true,reason:'sms_not_recorded'};\n"
+        "}\n"
+        "const status = (email.ok === true && (sms.ok === true || sms.skipped === true)) ? 'delivered' : 'partial';\n"
+        "return [{json:{lead_id:src.lead_id,place_id:null,event_type:'retell_evidence_package',idempotency_key:src.package_idempotency_key,payload_json:{status,email_status:email,sms_status:sms,recipient_email:src.recipient_email,delivery_method:src.delivery_method,artifact_type:src.artifact_type,evidence_url:src.evidence_url}}}];"
+    )
+    ack = (
+        "const pkg = $node['Prepare Package Event'].json || {};\n"
+        "const p = pkg.payload_json || {};\n"
+        "return [{json:{status:p.status || 'partial',ok:true,email_status:p.email_status || null,sms_status:p.sms_status || null,idempotency_key:pkg.idempotency_key || null}}];"
+    )
+    return {
+        "name": "openclaw_retell_fn_send_evidence_package",
+        "nodes": [
+            _webhook_node("1", "Webhook Trigger", "openclaw-retell-fn-send-evidence-package", [20, 20]),
+            _cfg_node("2", [220, 20], include_evidence=True),
+            _function_node("3", "Normalize Request", normalize, [440, 20]),
+            _if_bool_node("4", "Guardrail OK?", "={{$json.guardrail_ok}}", [660, 20]),
+            _function_node("5", "Reject Invalid", reject_invalid, [880, -120]),
+            _if_bool_node("6", "Rate Bypass?", "={{$json.rate_bypass}}", [880, 20]),
+            _function_node("7", "Set Rate Count Zero", set_rate_zero, [1100, -80]),
+            _generic_http_node(
+                "8",
+                "Fetch Recent Package Count",
+                "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?select=count&lead_id=eq.{{$node[\"Normalize Request\"].json.lead_id}}&event_type=eq.retell_evidence_package&created_at=gte.{{$node[\"Normalize Request\"].json.rate_window_start}}",
+                "GET",
+                [1100, 120],
+                headers_expr=_supabase_headers_expr(),
+                send_body=False,
+            ),
+            _if_number_node("9", "Rate Limited?", "={{Number($json.count || 0)}}", "largerEqual", 3, [1320, 20]),
+            _function_node("10", "Reject Rate Limit", reject_rate, [1540, -120]),
+            _function_node("11", "Prepare Email Delivery", prep_email, [1540, 80]),
+            _if_bool_node("12", "Email Config OK?", "={{$json.guardrail_ok}}", [1760, 80]),
+            _function_node("13", "Reject Email Config", reject_email_cfg, [1980, -80]),
+            _generic_http_node(
+                "14",
+                "Send Evidence Email",
+                "={{$node[\"Config\"].json.EVIDENCE_EMAIL_PROVIDER_URL}}",
+                "POST",
+                [1980, 120],
+                json_body_expr="={{JSON.stringify($node[\"Prepare Email Delivery\"].json.email_body)}}",
+                headers_expr="={{JSON.stringify({Authorization: 'Bearer ' + $node[\"Config\"].json.EVIDENCE_EMAIL_API_KEY, 'Content-Type': 'application/json'})}}",
+                send_body=True,
+                continue_on_fail=True,
+            ),
+            _function_node("15", "Prepare Email Event", prep_email_event, [2200, 120]),
+            _http_node(
+                "16",
+                "Insert Email Event",
+                "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+                "POST",
+                "={{JSON.stringify($json)}}",
+                [2420, 120],
+            ),
+            _if_bool_node("17", "Should Send SMS?", "={{$node[\"Normalize Request\"].json.delivery_method === 'EMAIL_AND_SMS'}}", [2640, 120]),
+            _function_node("18", "Prepare SMS Delivery", prep_sms, [2860, 40]),
+            {
+                "parameters": {
+                    "url": "=https://api.twilio.com/2010-04-01/Accounts/{{$node[\"Config\"].json.TWILIO_ACCOUNT_SID}}/Messages.json",
+                    "method": "POST",
+                    "jsonParameters": False,
+                    "options": {"timeout": 120000},
+                    "bodyParametersUi": {
+                        "parameter": [
+                            {"name": "To", "value": "={{$json.to}}"},
+                            {"name": "From", "value": "={{$json.from}}"},
+                            {"name": "Body", "value": "={{$json.body}}"},
+                        ]
+                    },
+                    "headerParametersJson": "={{JSON.stringify({Authorization: `Basic ${$json.auth}`})}}",
+                },
+                "id": "19",
+                "name": "Send Evidence SMS",
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4,
+                "position": [3080, 40],
+                "continueOnFail": True,
+            },
+            _function_node("20", "Prepare SMS Event", prep_sms_event, [3300, 40]),
+            _http_node(
+                "21",
+                "Insert SMS Event",
+                "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+                "POST",
+                "={{JSON.stringify($json)}}",
+                [3520, 40],
+            ),
+            _function_node("22", "Prepare Package Event", prep_package_event, [3300, 200]),
+            _http_node(
+                "23",
+                "Insert Package Event",
+                "={{$node[\"Config\"].json.SUPABASE_URL}}/rest/v1/lead_events?on_conflict=idempotency_key",
+                "POST",
+                "={{JSON.stringify($json)}}",
+                [3520, 200],
+            ),
+            _function_node("24", "Acknowledge", ack, [3740, 200]),
+        ],
+        "connections": {
+            "Webhook Trigger": {"main": [[{"node": "Config", "type": "main", "index": 0}]]},
+            "Config": {"main": [[{"node": "Normalize Request", "type": "main", "index": 0}]]},
+            "Normalize Request": {"main": [[{"node": "Guardrail OK?", "type": "main", "index": 0}]]},
+            "Guardrail OK?": {
+                "main": [
+                    [{"node": "Rate Bypass?", "type": "main", "index": 0}],
+                    [{"node": "Reject Invalid", "type": "main", "index": 0}],
+                ]
+            },
+            "Rate Bypass?": {
+                "main": [
+                    [{"node": "Set Rate Count Zero", "type": "main", "index": 0}],
+                    [{"node": "Fetch Recent Package Count", "type": "main", "index": 0}],
+                ]
+            },
+            "Set Rate Count Zero": {"main": [[{"node": "Rate Limited?", "type": "main", "index": 0}]]},
+            "Fetch Recent Package Count": {"main": [[{"node": "Rate Limited?", "type": "main", "index": 0}]]},
+            "Rate Limited?": {
+                "main": [
+                    [{"node": "Prepare Email Delivery", "type": "main", "index": 0}],
+                    [{"node": "Reject Rate Limit", "type": "main", "index": 0}],
+                ]
+            },
+            "Prepare Email Delivery": {"main": [[{"node": "Email Config OK?", "type": "main", "index": 0}]]},
+            "Email Config OK?": {
+                "main": [
+                    [{"node": "Send Evidence Email", "type": "main", "index": 0}],
+                    [{"node": "Reject Email Config", "type": "main", "index": 0}],
+                ]
+            },
+            "Send Evidence Email": {"main": [[{"node": "Prepare Email Event", "type": "main", "index": 0}]]},
+            "Prepare Email Event": {"main": [[{"node": "Insert Email Event", "type": "main", "index": 0}]]},
+            "Insert Email Event": {"main": [[{"node": "Should Send SMS?", "type": "main", "index": 0}]]},
+            "Should Send SMS?": {
+                "main": [
+                    [{"node": "Prepare SMS Delivery", "type": "main", "index": 0}],
+                    [{"node": "Prepare Package Event", "type": "main", "index": 0}],
+                ]
+            },
+            "Prepare SMS Delivery": {"main": [[{"node": "Send Evidence SMS", "type": "main", "index": 0}]]},
+            "Send Evidence SMS": {"main": [[{"node": "Prepare SMS Event", "type": "main", "index": 0}]]},
+            "Prepare SMS Event": {"main": [[{"node": "Insert SMS Event", "type": "main", "index": 0}]]},
+            "Insert SMS Event": {"main": [[{"node": "Prepare Package Event", "type": "main", "index": 0}]]},
+            "Prepare Package Event": {"main": [[{"node": "Insert Package Event", "type": "main", "index": 0}]]},
+            "Insert Package Event": {"main": [[{"node": "Acknowledge", "type": "main", "index": 0}]]},
+        },
+        "settings": {},
+    }
+
+
 def _workflow_mark_dnc() -> Dict[str, Any]:
     prep = (
         "const req = items[0]?.json || {};\n"
@@ -520,7 +799,7 @@ def _workflow_mark_dnc() -> Dict[str, Any]:
         "return [{json:{status:'rejected',ok:false,reason_code:$json.reason_code || 'invalid_payload',"
         "reason_detail:$json.reason_detail || 'guardrail_reject'}}];"
     )
-    reject_exists = "return [{json:{status:'rejected',ok:false,reason_code:'already_dnc',reason_detail:'phone already in stoplist'}}];"
+    skip_upsert = "return [{json:{status:'ok',already_dnc:true}}];"
     prep_event = (
         "const src = $node[\"Normalize Phone\"].json;\n"
         "return [{json:{lead_id:src.lead_id || null,place_id:null,event_type:'retell_dnc',idempotency_key:src.idempotency_key,payload_json:{phone:src.phone,reason:src.reason,source:'retell_tool'}}}];"
@@ -551,7 +830,7 @@ def _workflow_mark_dnc() -> Dict[str, Any]:
                 1,
                 [1100, 20],
             ),
-            _function_node("8", "Reject Existing", reject_exists, [1320, -80]),
+            _function_node("8", "Skip Stoplist Upsert", skip_upsert, [1320, -80]),
             _http_node(
                 "9",
                 "Upsert Stoplist",
@@ -584,10 +863,11 @@ def _workflow_mark_dnc() -> Dict[str, Any]:
             "Check Existing Stoplist": {"main": [[{"node": "Already DNC?", "type": "main", "index": 0}]]},
             "Already DNC?": {
                 "main": [
-                    [{"node": "Reject Existing", "type": "main", "index": 0}],
+                    [{"node": "Skip Stoplist Upsert", "type": "main", "index": 0}],
                     [{"node": "Upsert Stoplist", "type": "main", "index": 0}],
                 ]
             },
+            "Skip Stoplist Upsert": {"main": [[{"node": "Prepare DNC Event", "type": "main", "index": 0}]]},
             "Upsert Stoplist": {"main": [[{"node": "Prepare DNC Event", "type": "main", "index": 0}]]},
             "Prepare DNC Event": {"main": [[{"node": "Insert DNC Event", "type": "main", "index": 0}]]},
             "Insert DNC Event": {"main": [[{"node": "Acknowledge", "type": "main", "index": 0}]]},
@@ -832,6 +1112,7 @@ def _workflows() -> List[Tuple[str, Dict[str, Any]]]:
         ("openclaw_retell_fn_offer_angle.json", _workflow_offer_angle()),
         ("openclaw_retell_fn_log_insight.json", _workflow_log_insight()),
         ("openclaw_retell_fn_set_followup.json", _workflow_set_followup()),
+        ("openclaw_retell_fn_send_evidence_package.json", _workflow_send_evidence_package()),
         ("openclaw_retell_fn_mark_dnc.json", _workflow_mark_dnc()),
         ("openclaw_retell_fn_enrich_intel.json", _workflow_enrich_intel()),
         ("openclaw_feedback_nightly.json", _workflow_feedback_nightly()),
@@ -887,6 +1168,34 @@ def _enable_mcp(name: str) -> str:
     return "ok"
 
 
+def _activate_workflow(name: str) -> str:
+    workflow = get_workflow_by_name(name)
+    if not workflow:
+        return "not_found"
+    workflow_id = str(workflow.get("_id") or workflow.get("id") or "")
+    if not workflow_id:
+        return "failed:missing_workflow_id"
+    try:
+        force_reregister_workflow_webhooks(workflow_id)
+    except Exception as exc:  # noqa: BLE001
+        return f"failed:reregister:{type(exc).__name__}"
+    webhook_paths = list_webhook_paths(workflow)
+    if not webhook_paths:
+        return "ok:no_webhooks"
+    probe_payloads = {
+        "openclaw-retell-dispatch": {"source_filter": "__probe_noop__", "lead_limit": 0, "max_calls": 0},
+        "openclaw-nurture-run": {"source_filter": "__probe_noop__", "lead_limit": 0},
+    }
+    verify = verify_webhook_paths_registered(
+        base_webhook_url=n8n_webhook_base(),
+        paths=webhook_paths,
+        probe_payloads=probe_payloads,
+    )
+    if verify.get("status") != "ok":
+        return "failed:verify"
+    return "ok"
+
+
 def _upsert_feedback_cron_job() -> str:
     supabase_url = os.environ.get("SUPABASE_URL", "").rstrip("/")
     supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
@@ -926,6 +1235,7 @@ def main() -> int:
         status = _upsert_remote(wf)
         report["remote"][wf["name"]] = status
         report["remote"][f"{wf['name']}:mcp"] = _enable_mcp(wf["name"])
+        report["remote"][f"{wf['name']}:active"] = _activate_workflow(wf["name"])
     report["feedback_cron"] = _upsert_feedback_cron_job()
     print(json.dumps(report, ensure_ascii=True))
     return 0

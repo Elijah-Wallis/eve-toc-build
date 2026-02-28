@@ -29,6 +29,10 @@
             {
               "name": "SUPABASE_SERVICE_ROLE_KEY",
               "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "NURTURE_SMS_ENABLED",
+              "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
             }
           ],
           "number": [

@@ -29,6 +29,10 @@
             {
               "name": "SUPABASE_SERVICE_ROLE_KEY",
               "value": "={{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "NURTURE_SMS_ENABLED",
+              "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
             }
           ],
           "number": [
@@ -155,10 +159,10 @@
     },
     {
       "parameters": {
-        "functionCode": "return [{json:{status:'rejected',ok:false,reason_code:'already_dnc',reason_detail:'phone already in stoplist'}}];"
+        "functionCode": "return [{json:{status:'ok',already_dnc:true}}];"
       },
       "id": "8",
-      "name": "Reject Existing",
+      "name": "Skip Stoplist Upsert",
       "type": "n8n-nodes-base.function",
       "typeVersion": 2,
       "position": [
@@ -308,7 +312,7 @@
       "main": [
         [
           {
-            "node": "Reject Existing",
+            "node": "Skip Stoplist Upsert",
             "type": "main",
             "index": 0
           }
@@ -316,6 +320,17 @@
         [
           {
             "node": "Upsert Stoplist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip Stoplist Upsert": {
+      "main": [
+        [
+          {
+            "node": "Prepare DNC Event",
             "type": "main",
             "index": 0
           }

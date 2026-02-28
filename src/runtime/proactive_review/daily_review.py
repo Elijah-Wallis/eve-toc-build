@@ -279,6 +279,15 @@ def _build_candidates(findings: List[Finding], memory: ProactiveMemory) -> List[
         risk_val = {"A": 1.2, "B": 2.0, "C": 3.0}
         effort_val = {"low": 1.5, "medium": 2.5, "high": 3.0}
         tier = _risk_tier_for_finding(finding)
+        validation_ids = _validation_ids_for_category(finding.category)
+        proposal_kind = "code_patch"
+        execution_commands: List[str] = []
+        rollback_plan = "Revert by applying inverse patch (`git apply -R change.patch`) or resetting changed files."
+        if finding.category == "gate_coverage":
+            proposal_kind = "validate_only"
+            rollback_plan = "No patch rollback required. Re-run validation commands after remediation."
+            execution_commands = [f"python3 scripts/acceptance/run_acceptance.py --ids {','.join(validation_ids)}"]
+
         candidate = ProposalCandidate(
             proposal_id=proposal_id,
             title=finding.title,
@@ -290,9 +299,11 @@ def _build_candidates(findings: List[Finding], memory: ProactiveMemory) -> List[
             risk=risk_val.get(tier, 2.0),
             confidence=2.4 if finding.evidence else 1.8,
             testability=2.8 if finding.files else 2.0,
-            validation_ids=_validation_ids_for_category(finding.category),
-            rollback_plan="Revert by applying inverse patch (`git apply -R change.patch`) or resetting changed files.",
+            validation_ids=validation_ids,
+            rollback_plan=rollback_plan,
             blast_radius_files=finding.files,
+            proposal_kind=proposal_kind,
+            execution_commands=execution_commands,
             depends_on=[],
             requires_manual_review=(tier == "C"),
         )
@@ -665,6 +676,15 @@ def _run_review(args: argparse.Namespace) -> int:
         max_top = int(selected_execution.get("max_top_proposals", MAX_TOP_PROPOSALS[mode_profile]))
         top, backlog = _rank_with_dependencies(candidates, max_top)
         bundles = _bundle_recommendations(top)
+        actual_top = len(top)
+        proposal_shortfall_reason = ""
+        if actual_top < max_top:
+            if not candidates:
+                proposal_shortfall_reason = "no_findings_generated"
+            elif len(candidates) == 1:
+                proposal_shortfall_reason = "only_1_finding_generated"
+            else:
+                proposal_shortfall_reason = f"only_{len(candidates)}_findings_generated"
 
         profile_default_selftest = selected_execution.get("proposal_selftest_default", DEFAULT_SELFTEST[mode_profile])
         proposal_selftest = args.proposal_selftest or str(profile_default_selftest)
@@ -672,13 +692,15 @@ def _run_review(args: argparse.Namespace) -> int:
         today = datetime.now(CHICAGO_TZ).date().isoformat()
         reports_daily = reports_root / "daily"
         proposals_today = proposals_root / today
+        proposals_run = proposals_today / run_id
         proposals_today.mkdir(parents=True, exist_ok=True)
+        proposals_run.mkdir(parents=True, exist_ok=True)
 
         emitted: List[ProposalArtifact] = []
         if not args.heartbeat_only:
             engine = ProposalEngine(repo_root=repo_root, tmp_root=tmp_root / run_id, run_cmd=ctx.run_cmd)
             for item in top:
-                item_dir = proposals_today / _slugify(item.proposal_id)
+                item_dir = proposals_run / _slugify(item.proposal_id)
                 artifact = engine.emit_patch(
                     candidate=item,
                     output_dir=item_dir,
@@ -701,6 +723,7 @@ def _run_review(args: argparse.Namespace) -> int:
         if ctx.blocked_actions and run_status == "ok":
             run_status = "warning"
 
+        patches_emitted = sum(1 for artifact in emitted if artifact.proposal_kind == "code_patch" and artifact.patch_file)
         report_json: Dict[str, Any] = {
             "agent": AGENT_NAME,
             "run_id": run_id,
@@ -718,8 +741,12 @@ def _run_review(args: argparse.Namespace) -> int:
             "counts": {
                 "findings": len(findings),
                 "proposals_generated": len(top) + len(backlog),
-                "patches_emitted": len(emitted),
+                "patches_emitted": patches_emitted,
             },
+            "target_top_proposals": max_top,
+            "actual_top_proposals": actual_top,
+            "proposal_shortfall_reason": proposal_shortfall_reason,
+            "proposal_generation_policy": "no_minimum_actual_findings_only",
             "findings": [asdict(item) for item in findings],
             "top_proposals": [asdict(item) for item in top],
             "backlog_proposals": [asdict(item) for item in backlog],
@@ -760,7 +787,7 @@ def _run_review(args: argparse.Namespace) -> int:
         _write_json(latest_json, report_json)
 
         latest_proposals = proposals_root / "LATEST"
-        _copy_or_link_latest(latest_proposals, proposals_today)
+        _copy_or_link_latest(latest_proposals, proposals_run)
 
         tier_counts, category_counts = _proposal_counts(top + backlog)
 
@@ -781,7 +808,7 @@ def _run_review(args: argparse.Namespace) -> int:
             counts={
                 "findings": len(findings),
                 "proposals_generated": len(top) + len(backlog),
-                "patches_emitted": len(emitted),
+                "patches_emitted": patches_emitted,
             },
             proposal_counts_by_tier=tier_counts,
             proposal_counts_by_category=category_counts,
@@ -792,7 +819,7 @@ def _run_review(args: argparse.Namespace) -> int:
                 "report_json": str(report_json_path),
                 "latest_report_markdown": str(latest_md),
                 "latest_report_json": str(latest_json),
-                "proposals_dir": str(proposals_today),
+                "proposals_dir": str(proposals_run),
                 "latest_proposals": str(latest_proposals),
             },
             notes=notes,

@@ -1,4 +1,22 @@
-# eve-toc-build runtime
+# EVE system — eve-toc-build (monorepo)
+
+Single repository for the EVE/OpenClaw ecosystem: runtime, legal/policies, demos, and review tooling. Former standalone repos are consolidated here with history preserved (via `git subtree`).
+
+## Table of contents
+
+| Path | Description |
+|------|--------------|
+| **/** (root) | Core EVE/OpenClaw runtime — orchestrator, Telegram ingress, Supabase, n8n workflows |
+| [policies/](policies/) | Legal policies, Retell WS Brain, terms/privacy, orchestration (from **eve-legal-policies**) |
+| [demos/digital-twin/](demos/digital-twin/) | Digital Twin demonstration — KPI diagnostic, ontology demo (from **digital-twin-demonstration**) |
+| [reviews/toc-build/](reviews/toc-build/) | Retell WS Brain review/eval tooling, public handoff (from **eve-toc-build-review**) |
+| [docs/](docs/) | Cross-cutting documentation |
+
+**Archived repos:** The standalone GitHub repos `eve-legal-policies`, `digital-twin-demonstration`, and `eve-toc-build-review` are now archived; their contents live in this monorepo under the paths above.
+
+---
+
+## Core (runtime)
 
 This repo hosts the EVE/OpenClaw runtime loop, Telegram command ingress, Supabase-backed task durability, and n8n workflow dispatch.
 
@@ -6,6 +24,15 @@ This repo hosts the EVE/OpenClaw runtime loop, Telegram command ingress, Supabas
 - Gateway owner: `launchd` (`ai.openclaw.eve`).
 - Runtime/Telegram owners: `pm2` (`openclaw-runtime`, `openclaw-telegram`, optional `openclaw-worker`).
 - Telegram ingress owner: custom listener (`src/runtime/telegram_listener.py`).
+
+## Health dashboard (10 second glance)
+- Run:
+  - Fastest (from anywhere): `eve` (or `eve-dashboard`)
+  - If the repo moves: `EVE_TOC_BUILD_REPO=/path/to/eve-toc-build eve`
+  - One command (from repo root): `bash ${REPO_ROOT}/scripts/dashboard/run_dashboard.sh`
+  - Or from repo root: `python3 scripts/dashboard/health_server.py --open --quiet`
+- Open:
+  - `http://127.0.0.1:7331`
 
 ## Telegram EveBot commands
 - `/evebot_run`
@@ -49,6 +76,10 @@ This repo hosts the EVE/OpenClaw runtime loop, Telegram command ingress, Supabas
   - `python3 scripts/configure_retell_b2b_agent.py --agent-id \"$RETELL_AGENT_B2B_ID\" --prompt-version v6`
 - Roll back to V5:
   - `python3 scripts/configure_retell_b2b_agent.py --agent-id \"$RETELL_AGENT_B2B_ID\" --prompt-version v5`
+- Configure B2B with websocket + bidirectional settings:
+  - `python3 scripts/configure_retell_b2b_agent.py --agent-id \"$RETELL_AGENT_B2B_ID\" --prompt-version v6 --websocket-url \"$RETELL_LLM_WEBSOCKET_URL\" --bidirectional-mode on`
+- Configure B2C tools/KB + websocket settings:
+  - `python3 scripts/configure_retell_b2c_agent.py --agent-id \"$RETELL_AGENT_B2C_ID\" --websocket-url \"$RETELL_LLM_WEBSOCKET_URL\" --bidirectional-mode on`
 
 ## Security and workflow guards
 - Secret exposure scan:
@@ -83,15 +114,19 @@ This repo hosts the EVE/OpenClaw runtime loop, Telegram command ingress, Supabas
   - `bash ${REPO_ROOT}/scripts/prove_elijah_evebot_launchd_run.sh`
 - Open morning report + latest proposals:
   - `bash ${REPO_ROOT}/scripts/open_morning_report.sh`
-- Apply one proposal patch manually:
-  - `bash ${REPO_ROOT}/scripts/apply_proposal.sh <proposal_dir>`
+- Apply one proposal manually:
+  - `code_patch` proposals include `change.patch`:
+    - `bash ${REPO_ROOT}/scripts/apply_proposal.sh <proposal_dir>`
+  - `validate_only` proposals do not include a patch; they include `meta.json.execution_commands`:
+    - `bash ${REPO_ROOT}/scripts/apply_proposal.sh <proposal_dir>` (prints runbook commands, exits 0)
+    - `bash ${REPO_ROOT}/scripts/apply_proposal.sh --run <proposal_dir>` (executes commands)
 - Proactive acceptance gates:
   - `python3 scripts/acceptance/run_acceptance.py --ids AT-PRO-001,AT-PRO-002,AT-PRO-003,AT-PRO-004`
 - Acceptance trends location:
   - `${OPENCLAW_STATE_DIR:-$HOME/.openclaw-eve}/acceptance/trends/last_7.json`
 
 ## Notes
-- Default n8n binding mode for current Cloud policy is `OPENCLAW_N8N_BINDING_MODE=literal`.
+- n8n secret policy: workflows must not contain literal tokens. Use env/vars bindings (e.g. `={{$env.KEY}}` / `={{$vars.KEY}}`) and keep `OPENCLAW_N8N_BINDING_MODE` set to `env` (or `vars`).
 - Runtime stability envelope is controlled with:
   - `OPENCLAW_RUNTIME_STABILITY_ENVELOPE`
   - `OPENCLAW_STEP_MAX_RETRIES`
@@ -110,3 +145,16 @@ This repo hosts the EVE/OpenClaw runtime loop, Telegram command ingress, Supabas
   - `python3 scripts/ci/lint_no_absolute_paths.py`
 - Docker-backed verification prerequisites:
   - Docker daemon running for `AT-018B`, `AT-034B`, `AT-035B`
+
+## World-Class Ops Context (Path + Dependency Truth)
+- Canonical path runbook:
+  - `Business_Code/world_class_ops_path_context.md`
+- Deterministic preflight check:
+  - `bash scripts/ops/worldclass_preflight.sh`
+
+This preflight encodes the common failure points and checks:
+- Env source and required key presence (`${OPENCLAW_STATE_DIR%/*}/.openclaw_env`)
+- Cloudflare token presence (`${OPENCLAW_STATE_DIR}/cloudflare.env`)
+- Supabase transcript schema availability (`call_transcripts` with `recording_url`)
+- Websocket hostname DNS resolvability
+- Local gateway health (`127.0.0.1:19001`)

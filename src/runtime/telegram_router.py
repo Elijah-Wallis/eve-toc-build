@@ -6,6 +6,7 @@ import shlex
 import subprocess
 import sys
 import uuid
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -125,6 +126,9 @@ class TelegramRouter:
                 return {"status": "ok", "summary": self._compact_campaign_summary(summary)}
 
             if cmd == "/evebot_run":
+                plist_path = Path.home() / "Library" / "LaunchAgents" / f"{self.DAILY_LABEL}.plist"
+                if not plist_path.exists():
+                    return "Daily run not installed. Run: install_elijah_evebot_launchd.sh"
                 result = self._run_allowed_command(
                     ["launchctl", "kickstart", "-k", f"gui/{os.getuid()}/{self.DAILY_LABEL}"],
                     timeout_s=5,
@@ -132,8 +136,8 @@ class TelegramRouter:
                 if result["ok"]:
                     return "Started daily run. Check /evebot_status in ~30–60s."
                 return (
-                    f"Failed to start daily run (exit {result['code']}): "
-                    f"{self._truncate_error(result.get('stderr') or result.get('error') or '')}"
+                    "Daily run is installed but not loaded. Run installer again to bootstrap it: "
+                    "install_elijah_evebot_launchd.sh"
                 )
 
             if cmd == "/evebot_deep":
@@ -233,8 +237,24 @@ class TelegramRouter:
                 except Exception as exc:  # noqa: BLE001
                     return f"Failed to read latest report: {self._truncate_error(str(exc))}"
 
+                hb_path = state_dir / "heartbeat" / "elijah_evebot_heartbeat.json"
+                hb: Dict[str, Any] = {}
+                if hb_path.exists():
+                    try:
+                        hb = json.loads(hb_path.read_text(encoding="utf-8"))
+                    except Exception:
+                        hb = {}
+
+                hb_run_id = str(hb.get("run_id") or "")
+                hb_finished_at = str(hb.get("finished_at") or "")
+                hb_repo_commit = str(hb.get("repo_commit") or "")
+                hb_dirty = bool(hb.get("dirty_worktree")) if "dirty_worktree" in hb else False
+
                 top = payload.get("top_proposals") if isinstance(payload.get("top_proposals"), list) else []
                 top3 = top[:3]
+                shortfall_reason = str(payload.get("proposal_shortfall_reason") or "").strip()
+                target_top = int(payload.get("target_top_proposals") or 0)
+                actual_top = int(payload.get("actual_top_proposals") or len(top))
                 blockers: List[str] = []
                 for item in payload.get("blocked_actions") or []:
                     blockers.append(str(item))
@@ -265,7 +285,37 @@ class TelegramRouter:
                     if isinstance(item, dict) and item.get("proposal_id"):
                         add_with_deps(str(item.get("proposal_id")))
 
-                lines = ["Top 3 proposals:"]
+                lines: List[str] = []
+
+                # Staleness check: warn if finished_at is missing or older than 6 hours.
+                stale_warning = ""
+                if hb_finished_at:
+                    try:
+                        finished = datetime.fromisoformat(hb_finished_at.replace("Z", "+00:00"))
+                        if finished.tzinfo is None:
+                            finished = finished.replace(tzinfo=timezone.utc)
+                        if datetime.now(timezone.utc) - finished > timedelta(hours=6):
+                            stale_warning = "WARNING: latest report is stale; run /evebot_run"
+                    except Exception:
+                        stale_warning = "WARNING: latest report timestamp unreadable; run /evebot_run"
+                else:
+                    stale_warning = "WARNING: no heartbeat timestamp found; run /evebot_run"
+
+                if stale_warning:
+                    lines.append(stale_warning)
+                if hb_run_id:
+                    lines.append(f"run_id: {hb_run_id}")
+                if hb_finished_at:
+                    lines.append(f"finished_at: {hb_finished_at}")
+                if hb_repo_commit:
+                    lines.append(f"repo_commit: {hb_repo_commit}")
+                lines.append(f"dirty_worktree: {str(hb_dirty).lower()}")
+                if target_top:
+                    lines.append(f"top_proposals: {actual_top}/{target_top}")
+
+                lines.append(f"Top proposals (showing up to 3): {len(top)} available")
+                if len(top) < 3 and shortfall_reason:
+                    lines.append(f"Shortfall reason: {shortfall_reason}")
                 if top3:
                     for idx, item in enumerate(top3, start=1):
                         pid = str(item.get("proposal_id") or f"proposal-{idx}")
@@ -273,6 +323,15 @@ class TelegramRouter:
                         why = str(item.get("why") or "")[:120]
                         lines.append(f"{idx}. {pid} — {title}")
                         lines.append(f"   why: {why}")
+                        proposal_kind = str(item.get("proposal_kind") or "")
+                        if proposal_kind:
+                            lines.append(f"   proposal_kind: {proposal_kind}")
+                        if proposal_kind == "validate_only":
+                            cmds = item.get("execution_commands") if isinstance(item.get("execution_commands"), list) else []
+                            if cmds:
+                                lines.append("   commands:")
+                                for cmd in cmds[:5]:
+                                    lines.append(f"   - {str(cmd)}")
                 else:
                     lines.append("- none")
 
@@ -331,6 +390,20 @@ class TelegramRouter:
         weekly_args = ["launchctl", "kickstart", "-k", f"gui/{uid}/{self.WEEKLY_LABEL}"]
         if args == daily_args or args == weekly_args:
             return True, ""
+
+        run_tail = [
+            "-m",
+            "src.runtime.proactive_review.daily_review",
+            "--mode",
+            "offline",
+            "--profile",
+            "fast",
+            "--once",
+        ]
+        if len(args) == 1 + len(run_tail) and args[1:] == run_tail:
+            if args[0] == sys.executable or args[0].endswith("python3"):
+                return True, ""
+            return False, "daily review interpreter not allowed"
 
         heartbeat_tail = [
             "-m",

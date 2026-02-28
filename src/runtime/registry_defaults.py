@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-from urllib.parse import urlparse
 from datetime import datetime, timezone
 from typing import Any, Dict
 
@@ -9,53 +8,30 @@ import requests
 
 from .task_registry import TaskHandler, TaskRegistry
 from .medspa_launch import MedspaLaunch
-
-
-def _is_http_url(value: str) -> bool:
-    parsed = urlparse(value)
-    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
-
-
-def _webhook_candidates(base: str, workflow: str) -> list[str]:
-    workflow_path = workflow.lstrip("/")
-    base_clean = base.rstrip("/")
-
-    if _is_http_url(workflow):
-        return [workflow]
-
-    if "{workflow}" in base_clean:
-        return [base_clean.format(workflow=workflow_path)]
-
-    candidates = [f"{base_clean}/{workflow_path}"]
-    if "/webhook" not in base_clean:
-        candidates.append(f"{base_clean}/webhook/{workflow_path}")
-        candidates.append(f"{base_clean}/webhook-test/{workflow_path}")
-    return candidates
+from .n8n_webhooks import post_with_auto_heal
+from .postcall_reconciler import PostcallReconciler
+from .runtime_paths import state_path
 
 
 def handler_n8n_trigger(payload: Dict[str, Any]) -> Dict[str, Any]:
     base = os.environ.get("N8N_PUBLIC_WEBHOOK_BASE", "")
+    n8n_api_base = os.environ.get("N8N_API_BASE", "https://elijah-wallis.app.n8n.cloud/api/v1")
+    n8n_api_key = os.environ.get("N8N_API_KEY", "")
     workflow = payload.get("workflow")
     if not base or not workflow:
         raise RuntimeError("N8N_PUBLIC_WEBHOOK_BASE and payload.workflow are required")
-    errors = []
-    for url in _webhook_candidates(base, str(workflow)):
-        try:
-            resp = requests.post(url, json=payload.get("data", {}), timeout=30)
-            resp.raise_for_status()
-            try:
-                return resp.json()
-            except ValueError:
-                return {"response": resp.text}
-        except requests.HTTPError as exc:
-            if exc.response is not None and exc.response.status_code == 404:
-                errors.append(f"404:{url}")
-                continue
-            raise
-        except requests.RequestException as exc:
-            errors.append(f"{type(exc).__name__}:{url}")
-            continue
-    raise RuntimeError(f"n8n webhook failed for workflow={workflow}; attempts={errors}")
+    result = post_with_auto_heal(
+        webhook_base=base,
+        workflow_path=str(workflow),
+        data=payload.get("data", {}),
+        timeout=30,
+        n8n_api_base=n8n_api_base,
+        n8n_api_key=n8n_api_key,
+    )
+    status_code = int(result.get("status_code") or 0)
+    if status_code >= 400:
+        raise RuntimeError(f"n8n webhook failed for workflow={workflow}; status={status_code}; url={result.get('url')}")
+    return result.get("body") if isinstance(result.get("body"), dict) else {"response": result.get("body")}
 
 
 def handler_reports_daily(_: Dict[str, Any]) -> Dict[str, Any]:
@@ -93,7 +69,7 @@ def handler_graph_run(payload: Dict[str, Any]) -> Dict[str, Any]:
     graph = payload.get("graph", {})
     context = payload.get("context", {})
     thread_name = payload.get("thread_name", "graph")
-    ledger_path = os.path.expanduser("~/.openclaw-eve/omega/ledger.jsonl")
+    ledger_path = str(state_path("omega", "ledger.jsonl"))
     return run_graph(graph, context, thread_name, ledger_path)
 
 
@@ -102,12 +78,27 @@ def handler_medspa_launch(payload: Dict[str, Any]) -> Dict[str, Any]:
     return launcher.launch(payload)
 
 
+def handler_medspa_ramp(payload: Dict[str, Any]) -> Dict[str, Any]:
+    launcher = MedspaLaunch()
+    return launcher.approve_ramp(payload)
+
+
+def handler_retell_postcall_reconcile(payload: Dict[str, Any]) -> Dict[str, Any]:
+    reconciler = PostcallReconciler()
+    return reconciler.reconcile(payload)
+
+
 def build_registry() -> TaskRegistry:
     registry = TaskRegistry()
     registry.register("n8n.trigger", TaskHandler("n8n.trigger", handler_n8n_trigger))
     registry.register("reports.daily", TaskHandler("reports.daily", handler_reports_daily))
     registry.register("graph.run", TaskHandler("graph.run", handler_graph_run))
     registry.register("medspa.launch", TaskHandler("medspa.launch", handler_medspa_launch))
+    registry.register("medspa.ramp", TaskHandler("medspa.ramp", handler_medspa_ramp))
+    registry.register(
+        "retell.postcall.reconcile",
+        TaskHandler("retell.postcall.reconcile", handler_retell_postcall_reconcile),
+    )
     return registry
 
 
@@ -117,4 +108,6 @@ def handler_map() -> Dict[str, Any]:
         "reports.daily": handler_reports_daily,
         "graph.run": handler_graph_run,
         "medspa.launch": handler_medspa_launch,
+        "medspa.ramp": handler_medspa_ramp,
+        "retell.postcall.reconcile": handler_retell_postcall_reconcile,
     }

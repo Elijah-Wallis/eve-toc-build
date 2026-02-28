@@ -24,7 +24,6 @@ VAR_SEGMENT_PATTERNS = [
 RESERVED_ARG_NAMES = {"default", "function", "var", "const", "class", "new"}
 SENSITIVE_HEADERS = {"authorization", "apikey", "x-api-key", "x-n8n-api-key"}
 SENSITIVE_KEYS = {"token", "secret", "password", "apikey", "api_key", "authorization"}
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
@@ -486,7 +485,7 @@ python3 client.py
         "method": spec.method,
         "base_url": spec.base_url,
         "path_template": spec.path_template,
-        "package_dir": str(package_dir),
+        "package_dir": _repo_placeholder(package_dir),
         "sample_args": sample_args,
         "env_keys": env_keys,
         "samples": spec.samples,
@@ -584,8 +583,6 @@ def main() -> int:
                 child.unlink()
     output_root.mkdir(parents=True, exist_ok=True)
     entries = [write_package(spec, output_root) for spec in specs]
-    for entry in entries:
-        entry["package_dir"] = _state_placeholder(Path(entry["package_dir"]))
     update_skills(Path(args.skills_file).expanduser().resolve(), entries)
     manifest = {
         "traffic_file": _state_placeholder(traffic_file),

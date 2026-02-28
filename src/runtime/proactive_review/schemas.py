@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Literal, Optional
 
 RiskTier = Literal["A", "B", "C"]
 RunStatus = Literal["ok", "warning", "error"]
+ProposalKind = Literal["code_patch", "validate_only"]
 
 
 @dataclass
@@ -34,6 +35,8 @@ class ProposalCandidate:
     validation_ids: List[str]
     rollback_plan: str
     blast_radius_files: List[str]
+    proposal_kind: ProposalKind = "code_patch"
+    execution_commands: List[str] = field(default_factory=list)
     depends_on: List[str] = field(default_factory=list)
     requires_manual_review: bool = False
     quality_label: str = "READY"
@@ -46,10 +49,12 @@ class ProposalCandidate:
 class ProposalArtifact:
     proposal_id: str
     proposal_dir: str
-    patch_file: str
     meta_file: str
     markdown_file: str
-    apply_script: str
+    proposal_kind: ProposalKind = "code_patch"
+    execution_commands: List[str] = field(default_factory=list)
+    patch_file: str = ""
+    apply_script: str = ""
 
 
 @dataclass

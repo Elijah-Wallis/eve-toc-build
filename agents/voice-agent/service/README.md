@@ -151,14 +151,14 @@ Optional env flags:
 Cloudflare production WebSocket checklist (for calling from Retell):
 
 - DNS and tunnel alignment:
-  - `BRAIN_WSS_BASE_URL` should point at a stable, resolvable host (example: `wss://ws.evesystems.org/llm-websocket`), not a temporary `*.trycloudflare.com` name.
+  - `BRAIN_WSS_BASE_URL` should point at a stable, resolvable host (example: `wss://voice-agent.evesystems.org/llm-websocket`).
   - The host must resolve to a configured Cloudflare tunnel ingress and route to the local port where the brain is actually running.
 - For the current workspace:
-  - Cloudflare currently has `ws.evesystems.org -> http://127.0.0.1:8099` tunnel ingress.
+- Cloudflare currently has `voice-agent.evesystems.org -> http://127.0.0.1:8099` tunnel ingress (legacy `ws.evesystems.org` is also retained as fallback).
   - Run the brain on port `8099` when receiving calls via this stable host.
   - `scripts/cloudflare_verify.sh` validates token + tunnel ingress + DNS.
 - Practical zero-downtime checks before a call:
-  1. Run `./scripts/cloudflare_verify.sh` and confirm `dns_ok=True` for `ws.evesystems.org`.
+  1. Run `./scripts/cloudflare_verify.sh` and confirm `dns_ok=True` for `voice-agent.evesystems.org`.
   2. Confirm brain is reachable: `nc -vz 127.0.0.1 8099`.
   3. Confirm agent websocket URL matches env:
      ```bash

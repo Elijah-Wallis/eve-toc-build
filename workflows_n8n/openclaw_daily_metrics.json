@@ -116,6 +116,10 @@
             {
               "name": "SUPABASE_URL",
               "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "NURTURE_SMS_ENABLED",
+              "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
             }
           ],
           "number": [],

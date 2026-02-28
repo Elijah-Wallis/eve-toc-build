@@ -1,0 +1,9 @@
+{
+  "required_top_level_keys": [
+    "overall",
+    "task_loop",
+    "last_task",
+    "supabase",
+    "n8n"
+  ]
+}

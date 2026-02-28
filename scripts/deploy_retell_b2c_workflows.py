@@ -9,6 +9,14 @@ from typing import Any, Dict, List, Tuple
 
 import requests
 
+from n8n_workflow_lifecycle import (
+    force_reregister_workflow_webhooks,
+    get_workflow_by_name,
+    list_webhook_paths,
+    n8n_webhook_base,
+    verify_webhook_paths_registered,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS_DIR = ROOT / "workflows_n8n"
@@ -729,18 +737,30 @@ def _enable_mcp(name: str) -> str:
 
 
 def _activate_workflow(name: str) -> str:
-    rows = _list_remote_workflows()
-    existing = next((r for r in rows if r.get("name") == name), None)
-    if not existing:
+    workflow = get_workflow_by_name(name)
+    if not workflow:
         return "not_found"
-    wid = existing["id"]
-    detail = requests.get(f"{_n8n_base()}/workflows/{wid}", headers=_n8n_headers(), timeout=30).json()
-    data = detail.get("data", detail)
-    if bool(data.get("active")):
-        return "already_active"
-    resp = requests.post(f"{_n8n_base()}/workflows/{wid}/activate", headers=_n8n_headers(), timeout=30)
-    if resp.status_code >= 400:
-        return f"failed:{resp.status_code}"
+    workflow_id = str(workflow.get("_id") or workflow.get("id") or "")
+    if not workflow_id:
+        return "failed:missing_workflow_id"
+    try:
+        force_reregister_workflow_webhooks(workflow_id)
+    except Exception as exc:  # noqa: BLE001
+        return f"failed:reregister:{type(exc).__name__}"
+    webhook_paths = list_webhook_paths(workflow)
+    if not webhook_paths:
+        return "ok:no_webhooks"
+    probe_payloads = {
+        "openclaw-retell-dispatch": {"source_filter": "__probe_noop__", "lead_limit": 0, "max_calls": 0},
+        "openclaw-nurture-run": {"source_filter": "__probe_noop__", "lead_limit": 0},
+    }
+    verify = verify_webhook_paths_registered(
+        base_webhook_url=n8n_webhook_base(),
+        paths=webhook_paths,
+        probe_payloads=probe_payloads,
+    )
+    if verify.get("status") != "ok":
+        return "failed:verify"
     return "ok"
 
 
@@ -782,9 +802,9 @@ def main() -> int:
         report["local_files"].append(str(out))
         status = _upsert_remote(wf)
         report["remote"][wf["name"]] = status
-        report["remote"][f"{wf['name']}:active"] = _activate_workflow(wf["name"])
         if mcp_enable:
             report["remote"][f"{wf['name']}:mcp"] = _enable_mcp(wf["name"])
+        report["remote"][f"{wf['name']}:active"] = _activate_workflow(wf["name"])
     report["showrate_cron"] = _upsert_showrate_cron_job()
     print(json.dumps(report, ensure_ascii=True))
     return 0

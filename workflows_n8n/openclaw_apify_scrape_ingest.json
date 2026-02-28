@@ -12,6 +12,7 @@
       "id": "1",
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
+      "webhookId": "9E077D2F480B2ED11A761C6F42C74122",
       "typeVersion": 1,
       "position": [
         -200,
@@ -121,6 +122,10 @@
             {
               "name": "SUPABASE_URL",
               "value": "={{$env.SUPABASE_URL}}"
+            },
+            {
+              "name": "NURTURE_SMS_ENABLED",
+              "value": "={{$env.NURTURE_SMS_ENABLED || '0'}}"
             }
           ],
           "number": [],

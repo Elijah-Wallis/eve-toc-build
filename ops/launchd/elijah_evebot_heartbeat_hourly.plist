@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>__LABEL__</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>__PYTHON_BIN__</string>
+      <string>-m</string>
+      <string>src.runtime.proactive_review.daily_review</string>
+      <string>--mode</string>
+      <string>offline</string>
+      <string>--profile</string>
+      <string>fast</string>
+      <string>--heartbeat-only</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>REPO_ROOT</key>
+      <string>__REPO_ROOT__</string>
+      <key>OPENCLAW_STATE_DIR</key>
+      <string>__OPENCLAW_STATE_DIR__</string>
+      <key>TZ</key>
+      <string>America/Chicago</string>
+    </dict>
+    <key>WorkingDirectory</key>
+    <string>__REPO_ROOT__</string>
+    <key>StandardOutPath</key>
+    <string>__OPENCLAW_STATE_DIR__/logs/elijah_evebot_heartbeat_hourly.log</string>
+    <key>StandardErrorPath</key>
+    <string>__OPENCLAW_STATE_DIR__/logs/elijah_evebot_heartbeat_hourly.log</string>
+    <key>RunAtLoad</key>
+    <false/>
+    <key>StartInterval</key>
+    <integer>3600</integer>
+  </dict>
+</plist>

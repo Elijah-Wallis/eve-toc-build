@@ -44,12 +44,12 @@ flowchart LR
 
 ## Key Configs
 
-- Runtime config: `/Users/elijah/.openclaw-eve/openclaw.json`
-- Secrets: `/Users/elijah/.openclaw_env`
+- Runtime config: `${OPENCLAW_STATE_DIR}/openclaw.json`
+- Secrets: `${OPENCLAW_ENV_FILE}`
 - MCP endpoints configured via environment (e.g., `N8N_MCP_URL`)
-- n8n workflows: `/Users/elijah/Developer/eve-toc-build/workflows_n8n/`
-- Supabase schema: `/Users/elijah/Developer/eve-toc-build/supabase/schema.sql`
-- Supabase runtime upgrade: `/Users/elijah/Developer/eve-toc-build/supabase/upgrade_runtime.sql`
+- n8n workflows: `${REPO_ROOT}/workflows_n8n/`
+- Supabase schema: `${REPO_ROOT}/supabase/schema.sql`
+- Supabase runtime upgrade: `${REPO_ROOT}/supabase/upgrade_runtime.sql`
 
 ## Hard Constraints
 

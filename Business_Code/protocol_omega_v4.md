@@ -60,7 +60,7 @@ python omega_factory.py \
   --risk B \
   --openapi /path/to/openapi.yaml \
   --test-event /path/to/test_event.json \
-  --output-dir /Users/elijah/Developer/eve-toc-build/.agents/skills/generated
+  --output-dir ${REPO_ROOT}/.agents/skills/generated
 ```
 
 ## Lazarus test (force_drift)

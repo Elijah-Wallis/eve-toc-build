@@ -6,6 +6,7 @@ services:
       - N8N_MCP_ENABLED=true
       - N8N_HOST=0.0.0.0
       - N8N_PROTOCOL=http
+      - N8N_USER_FOLDER=/var/lib/n8n
       - GENERIC_TIMEZONE=America/New_York
       - APIFY_API_TOKEN=${APIFY_API_TOKEN}
       - APIFY_ACTOR_ID=${APIFY_ACTOR_ID}
@@ -30,7 +31,7 @@ services:
     ports:
       - "5678:5678"
     volumes:
-      - n8n_data:/home/node/.n8n
+      - n8n_data:/var/lib/n8n
       - ../workflows_n8n:/import/workflows:ro
     restart: unless-stopped
 

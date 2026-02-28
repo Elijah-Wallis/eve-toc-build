@@ -1,66 +1,63 @@
-# Stack And Deployment Decision (PM2 First, Docker Optional)
+# Stack Deployment Policy (Single-Owner Ops)
 
-## Decision
-Default runtime is host-level `pm2` for:
-- `openclaw` (gateway)
-- `openclaw-runtime` (task loop + cron + queue bridge)
-- `openclaw-telegram` (Telegram listener)
+## Ownership model
+- `launchd` owns OpenClaw gateway (`ai.openclaw.eve` on port `19001`).
+- `pm2` owns runtime workers and custom Telegram listener (`openclaw-runtime`, `openclaw-telegram`, optional `openclaw-worker`).
+- Gateway Telegram plugin must stay disabled when custom listener is active.
 
-Docker is kept as an optional, reproducible harness for:
-- local `n8n` (if you ever want cloud independence)
-- portable bring-up on a new machine
+## Why
+- Prevents split-brain supervision (`launchd` vs `pm2`) and gateway restart storms.
+- Prevents Telegram `getUpdates` 409 conflicts from multiple pollers.
+- Keeps worker scale-out independent from gateway lifecycle.
 
-## Why (Tradeoffs)
-PM2-first:
-- Lowest RAM and background overhead for a cloud stack (Supabase + cloud n8n).
-- Fast iteration and simple debugging (native logs, native filesystem).
-- No Docker Desktop daemon, no container image churn.
+## Standard status checks
+1. `launchctl list | rg ai.openclaw`
+2. `pm2 list`
+3. `python3 scripts/ops/check_telegram_conflicts.py --window-minutes 30`
+4. `python3 scripts/ops/runtime_slo_check.py --window-minutes 60`
+5. `python3 scripts/ops/secret_exposure_scan.py`
+6. `python3 scripts/ops/v6_canary_scorecard.py --hours 24 --source-regex '^tx-medspa-' --min-human-answered 40`
 
-Docker optional:
-- Reproducibility and portability: new machine setup is predictable.
-- Isolation: avoids dependency conflicts on the host.
-- Best when you want local `n8n` (instead of cloud) or a self-contained dev environment.
+## Standard restart flow
+1. Gateway:
+   - `launchctl kickstart -k gui/$(id -u)/ai.openclaw.eve`
+2. Runtime + listener:
+   - `pm2 restart openclaw-runtime openclaw-telegram --update-env`
+3. Optional workers:
+   - `pm2 start ecosystem.config.js --only openclaw-worker`
+4. Secret argv scrub (no key rotation):
+   - `bash scripts/ops/scrub_secret_argv_processes.sh`
 
-## Current Stack Reality
-- Supabase is cloud. You do not need local Postgres.
-- n8n is cloud. You do not need to run local n8n.
-- OpenClaw + runtime loop are already running under PM2.
+## Worker split rollout
+- Default: `OPENCLAW_RUNTIME_ROLE=all` on `openclaw-runtime`.
+- Scale-out mode:
+  - Set `openclaw-runtime` to `scheduler`.
+  - Start one or more `openclaw-worker` processes with `OPENCLAW_RUNTIME_ROLE=worker`.
+  - Validate duplicate prevention before increasing worker count.
 
-Conclusion: running Docker continuously is not required and is usually wasted overhead for this setup.
+## Retell Prompt Rollout
+- Promote V6 prompt on B2B agent:
+  - `python3 scripts/configure_retell_b2b_agent.py --agent-id \"$RETELL_AGENT_B2B_ID\" --prompt-version v6`
+- Roll back to V5 prompt:
+  - `python3 scripts/configure_retell_b2b_agent.py --agent-id \"$RETELL_AGENT_B2B_ID\" --prompt-version v5`
+- Configure B2B with websocket + bidirectional:
+  - `python3 scripts/configure_retell_b2b_agent.py --agent-id \"$RETELL_AGENT_B2B_ID\" --prompt-version v6 --websocket-url \"$RETELL_LLM_WEBSOCKET_URL\" --bidirectional-mode on`
+- Configure B2C with expanded tool stack + websocket:
+  - `python3 scripts/configure_retell_b2c_agent.py --agent-id \"$RETELL_AGENT_B2C_ID\" --websocket-url \"$RETELL_LLM_WEBSOCKET_URL\" --bidirectional-mode on`
 
-## How To Operate (Minimal)
-Check status:
-- `pm2 list`
-- `pm2 logs openclaw-runtime --lines 50`
-- `pm2 logs openclaw-telegram --lines 50`
+## Rollback
+- Runtime split rollback:
+  - `pm2 delete openclaw-worker`
+  - set `OPENCLAW_RUNTIME_ROLE=all` for `openclaw-runtime`, then restart.
+- Supervisor rollback:
+  - use `scripts/ops/converge_gateway_and_ingress_owner.sh --rollback`.
 
-Restart all:
-- `pm2 restart openclaw openclaw-runtime openclaw-telegram --update-env`
+## Docker note
+- Docker remains optional for local n8n experimentation only.
+- Production runtime authority for this host is `launchd + pm2`, not Docker.
 
-## Reclaim Resources (Docker Desktop)
-If you are not using Docker for this stack, you can stop it to reclaim RAM, CPU, and background I/O.
-
-Checklist:
-1. Stop any running containers: `docker ps` then `docker stop <id>`
-2. Stop Docker Desktop (macOS UI): Docker icon in menu bar -> Quit Docker Desktop
-3. Prevent auto-start (macOS): System Settings -> General -> Login Items -> disable Docker
-4. Verify nothing is running: `docker ps` should be empty (or Docker not running)
-5. Optional cleanup: `docker system prune` (removes unused images/volumes)
-
-Note: If you later decide to run local `n8n` via `docker/compose.yaml`, you will need Docker Desktop running again.
-
-## When To Use Docker
-Use Docker only if one of these becomes true:
-- You want local `n8n` (privacy, reliability, latency, or no cloud dependency).
-- You want a single-command bring-up on a new machine.
-- You hit host dependency conflicts and want isolation.
-
-Docker entrypoint (optional):
-- Compose file: `docker/compose.yaml`
-
-## What Docker Does Here
-`docker/compose.yaml` defines two services:
-- `n8n`: local n8n with workflow import volume
-- `openclaw`: containerized OpenClaw gateway that talks to local n8n via `http://n8n:5678/mcp`
-
-If you do not run `docker compose up`, none of this consumes RAM/CPU.
+## CPOM Operational Guardrails (MedSpa B2B)
+- Scope is administrative workflow and revenue-ops support, not clinical care.
+- Prompts, tools, and workflows must not generate diagnosis/treatment/prescribing content.
+- Any clinical question must be deferred to licensed providers/medical leadership.
+- Public legal pages, runtime prompt artifacts, and KB content must maintain the same non-clinical boundary language.
