@@ -390,6 +390,7 @@ class MedspaLaunch:
                 "reason": "blocked_by_n8n_env_expression_runtime",
             }
         launch_webhook_probe = self._probe_launch_webhook_registry()
+        custom_llm_probe = self._probe_custom_llm_health()
         blockers = []
         if (sup.status_code != 200) or (n8n_status.get("status") != "ok"):
             blockers.append("core_connectivity")
@@ -413,6 +414,7 @@ class MedspaLaunch:
             "secret_hygiene": secret_guard,
             "guardrail_probe": guardrail_probe,
             "launch_webhook_probe": launch_webhook_probe,
+            "custom_llm_probe": custom_llm_probe,
             "twilio_sms": twilio_sms,
             "n8n_webhook_base": self.n8n_webhook_base,
         }
@@ -609,6 +611,27 @@ class MedspaLaunch:
         if failures:
             return {"status": "error", "failures": failures, "results": results}
         return {"status": "ok", "results": results}
+
+    def _probe_custom_llm_health(self) -> Dict[str, Any]:
+        """Optional: probe custom LLM WebSocket origin health (for BYOM). Not a blocker; fallback to Retell-hosted if down."""
+        ws_url = os.environ.get("RETELL_LLM_WEBSOCKET_URL", "").strip()
+        health_url = os.environ.get("CUSTOM_LLM_HEALTH_URL", "").strip()
+        if not health_url and ws_url:
+            base = ws_url.replace("wss://", "https://").replace("ws://", "http://").rstrip("/")
+            health_url = f"{base}/healthz" if base else ""
+        if not health_url:
+            return {"status": "skipped", "reason": "no_custom_llm_url"}
+        try:
+            resp = requests.get(health_url, timeout=10)
+            ok = resp.status_code == 200 and isinstance(resp.json(), dict) and resp.json().get("ok") is True
+            return {
+                "status": "ok" if ok else "error",
+                "url": health_url,
+                "status_code": resp.status_code,
+                "custom_llm_ready": resp.json().get("custom_llm_ready") if resp.status_code == 200 else None,
+            }
+        except Exception as exc:
+            return {"status": "error", "url": health_url, "error": str(exc)}
 
     def _probe_launch_webhook_registry(self) -> Dict[str, Any]:
         probes = [

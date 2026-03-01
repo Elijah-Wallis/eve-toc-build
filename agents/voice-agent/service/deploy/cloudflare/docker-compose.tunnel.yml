@@ -1,3 +1,4 @@
+# Production: 20 concurrent custom LLM calls. Scale replicas for more.
 services:
   voice-agent:
     build:
@@ -8,6 +9,13 @@ services:
     expose:
       - "8080"
     restart: unless-stopped
+    # Optional: resource limits for 20 concurrent WebSocket + LLM buffers
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
 
   cloudflared:
     image: cloudflare/cloudflared:latest

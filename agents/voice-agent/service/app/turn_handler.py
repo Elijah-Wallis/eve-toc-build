@@ -11,6 +11,7 @@ from .clock import Clock
 from .config import BrainConfig
 from .dialogue_policy import DialogueAction, ToolRequest
 from .fact_guard import FactTemplate, validate_rewrite
+from .b2b_v133_prompt import load_b2b_v133_full_prompt
 from .eve_prompt import load_eve_v7_system_prompt
 from .llm_client import LLMClient
 from .metrics import Metrics, VIC
@@ -104,6 +105,11 @@ def _b2b_eve_placeholders(config: BrainConfig) -> dict[str, str]:
         "evidence_type": config.b2b_evidence_type,
         "emr_system": config.b2b_emr_system,
         "contact_number": config.b2b_contact_number,
+        # V13.3 variable_safety: avoid literal {{...}} in prompt; use safe fallbacks when missing.
+        "current_promo_service": getattr(config, "b2b_promo_service", None) or "your current promotion",
+        "promo_service": getattr(config, "b2b_promo_service", None) or "your current promotion",
+        "promo_details": getattr(config, "b2b_promo_details", None) or "your featured service",
+        "opening_time": getattr(config, "b2b_opening_time", None) or "during your listed hours",
     }
 
 
@@ -458,7 +464,36 @@ class TurnHandler:
         return ft.render()
 
     def _build_llm_prompt(self, *, tool_records: list[ToolCallRecord]) -> str:
-        if self._config.conversation_profile == "b2b" and self._config.eve_v7_enabled:
+        # Full V13.3 prompt (b2b_workflow.yaml): use when path set for conversion parity with Retell.
+        if (
+            self._config.conversation_profile == "b2b"
+            and (self._config.b2b_v133_prompt_path or "").strip()
+        ):
+            try:
+                system = load_b2b_v133_full_prompt(
+                    self._config.b2b_v133_prompt_path.strip(),
+                    placeholders=_b2b_eve_placeholders(self._config),
+                )
+            except Exception:
+                if self._config.eve_v7_enabled:
+                    try:
+                        system = load_eve_v7_system_prompt(
+                            script_path=self._config.eve_v7_script_path,
+                            placeholders=_b2b_eve_placeholders(self._config),
+                        )
+                    except Exception:
+                        system = build_system_prompt(
+                            clinic_name=self._config.clinic_name,
+                            clinic_city=self._config.clinic_city,
+                            clinic_state=self._config.clinic_state,
+                        )
+                else:
+                    system = build_system_prompt(
+                        clinic_name=self._config.clinic_name,
+                        clinic_city=self._config.clinic_city,
+                        clinic_state=self._config.clinic_state,
+                    )
+        elif self._config.conversation_profile == "b2b" and self._config.eve_v7_enabled:
             try:
                 system = load_eve_v7_system_prompt(
                     script_path=self._config.eve_v7_script_path,

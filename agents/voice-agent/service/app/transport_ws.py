@@ -1,3 +1,14 @@
+"""
+Retell custom LLM WebSocket transport: bidirectional streaming, strict gating, no cutting off.
+
+RED-TEAM INVARIANTS (see docs/RED_TEAM_CUSTOM_LLM_EDGE_CASES.md for full list):
+- Never send speech for wrong epoch/response_id: writer gate checks epoch and speak_gen.
+- Never send speech on partial transcript: only response_required triggers speech (orchestrator).
+- Clear and user_turn trigger immediate stop: orchestrator _barge_in_cancel; writer drops stale.
+- Control plane wins: ping_pong and clear evict update_only when queue full; writer prefers control.
+- Backpressure: consecutive write timeouts -> close with WRITE_TIMEOUT_BACKPRESSURE.
+- No endless loops: speech only from response_required; speculative planning does not enqueue speech.
+"""
 from __future__ import annotations
 
 import asyncio
@@ -254,7 +265,7 @@ async def socket_writer(
 
             msg = env.msg
 
-            # Belt-and-suspenders: never send a response chunk for the wrong response_id.
+            # RED-TEAM: Never send a response chunk for the wrong response_id (prevents stale speech / cutting off).
             if (
                 getattr(msg, "response_type", None) == "response"
                 and getattr(msg, "response_id", None) != gate_epoch
@@ -287,6 +298,7 @@ async def socket_writer(
                     if rt == "ping_pong":
                         metrics.inc(VIC["keepalive_ping_pong_write_timeout_total"], 1)
                     consecutive_write_timeouts += 1
+                    # RED-TEAM: Avoid unbounded queue growth; fail fast so Retell can reconnect or fallback.
                     if (
                         ws_close_on_write_timeout
                         and consecutive_write_timeouts

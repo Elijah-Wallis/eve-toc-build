@@ -356,6 +356,11 @@ def main() -> int:
     )
     parser.add_argument("--websocket-url", default="", help="Custom LLM websocket URL for bidirectional mode.")
     parser.add_argument(
+        "--custom-llm",
+        action="store_true",
+        help="Enable BYOM (Bring Your Own Model): switch agent to custom-llm-websocket using transport_ws + Cloudflare tunnel. Uses RETELL_LLM_WEBSOCKET_URL if --websocket-url not set.",
+    )
+    parser.add_argument(
         "--bidirectional-mode",
         choices=["on", "off"],
         default="on",
@@ -367,6 +372,15 @@ def main() -> int:
         help="Fail if websocket agent update is requested but cannot be applied.",
     )
     args = parser.parse_args(raw_argv)
+
+    # When --custom-llm is set, resolve websocket URL from env if not provided.
+    if getattr(args, "custom_llm", False):
+        if not (args.websocket_url or "").strip():
+            args.websocket_url = os.environ.get("RETELL_LLM_WEBSOCKET_URL", "").strip()
+        if not (args.websocket_url or "").strip():
+            raise RuntimeError(
+                "With --custom-llm you must set --websocket-url or RETELL_LLM_WEBSOCKET_URL (e.g. wss://voice-agent.yourdomain.com/llm-websocket)"
+            )
 
     prompt_version_was_provided = "--prompt-version" in raw_argv
     if prompt_version_was_provided and not args.agent_id.strip():
@@ -475,7 +489,8 @@ def main() -> int:
     resp.raise_for_status()
     updated = resp.json()
 
-    websocket_url = args.websocket_url.strip() or os.environ.get("RETELL_LLM_WEBSOCKET_URL", "").strip()
+    websocket_url = (args.websocket_url or "").strip() or os.environ.get("RETELL_LLM_WEBSOCKET_URL", "").strip()
+    custom_llm_enabled = getattr(args, "custom_llm", False)
     bidirectional_enabled = args.bidirectional_mode == "on"
     agent_update_result: Optional[Dict[str, Any]] = None
     if websocket_url:
@@ -502,6 +517,7 @@ def main() -> int:
                 "prompt_file": str(prompt_file) if prompt_file else None,
                 "webhook_base": webhook_base,
                 "websocket_url": websocket_url or None,
+                "custom_llm": custom_llm_enabled,
                 "bidirectional_mode": "on" if bidirectional_enabled else "off",
                 "force": args.force,
                 "agent_update": agent_update_result or {"status": "skipped", "reason": "no_websocket_url"},

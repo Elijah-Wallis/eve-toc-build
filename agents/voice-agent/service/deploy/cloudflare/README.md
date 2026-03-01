@@ -51,6 +51,23 @@ Now test:
 - Health: `https://voice-agent.yourdomain.com/healthz`
 - WebSocket (canonical): `wss://voice-agent.yourdomain.com/llm-websocket/{call_id}`
 
+## Production: 20+ concurrent calls
+
+For **20 concurrent calls** (custom LLM / BYOM), harden as follows:
+
+1. **Origin timeouts** (avoid idle disconnects under load):
+   - `connectTimeout: 30s`
+   - `keepAliveTimeout: 300s` (5 min; Retell sessions can be long)
+   - `tcpKeepAlive: 30s`
+
+2. **No connection limit** at Tunnel level; the voice-agent process uses bounded per-session queues (256 inbound/256 outbound). Run one process per core or scale horizontally.
+
+3. **Resource limits**: Ensure the voice-agent host has enough memory for 20+ WebSocket connections and LLM client buffers (recommend ≥2GB for the app).
+
+4. **Health checks**: Use `/healthz` for liveness. For readiness (custom LLM), call `/healthz` and optionally verify `GET /metrics` returns 200.
+
+5. **Fallback**: If custom LLM path fails, clear the agent’s `llm_websocket_url` in the Retell dashboard so the agent falls back to Retell-hosted LLM.
+
 ## Production Pattern (Containers + Tunnel)
 
 Use the included compose file as a reference:
@@ -61,6 +78,7 @@ Use the included compose file as a reference:
 This pattern scales:
 - Run multiple replicas of the stack (VMs/containers) in different regions.
 - Cloudflare automatically load balances across active tunnel replicas.
+- For 20 concurrent: one replica is sufficient if the host has capacity; scale out for more.
 
 ## Notes
 

@@ -49,8 +49,9 @@ if _DASHBOARD_DIR.exists():
 
 
 @app.get("/healthz")
-async def healthz() -> dict[str, bool]:
-    return {"ok": True}
+async def healthz() -> dict[str, bool | str]:
+    """Liveness and readiness. For custom LLM, ok=True means process is up and can accept WS."""
+    return {"ok": True, "custom_llm_ready": "process"}
 
 
 @app.get("/metrics")

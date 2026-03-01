@@ -95,6 +95,8 @@ class BrainConfig:
     gemini_location: str = "global"
     gemini_model: str = "gemini-3-flash-preview"
     gemini_thinking_level: str = "minimal"
+    # B2B custom LLM: 0.7–0.9 for natural variation and adaptive reasoning (not robotic).
+    llm_temperature: float = 0.8
 
     # WS security hardening (optional; prefer enforcing at reverse proxy)
     ws_allowlist_enabled: bool = False
@@ -174,6 +176,8 @@ class BrainConfig:
     b2b_auto_disclosure: bool = False
     eve_v7_enabled: bool = True
     eve_v7_script_path: str = "/Users/elijah/Documents/New project/orchestration/eve-v7-orchestrator.yaml"
+    # Full V13.3 emotional prompt (b2b_workflow.yaml). When set, B2B custom LLM uses this verbatim for conversion parity.
+    b2b_v133_prompt_path: str = ""
     b2b_business_name: str = "Clinic"
     b2b_city: str = "Plano"
     b2b_test_timestamp: str = "Saturday at 6:30 PM"
@@ -255,6 +259,7 @@ class BrainConfig:
             gemini_location=_getenv_str("GEMINI_LOCATION", "global"),
             gemini_model=_getenv_str("GEMINI_MODEL", "gemini-3-flash-preview"),
             gemini_thinking_level=_getenv_str("GEMINI_THINKING_LEVEL", "minimal"),
+            llm_temperature=max(0.0, min(1.0, _getenv_float("LLM_TEMPERATURE", 0.8))),
             ws_allowlist_enabled=_getenv_bool("WS_ALLOWLIST_ENABLED", False),
             ws_allowlist_cidrs=_getenv_str("WS_ALLOWLIST_CIDRS", ""),
             ws_trusted_proxy_enabled=_getenv_bool("WS_TRUSTED_PROXY_ENABLED", False),
@@ -320,6 +325,7 @@ class BrainConfig:
                 "EVE_V7_SCRIPT_PATH",
                 "/Users/elijah/Documents/New project/orchestration/eve-v7-orchestrator.yaml",
             ),
+            b2b_v133_prompt_path=_getenv_str("B2B_V133_PROMPT_PATH", ""),
             b2b_business_name=_getenv_str("B2B_BUSINESS_NAME", clinic_name),
             b2b_city=_getenv_str("B2B_CITY", clinic_city),
             b2b_test_timestamp=_getenv_str("B2B_TEST_TIMESTAMP", "Saturday at 6:30 PM"),

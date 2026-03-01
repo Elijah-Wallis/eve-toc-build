@@ -20,7 +20,11 @@ from .telegram_router import TelegramRouter
 
 
 class OrchestratorRuntime:
-    """Runtime loop with step-level crash boundaries and role-based execution."""
+    """Runtime loop with step-level crash boundaries and role-based execution.
+
+    Custom LLM (BYOM) routing: use the same Retell agent_id that was configured with
+    scripts/configure_retell_b2b_agent.py --custom-llm; n8n dispatch uses that agent_id.
+    """
 
     def __init__(self) -> None:
         load_env_file()
