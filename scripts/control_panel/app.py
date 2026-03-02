@@ -25,6 +25,16 @@ from typing import Any, Dict, List, Optional
 # ---------------------------------------------------------------------------
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
+ENV_ALIASES: Dict[str, List[str]] = {
+    "RETELL_AI_KEY": ["RETELL_AI_API_KEY"],
+    "SUPABASE_URL": ["SUPABASE_REST_URL"],
+    "N8N_PUBLIC_WEBHOOK_BASE": ["N8N_WEBHOOK_BASE", "N8N_BASE_URL"],
+    "TWILIO_FROM_NUMBER": ["TWILIO_PHONE_NUMBER", "TWILIO_NUMBER"],
+    "RETELL_LLM_WEBSOCKET_URL": ["RETELL_WEBSOCKET_URL", "CUSTOM_LLM_WEBSOCKET_URL"],
+    "CUSTOM_LLM_HEALTH_URL": ["RETELL_LLM_HEALTH_URL"],
+}
+
+
 def _bootstrap_env() -> List[str]:
     """Load .env / .envrc / Streamlit secrets into os.environ. Returns list of sources loaded."""
     sources: List[str] = []
@@ -57,7 +67,52 @@ def _bootstrap_env() -> List[str]:
             sources.append("streamlit.secrets")
     except Exception:
         pass
+
+    _apply_env_aliases()
+
+    _derive_supabase_url()
+    _derive_n8n_webhook_base()
+
     return sources
+
+
+def _apply_env_aliases() -> None:
+    """If canonical key is missing but an alias exists, copy the alias value."""
+    for canonical, aliases in ENV_ALIASES.items():
+        if os.environ.get(canonical, "").strip():
+            continue
+        for alias in aliases:
+            val = os.environ.get(alias, "").strip()
+            if val:
+                os.environ[canonical] = val
+                break
+
+
+def _derive_supabase_url() -> None:
+    """Derive SUPABASE_URL from SUPABASE_CONNECTION_STRING if not set."""
+    if os.environ.get("SUPABASE_URL", "").strip():
+        return
+    conn = os.environ.get("SUPABASE_CONNECTION_STRING", "")
+    if "supabase.co" in conn:
+        import re
+        m = re.search(r"@(?:db\.)?([a-z0-9]+)\.supabase\.co", conn)
+        if m:
+            os.environ["SUPABASE_URL"] = f"https://{m.group(1)}.supabase.co"
+
+
+def _derive_n8n_webhook_base() -> None:
+    """Derive N8N_PUBLIC_WEBHOOK_BASE from OWNER_ALERT_WEBHOOK_URL or N8N_API_BASE."""
+    if os.environ.get("N8N_PUBLIC_WEBHOOK_BASE", "").strip():
+        return
+    for src_key in ("OWNER_ALERT_WEBHOOK_URL", "N8N_API_BASE"):
+        val = os.environ.get(src_key, "").strip()
+        if val and "n8n" in val:
+            from urllib.parse import urlparse
+            parsed = urlparse(val)
+            base = f"{parsed.scheme}://{parsed.netloc}"
+            if base and parsed.netloc:
+                os.environ["N8N_PUBLIC_WEBHOOK_BASE"] = base
+                return
 
 _env_sources = _bootstrap_env()
 
@@ -84,26 +139,27 @@ ENV_SUBSYSTEMS: List[Dict[str, Any]] = [
         "id": "supabase",
         "label": "Supabase",
         "keys": ["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"],
-        "tooltip": "Connects to Supabase for lead storage, call sessions, stoplist, and campaign data.",
+        "tooltip": "Connects to Supabase for lead storage, call sessions, stoplist, and campaign data. Auto-derived from SUPABASE_CONNECTION_STRING if set.",
     },
     {
         "id": "n8n",
         "label": "n8n Webhooks",
         "keys": ["N8N_PUBLIC_WEBHOOK_BASE", "N8N_API_KEY"],
-        "tooltip": "Powers dispatch, nurture, guardrail, and evidence-package workflows via n8n.",
+        "tooltip": "Powers dispatch, nurture, guardrail, and evidence-package workflows via n8n. Auto-derived from OWNER_ALERT_WEBHOOK_URL if set.",
     },
     {
         "id": "retell",
         "label": "Retell Agent",
         "keys": ["RETELL_AI_KEY"],
-        "tooltip": "Authenticates with Retell API to configure voice agents, LLMs, and knowledge bases.",
+        "tooltip": "Authenticates with Retell API to configure voice agents, LLMs, and knowledge bases. Also reads RETELL_AI_API_KEY.",
     },
     {
         "id": "custom_llm",
         "label": "Custom LLM",
         "keys": ["RETELL_LLM_WEBSOCKET_URL"],
         "optional_keys": ["CUSTOM_LLM_HEALTH_URL"],
-        "tooltip": "BYOM websocket endpoint for the custom LLM brain (Cloudflare Worker / self-hosted).",
+        "warn_only": True,
+        "tooltip": "BYOM websocket endpoint for the custom LLM brain. Optional — falls back to Retell-hosted LLM if not set.",
     },
     {
         "id": "twilio",
@@ -739,14 +795,29 @@ if any_missing:
                     existing = ""
                     lines.append("# EVE Launch Control Center — Environment Variables\n")
 
+                hints = {
+                    "SUPABASE_URL": "https://YOUR_PROJECT_ID.supabase.co  (REST API URL, not the DB connection string)",
+                    "SUPABASE_SERVICE_ROLE_KEY": "eyJ... (from Supabase Dashboard > Settings > API > service_role key)",
+                    "N8N_PUBLIC_WEBHOOK_BASE": "https://elijah-wallis.app.n8n.cloud  (base URL, no trailing path)",
+                    "N8N_API_KEY": "eyJ... (from n8n Settings > API)",
+                    "RETELL_AI_KEY": "key_... (also accepted: RETELL_AI_API_KEY)",
+                    "RETELL_LLM_WEBSOCKET_URL": "wss://your-tunnel.example.com/llm-websocket  (Cloudflare tunnel URL)",
+                    "TWILIO_FROM_NUMBER": "+1XXXXXXXXXX  (your Twilio phone number for SMS nurture)",
+                    "TWILIO_ACCOUNT_SID": "AC... (from Twilio console)",
+                    "TWILIO_AUTH_TOKEN": "(from Twilio console)",
+                }
+
                 for key in all_missing_keys:
                     if key not in existing:
+                        hint = hints.get(key, "")
                         tooltip = ""
                         for sub in ENV_SUBSYSTEMS:
                             if key in sub["keys"] or key in sub.get("optional_keys", []):
                                 tooltip = sub["tooltip"]
                                 break
                         lines.append(f"\n# {tooltip}")
+                        if hint:
+                            lines.append(f"# Example: {hint}")
                         lines.append(f'{key}=""')
 
                 if lines:
