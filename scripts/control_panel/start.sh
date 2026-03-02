@@ -6,8 +6,11 @@ APP="${REPO_ROOT}/scripts/control_panel/app.py"
 PORT="${EVE_CONTROL_PANEL_PORT:-8501}"
 
 if ! command -v streamlit &>/dev/null; then
-    echo "[eve-control-panel] Installing streamlit..."
-    pip install --quiet streamlit
+    echo "[eve-control-panel] Installing streamlit + python-dotenv..."
+    pip install --quiet streamlit python-dotenv
+elif ! python3 -c "import dotenv" 2>/dev/null; then
+    echo "[eve-control-panel] Installing python-dotenv..."
+    pip install --quiet python-dotenv
 fi
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
