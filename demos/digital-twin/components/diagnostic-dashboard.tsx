@@ -50,6 +50,7 @@ import {
 import { formatCurrency, formatPercent } from "@/lib/utils";
 import { generatePdfReport } from "@/lib/pdf-report";
 import type { Bottleneck } from "@/lib/mcp";
+import { SpeedToLeadSimulator } from "@/components/speed-to-lead-simulator";
 
 export type DiagnosticData = {
   clinic_name: string;
@@ -581,6 +582,8 @@ export function DiagnosticDashboard({ data: initialData }: { data: DiagnosticDat
           </CardContent>
         </Card>
       )}
+
+      <SpeedToLeadSimulator clinicName={data.clinic_name} embedded />
 
       {/* Executive Summary */}
       <Card className="border-border/80 bg-card/95">
