@@ -5,6 +5,10 @@ import html2canvas from "html2canvas";
 import type { DiagnosticData } from "@/components/diagnostic-dashboard";
 import { formatCurrency, formatPercent } from "@/lib/utils";
 
+function getInputNumber(value: unknown, fallback: number): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
 export async function generatePdfReport(
   data: DiagnosticData,
   chartContainer?: HTMLElement | null
@@ -156,6 +160,57 @@ export async function generatePdfReport(
     });
     y += 4;
   }
+
+  // Speed-to-lead module
+  ensureSpace(26);
+  doc.setDrawColor(13, 148, 136);
+  doc.setLineWidth(0.3);
+  doc.line(margin, y, pageW - margin, y);
+  y += 8;
+
+  const input = data.input_data ?? {};
+  const noShowRate = getInputNumber(input.no_show_rate, 12);
+  const locations = getInputNumber(input.number_of_locations, 1);
+  const bookingLiftHigh = Math.max(
+    45,
+    Math.min(70, 35 + Math.round(noShowRate * 1.2 + data.metrics.revenue_lift_pct * 0.7 + locations * 2))
+  );
+  const avgTreatmentValue = getInputNumber(input.avg_treatment_value, 300);
+  const responseSeconds = 45;
+
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(13, 148, 136);
+  doc.text("Speed-to-Lead Patient Response Module", margin, y);
+  y += 6;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(80, 80, 80);
+  doc.text(
+    `Eve responds to new patient leads in under ${responseSeconds} seconds with SMS, email, and optional voice follow-up in demo mode.`,
+    margin,
+    y
+  );
+  y += 7;
+
+  const speedToLeadLines = [
+    `Projected consult-booking lift: 35-${bookingLiftHigh}% based on ${data.clinic_name}'s current no-show rate and throughput profile.`,
+    `Workflow: ontology state pull -> hyper-personalized outreach -> 2-3 smart qualification questions -> Calendly / Cal.com slot offer or auto-book -> owner summary notification.`,
+    `Example personalization: a patient asking about a ${formatCurrency(avgTreatmentValue)} service receives an immediate response tailored to their concern, urgency, and likely provider match.`,
+  ];
+
+  doc.setTextColor(0, 0, 0);
+  speedToLeadLines.forEach((line) => {
+    const wrapped = doc.splitTextToSize(line, pageW - 2 * margin);
+    wrapped.forEach((segment: string) => {
+      ensureSpace(5);
+      doc.text(segment, margin, y);
+      y += 5;
+    });
+    y += 1;
+  });
+  y += 4;
 
   // Executive summary
   ensureSpace(20);
