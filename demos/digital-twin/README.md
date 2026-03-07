@@ -29,10 +29,18 @@ This is the business-version of the "free tire plug" story that turned $0 visito
 3. Eve re-runs with tighter confidence intervals (92–99% CI) and identifies 2–4 additional bottlenecks: staff idle time, missed upsell, inventory waste, marketing attribution leakage.
 4. Dashboard updates in-place with refined projections, new bottleneck cards, and "Deep Ontology" badge.
 
+### Stage 3 - Speed-to-Lead Patient Response Module
+1. User opens `/speed-to-lead` or runs the embedded live demo inside diagnostic results.
+2. A mock patient lead is submitted with name, phone, email, concern, and service interest.
+3. Eve pulls the relevant clinic and ontology state, drafts hyper-personalized SMS + email + optional voice follow-up, and asks 2-3 smart qualifying questions.
+4. The workflow offers live Calendly / Cal.com slots or simulates auto-booking for qualified patients.
+5. The owner receives an instant summary notification with lead score, booking status, and next action.
+
 ### Conversion
 - Bottleneck cards with CI ranges build trust and urgency — each one is a quantified problem the pilot solves.
 - Two-stage flow keeps friction low while collecting progressively richer data.
-- PDF includes full bottleneck analysis with CI ranges for stakeholder sharing.
+- The speed-to-lead module turns the diagnostic into a full patient-acquisition flywheel, showing how Eve captures value after the lead arrives.
+- PDF includes full bottleneck analysis plus the speed-to-lead module summary for stakeholder sharing.
 
 ## Tech Stack & Purpose
 
@@ -41,6 +49,8 @@ This is the business-version of the "free tire plug" story that turned $0 visito
 | Next.js 15 App Router | Fast, server-rendered frontend + API routes |
 | Supabase | Postgres DB for persisting diagnostics and seeding real ontology states |
 | MCP Agents | Core Eve hive-mind ontology engine that performs state shifts and projections |
+| Speed-to-Lead Orchestration | Demo-safe lead intake, ontology pull, qualification, booking, and owner notifications |
+| Twilio / Vapi / Calendly placeholders | Mock SMS, voice, and scheduling handoffs that work instantly in demo mode |
 | shadcn/ui + Tailwind | Premium cyber-medical UI (teal/gold dark theme) |
 | Recharts | Interactive before/after revenue, staff, and trajectory charts |
 | jsPDF + html2canvas | Generate beautiful branded PDF reports with embedded charts |
@@ -53,3 +63,8 @@ This is the business-version of the "free tire plug" story that turned $0 visito
 ```bash
 npm run demo  # or: npm run dev
 ```
+
+Then open:
+
+- `/diagnostic` for the clinic autonomy diagnostic
+- `/speed-to-lead` for the patient response, qualification, and booking simulator
