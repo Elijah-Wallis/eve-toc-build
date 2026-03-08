@@ -7,11 +7,17 @@ ENV npm_config_audit=false
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
+    python3-pip \
+    python3-venv \
     make \
     g++ \
     git \
     ca-certificates \
   && rm -rf /var/lib/apt/lists/*
+
+COPY platform/l5_medspa_iac/requirements.txt /tmp/l5_medspa_iac_requirements.txt
+RUN python3 -m pip install --break-system-packages --no-cache-dir -r /tmp/l5_medspa_iac_requirements.txt \
+  && rm -f /tmp/l5_medspa_iac_requirements.txt
 
 RUN npm install -g openclaw@2026.2.2-3 --no-audit --loglevel=error
 

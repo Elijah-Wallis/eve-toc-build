@@ -37,3 +37,9 @@ branding: clinical luxury, concierge follow-through" \
 
 The optimizer uses `networkx`, `PuLP`, and `scipy` when available, with deterministic
 fallbacks when they are not installed. See `requirements.txt`.
+
+For cloud-like environments without those packages preloaded:
+
+```bash
+bash scripts/setup_cloud_python_scientific_stack.sh
+```
