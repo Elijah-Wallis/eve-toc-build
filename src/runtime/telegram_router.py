@@ -126,14 +126,16 @@ class TelegramRouter:
                 return {"status": "ok", "summary": self._compact_campaign_summary(summary)}
 
             if cmd == "/evebot_run":
-                plist_path = Path.home() / "Library" / "LaunchAgents" / f"{self.DAILY_LABEL}.plist"
-                if not plist_path.exists():
-                    return "Daily run not installed. Run: install_elijah_evebot_launchd.sh"
+                hb_path = resolve_state_dir() / "heartbeat" / "elijah_evebot_heartbeat.json"
+                before_heartbeat = self._read_heartbeat_payload(hb_path)
                 result = self._run_allowed_command(
                     ["launchctl", "kickstart", "-k", f"gui/{os.getuid()}/{self.DAILY_LABEL}"],
                     timeout_s=5,
                 )
                 if result["ok"]:
+                    after_heartbeat = self._read_heartbeat_payload(hb_path)
+                    if self._heartbeat_changed(before_heartbeat, after_heartbeat):
+                        return self._format_heartbeat_summary(after_heartbeat or {})
                     return "Started daily run. Check /evebot_status in ~30–60s."
                 return (
                     "Daily run is installed but not loaded. Run installer again to bootstrap it: "
@@ -655,6 +657,43 @@ class TelegramRouter:
     def _now(self) -> str:
         from datetime import datetime, timezone
         return datetime.now(timezone.utc).isoformat()
+
+    def _read_heartbeat_payload(self, hb_path: Path) -> Dict[str, Any]:
+        if not hb_path.exists():
+            return {}
+        try:
+            payload = json.loads(hb_path.read_text(encoding="utf-8"))
+            return payload if isinstance(payload, dict) else {}
+        except Exception:
+            return {}
+
+    def _heartbeat_changed(self, before: Dict[str, Any], after: Dict[str, Any]) -> bool:
+        if not after:
+            return False
+        keys = ("run_id", "finished_at", "repo_commit", "counts")
+        return any(before.get(key) != after.get(key) for key in keys)
+
+    def _format_heartbeat_summary(self, heartbeat: Dict[str, Any]) -> str:
+        counts = heartbeat.get("counts") if isinstance(heartbeat.get("counts"), dict) else {}
+        run_id = str(heartbeat.get("run_id") or "unknown")
+        finished_at = str(heartbeat.get("finished_at") or "unknown")
+        repo_commit = str(heartbeat.get("repo_commit") or "unknown")
+        findings = int(counts.get("findings") or 0)
+        proposals_generated = int(counts.get("proposals_generated") or 0)
+        patches_emitted = int(counts.get("patches_emitted") or 0)
+        return "\n".join(
+            [
+                f"run_id: {run_id}",
+                f"finished_at: {finished_at}",
+                f"repo_commit: {repo_commit}",
+                (
+                    "counts: "
+                    f"findings={findings}, "
+                    f"proposals_generated={proposals_generated}, "
+                    f"patches_emitted={patches_emitted}"
+                ),
+            ]
+        )
 
     def _compact_task_record(self, record: Dict[str, Any]) -> Dict[str, Any]:
         if not isinstance(record, dict):

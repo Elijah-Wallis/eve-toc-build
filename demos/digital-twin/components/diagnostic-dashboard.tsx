@@ -27,6 +27,7 @@ import {
   ShieldCheck,
   Zap,
   Loader2,
+  MessageSquare,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,8 @@ import {
 import { formatCurrency, formatPercent } from "@/lib/utils";
 import { generatePdfReport } from "@/lib/pdf-report";
 import type { Bottleneck } from "@/lib/mcp";
+import { SpeedToLeadModule } from "@/components/speed-to-lead-module";
+import type { SpeedToLeadClinicContext } from "@/lib/speed-to-lead";
 
 export type DiagnosticData = {
   clinic_name: string;
@@ -72,6 +75,27 @@ export type DiagnosticData = {
   projections_90: Record<string, unknown>;
   projections_12: Record<string, unknown>;
 };
+
+function getNumber(value: unknown, fallback: number): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+function buildSpeedToLeadClinicContext(data: DiagnosticData): SpeedToLeadClinicContext {
+  const input = data.input_data ?? {};
+
+  return {
+    clinicName: data.clinic_name,
+    monthlyRevenue: getNumber(
+      input.monthly_revenue,
+      data.metrics.current_monthly_revenue
+    ),
+    avgTreatmentValue: getNumber(input.avg_treatment_value, 300),
+    noShowRate: getNumber(input.no_show_rate, 12),
+    staffHoursSavedPerWeek: data.metrics.staff_hours_saved_per_week,
+    revenueLiftPct: data.metrics.revenue_lift_pct,
+    locations: getNumber(input.number_of_locations, 1),
+  };
+}
 
 function getMetricInsight(key: string, data: DiagnosticData): string {
   const m = data.metrics;
@@ -347,6 +371,7 @@ export function DiagnosticDashboard({ data: initialData }: { data: DiagnosticDat
 
   const bottlenecks = data.bottlenecks ?? [];
   const totalBottleneckMonthly = bottlenecks.reduce((s, b) => s + b.impactDollars, 0);
+  const speedToLeadContext = buildSpeedToLeadClinicContext(data);
 
   return (
     <div ref={containerRef} className="space-y-8">
@@ -502,6 +527,36 @@ export function DiagnosticDashboard({ data: initialData }: { data: DiagnosticDat
           </div>
         </div>
       )}
+
+      <div className="space-y-4">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-3">
+            <MessageSquare className="h-6 w-6 text-primary" />
+            <h2 className="text-xl font-bold text-foreground">
+              How Eve Handles Your New Patient Leads 24/7
+            </h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            The diagnostic shows where revenue is leaking. This module shows how Eve
+            catches the next lead in real time with instant outreach, qualification,
+            booking, and owner notifications - the missing step that creates a full
+            patient-acquisition flywheel and supports a projected{" "}
+            <span className="font-semibold text-primary">35-70% booking lift</span>.
+          </p>
+        </div>
+        <Card className="border-primary/25 bg-primary/5">
+          <CardContent className="p-6">
+            <SpeedToLeadModule
+              clinicName={data.clinic_name}
+              clinicContext={speedToLeadContext}
+              embedded
+              ctaHref="/speed-to-lead"
+              title="Live demo simulation"
+              description="Watch Eve pull clinic context, personalize the response, ask the right questions, offer the consult, and notify the owner in demo mode."
+            />
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Deeper Ontology Twin CTA */}
       {!isDeeperRun && (

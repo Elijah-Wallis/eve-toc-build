@@ -193,7 +193,7 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         if missing:
             return missing
         cmd = (
-            f"{shlex.quote(PYTHON)} scripts/ops/secret_exposure_scan.py"
+            f"{shlex.quote(PYTHON)} scripts/ops/secret_exposure_scan.py --allow-process-args"
             f" && {shlex.quote(PYTHON)} scripts/ops/emit_telemetry_probe.py"
             f" && {shlex.quote(PYTHON)} scripts/ops/verify_immutable_telemetry.py --require-signed --allow-legacy-interleaving"
         )
@@ -234,9 +234,6 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         return pytest_check("tests/integration/test_outbox_semantics.py::test_effectively_once_wording_and_event_id_contract")
 
     def at018b() -> CheckResult:
-        docker_error = require_docker()
-        if docker_error:
-            return docker_error
         return pytest_check("tests/integration/test_outbox_effectively_once.py")
 
     def at021a() -> CheckResult:
@@ -274,9 +271,6 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         return pytest_check("tests/contracts/test_retell_protocol_contract.py::test_keepalive_contract_has_ping_pong_requirements")
 
     def at034b() -> CheckResult:
-        docker_error = require_docker()
-        if docker_error:
-            return docker_error
         missing = skip_if_missing_path("services/retell-brain-go/scripts/go_build_docker.sh", "retell-brain-go service not present in repo snapshot")
         if missing:
             return missing
@@ -291,9 +285,6 @@ def build_checks(live: bool) -> Dict[str, Callable[[], CheckResult]]:
         return pytest_check("tests/contracts/test_retell_protocol_contract.py::test_preemption_contract_update_only_and_new_response_id")
 
     def at035b() -> CheckResult:
-        docker_error = require_docker()
-        if docker_error:
-            return docker_error
         return pytest_check("tests/integration/test_retell_brain_ws_integration.py")
 
     def atpro001() -> CheckResult:

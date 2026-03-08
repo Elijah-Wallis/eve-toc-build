@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -107,6 +108,13 @@ export default function DiagnosticPage() {
             <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
               See your practice running on full ontology autonomy in 90 days.
             </p>
+            <div className="mt-5">
+              <Button asChild variant="outline" className="border-primary/30 bg-background/40">
+                <Link href="/speed-to-lead">
+                  Explore the Speed-to-Lead Patient Response Module
+                </Link>
+              </Button>
+            </div>
           </header>
 
           <Card className="border-border/80 bg-card/95 backdrop-blur animate-fade-in-up shadow-xl">

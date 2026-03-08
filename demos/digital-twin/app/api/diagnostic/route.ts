@@ -130,7 +130,6 @@ export async function POST(request: Request) {
 
     const narrative = await generateNarrative(input.clinic_name, result);
 
-    const supabase = createSupabaseClient();
     const row = {
       clinic_name: input.clinic_name,
       input_data: input as unknown as Record<string, unknown>,
@@ -149,6 +148,24 @@ export async function POST(request: Request) {
       narrative,
     };
 
+    const fallbackResponse = {
+      success: true,
+      id: null,
+      projections: row.projections,
+      narrative,
+      hidden_leaks: result.hidden_leaks,
+      bottlenecks: result.bottlenecks,
+      message: "Diagnostic completed; result could not be stored. Use the data below.",
+    };
+
+    let supabase;
+    try {
+      supabase = createSupabaseClient();
+    } catch (supabaseSetupError) {
+      console.warn("Supabase client unavailable; returning inline diagnostic:", supabaseSetupError);
+      return NextResponse.json(fallbackResponse, { status: 200 });
+    }
+
     const { data: insertData, error } = await supabase
       .from("clinic_diagnostics")
       .insert(row)
@@ -157,18 +174,7 @@ export async function POST(request: Request) {
 
     if (error) {
       console.error("Supabase insert error:", error);
-      return NextResponse.json(
-        {
-          success: true,
-          id: null,
-          projections: row.projections,
-          narrative,
-          hidden_leaks: result.hidden_leaks,
-          bottlenecks: result.bottlenecks,
-          message: "Diagnostic completed; result could not be stored. Use the data below.",
-        },
-        { status: 200 }
-      );
+      return NextResponse.json(fallbackResponse, { status: 200 });
     }
 
     return NextResponse.json({

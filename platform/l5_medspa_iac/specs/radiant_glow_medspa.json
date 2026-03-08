@@ -1,0 +1,102 @@
+{
+  "client_id": "radiant_glow_medspa",
+  "medspa_name": "Radiant Glow Medspa",
+  "services": [
+    {
+      "name": "Botox membership",
+      "category": "injectables",
+      "avg_ticket": 650,
+      "duration_minutes": 45,
+      "compliance_tags": ["licensed_provider_required"]
+    },
+    {
+      "name": "Laser resurfacing",
+      "category": "energy_based",
+      "avg_ticket": 1100,
+      "duration_minutes": 75,
+      "compliance_tags": ["two_party_consent_review"]
+    },
+    {
+      "name": "Weight loss program",
+      "category": "medical_weight_loss",
+      "avg_ticket": 950,
+      "duration_minutes": 40,
+      "compliance_tags": ["medical_director_review"]
+    }
+  ],
+  "staff": [
+    {
+      "role": "Injector RN",
+      "count": 2,
+      "skills": ["injectables", "patient_assessment"],
+      "licenses": ["rn_or_np"]
+    },
+    {
+      "role": "Front Desk Concierge",
+      "count": 3,
+      "skills": ["lead_intake", "booking", "retention"],
+      "licenses": []
+    },
+    {
+      "role": "Aesthetician",
+      "count": 1,
+      "skills": ["skin_consults", "upsell"],
+      "licenses": []
+    }
+  ],
+  "locations": [
+    {
+      "city": "Austin",
+      "state": "TX",
+      "timezone": "America/Chicago",
+      "compliance_rules": ["hipaa_safe_messaging", "tcpa_opt_out", "two_party_consent_review"]
+    },
+    {
+      "city": "Scottsdale",
+      "state": "AZ",
+      "timezone": "America/Phoenix",
+      "compliance_rules": ["hipaa_safe_messaging", "tcpa_opt_out"]
+    }
+  ],
+  "personas": [
+    {
+      "name": "High-intent working professional",
+      "age_band": "30-50",
+      "concerns": ["wrinkles", "time efficiency", "trusted provider"],
+      "channels": ["voice", "sms", "email"],
+      "urgency_bias": 0.84
+    },
+    {
+      "name": "Bridal event patient",
+      "age_band": "25-40",
+      "concerns": ["skin quality", "timeline certainty", "visible results"],
+      "channels": ["sms", "email", "telegram"],
+      "urgency_bias": 0.91
+    }
+  ],
+  "kpis": {
+    "conversion_rate": 0.24,
+    "retention_rate": 0.76,
+    "monthly_revenue": 175000,
+    "show_rate": 0.89,
+    "referral_rate": 0.14
+  },
+  "branding": {
+    "voice": "luxury_clinical_resilient",
+    "palette": ["#0D9488", "#111827", "#F59E0B"],
+    "differentiators": ["board-certified team", "same-day concierge response", "membership retention"],
+    "tone_keywords": ["clinical", "luxury", "resilient", "high-trust"]
+  },
+  "compliance_rules": [
+    "hipaa_safe_messaging",
+    "tcpa_opt_out",
+    "state_specific_recording_disclosure",
+    "medical_director_review"
+  ],
+  "channels": ["voice", "sms", "email", "telegram"],
+  "notes": [
+    "Prioritize off-hours missed-call recovery",
+    "Protect bridal-event urgency windows",
+    "Optimize Scottsdale routing for no daylight-savings drift"
+  ]
+}
