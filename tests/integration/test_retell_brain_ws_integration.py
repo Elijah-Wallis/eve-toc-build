@@ -18,7 +18,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def _docker_available() -> bool:
-    proc = subprocess.run(["docker", "info"], text=True, capture_output=True, check=False)
+    try:
+        proc = subprocess.run(["docker", "info"], text=True, capture_output=True, check=False)
+    except FileNotFoundError:
+        return False
     return proc.returncode == 0
 
 

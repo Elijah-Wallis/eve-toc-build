@@ -2,6 +2,8 @@ module eve-toc-build/services/retell-brain-go
 
 go 1.23
 
+toolchain go1.23.6
+
 require (
 	github.com/gorilla/websocket v1.5.3
 	google.golang.org/genai v0.1.0
