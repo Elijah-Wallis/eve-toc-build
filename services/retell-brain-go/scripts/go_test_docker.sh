@@ -15,6 +15,7 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 docker run --rm \
+  -e GOFLAGS="-buildvcs=false" \
   -v "${REPO_ROOT}:/workspace" \
   -w /workspace/services/retell-brain-go \
   "${GOLANG_IMAGE}" \
