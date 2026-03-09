@@ -1,6 +1,6 @@
 # EVE system — eve-toc-build (monorepo)
 
-Single repository for the EVE/OpenClaw ecosystem: runtime, legal/policies, demos, and review tooling. Former standalone repos are consolidated here with history preserved (via `git subtree`).
+Single repository for the EVE ecosystem: runtime, legal/policies, demos, and review tooling. Former standalone repos are consolidated here with history preserved (via `git subtree`).
 
 ## Table of contents
 
