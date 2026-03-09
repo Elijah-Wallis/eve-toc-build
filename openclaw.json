@@ -13,6 +13,35 @@
       },
       "workspace": "${REPO_ROOT}",
       "maxConcurrent": 256
+    },
+    "l5_hive": {
+      "base_module": "${REPO_ROOT}/agents/l5/base.py",
+      "heartbeat_cadence_range": [60, 900],
+      "supabase_tables": ["ontology_nodes", "tasks", "heartbeats", "outbox"],
+      "output_format": "{action, projected_ROI_95_CI, validation_plan, kill_criteria}",
+      "scale_safeguards": {
+        "human_input_max_pct": 5,
+        "propagation_latency_max_s": 60,
+        "action_success_rate_min_pct": 98,
+        "loop_velocity_max_h": 24
+      },
+      "registry": [
+        {"id": "chief-ontology-architect", "name": "Chief Ontology & Derivative Intelligence Architect", "path": "agents/chief-ontology-architect/agent_core.py", "class": "ChiefOntologyArchitect"},
+        {"id": "chief-financial-officer", "name": "Chief Financial Officer", "path": "agents/chief-financial-officer/agent_core.py", "class": "ChiefFinancialOfficer"},
+        {"id": "head-revenue-operations", "name": "Head of Revenue Operations", "path": "agents/head-revenue-operations/agent_core.py", "class": "HeadRevenueOperations"},
+        {"id": "head-patient-acquisition", "name": "Head of Patient Acquisition", "path": "agents/head-patient-acquisition/agent_core.py", "class": "HeadPatientAcquisition"},
+        {"id": "head-clinical-quality", "name": "Head of Clinical Quality Control", "path": "agents/head-clinical-quality/agent_core.py", "class": "HeadClinicalQualityAgent"},
+        {"id": "chief-iac-architect", "name": "Chief IaC Architect", "path": "agents/chief-iac-architect/agent_core.py", "class": "ChiefIaCArchitectAgent"},
+        {"id": "head-data-integrity", "name": "Head of Data Integrity Analytics", "path": "agents/head-data-integrity/agent_core.py", "class": "HeadDataIntegrityAgent"},
+        {"id": "head-legal", "name": "Head of Legal", "path": "agents/head-legal/agent_core.py", "class": "HeadLegalAgent"},
+        {"id": "chief-talent-officer", "name": "Chief Talent Officer", "path": "agents/chief-talent-officer/agent_core.py", "class": "ChiefTalentOfficerAgent"},
+        {"id": "head-patient-experience", "name": "Head of Patient Experience", "path": "agents/head-patient-experience/agent_core.py", "class": "HeadPatientExperienceAgent"},
+        {"id": "head-innovation", "name": "Head of Innovation", "path": "agents/head-innovation/agent_core.py", "class": "HeadInnovationAgent"},
+        {"id": "head-efficiency", "name": "Head of Efficiency", "path": "agents/head-efficiency/agent_core.py", "class": "HeadEfficiencyAgent"},
+        {"id": "head-ethics-risk", "name": "Head of Ethics & Risk", "path": "agents/head-ethics-risk/agent_core.py", "class": "HeadEthicsRiskAgent"},
+        {"id": "head-scale-hive-mind", "name": "Head of Scale & Hive Mind", "path": "agents/head-scale-hive-mind/agent_core.py", "class": "HeadScaleHiveMindAgent"},
+        {"id": "head-unit-economics", "name": "Head of Unit Economics", "path": "agents/head-unit-economics/agent_core.py", "class": "HeadUnitEconomicsAgent"}
+      ]
     }
   },
   "channels": {
