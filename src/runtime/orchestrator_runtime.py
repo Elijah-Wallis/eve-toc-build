@@ -127,6 +127,12 @@ class OrchestratorRuntime:
                 }
             ],
         )
+        self._maybe_enqueue(
+            "pack_ontology_chief",
+            now,
+            interval_minutes=max(1, int(os.environ.get("OPENCLAW_ONTOLOGY_HEARTBEAT_MINUTES", "5"))),
+            tasks=[{"type": "ontology.chief.run", "payload": {"mode": "heartbeat"}}],
+        )
 
     def _maybe_enqueue(self, key: str, now: datetime, interval_minutes: int, tasks: Any) -> None:
         last = self._last_enqueued.get(key)

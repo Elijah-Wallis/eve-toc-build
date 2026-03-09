@@ -15,6 +15,7 @@
     * `Jonah`: Constraint Sensor (Detects Blockages).
     * `Ralph`: Execution Arm (Gates Patient Flow).
     * `Eve Voice`: Clinical Diagnostic (Retell AI Pivot).
+    * `Chief Ontology & Derivative Intelligence Architect for Eve L5`: Executable hypergraph steward for causal pruning, outbox propagation, heartbeat coherence, and loop-velocity control.
 
 ### B. The Skin (`eve_dashboard.py`)
 * **Role:** The Human-Machine Interface (HMI).
@@ -27,6 +28,7 @@
 * `nervous_system.yaml`: Defines Agent roles and API connections.
 * `metabolism.yaml`: Defines Revenue per Treatment and Service Times.
 * `voice_agent_protocol.yaml`: The SOP for pivoting flaky leads to virtual consults.
+* `agents/chief-ontology-derivative-intelligence-architect/`: L5 ontology-control worker with Supabase heartbeat loop, derivative-intelligence pipeline, and strict action envelopes.
 
 ## 3. INTEGRATION ENDPOINTS
 * **Input:** GoHighLevel (GHL) via Webhooks -> Updates `schedule` list.

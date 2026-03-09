@@ -214,3 +214,11 @@ The goal: Be helpful without being annoying. Check in a few times a day, do usef
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
+
+## Registered L5 Specialist Agents
+
+- `chief-ontology-derivative-intelligence-architect` -> `agents/chief-ontology-derivative-intelligence-architect/agent_core.py`
+  - Role: Chief Ontology & Derivative Intelligence Architect for Eve L5
+  - Task type: `ontology.chief.run`
+  - Heartbeat: 60s-15m cadence via Supabase-backed polling and outbox publication
+  - Skill: `.agents/skills/chief_ontology_derivative_intelligence_architect.md`
