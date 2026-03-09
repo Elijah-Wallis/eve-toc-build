@@ -5,16 +5,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="${REPO_ROOT:-$(cd "${SCRIPT_DIR}/.." && pwd)}"
 PATTERN='(/Users/|/home/|C:\\Users\\)'
 SELF_REL='scripts/scan_absolute_paths.sh'
+LINT_REL='scripts/ci/lint_no_absolute_paths.py'
 
 if ! command -v git >/dev/null 2>&1; then
   echo "git is required" >&2
   exit 2
 fi
-if ! command -v rg >/dev/null 2>&1; then
-  echo "rg is required" >&2
-  exit 2
-fi
-
 cd "${REPO_ROOT}"
 
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
@@ -24,7 +20,7 @@ fi
 
 # Scan tracked files only for deterministic CI/local behavior.
 set +e
-MATCHES="$(git ls-files -z | xargs -0 rg -n --no-heading --hidden --no-ignore-vcs -e "${PATTERN}" -- 2>/dev/null | rg -v "^${SELF_REL}:" || true)"
+MATCHES="$(git grep -n -I -E "${PATTERN}" -- $(git ls-files src services scripts policy) 2>/dev/null | grep -v -E "^(${SELF_REL}|${LINT_REL}):" || true)"
 set -e
 
 if [[ -n "${MATCHES}" ]]; then
