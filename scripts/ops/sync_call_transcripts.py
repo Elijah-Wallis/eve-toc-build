@@ -16,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from ontology.client import OntologyClient
+
 from src.runtime.env_loader import load_env_file
 from src.runtime.transcript_capture import normalize_call_payload, summarize_answerer
 
@@ -48,38 +50,24 @@ def main() -> int:
     args = parse_args()
     load_env_file()
 
-    supabase_url = os.environ.get("SUPABASE_URL", "").rstrip("/")
-    supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+    ontology = OntologyClient(actor="sync-call-transcripts")
     retell_key = os.environ.get("RETELL_AI_KEY", "")
     retell_base = os.environ.get("RETELL_BASE_URL", "https://api.retellai.com").rstrip("/")
-    if not supabase_url or not supabase_key:
-        raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
     if not retell_key:
         raise RuntimeError("RETELL_AI_KEY is required")
-
-    sb_headers = {
-        "apikey": supabase_key,
-        "Authorization": f"Bearer {supabase_key}",
-        "Content-Type": "application/json",
-    }
     rt_headers = {
         "Authorization": f"Bearer {retell_key}",
         "Content-Type": "application/json",
     }
 
-    if not _table_exists(supabase_url, sb_headers, "call_transcripts"):
+    if not ontology.transcript_tables_enabled():
         raise RuntimeError(
-            "call_transcripts table is missing. Apply ${REPO_ROOT}/supabase/upgrade_transcripts.sql first."
-        )
-    if not _table_exists(supabase_url, sb_headers, "call_transcript_turns"):
-        raise RuntimeError(
-            "call_transcript_turns table is missing. Apply ${REPO_ROOT}/supabase/upgrade_transcripts.sql first."
+            "Transcript tables are missing. Apply ${REPO_ROOT}/supabase/upgrade_transcripts.sql first."
         )
 
     cutoff = datetime.now(timezone.utc) - timedelta(hours=max(1, args.lookback_hours))
     call_sessions = _fetch_call_sessions(
-        supabase_url=supabase_url,
-        headers=sb_headers,
+        ontology=ontology,
         cutoff=cutoff,
         limit=max(1, args.limit),
     )
@@ -88,7 +76,7 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=True, indent=2))
         return 0
 
-    leads = _fetch_leads(supabase_url, sb_headers, [row["lead_id"] for row in call_sessions if row.get("lead_id")])
+    leads = _fetch_leads(ontology, [row["lead_id"] for row in call_sessions if row.get("lead_id")])
     lead_by_id = {row["id"]: row for row in leads if row.get("id")}
 
     filtered: List[Dict[str, Any]] = []
@@ -109,16 +97,10 @@ def main() -> int:
             record, turns = normalize_call_payload(payload, call_session=row, lead=lead)
             answerer = summarize_answerer(str(record.get("summary") or ""), str(record.get("transcript_text") or ""))
             if not args.dry_run:
-                transcript_id = _upsert_transcript(supabase_url, sb_headers, record)
-                _replace_turns(
-                    supabase_url=supabase_url,
-                    headers=sb_headers,
-                    transcript_id=transcript_id,
-                    retell_call_id=call_id,
-                    turns=turns,
-                )
+                transcript_id = _upsert_transcript(ontology, record)
+                _replace_turns(ontology=ontology, transcript_id=transcript_id, retell_call_id=call_id, turns=turns)
                 if args.repair_call_sessions:
-                    _repair_call_session(supabase_url, sb_headers, row, record)
+                    _repair_call_session(ontology, row, record)
             results.append(
                 SyncResult(
                     retell_call_id=call_id,
@@ -159,23 +141,9 @@ def main() -> int:
     return 0 if payload["ok"] else 2
 
 
-def _table_exists(supabase_url: str, headers: Dict[str, str], table: str) -> bool:
-    resp = requests.get(
-        f"{supabase_url}/rest/v1/{table}",
-        headers=headers,
-        params={"select": "id", "limit": "1"},
-        timeout=20,
-    )
-    if resp.status_code == 404:
-        return False
-    resp.raise_for_status()
-    return True
-
-
 def _fetch_call_sessions(
     *,
-    supabase_url: str,
-    headers: Dict[str, str],
+    ontology: OntologyClient,
     cutoff: datetime,
     limit: int,
 ) -> List[Dict[str, Any]]:
@@ -186,36 +154,14 @@ def _fetch_call_sessions(
         "order": "created_at.desc",
         "limit": str(limit),
     }
-    resp = requests.get(
-        f"{supabase_url}/rest/v1/call_sessions",
-        headers=headers,
-        params=params,
-        timeout=30,
+    return ontology.list_clinical_encounters(params)
+
+
+def _fetch_leads(ontology: OntologyClient, lead_ids: Iterable[str]) -> List[Dict[str, Any]]:
+    return ontology.list_patient_journeys_by_ids(
+        lead_ids,
+        select="id,source,business_name,phone,status,next_touch_at,last_contacted_at",
     )
-    resp.raise_for_status()
-    return resp.json()
-
-
-def _fetch_leads(supabase_url: str, headers: Dict[str, str], lead_ids: Iterable[str]) -> List[Dict[str, Any]]:
-    ids = [str(item) for item in lead_ids if item]
-    if not ids:
-        return []
-    records: List[Dict[str, Any]] = []
-    for offset in range(0, len(ids), 120):
-        batch = ids[offset : offset + 120]
-        params = {
-            "select": "id,source,business_name,phone,status,next_touch_at,last_contacted_at",
-            "id": f"in.({','.join(batch)})",
-        }
-        resp = requests.get(
-            f"{supabase_url}/rest/v1/leads",
-            headers=headers,
-            params=params,
-            timeout=30,
-        )
-        resp.raise_for_status()
-        records.extend(resp.json())
-    return records
 
 
 def _fetch_retell_call(base_url: str, headers: Dict[str, str], retell_call_id: str) -> Dict[str, Any]:
@@ -227,19 +173,8 @@ def _fetch_retell_call(base_url: str, headers: Dict[str, str], retell_call_id: s
     return data
 
 
-def _upsert_transcript(supabase_url: str, headers: Dict[str, str], record: Dict[str, Any]) -> str:
-    write_headers = dict(headers)
-    write_headers["Prefer"] = "return=representation,resolution=merge-duplicates"
-    resp = requests.post(
-        f"{supabase_url}/rest/v1/call_transcripts",
-        headers=write_headers,
-        params={"on_conflict": "retell_call_id"},
-        data=json.dumps(record),
-        timeout=30,
-    )
-    resp.raise_for_status()
-    rows = resp.json()
-    row = rows[0] if isinstance(rows, list) and rows else rows
+def _upsert_transcript(ontology: OntologyClient, record: Dict[str, Any]) -> str:
+    row = ontology.upsert_clinical_transcript(record)
     transcript_id = row.get("id") if isinstance(row, dict) else None
     if not transcript_id:
         raise RuntimeError("call_transcripts upsert did not return id")
@@ -248,22 +183,11 @@ def _upsert_transcript(supabase_url: str, headers: Dict[str, str], record: Dict[
 
 def _replace_turns(
     *,
-    supabase_url: str,
-    headers: Dict[str, str],
+    ontology: OntologyClient,
     transcript_id: str,
     retell_call_id: str,
     turns: List[Dict[str, Any]],
 ) -> None:
-    delete_resp = requests.delete(
-        f"{supabase_url}/rest/v1/call_transcript_turns",
-        headers=headers,
-        params={"transcript_id": f"eq.{transcript_id}"},
-        timeout=20,
-    )
-    delete_resp.raise_for_status()
-    if not turns:
-        return
-
     rows = []
     for turn in turns:
         rows.append(
@@ -279,23 +203,11 @@ def _replace_turns(
                 "payload_json": turn.get("payload_json") or {},
             }
         )
-
-    write_headers = dict(headers)
-    write_headers["Prefer"] = "return=minimal"
-    for offset in range(0, len(rows), 500):
-        batch = rows[offset : offset + 500]
-        insert_resp = requests.post(
-            f"{supabase_url}/rest/v1/call_transcript_turns",
-            headers=write_headers,
-            data=json.dumps(batch),
-            timeout=30,
-        )
-        insert_resp.raise_for_status()
+    ontology.replace_clinical_transcript_turns(transcript_id, retell_call_id, rows)
 
 
 def _repair_call_session(
-    supabase_url: str,
-    headers: Dict[str, str],
+    ontology: OntologyClient,
     call_session: Dict[str, Any],
     transcript_record: Dict[str, Any],
 ) -> None:
@@ -308,14 +220,7 @@ def _repair_call_session(
         patch["duration"] = max(1, int(round(float(transcript_record["duration_ms"]) / 1000.0)))
     if not patch:
         return
-    resp = requests.patch(
-        f"{supabase_url}/rest/v1/call_sessions",
-        headers=headers,
-        params={"id": f"eq.{call_session['id']}"},
-        data=json.dumps(patch),
-        timeout=20,
-    )
-    resp.raise_for_status()
+    ontology.patch_clinical_encounter(str(call_session["id"]), patch)
 
 
 def _print_table(results: List[SyncResult]) -> None:

@@ -8,6 +8,9 @@ ROOT = Path(__file__).resolve().parents[2]
 TARGETS = [
     ROOT / "src" / "runtime",
     ROOT / "mcp_servers",
+    ROOT / "scripts" / "ops",
+    ROOT / "scripts" / "dashboard",
+    ROOT / "scripts" / "import_medspa_csv.py",
     ROOT / "openclaw_cli.py",
     ROOT / "telegram_router.py",
 ]

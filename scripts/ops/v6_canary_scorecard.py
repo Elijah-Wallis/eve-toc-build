@@ -5,11 +5,16 @@ import argparse
 import json
 import os
 import re
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Set
 
-import requests
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from ontology.client import OntologyClient
 
 
 def _utc_now() -> datetime:
@@ -18,41 +23,6 @@ def _utc_now() -> datetime:
 
 def _iso(dt: datetime) -> str:
     return dt.isoformat()
-
-
-def _sb_headers() -> Dict[str, str]:
-    key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "").strip()
-    if not key:
-        raise RuntimeError("SUPABASE_SERVICE_ROLE_KEY is required")
-    return {
-        "apikey": key,
-        "Authorization": f"Bearer {key}",
-        "Accept": "application/json",
-    }
-
-
-def _sb_base() -> str:
-    base = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
-    if not base:
-        raise RuntimeError("SUPABASE_URL is required")
-    return base
-
-
-def _fetch_rows(table: str, params: Dict[str, str], limit: int = 5000) -> List[Dict[str, Any]]:
-    merged = dict(params)
-    merged.setdefault("limit", str(limit))
-    resp = requests.get(
-        f"{_sb_base()}/rest/v1/{table}",
-        headers=_sb_headers(),
-        params=merged,
-        timeout=45,
-    )
-    resp.raise_for_status()
-    rows = resp.json()
-    if not isinstance(rows, list):
-        return []
-    return rows
-
 
 def _chunked(items: Iterable[str], size: int) -> Iterable[List[str]]:
     batch: List[str] = []
@@ -65,18 +35,14 @@ def _chunked(items: Iterable[str], size: int) -> Iterable[List[str]]:
         yield batch
 
 
-def _fetch_lead_sources(lead_ids: Set[str]) -> Dict[str, str]:
+def _fetch_lead_sources(ontology: OntologyClient, lead_ids: Set[str]) -> Dict[str, str]:
     if not lead_ids:
         return {}
     out: Dict[str, str] = {}
     for batch in _chunked(sorted(lead_ids), 100):
-        rows = _fetch_rows(
-            "leads",
-            {
-                "select": "id,source",
-                "id": f"in.({','.join(batch)})",
-            },
-            limit=100,
+        rows = ontology.list_patient_journeys_by_ids(
+            batch,
+            select="id,source",
         )
         for row in rows:
             lead_id = str(row.get("id") or "")
@@ -85,25 +51,21 @@ def _fetch_lead_sources(lead_ids: Set[str]) -> Dict[str, str]:
     return out
 
 
-def _fetch_turn_counts(call_ids: Set[str]) -> Dict[str, int]:
+def _fetch_turn_counts(ontology: OntologyClient, call_ids: Set[str]) -> Dict[str, int]:
     if not call_ids:
         return {}
     out: Dict[str, int] = {}
     for batch in _chunked(sorted(call_ids), 80):
         try:
-            rows = _fetch_rows(
-                "call_transcript_turns",
+            rows = ontology.list_clinical_transcript_turns(
                 {
                     "select": "retell_call_id,turn_index",
                     "retell_call_id": f"in.({','.join(batch)})",
                     "order": "turn_index.asc",
+                    "limit": "10000",
                 },
-                limit=10000,
             )
-        except requests.HTTPError as exc:
-            if exc.response is not None and exc.response.status_code == 404:
-                # Transcript tables may not be provisioned in older stacks.
-                return {}
+        except Exception:
             raise
         for row in rows:
             call_id = str(row.get("retell_call_id") or "")
@@ -168,21 +130,21 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    ontology = OntologyClient(actor="v6-canary-scorecard")
     cutoff = _utc_now() - timedelta(hours=max(1, args.hours))
     source_re = re.compile(args.source_regex)
 
-    sessions = _fetch_rows(
-        "call_sessions",
+    sessions = ontology.list_clinical_encounters(
         {
             "select": "id,lead_id,retell_call_id,agent_type,outcome,created_at",
             "retell_call_id": "not.is.null",
             "created_at": f"gte.{_iso(cutoff)}",
             "order": "created_at.desc",
+            "limit": "5000",
         },
-        limit=5000,
     )
     lead_ids = {str(r.get("lead_id") or "") for r in sessions if r.get("lead_id")}
-    lead_source = _fetch_lead_sources(lead_ids)
+    lead_source = _fetch_lead_sources(ontology, lead_ids)
 
     scoped: List[Dict[str, Any]] = []
     for row in sessions:
@@ -198,7 +160,7 @@ def main() -> int:
     control_rows = [r for r in scoped if str(r.get("agent_type") or "").upper() in {"B2B", "B2B_OVERRIDE"}]
 
     call_ids = {str(r.get("retell_call_id") or "") for r in scoped if r.get("retell_call_id")}
-    turn_counts = _fetch_turn_counts(call_ids)
+    turn_counts = _fetch_turn_counts(ontology, call_ids)
 
     canary_metrics = _cohort_metrics(canary_rows, turn_counts)
     control_metrics = _cohort_metrics(control_rows, turn_counts)
@@ -206,14 +168,14 @@ def main() -> int:
     canary_lead_ids = {str(r.get("lead_id") or "") for r in canary_rows if r.get("lead_id")}
     control_lead_ids = {str(r.get("lead_id") or "") for r in control_rows if r.get("lead_id")}
 
-    package_events = _fetch_rows(
-        "lead_events",
-        {
-            "select": "lead_id,event_type,payload_json,created_at",
+    package_events = ontology.query_object(
+        object_name="FinancialEvent",
+        filters={
             "event_type": "eq.retell_evidence_package",
             "created_at": f"gte.{_iso(cutoff)}",
-            "order": "created_at.desc",
         },
+        select="lead_id,event_type,payload_json,created_at",
+        order="created_at.desc",
         limit=5000,
     )
 
@@ -233,13 +195,13 @@ def main() -> int:
     canary_package = _package_success(canary_lead_ids)
     control_package = _package_success(control_lead_ids)
 
-    compliance_events = _fetch_rows(
-        "lead_events",
-        {
-            "select": "id,event_type,lead_id,created_at",
+    compliance_events = ontology.query_object(
+        object_name="FinancialEvent",
+        filters={
             "event_type": "in.(compliance_incident,cpom_violation,retell_compliance_violation)",
             "created_at": f"gte.{_iso(cutoff)}",
         },
+        select="id,event_type,lead_id,created_at",
         limit=5000,
     )
 

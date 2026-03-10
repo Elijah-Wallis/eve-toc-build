@@ -92,26 +92,19 @@ PY
 
 python3 - <<'PY' || WARN=$((WARN + 1))
 from src.runtime.env_loader import load_env_file
-import os
-import requests
+from ontology.client import OntologyClient
 
 load_env_file()
-url = os.environ.get("SUPABASE_URL", "").rstrip("/")
-key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-if not url or not key:
+try:
+    ontology = OntologyClient(actor="worldclass-preflight")
+except Exception:
     print("WARN Supabase schema check skipped (missing env)")
     raise SystemExit(1)
-headers = {"apikey": key, "Authorization": f"Bearer {key}"}
-resp = requests.get(
-    f"{url}/rest/v1/call_transcripts",
-    headers=headers,
-    params={"select": "id,recording_url", "limit": "1"},
-    timeout=15,
-)
-if resp.status_code == 200:
+try:
+    ontology.list_clinical_transcripts({"select": "id,recording_url", "limit": "1"})
     print("OK   call_transcripts table available with recording_url select")
-else:
-    print("WARN call_transcripts unavailable:", resp.status_code, (resp.text or "")[:180])
+except Exception as exc:  # noqa: BLE001
+    print("WARN call_transcripts unavailable:", str(exc)[:180])
     raise SystemExit(1)
 PY
 
@@ -127,4 +120,3 @@ if [[ "${FAIL}" -gt 0 ]]; then
   exit 2
 fi
 exit 0
-

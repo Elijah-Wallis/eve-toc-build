@@ -6,11 +6,16 @@ import csv
 import json
 import os
 import re
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import parse_qs, urlparse
 
-import requests
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from ontology.client import OntologyClient
 
 
 ALLOWED_CATEGORIES = {"Medical spa", "Facial spa", "Day spa", "Health spa", "Spa"}
@@ -37,18 +42,6 @@ def build_place_id(row: Dict[str, str], normalized_phone: str) -> str:
     phone_digits = re.sub(r"[^0-9]", "", normalized_phone)
     return f"csv-{title}-{phone_digits}"
 
-
-def supabase_headers(key: str, prefer: Optional[str] = None) -> Dict[str, str]:
-    headers = {
-        "Content-Type": "application/json",
-        "apikey": key,
-        "Authorization": f"Bearer {key}",
-    }
-    if prefer:
-        headers["Prefer"] = prefer
-    return headers
-
-
 def chunks(values: List[Dict[str, Any]], size: int) -> List[List[Dict[str, Any]]]:
     return [values[i : i + size] for i in range(0, len(values), size)]
 
@@ -61,23 +54,13 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    supabase_url = os.environ.get("SUPABASE_URL", "").rstrip("/")
-    supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-    if not supabase_url or not supabase_key:
-        raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
+    ontology = OntologyClient(actor="import-medspa-csv")
 
     path = Path(args.csv).expanduser().resolve()
     if not path.exists():
         raise FileNotFoundError(f"CSV file not found: {path}")
 
-    stoplist_resp = requests.get(
-        f"{supabase_url}/rest/v1/stoplist",
-        headers=supabase_headers(supabase_key),
-        params={"select": "phone"},
-        timeout=30,
-    )
-    stoplist_resp.raise_for_status()
-    stopset = {row.get("phone") for row in stoplist_resp.json() if row.get("phone")}
+    stopset = set(ontology.list_compliance_phones())
 
     rows_total = 0
     excluded_non_medspa = 0
@@ -133,18 +116,7 @@ def main() -> int:
     inserted_rows = 0
     if not args.dry_run and accepted:
         for batch in chunks(accepted, 200):
-            resp = requests.post(
-                f"{supabase_url}/rest/v1/leads",
-                headers=supabase_headers(
-                    supabase_key,
-                    "resolution=merge-duplicates,return=representation",
-                ),
-                params={"on_conflict": "place_id"},
-                data=json.dumps(batch),
-                timeout=60,
-            )
-            resp.raise_for_status()
-            data = resp.json()
+            data = ontology.upsert_patient_journeys(batch, on_conflict="place_id")
             inserted_rows += len(data) if isinstance(data, list) else 0
 
     result = {

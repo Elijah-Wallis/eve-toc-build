@@ -110,6 +110,20 @@ class OntologyClient:
             provenance=provenance or self._provenance("PatientJourney", params or "filtered", payload=patch),
         )
 
+    def upsert_patient_journeys(self, records: List[Dict[str, Any]], *, on_conflict: str = "place_id") -> List[Dict[str, Any]]:
+        if not records:
+            return []
+        rows = self._insert(
+            "leads",
+            records,
+            object_name="PatientJourney",
+            provenance=self._provenance("PatientJourney", f"batch:{on_conflict}", payload=records),
+            extra_headers={"Prefer": "resolution=merge-duplicates,return=representation"},
+            params={"on_conflict": on_conflict},
+            expect_list=True,
+        )
+        return rows if isinstance(rows, list) else [rows]
+
     def upsert_patient_journey_event(self, record: Dict[str, Any]) -> List[Dict[str, Any]]:
         headers = {"Prefer": "resolution=ignore-duplicates,return=representation"}
         provenance = self._provenance(
@@ -244,6 +258,32 @@ class OntologyClient:
             return True
         except requests.RequestException:
             return False
+
+    def list_clinical_transcripts(
+        self,
+        params: Dict[str, Any],
+        *,
+        provenance: Optional[Dict[str, Any]] = None,
+    ) -> List[Dict[str, Any]]:
+        return self._list(
+            "call_transcripts",
+            params,
+            object_name="ClinicalEncounter",
+            provenance=provenance,
+        )
+
+    def list_clinical_transcript_turns(
+        self,
+        params: Dict[str, Any],
+        *,
+        provenance: Optional[Dict[str, Any]] = None,
+    ) -> List[Dict[str, Any]]:
+        return self._list(
+            "call_transcript_turns",
+            params,
+            object_name="ClinicalEncounter",
+            provenance=provenance,
+        )
 
     def persist_validation_failure(self, report_row: Dict[str, Any], quarantine_row: Dict[str, Any]) -> None:
         for table, row in (("shacl_validation_reports", report_row), ("ingest_quarantine", quarantine_row)):

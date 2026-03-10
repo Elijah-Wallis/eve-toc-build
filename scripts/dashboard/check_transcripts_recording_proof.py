@@ -7,29 +7,23 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import requests
-
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from ontology.client import OntologyClient  # noqa: E402
 from src.runtime.env_loader import load_env_file  # noqa: E402
 
 
-def _first_recording_url(supabase_url: str, headers: Dict[str, str]) -> Dict[str, Any]:
-    params = {
+def _first_recording_url(ontology: OntologyClient) -> Dict[str, Any]:
+    params: Dict[str, Any] = {
         "select": "id,retell_call_id,recording_url,created_at",
         "recording_url": "not.is.null",
         "order": "created_at.desc",
         "limit": "1",
     }
-    resp = requests.get(
-        f"{supabase_url}/rest/v1/call_transcripts",
-        headers=headers,
-        params=params,
-        timeout=15,
-    )
-    return {"status_code": resp.status_code, "text": resp.text, "json": resp.json() if resp.ok else None}
+    rows = ontology.list_clinical_transcripts(params)
+    return {"status_code": 200, "text": "", "json": rows}
 
 
 def main() -> int:
@@ -46,8 +40,7 @@ def main() -> int:
         print(json.dumps(report, ensure_ascii=True))
         return 0
 
-    headers = {"apikey": supabase_key, "Authorization": f"Bearer {supabase_key}"}
-    result = _first_recording_url(supabase_url, headers)
+    result = _first_recording_url(OntologyClient(actor="dashboard-proof"))
     rows: List[Dict[str, Any]] = result["json"] or []
     sample: Optional[Dict[str, Any]] = rows[0] if rows else None
 
