@@ -1,0 +1,14 @@
+## SSOT Impact
+
+- How does this PR strengthen the SSOT for data fragmentation?
+- Does this PR protect the Ontology SSOT? (Y/N + link)
+
+## Change Summary
+
+- What ontology, runtime, workflow, or schema behavior changes here?
+- What existing source of truth is being updated or preserved?
+
+## Validation
+
+- What checks did you run?
+- What evidence shows the 5 Core Invariants still hold?

@@ -1,0 +1,111 @@
+version: 1
+authority:
+  title: Eve Ontology SSOT
+  constitution: README.md
+  owner: Eve Ontology
+core_invariants:
+  - "Every durable operational fact maps to a declared ontology object."
+  - "Every canonical record preserves provenance."
+  - "No workflow or script may create shadow entities outside the ontology."
+  - "Agent self-improvement is proposal-only and human-governed."
+  - "Runtime and schema must conform to the ontology SSOT."
+domain_objects:
+  - name: PatientJourney
+    description: Canonical longitudinal record of patient demand, conversion, treatment, follow-up, and retention.
+    provenance:
+      required:
+        - source_system
+        - source_record_id
+        - observed_at
+        - ingested_at
+  - name: ClinicalEncounter
+    description: A concrete patient interaction such as consultation, treatment visit, hygiene visit, surgery, or post-op follow-up.
+    provenance:
+      required:
+        - source_system
+        - source_record_id
+        - observed_at
+        - recorded_by
+  - name: "AestheticProcedure/DentalService"
+    description: The service or procedure delivered or recommended during a clinical or commercial workflow.
+    provenance:
+      required:
+        - source_system
+        - service_code
+        - observed_at
+  - name: Provider
+    description: Licensed or operational staff member responsible for delivery, consultation, supervision, or documentation.
+    provenance:
+      required:
+        - source_system
+        - provider_identifier
+        - observed_at
+  - name: ClinicLocation
+    description: Physical or licensed operating location where care, scheduling, sales, or inventory events occur.
+    provenance:
+      required:
+        - source_system
+        - location_identifier
+        - observed_at
+  - name: ConsumableInventory
+    description: Traceable stock position for injectables, implants, disposables, dental materials, and related consumables.
+    provenance:
+      required:
+        - source_system
+        - sku_or_lot
+        - observed_at
+  - name: FinancialEvent
+    description: Revenue, payment, refund, write-off, payroll, supply cost, or other value movement tied to the operating model.
+    provenance:
+      required:
+        - source_system
+        - transaction_id
+        - observed_at
+  - name: ComplianceRecord
+    description: Canonical evidence of consent, credentialing, policy attestation, audit trail, privacy handling, or regulatory control.
+    provenance:
+      required:
+        - source_system
+        - evidence_id
+        - observed_at
+relationships:
+  - from: PatientJourney
+    to: ClinicalEncounter
+    type: has_many
+  - from: ClinicalEncounter
+    to: "AestheticProcedure/DentalService"
+    type: delivers_or_recommends
+  - from: ClinicalEncounter
+    to: Provider
+    type: performed_by
+  - from: ClinicalEncounter
+    to: ClinicLocation
+    type: occurs_at
+  - from: "AestheticProcedure/DentalService"
+    to: ConsumableInventory
+    type: consumes
+  - from: PatientJourney
+    to: FinancialEvent
+    type: generates
+  - from: PatientJourney
+    to: ComplianceRecord
+    type: governed_by
+  - from: Provider
+    to: ComplianceRecord
+    type: constrained_by
+  - from: ClinicLocation
+    to: ConsumableInventory
+    type: stores
+provenance:
+  canonical_fields:
+    - source_system
+    - source_record_id
+    - observed_at
+    - ingested_at
+    - recorded_by
+    - evidence_uri
+    - lineage_hash
+  rules:
+    - "Canonical records must preserve upstream identifiers."
+    - "Derived records must point back to source evidence."
+    - "Cross-object joins must be explainable from stored provenance."

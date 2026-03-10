@@ -1,0 +1,49 @@
+name: ssot-lint
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ssot-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enforce README Constitution, ontology schema, and PR template
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -f README.md
+          grep -Fqx '# Eve Ontology — Single Source of Truth (SSOT) Constitution' README.md
+          for heading in \
+            '## Core Mission' \
+            '## Highest Leverage Problem #1: Data Fragmentation' \
+            '## 5 Core Invariants' \
+            '## Domain Objects' \
+            '## Repo Philosophy'
+          do
+            grep -Fq "$heading" README.md
+          done
+
+          test -f ontology/schema.yml
+          for object_name in \
+            'PatientJourney' \
+            'ClinicalEncounter' \
+            'AestheticProcedure/DentalService' \
+            'Provider' \
+            'ClinicLocation' \
+            'ConsumableInventory' \
+            'FinancialEvent' \
+            'ComplianceRecord'
+          do
+            grep -Fq "${object_name}" ontology/schema.yml
+          done
+          grep -Fq 'relationships:' ontology/schema.yml
+          grep -Fq 'provenance:' ontology/schema.yml
+
+          test -f .github/PULL_REQUEST_TEMPLATE.md
+          grep -Fq 'How does this PR strengthen the SSOT for data fragmentation?' .github/PULL_REQUEST_TEMPLATE.md
+          grep -Fq 'Does this PR protect the Ontology SSOT? (Y/N + link)' .github/PULL_REQUEST_TEMPLATE.md

@@ -1,42 +1,35 @@
 from __future__ import annotations
 
 import argparse
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
-
-from omega.factory import OmegaSkillFactory
-from omega.types import OmegaSkillSpec, RiskClass
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Protocol Omega Skill Factory")
-    parser.add_argument("--name", required=True)
-    parser.add_argument("--risk", required=True, choices=["A", "B", "C"])
-    parser.add_argument("--openapi", required=True)
-    parser.add_argument("--test-event", required=True)
-    parser.add_argument("--output-dir", required=True)
-    parser.add_argument("--description", default=None)
+    parser = argparse.ArgumentParser(
+        description="Run safe Eve self-improvement through the existing proposal system."
+    )
+    parser.add_argument("--mode", choices=["offline", "online"], default="offline")
+    parser.add_argument("--profile", choices=["fast", "deep"], default="fast")
     return parser.parse_args()
 
 
 def main() -> int:
     args = _parse_args()
-    spec = OmegaSkillSpec(
-        name=args.name,
-        risk_class=RiskClass(args.risk),
-        openapi_path=args.openapi,
-        test_event_path=args.test_event,
-        output_dir=args.output_dir,
-        description=args.description,
-    )
-    target = OmegaSkillFactory().generate(spec)
-    print(f"Generated: {target}")
-    return 0
+    cmd = [
+        sys.executable,
+        "-m",
+        "src.runtime.proactive_review.daily_review",
+        "--mode",
+        args.mode,
+        "--profile",
+        args.profile,
+        "--once",
+    ]
+    return subprocess.run(cmd, cwd=str(ROOT), check=False).returncode
 
 
 if __name__ == "__main__":
