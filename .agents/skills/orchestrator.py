@@ -1,7 +1,23 @@
 import operator
 import random
 from typing import Annotated, Dict, TypedDict, List
-from langgraph.graph import StateGraph, END
+
+try:
+    from langgraph.graph import END, StateGraph
+except ModuleNotFoundError:  # pragma: no cover - optional dependency in lightweight environments
+    END = "__end__"
+    StateGraph = None
+
+SPECIALIST_AGENT_REGISTRY = {
+    "chief_ontology_derivative_intelligence_architect": {
+        "title": "Chief Ontology & Derivative Intelligence Architect for Eve L5",
+        "entrypoint": "agents/chief-ontology-derivative-intelligence-architect/agent_core.py:ChiefOntologyDerivativeIntelligenceArchitectAgent",
+        "task_type": "ontology.chief.run",
+        "heartbeat_minutes": 5,
+        "skill": ".agents/skills/chief_ontology_derivative_intelligence_architect.md",
+    }
+}
+
 
 class Patient(TypedDict):
     name: str
@@ -63,12 +79,16 @@ def run_ralph(state: PlantState):
     if not decisions: decisions.append("RELEASE JOB: Schedule Optimized.")
     return {"decisions": decisions}
 
-workflow = StateGraph(PlantState)
-workflow.add_node("physics", run_physics_engine)
-workflow.add_node("jonah", run_jonah)
-workflow.add_node("ralph", run_ralph)
-workflow.set_entry_point("physics")
-workflow.add_edge("physics", "jonah")
-workflow.add_edge("jonah", "ralph")
-workflow.add_edge("ralph", END)
-app = workflow.compile()
+if StateGraph is not None:
+    workflow = StateGraph(PlantState)
+    workflow.add_node("physics", run_physics_engine)
+    workflow.add_node("jonah", run_jonah)
+    workflow.add_node("ralph", run_ralph)
+    workflow.set_entry_point("physics")
+    workflow.add_edge("physics", "jonah")
+    workflow.add_edge("jonah", "ralph")
+    workflow.add_edge("ralph", END)
+    app = workflow.compile()
+else:  # pragma: no cover - metadata-only import path
+    workflow = None
+    app = None

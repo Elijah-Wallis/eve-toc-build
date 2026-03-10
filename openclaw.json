@@ -13,6 +13,15 @@
       },
       "workspace": "${REPO_ROOT}",
       "maxConcurrent": 256
+    },
+    "catalog": {
+      "chief-ontology-derivative-intelligence-architect": {
+        "title": "Chief Ontology & Derivative Intelligence Architect for Eve L5",
+        "entrypoint": "agents/chief-ontology-derivative-intelligence-architect/agent_core.py:ChiefOntologyDerivativeIntelligenceArchitectAgent",
+        "taskType": "ontology.chief.run",
+        "heartbeatSeconds": 300,
+        "skill": ".agents/skills/chief_ontology_derivative_intelligence_architect.md"
+      }
     }
   },
   "channels": {

@@ -20,6 +20,9 @@ SECRET_PATTERNS = [
 
 ALLOWLIST_PATHS = {
     ".env.example",
+    "policies/docs/ontology-synthetic-gate.md",
+    "reviews/toc-build/docs/ontology-synthetic-gate.md",
+    "tests/contracts/test_proactive_review_redaction.py",
 }
 
 

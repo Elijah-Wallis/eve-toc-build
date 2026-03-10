@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import importlib.util
 import os
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Dict
 
 from ontology.client import OntologyClient
@@ -11,6 +13,16 @@ from .medspa_launch import MedspaLaunch
 from .n8n_webhooks import post_with_auto_heal
 from .postcall_reconciler import PostcallReconciler
 from .runtime_paths import state_path
+
+
+def _load_specialist_agent_class(slug: str, class_name: str) -> Any:
+    target = Path(__file__).resolve().parents[2] / "agents" / slug / "agent_core.py"
+    spec = importlib.util.spec_from_file_location(f"{slug.replace('-', '_')}_agent_core", target)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"failed to load specialist agent module: {target}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return getattr(module, class_name)
 
 
 def handler_n8n_trigger(payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -63,6 +75,15 @@ def handler_retell_postcall_reconcile(payload: Dict[str, Any]) -> Dict[str, Any]
     return reconciler.reconcile(payload)
 
 
+def handler_ontology_chief_run(payload: Dict[str, Any]) -> Dict[str, Any]:
+    agent_cls = _load_specialist_agent_class(
+        "chief-ontology-derivative-intelligence-architect",
+        "ChiefOntologyDerivativeIntelligenceArchitectAgent",
+    )
+    agent = agent_cls()
+    return agent.run_once(payload)
+
+
 def build_registry() -> TaskRegistry:
     registry = TaskRegistry()
     registry.register("n8n.trigger", TaskHandler("n8n.trigger", handler_n8n_trigger))
@@ -73,6 +94,10 @@ def build_registry() -> TaskRegistry:
     registry.register(
         "retell.postcall.reconcile",
         TaskHandler("retell.postcall.reconcile", handler_retell_postcall_reconcile),
+    )
+    registry.register(
+        "ontology.chief.run",
+        TaskHandler("ontology.chief.run", handler_ontology_chief_run),
     )
     return registry
 
@@ -85,4 +110,5 @@ def handler_map() -> Dict[str, Any]:
         "medspa.launch": handler_medspa_launch,
         "medspa.ramp": handler_medspa_ramp,
         "retell.postcall.reconcile": handler_retell_postcall_reconcile,
+        "ontology.chief.run": handler_ontology_chief_run,
     }
