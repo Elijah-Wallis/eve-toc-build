@@ -58,7 +58,7 @@
       "name": "No hardcoded absolute user paths",
       "purpose": {
         "laymen": "Prevents machine-specific paths from breaking deployments and sharing.",
-        "technical": "Scans tracked files for /Users/, /home/, or C:\\\\Users\\\\ to avoid host-leaking paths."
+        "technical": "Scans tracked files for machine-specific absolute home-directory paths to avoid host-leaking paths."
       },
       "how_to_fix": {
         "laymen": "Replace personal paths with relative paths or environment variables.",

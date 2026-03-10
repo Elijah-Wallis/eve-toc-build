@@ -532,7 +532,7 @@ else:
 
 CALL_ID="$(echo "$RESP" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("call_id",""))')"
 
-AUTO_LEARN="${RETELL_AUTO_LEARN_ON_CALL:-true}"
+AUTO_LEARN="${RETELL_AUTO_LEARN_ON_CALL:-false}"
 AUTO_LEARN_LOWER="$(printf '%s' "$AUTO_LEARN" | tr '[:upper:]' '[:lower:]')"
 if [[ "$AUTO_LEARN_LOWER" == "true" && -n "$CALL_ID" ]]; then
   mkdir -p "$ROOT_DIR/data/retell_calls"

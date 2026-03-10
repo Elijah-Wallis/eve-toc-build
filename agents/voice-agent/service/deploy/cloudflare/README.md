@@ -32,7 +32,7 @@ cloudflared tunnel route dns voice-agent voice-agent.yourdomain.com
 mkdir -p ~/.cloudflared
 cat > ~/.cloudflared/config.yml <<'YAML'
 tunnel: <TUNNEL-UUID>
-credentials-file: /Users/$USER/.cloudflared/<TUNNEL-UUID>.json
+credentials-file: ~/.cloudflared/<TUNNEL-UUID>.json
 
 ingress:
   - hostname: voice-agent.yourdomain.com
@@ -84,4 +84,3 @@ This pattern scales:
 
 - WebSockets are supported through Tunnel. Keepalive is recommended; this service already supports Retell ping/pong.
 - Use Cloudflare Access if you want to restrict who can connect during dogfooding.
-

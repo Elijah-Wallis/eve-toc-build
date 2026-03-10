@@ -43,14 +43,15 @@ Revenue-ops loop (objective function, real call artifacts):
 - Reports are written to `data/revenue_ops/latest.json` and `data/revenue_ops/latest.md`.
 - Full details: `docs/revenue_ops_loop.md`
 
-Learning loop (auto-pulls transcript + recording metadata and refines prompt at threshold):
+Learning loop (proposal-only; does not auto-apply prompt changes):
 
 - `make learn` runs one sync/analyze cycle.
-- `scripts/call_b2b.sh` also queues this in background automatically after each call by default.
+- `scripts/call_b2b.sh` does not auto-learn by default.
 - Defaults:
   - `RETELL_LEARN_THRESHOLD=250` (auto-refine once corpus reaches ~200-300 calls)
   - `RETELL_LEARN_LIMIT=100`
-  - `RETELL_AUTO_LEARN_ON_CALL=true`
+  - `RETELL_AUTO_LEARN_ON_CALL=false`
+  - Prompt or runtime changes must route through the existing proposal system.
 
 Lead Factory (ICP scraping/enrichment scorer for outbound queues):
 

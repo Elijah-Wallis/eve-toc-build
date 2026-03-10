@@ -109,9 +109,10 @@ def build_markdown_report(payload: dict) -> str:
 
 def main() -> int:
     cfg = BrainConfig.from_env()
+    default_mode = cfg.self_improve_mode if cfg.self_improve_mode in {"off", "propose"} else "off"
 
     ap = argparse.ArgumentParser(description="Offline self-improvement cycle (safe by default).")
-    ap.add_argument("--mode", choices=["off", "propose", "apply"], default=cfg.self_improve_mode)
+    ap.add_argument("--mode", choices=["off", "propose"], default=default_mode)
     ap.add_argument("--hard-gates", action="store_true", help="Run scripts/ci_hard_gates.sh instead of lightweight pytest.")
     ap.add_argument("--maxfail", type=int, default=10)
     ap.add_argument(
@@ -180,12 +181,6 @@ def main() -> int:
     all_green = all(bool(x.get("ok")) for x in command_results) if command_results else True
     propose_only = True
     blocked_on_gates = False
-    if mode == "apply":
-        if all_green:
-            propose_only = False
-        else:
-            propose_only = True
-            blocked_on_gates = True
 
     payload = {
         "timestamp": now_stamp(),
@@ -200,7 +195,7 @@ def main() -> int:
         "metrics": {
             VIC["self_improve_cycles_total"]: 1,
             VIC["self_improve_proposals_total"]: 1 if propose_only else 0,
-            VIC["self_improve_applies_total"]: 0 if propose_only else 1,
+            VIC["self_improve_applies_total"]: 0,
             VIC["self_improve_blocked_on_gates_total"]: 1 if blocked_on_gates else 0,
         },
     }

@@ -31,6 +31,8 @@ jobs:
           grep -Fq 'Protect the SSOT. Everything else compounds from here.' README.md
 
           test -f ontology/schema.yml
+          test ! -f ontology/schema.sql
+          test ! -f ontology/schema.json
           for object_name in \
             'PatientJourney' \
             'ClinicalEncounter' \
@@ -54,3 +56,10 @@ jobs:
           grep -Fq 'Constitution reference:' .github/PULL_REQUEST_TEMPLATE.md
           grep -Fq 'How does this PR strengthen the SSOT for data fragmentation?' .github/PULL_REQUEST_TEMPLATE.md
           grep -Fq 'Does this PR protect the Ontology SSOT? (Y/N + link)' .github/PULL_REQUEST_TEMPLATE.md
+
+          ! grep -Fq 'choices=["off", "propose", "apply"]' agents/voice-agent/service/scripts/self_improve_cycle.py
+          ! grep -Fq 'choices=["off", "propose", "apply"]' policies/scripts/self_improve_cycle.py
+          ! grep -Fq 'choices=["off", "propose", "apply"]' reviews/toc-build/scripts/self_improve_cycle.py
+          ! grep -Fq 'RETELL_AUTO_LEARN_ON_CALL:-true' agents/voice-agent/service/scripts/call_b2b.sh
+          ! grep -Fq 'RETELL_AUTO_LEARN_ON_CALL:-true' policies/scripts/call_b2b.sh
+          ! grep -Fq 'RETELL_AUTO_LEARN_ON_CALL:-true' reviews/toc-build/scripts/call_b2b.sh
