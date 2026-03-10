@@ -1,6 +1,7 @@
 ## SSOT Impact
 
 - Constitution reference: `README.md` is the governing document for this repo.
+- Invariant #1 reference: all production data access and transformations must route through the ontology layer.
 - How does this PR strengthen the SSOT for data fragmentation?
 - Does this PR protect the Ontology SSOT? (Y/N + link)
 

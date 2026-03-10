@@ -109,3 +109,60 @@ provenance:
     - "Canonical records must preserve upstream identifiers."
     - "Derived records must point back to source evidence."
     - "Cross-object joins must be explainable from stored provenance."
+operations:
+  PatientJourney:
+    create: upsert_patient_journey
+    read:
+      - get_patient_journey
+      - list_patient_journeys
+    update:
+      - patch_patient_journey
+      - patch_patient_journeys
+    events:
+      - upsert_patient_journey_event
+      - list_recent_patient_journey_events
+  ClinicalEncounter:
+    create: upsert_clinical_encounter
+    read:
+      - get_clinical_encounter
+      - list_clinical_encounters
+    update:
+      - patch_clinical_encounter
+    transcripts:
+      - upsert_clinical_transcript
+      - replace_clinical_transcript_turns
+  "AestheticProcedure/DentalService":
+    create: upsert_patient_journey_segment
+    read:
+      - query_object
+  Provider:
+    create: upsert_provider
+    read:
+      - get_provider
+  ClinicLocation:
+    create: upsert_clinic_location
+    read:
+      - get_clinic_location
+  ConsumableInventory:
+    create: upsert_consumable_inventory
+    read:
+      - query_object
+  FinancialEvent:
+    create: upsert_patient_journey_event
+    read:
+      - get_financial_event
+      - list_recent_patient_journey_events
+  ComplianceRecord:
+    create: upsert_compliance_record
+    read:
+      - list_compliance_phones
+      - query_object
+relationship_examples:
+  - object: PatientJourney
+    example: "PatientJourney[id=lead-123] has_many ClinicalEncounter[id=call-456]"
+  - object: ClinicalEncounter
+    example: "ClinicalEncounter[id=call-456] delivers_or_recommends AestheticProcedure/DentalService[id=segment-789]"
+  - object: Provider
+    example: "Provider[id=prov-22] constrained_by ComplianceRecord[id=license-ny-2026]"
+  - object: ClinicLocation
+    example: "ClinicLocation[id=clinic-dallas] stores ConsumableInventory[id=lot-btx-2026-02]"

@@ -63,3 +63,5 @@ jobs:
           ! grep -Fq 'RETELL_AUTO_LEARN_ON_CALL:-true' agents/voice-agent/service/scripts/call_b2b.sh
           ! grep -Fq 'RETELL_AUTO_LEARN_ON_CALL:-true' policies/scripts/call_b2b.sh
           ! grep -Fq 'RETELL_AUTO_LEARN_ON_CALL:-true' reviews/toc-build/scripts/call_b2b.sh
+      - name: Enforce Invariant #1 boundary
+        run: python3 scripts/ci/lint_ssot_invariants.py

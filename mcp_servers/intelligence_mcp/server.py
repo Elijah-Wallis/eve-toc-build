@@ -5,7 +5,7 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict
 
-import requests
+from ontology.client import OntologyClient
 
 
 def _json_response(handler: BaseHTTPRequestHandler, payload: Dict[str, Any], status: int = 200) -> None:
@@ -17,20 +17,8 @@ def _json_response(handler: BaseHTTPRequestHandler, payload: Dict[str, Any], sta
     handler.wfile.write(data)
 
 
-def _supabase_cfg() -> tuple[str, str]:
-    base = os.environ.get("SUPABASE_URL", "").rstrip("/")
-    key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-    if not base or not key:
-        raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
-    return base, key
-
-
-def _supabase_headers(key: str) -> Dict[str, str]:
-    return {
-        "apikey": key,
-        "Authorization": f"Bearer {key}",
-        "Accept": "application/json",
-    }
+def _ontology() -> OntologyClient:
+    return OntologyClient(actor="intelligence-mcp")
 
 
 def _tool_list() -> Dict[str, Any]:
@@ -38,7 +26,7 @@ def _tool_list() -> Dict[str, Any]:
         "tools": [
             {
                 "name": "intelligence.lead_snapshot",
-                "description": "Fetch one lead snapshot by lead_id or phone from Supabase.",
+                "description": "Fetch one PatientJourney snapshot by lead_id or phone through the ontology boundary.",
                 "inputSchema": {
                     "type": "object",
                     "properties": {"lead_id": {"type": "string"}, "phone": {"type": "string"}},
@@ -47,7 +35,7 @@ def _tool_list() -> Dict[str, Any]:
             },
             {
                 "name": "intelligence.recent_events",
-                "description": "Fetch recent lead events by lead_id from Supabase.",
+                "description": "Fetch recent FinancialEvent records by lead_id through the ontology boundary.",
                 "inputSchema": {
                     "type": "object",
                     "properties": {"lead_id": {"type": "string"}, "limit": {"type": "number"}},
@@ -59,43 +47,19 @@ def _tool_list() -> Dict[str, Any]:
 
 
 def _lead_snapshot(params: Dict[str, Any]) -> Dict[str, Any]:
-    base, key = _supabase_cfg()
     lead_id = str(params.get("lead_id") or "").strip()
     phone = str(params.get("phone") or "").strip()
     if not lead_id and not phone:
         raise RuntimeError("lead_id or phone is required")
-
-    query = {
-        "select": "id,source,place_id,business_name,phone,email,website,address,city,state,zip,status,lead_type,decision_maker_confirmed,positive_signal,touch_count,last_contacted_at,next_touch_at,rating,reviews_count,categories,created_at",
-        "limit": "1",
-    }
-    if lead_id:
-        query["id"] = f"eq.{lead_id}"
-    else:
-        query["phone"] = f"eq.{phone}"
-
-    resp = requests.get(f"{base}/rest/v1/leads", headers=_supabase_headers(key), params=query, timeout=30)
-    resp.raise_for_status()
-    rows = resp.json()
-    return {"data": rows[0] if rows else None}
+    return {"data": _ontology().get_patient_journey(lead_id=lead_id, phone=phone)}
 
 
 def _recent_events(params: Dict[str, Any]) -> Dict[str, Any]:
-    base, key = _supabase_cfg()
     lead_id = str(params.get("lead_id") or "").strip()
     if not lead_id:
         raise RuntimeError("lead_id is required")
     limit = max(1, min(int(params.get("limit", 25)), 200))
-
-    query = {
-        "select": "id,lead_id,event_type,idempotency_key,payload_json,created_at",
-        "lead_id": f"eq.{lead_id}",
-        "order": "created_at.desc",
-        "limit": str(limit),
-    }
-    resp = requests.get(f"{base}/rest/v1/lead_events", headers=_supabase_headers(key), params=query, timeout=30)
-    resp.raise_for_status()
-    return {"data": resp.json()}
+    return {"data": _ontology().list_recent_patient_journey_events(lead_id, limit)}
 
 
 class MCPHandler(BaseHTTPRequestHandler):

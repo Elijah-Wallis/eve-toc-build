@@ -6,7 +6,7 @@
   - Required header: `Authorization: Bearer <N8N_MCP_TOKEN>`
   - Expected tools: `search_workflows`, `get_workflow_details`, `execute_workflow`
 - `supabase_mcp` (local): `python3 -m mcp_servers.supabase_mcp.server`
-  - Tool: `supabase.request`
+  - Tool: `ontology.query`
 - `apify_mcp` (local): `python3 -m mcp_servers.apify_mcp.server`
   - Tool: `apify.run_actor`
 - `retell_mcp` (local): `python3 -m mcp_servers.retell_mcp.server`

@@ -4,7 +4,7 @@ import os
 from datetime import datetime, timezone
 from typing import Any, Dict
 
-import requests
+from ontology.client import OntologyClient
 
 from .task_registry import TaskHandler, TaskRegistry
 from .medspa_launch import MedspaLaunch
@@ -35,33 +35,8 @@ def handler_n8n_trigger(payload: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def handler_reports_daily(_: Dict[str, Any]) -> Dict[str, Any]:
-    supabase_url = os.environ.get("SUPABASE_URL", "")
-    supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-    if not supabase_url or not supabase_key:
-        raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
-    headers = {"apikey": supabase_key, "Authorization": f"Bearer {supabase_key}"}
-    today = datetime.now(timezone.utc).date().isoformat()
-    leads = requests.get(
-        f"{supabase_url}/rest/v1/leads?select=id,created_at&created_at=gte.{today}",
-        headers=headers,
-        timeout=30,
-    ).json()
-    calls = requests.get(
-        f"{supabase_url}/rest/v1/call_sessions?select=id,created_at&created_at=gte.{today}",
-        headers=headers,
-        timeout=30,
-    ).json()
-    segments = requests.get(
-        f"{supabase_url}/rest/v1/segments?select=segment,last_updated&last_updated=gte.{today}",
-        headers=headers,
-        timeout=30,
-    ).json()
-    return {
-        "date": today,
-        "leads": len(leads),
-        "call_sessions": len(calls),
-        "segments": len(segments),
-    }
+    ontology = OntologyClient(actor="reports-daily")
+    return ontology.daily_operations_summary(datetime.now(timezone.utc).date())
 
 
 def handler_graph_run(payload: Dict[str, Any]) -> Dict[str, Any]:

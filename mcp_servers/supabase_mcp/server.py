@@ -5,7 +5,7 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict
 
-import requests
+from ontology.client import OntologyClient
 
 
 def _json_response(handler: BaseHTTPRequestHandler, payload: Dict[str, Any], status: int = 200) -> None:
@@ -21,48 +21,46 @@ def _mcp_tools_list() -> Dict[str, Any]:
     return {
         "tools": [
             {
-                "name": "supabase.request",
-                "description": "Supabase REST request wrapper",
+                "name": "ontology.query",
+                "description": "Query ontology-backed objects through the canonical boundary.",
                 "inputSchema": {
                     "type": "object",
                     "properties": {
-                        "method": {"type": "string"},
-                        "path": {"type": "string"},
-                        "query": {"type": "string"},
-                        "json": {"type": "object"},
-                        "headers": {"type": "object"},
+                        "object_name": {"type": "string"},
+                        "filters": {"type": "object"},
+                        "select": {"type": "string"},
+                        "limit": {"type": "number"},
+                        "order": {"type": "string"},
                     },
-                    "required": ["method", "path"],
+                    "required": ["object_name"],
                 },
             }
         ]
     }
 
 
-def _request(params: Dict[str, Any]) -> Dict[str, Any]:
-    base = os.environ.get("SUPABASE_URL")
-    key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
-    if not base or not key:
-        raise RuntimeError("SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set")
+def _ontology() -> OntologyClient:
+    return OntologyClient(actor="ontology-mcp")
 
-    method = params.get("method", "GET").upper()
-    path = params.get("path", "/")
-    query = params.get("query", "")
-    url = f"{base.rstrip('/')}{path}{query}"
 
-    headers = {
-        "apikey": key,
-        "Authorization": f"Bearer {key}",
-    }
-    extra = params.get("headers") or {}
-    headers.update(extra)
-
-    resp = requests.request(method, url, headers=headers, json=params.get("json"), timeout=60)
-    resp.raise_for_status()
-    try:
-        return {"data": resp.json()}
-    except ValueError:
-        return {"text": resp.text}
+def _query(params: Dict[str, Any]) -> Dict[str, Any]:
+    object_name = str(params.get("object_name") or "").strip()
+    if not object_name:
+        raise RuntimeError("object_name is required")
+    filters = params.get("filters") or {}
+    if not isinstance(filters, dict):
+        raise RuntimeError("filters must be an object")
+    select = str(params.get("select") or "*")
+    limit = max(1, min(int(params.get("limit", 25)), 500))
+    order = str(params.get("order") or "")
+    data = _ontology().query_object(
+        object_name=object_name,
+        filters=filters,
+        select=select,
+        limit=limit,
+        order=order,
+    )
+    return {"data": data}
 
 
 class MCPHandler(BaseHTTPRequestHandler):
@@ -87,8 +85,8 @@ class MCPHandler(BaseHTTPRequestHandler):
             tool = params.get("name")
             args = params.get("arguments", {})
             try:
-                if tool == "supabase.request":
-                    result = _request(args)
+                if tool == "ontology.query":
+                    result = _query(args)
                 else:
                     raise RuntimeError("unknown_tool")
                 _json_response(self, {"jsonrpc": "2.0", "id": body.get("id"), "result": result})
