@@ -306,3 +306,32 @@ create table if not exists ingest_quarantine (
 );
 
 create index if not exists ingest_quarantine_event_id_idx on ingest_quarantine(event_id);
+
+-- SSOT security baseline: RLS must be enabled on operational tables.
+-- Runtime services use service-role JWT via OntologyClient.
+do $$
+declare
+  t text;
+  tables text[] := array[
+    'leads','lead_events','call_sessions','stoplist','segments',
+    'tasks','task_runs','context_threads','context_events','cron_jobs',
+    'call_transcripts','call_transcript_turns',
+    'canonical_outbox','applied_events','shacl_validation_reports','ingest_quarantine'
+  ];
+  policy_name text;
+begin
+  foreach t in array tables loop
+    execute format('alter table if exists public.%I enable row level security', t);
+    policy_name := t || '_service_role_all';
+    if not exists (
+      select 1 from pg_policies
+      where schemaname='public' and tablename=t and policyname=policy_name
+    ) then
+      execute format(
+        'create policy %I on public.%I for all using (auth.role() = ''service_role'') with check (auth.role() = ''service_role'')',
+        policy_name,
+        t
+      );
+    end if;
+  end loop;
+end $$;
