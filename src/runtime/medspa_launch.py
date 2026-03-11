@@ -7,6 +7,8 @@ from typing import Any, Dict, Iterable, List
 
 import requests
 
+from ontology.client import OntologyClient
+
 from .n8n_webhooks import post_with_auto_heal
 
 
@@ -46,11 +48,8 @@ class MedspaLaunch:
     """Campaign-scoped launch orchestration with canary gating."""
 
     def __init__(self) -> None:
-        self.supabase_url = os.environ.get("SUPABASE_URL", "").rstrip("/")
-        self.supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+        self.ontology = OntologyClient()
         self.n8n_webhook_base = os.environ.get("N8N_PUBLIC_WEBHOOK_BASE", "").rstrip("/")
-        if not self.supabase_url or not self.supabase_key:
-            raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
         if not self.n8n_webhook_base:
             raise RuntimeError("N8N_PUBLIC_WEBHOOK_BASE is required")
 
@@ -275,7 +274,7 @@ class MedspaLaunch:
 
     def campaign_status(self, campaign_tag: str) -> Dict[str, Any]:
         leads = self._get(
-            "/rest/v1/leads",
+            "leads",
             {
                 "select": "id,status,phone,source,paused_until,created_at,last_contacted_at",
                 "source": f"eq.{campaign_tag}",
@@ -287,7 +286,7 @@ class MedspaLaunch:
         calls = []
         if ids:
             calls = self._get(
-                "/rest/v1/call_sessions",
+                "call_sessions",
                 {
                     "select": "id,lead_id,retell_call_id,agent_type,outcome,created_at",
                     "lead_id": _in_filter(ids),
@@ -295,7 +294,7 @@ class MedspaLaunch:
                     "limit": "500",
                 },
             )
-        stoplist = self._get("/rest/v1/stoplist", {"select": "phone"})
+        stoplist = self._get("stoplist", {"select": "phone"})
         stopset = {s.get("phone") for s in stoplist}
         call_lead_ids = {c.get("lead_id") for c in calls if c.get("lead_id")}
         called_leads = [l for l in leads if l.get("id") in call_lead_ids]
@@ -322,7 +321,7 @@ class MedspaLaunch:
 
     def _recent_campaign_calls(self, campaign_tag: str, lookback_hours: int) -> Dict[str, Any]:
         leads = self._get(
-            "/rest/v1/leads",
+            "leads",
             {
                 "select": "id,phone",
                 "source": f"eq.{campaign_tag}",
@@ -333,7 +332,7 @@ class MedspaLaunch:
         if not ids:
             return {"campaign_tag": campaign_tag, "lookback_hours": lookback_hours, "call_session_count": 0, "stoplist_violations": []}
         calls = self._get(
-            "/rest/v1/call_sessions",
+            "call_sessions",
             {
                 "select": "id,lead_id,created_at,outcome",
                 "lead_id": _in_filter(ids),
@@ -342,7 +341,7 @@ class MedspaLaunch:
                 "limit": "500",
             },
         )
-        stoplist = self._get("/rest/v1/stoplist", {"select": "phone"})
+        stoplist = self._get("stoplist", {"select": "phone"})
         stopset = {s.get("phone") for s in stoplist}
         phone_by_id = {str(row.get("id")): row.get("phone") for row in leads if row.get("id")}
         violations = [
@@ -358,11 +357,11 @@ class MedspaLaunch:
         }
 
     def _preflight(self) -> Dict[str, Any]:
-        sup = requests.get(
-            f"{self.supabase_url}/rest/v1/tasks?select=id&limit=1",
-            headers=self._headers(),
-            timeout=15,
-        )
+        try:
+            self.ontology.select("tasks", {"select": "id", "limit": "1"})
+            sup_status_code = 200
+        except requests.RequestException:
+            sup_status_code = 500
         n8n_api_base = os.environ.get("N8N_API_BASE", "https://elijah-wallis.app.n8n.cloud/api/v1").rstrip("/")
         n8n_api_key = os.environ.get("N8N_API_KEY", "")
         n8n_status = {"status": "missing"}
@@ -392,7 +391,7 @@ class MedspaLaunch:
         launch_webhook_probe = self._probe_launch_webhook_registry()
         custom_llm_probe = self._probe_custom_llm_health()
         blockers = []
-        if (sup.status_code != 200) or (n8n_status.get("status") != "ok"):
+        if (sup_status_code != 200) or (n8n_status.get("status") != "ok"):
             blockers.append("core_connectivity")
         if env_expression_runtime.get("status") != "ok":
             blockers.append("n8n_env_expression_runtime")
@@ -408,7 +407,7 @@ class MedspaLaunch:
             "overall": overall,
             "overall_spatial": self._preflight_overall_spatial(overall, blockers),
             "blockers": blockers,
-            "supabase": {"status": "ok" if sup.status_code == 200 else "error", "code": sup.status_code},
+            "supabase": {"status": "ok" if sup_status_code == 200 else "error", "code": sup_status_code},
             "n8n_api": n8n_status,
             "n8n_env_expression_runtime": env_expression_runtime,
             "secret_hygiene": secret_guard,
@@ -676,7 +675,7 @@ class MedspaLaunch:
 
     def _sample_probe_lead_id(self) -> str | None:
         try:
-            rows = self._get("/rest/v1/leads", {"select": "id", "limit": "1", "order": "created_at.asc"})
+            rows = self._get("leads", {"select": "id", "limit": "1", "order": "created_at.asc"})
         except Exception:  # noqa: BLE001
             return None
         if not rows:
@@ -685,7 +684,7 @@ class MedspaLaunch:
 
     def _fetch_campaign_candidates(self, campaign_tag: str) -> List[Dict[str, Any]]:
         rows = self._get(
-            "/rest/v1/leads",
+            "leads",
             {
                 "select": "id,source,phone,status,paused_until,touch_count,last_contacted_at,created_at",
                 "source": f"eq.{campaign_tag}",
@@ -716,7 +715,7 @@ class MedspaLaunch:
         canary_target: int,
     ) -> Dict[str, Any]:
         calls = self._get(
-            "/rest/v1/call_sessions",
+            "call_sessions",
             {
                 "select": "id,lead_id,retell_call_id,outcome,created_at",
                 "lead_id": _in_filter(canary_ids),
@@ -725,10 +724,10 @@ class MedspaLaunch:
                 "limit": "100",
             },
         )
-        stoplist = self._get("/rest/v1/stoplist", {"select": "phone"})
+        stoplist = self._get("stoplist", {"select": "phone"})
         stopset = {s.get("phone") for s in stoplist}
         canary_leads = self._get(
-            "/rest/v1/leads",
+            "leads",
             {"select": "id,phone", "id": _in_filter(canary_ids), "limit": "100"},
         )
         lead_phone = {row.get("id"): row.get("phone") for row in canary_leads}
@@ -762,28 +761,8 @@ class MedspaLaunch:
         )
 
     def _patch_leads(self, filters: Dict[str, str], patch: Dict[str, Any]) -> None:
-        params = "&".join(f"{k}={v}" for k, v in filters.items())
-        resp = requests.patch(
-            f"{self.supabase_url}/rest/v1/leads?{params}",
-            headers=self._headers(),
-            json=patch,
-            timeout=30,
-        )
-        resp.raise_for_status()
+        query = "&".join(f"{k}={v}" for k, v in filters.items())
+        self.ontology.patch(f"leads?{query}", patch)
 
-    def _get(self, path: str, params: Dict[str, Any]) -> List[Dict[str, Any]]:
-        resp = requests.get(
-            f"{self.supabase_url}{path}",
-            headers=self._headers(),
-            params=params,
-            timeout=30,
-        )
-        resp.raise_for_status()
-        return resp.json()
-
-    def _headers(self) -> Dict[str, str]:
-        return {
-            "Content-Type": "application/json",
-            "apikey": self.supabase_key,
-            "Authorization": f"Bearer {self.supabase_key}",
-        }
+    def _get(self, table: str, params: Dict[str, Any]) -> List[Dict[str, Any]]:
+        return self.ontology.select(table, params)

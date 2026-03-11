@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import json
-import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict
 
-import requests
+from ontology.client import OntologyClient
 
 
 def _json_response(handler: BaseHTTPRequestHandler, payload: Dict[str, Any], status: int = 200) -> None:
@@ -21,7 +20,7 @@ def _mcp_tools_list() -> Dict[str, Any]:
     return {
         "tools": [
             {
-                "name": "supabase.request",
+                "name": "ontology.request",
                 "description": "Supabase REST request wrapper",
                 "inputSchema": {
                     "type": "object",
@@ -40,29 +39,12 @@ def _mcp_tools_list() -> Dict[str, Any]:
 
 
 def _request(params: Dict[str, Any]) -> Dict[str, Any]:
-    base = os.environ.get("SUPABASE_URL")
-    key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
-    if not base or not key:
-        raise RuntimeError("SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set")
-
     method = params.get("method", "GET").upper()
     path = params.get("path", "/")
     query = params.get("query", "")
-    url = f"{base.rstrip('/')}{path}{query}"
-
-    headers = {
-        "apikey": key,
-        "Authorization": f"Bearer {key}",
-    }
-    extra = params.get("headers") or {}
-    headers.update(extra)
-
-    resp = requests.request(method, url, headers=headers, json=params.get("json"), timeout=60)
-    resp.raise_for_status()
-    try:
-        return {"data": resp.json()}
-    except ValueError:
-        return {"text": resp.text}
+    payload = params.get("json")
+    extra_headers = params.get("headers") or {}
+    return OntologyClient().request(method, path, query=query, json_payload=payload, headers=extra_headers, timeout=60)
 
 
 class MCPHandler(BaseHTTPRequestHandler):
@@ -87,7 +69,7 @@ class MCPHandler(BaseHTTPRequestHandler):
             tool = params.get("name")
             args = params.get("arguments", {})
             try:
-                if tool == "supabase.request":
+                if tool == "ontology.request":
                     result = _request(args)
                 else:
                     raise RuntimeError("unknown_tool")

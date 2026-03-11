@@ -5,7 +5,7 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict
 
-import requests
+from ontology.client import OntologyClient
 
 
 def _json_response(handler: BaseHTTPRequestHandler, payload: Dict[str, Any], status: int = 200) -> None:
@@ -15,22 +15,6 @@ def _json_response(handler: BaseHTTPRequestHandler, payload: Dict[str, Any], sta
     handler.send_header("Content-Length", str(len(data)))
     handler.end_headers()
     handler.wfile.write(data)
-
-
-def _supabase_cfg() -> tuple[str, str]:
-    base = os.environ.get("SUPABASE_URL", "").rstrip("/")
-    key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-    if not base or not key:
-        raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
-    return base, key
-
-
-def _supabase_headers(key: str) -> Dict[str, str]:
-    return {
-        "apikey": key,
-        "Authorization": f"Bearer {key}",
-        "Accept": "application/json",
-    }
 
 
 def _tool_list() -> Dict[str, Any]:
@@ -59,7 +43,7 @@ def _tool_list() -> Dict[str, Any]:
 
 
 def _lead_snapshot(params: Dict[str, Any]) -> Dict[str, Any]:
-    base, key = _supabase_cfg()
+    client = OntologyClient()
     lead_id = str(params.get("lead_id") or "").strip()
     phone = str(params.get("phone") or "").strip()
     if not lead_id and not phone:
@@ -74,14 +58,12 @@ def _lead_snapshot(params: Dict[str, Any]) -> Dict[str, Any]:
     else:
         query["phone"] = f"eq.{phone}"
 
-    resp = requests.get(f"{base}/rest/v1/leads", headers=_supabase_headers(key), params=query, timeout=30)
-    resp.raise_for_status()
-    rows = resp.json()
+    rows = client.select("leads", query)
     return {"data": rows[0] if rows else None}
 
 
 def _recent_events(params: Dict[str, Any]) -> Dict[str, Any]:
-    base, key = _supabase_cfg()
+    client = OntologyClient()
     lead_id = str(params.get("lead_id") or "").strip()
     if not lead_id:
         raise RuntimeError("lead_id is required")
@@ -93,9 +75,7 @@ def _recent_events(params: Dict[str, Any]) -> Dict[str, Any]:
         "order": "created_at.desc",
         "limit": str(limit),
     }
-    resp = requests.get(f"{base}/rest/v1/lead_events", headers=_supabase_headers(key), params=query, timeout=30)
-    resp.raise_for_status()
-    return {"data": resp.json()}
+    return {"data": client.select("lead_events", query)}
 
 
 class MCPHandler(BaseHTTPRequestHandler):

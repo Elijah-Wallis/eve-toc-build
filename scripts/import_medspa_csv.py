@@ -4,13 +4,12 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import os
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import parse_qs, urlparse
 
-import requests
+from ontology.client import OntologyClient
 
 
 ALLOWED_CATEGORIES = {"Medical spa", "Facial spa", "Day spa", "Health spa", "Spa"}
@@ -38,46 +37,26 @@ def build_place_id(row: Dict[str, str], normalized_phone: str) -> str:
     return f"csv-{title}-{phone_digits}"
 
 
-def supabase_headers(key: str, prefer: Optional[str] = None) -> Dict[str, str]:
-    headers = {
-        "Content-Type": "application/json",
-        "apikey": key,
-        "Authorization": f"Bearer {key}",
-    }
-    if prefer:
-        headers["Prefer"] = prefer
-    return headers
-
-
 def chunks(values: List[Dict[str, Any]], size: int) -> List[List[Dict[str, Any]]]:
     return [values[i : i + size] for i in range(0, len(values), size)]
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Import MedSpa CSV into Supabase leads table with strict filtering.")
+    parser = argparse.ArgumentParser(description="Import MedSpa CSV into ontology-modeled leads table with strict filtering.")
     parser.add_argument("--csv", required=True)
     parser.add_argument("--campaign-tag", required=True)
     parser.add_argument("--report-file", default="")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    supabase_url = os.environ.get("SUPABASE_URL", "").rstrip("/")
-    supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-    if not supabase_url or not supabase_key:
-        raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
+    ontology = OntologyClient()
 
     path = Path(args.csv).expanduser().resolve()
     if not path.exists():
         raise FileNotFoundError(f"CSV file not found: {path}")
 
-    stoplist_resp = requests.get(
-        f"{supabase_url}/rest/v1/stoplist",
-        headers=supabase_headers(supabase_key),
-        params={"select": "phone"},
-        timeout=30,
-    )
-    stoplist_resp.raise_for_status()
-    stopset = {row.get("phone") for row in stoplist_resp.json() if row.get("phone")}
+    stop_rows = ontology.select("stoplist", {"select": "phone"})
+    stopset = {row.get("phone") for row in stop_rows if row.get("phone")}
 
     rows_total = 0
     excluded_non_medspa = 0
@@ -133,19 +112,10 @@ def main() -> int:
     inserted_rows = 0
     if not args.dry_run and accepted:
         for batch in chunks(accepted, 200):
-            resp = requests.post(
-                f"{supabase_url}/rest/v1/leads",
-                headers=supabase_headers(
-                    supabase_key,
-                    "resolution=merge-duplicates,return=representation",
-                ),
-                params={"on_conflict": "place_id"},
-                data=json.dumps(batch),
-                timeout=60,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            inserted_rows += len(data) if isinstance(data, list) else 0
+            for row in batch:
+                upserted = ontology.insert("leads?on_conflict=place_id", row, return_representation=True)
+                if upserted:
+                    inserted_rows += 1
 
     result = {
         "csv": str(path),
@@ -162,8 +132,9 @@ def main() -> int:
     if args.report_file:
         report_path = Path(args.report_file).expanduser().resolve()
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        report_path.write_text(json.dumps(result, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
-    print(json.dumps(result, ensure_ascii=True))
+        report_path.write_text(json.dumps(result, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+
+    print(json.dumps(result, ensure_ascii=True, indent=2))
     return 0
 
 

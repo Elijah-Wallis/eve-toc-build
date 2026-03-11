@@ -12,6 +12,8 @@ from typing import Any, Dict, List, Optional
 
 import requests
 
+from ontology.client import OntologyClient
+
 from .outbox import build_outbox_envelope
 from .task_registry import TaskRegistry
 from .telemetry import Telemetry
@@ -39,10 +41,7 @@ class TaskEngine:
     def __init__(self, registry: TaskRegistry, telemetry: Optional[Telemetry] = None) -> None:
         self.registry = registry
         self.telemetry = telemetry
-        self.supabase_url = os.environ.get("SUPABASE_URL", "")
-        self.supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-        if not self.supabase_url or not self.supabase_key:
-            raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
+        self.ontology = OntologyClient()
         self._host_id = f"{socket.gethostname()}:{os.getpid()}"
         self.max_retries = max(0, int(os.environ.get("OPENCLAW_STEP_MAX_RETRIES", "2")))
         self.backoff_ms = max(10, int(os.environ.get("OPENCLAW_STEP_BACKOFF_MS", "250")))
@@ -148,15 +147,16 @@ class TaskEngine:
 
     def _fetch_ready_tasks(self, limit: int = 5) -> List[Dict[str, Any]]:
         now = datetime.now(timezone.utc).isoformat()
-        url = f"{self.supabase_url}/rest/v1/tasks"
-        params = {
-            "select": "id,type,payload_json,retries,max_retries,scheduled_for",
-            "status": "eq.queued",
-            "scheduled_for": f"lte.{now}",
-            "order": "scheduled_for.asc",
-            "limit": str(limit),
-        }
-        return self._get(url, params=params)
+        return self.ontology.select(
+            "tasks",
+            {
+                "select": "id,type,payload_json,retries,max_retries,scheduled_for",
+                "status": "eq.queued",
+                "scheduled_for": f"lte.{now}",
+                "order": "scheduled_for.asc",
+                "limit": str(limit),
+            },
+        )
 
     def _lock_task(self, task: Dict[str, Any]) -> Optional[TaskRecord]:
         patch = {
@@ -232,80 +232,24 @@ class TaskEngine:
         key = payload.get("idempotency_key")
         if not key:
             return False
-        url = f"{self.supabase_url}/rest/v1/tasks"
-        params = {
-            "select": "id",
-            "payload_json->>idempotency_key": f"eq.{key}",
-            "status": "in.(running,completed)",
-        }
-        existing = self._get(url, params=params)
+        existing = self.ontology.select(
+            "tasks",
+            {
+                "select": "id",
+                "payload_json->>idempotency_key": f"eq.{key}",
+                "status": "in.(running,completed)",
+            },
+        )
         return len(existing) > 0
 
-    def _get(self, url: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-        resp = self._request_with_retry("get", url, params=params)
-        resp.raise_for_status()
-        return resp.json()
+    def _get(self, table: str, params: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        return self.ontology.select(table, params=params)
 
     def _insert(self, table: str, record: Dict[str, Any], return_representation: bool = False) -> Dict[str, Any]:
-        headers = self._headers()
-        if return_representation:
-            headers["Prefer"] = "return=representation"
-        resp = self._request_with_retry(
-            "post",
-            f"{self.supabase_url}/rest/v1/{table}",
-            headers=headers,
-            data=json.dumps(record),
-        )
-        resp.raise_for_status()
-        try:
-            data = resp.json()
-        except ValueError:
-            return {}
-        return data[0] if isinstance(data, list) and data else data
+        return self.ontology.insert(table, record, return_representation=return_representation)
 
     def _patch(self, table_query: str, patch: Dict[str, Any], return_representation: bool = False) -> List[Dict[str, Any]]:
-        headers = self._headers()
-        if return_representation:
-            headers["Prefer"] = "return=representation"
-        resp = self._request_with_retry(
-            "patch",
-            f"{self.supabase_url}/rest/v1/{table_query}",
-            headers=headers,
-            data=json.dumps(patch),
-        )
-        resp.raise_for_status()
-        return resp.json() if return_representation else []
-
-    def _request_with_retry(self, method: str, url: str, **kwargs: Any) -> requests.Response:
-        timeout = kwargs.pop("timeout", 30)
-        headers = kwargs.pop("headers", self._headers())
-        last_exc: Optional[Exception] = None
-        for attempt in range(self.max_retries + 1):
-            try:
-                return requests.request(method, url, headers=headers, timeout=timeout, **kwargs)
-            except requests.RequestException as exc:
-                last_exc = exc
-                if attempt >= self.max_retries:
-                    break
-                backoff = min(15000, self.backoff_ms * (2**attempt))
-                time.sleep(backoff / 1000.0)
-        if isinstance(last_exc, Exception):
-            raise last_exc
-        raise RuntimeError("request failed without exception")
-
-    def _headers(self) -> Dict[str, str]:
-        return {
-            "Content-Type": "application/json",
-            "apikey": self.supabase_key,
-            "Authorization": f"Bearer {self.supabase_key}",
-        }
-
-    def _correlation_id(self) -> str:
-        return f"task-{uuid.uuid4().hex[:12]}"
-
-    def _emit(self, event: str, payload: Dict[str, Any]) -> None:
-        if self.telemetry:
-            self.telemetry.emit(event, payload)
+        return self.ontology.patch(table_query, patch, return_representation=return_representation)
 
     def _emit_outbox_event(
         self,
@@ -315,28 +259,30 @@ class TaskEngine:
         aggregate_id: str,
         payload_delta: Dict[str, Any],
     ) -> None:
-        if os.environ.get("OPENCLAW_OUTBOX_EMIT", "1") == "0":
-            return
         try:
-            envelope = build_outbox_envelope(
-                mutation_key=mutation_key,
-                aggregate_type=aggregate_type,
-                aggregate_id=aggregate_id,
-                payload_delta=payload_delta,
-                schema_version=1,
-            )
-            headers = self._headers()
-            headers["Prefer"] = "resolution=merge-duplicates,return=minimal"
-            self._request_with_retry(
-                "post",
-                f"{self.supabase_url}/rest/v1/canonical_outbox",
-                headers=headers,
-                params={"on_conflict": "event_id"},
-                data=json.dumps(envelope.as_record()),
-                timeout=5,
-            ).raise_for_status()
-        except requests.RequestException as exc:
+            payload_json = {
+                "mutation_key": mutation_key,
+                "aggregate_type": aggregate_type,
+                "aggregate_id": aggregate_id,
+                "payload_delta": payload_delta,
+            }
+            envelope = build_outbox_envelope(payload_json)
+            self._insert("canonical_outbox", envelope)
+        except Exception as exc:  # noqa: BLE001
             self._emit(
-                "outbox_write_error",
-                {"mutation_key": mutation_key, "error": f"{type(exc).__name__}:{exc}"},
+                "outbox_emit_error",
+                {
+                    "mutation_key": mutation_key,
+                    "aggregate_type": aggregate_type,
+                    "aggregate_id": aggregate_id,
+                    "error": f"{type(exc).__name__}:{exc}",
+                },
             )
+
+    def _correlation_id(self) -> str:
+        return str(uuid.uuid4())
+
+    def _emit(self, event: str, payload: Dict[str, Any]) -> None:
+        if not self.telemetry:
+            return
+        self.telemetry.log(event, payload)

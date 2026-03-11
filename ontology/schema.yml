@@ -1,0 +1,160 @@
+version: 1
+name: eve_medical_group_ontology
+ssot_constitution: README.md
+
+objects:
+  - name: PatientJourney
+    description: Longitudinal journey for a patient across discovery, consult, treatment, follow-up, and retention.
+    properties:
+      - patient_id: string
+      - journey_stage: string
+      - primary_location_id: string
+      - source_systems: [string]
+      - provenance_refs: [string]
+
+  - name: ClinicalEncounter
+    description: Canonical clinical encounter normalized from EMR/EHR systems.
+    properties:
+      - encounter_id: string
+      - patient_id: string
+      - provider_id: string
+      - location_id: string
+      - encounter_timestamp: datetime
+      - source_record_ref: string
+
+  - name: AestheticProcedure
+    aliases: [DentalService]
+    description: Procedure/service catalog and event data for aesthetics and dental domains.
+    properties:
+      - procedure_id: string
+      - encounter_id: string
+      - code: string
+      - quantity: number
+      - status: string
+      - source_record_ref: string
+
+  - name: Provider
+    description: Clinician identity with credentials, delegation scope, and licensing constraints.
+    properties:
+      - provider_id: string
+      - credential_type: string
+      - licensed_states: [string]
+      - delegation_rules: [string]
+      - source_record_ref: string
+
+  - name: ClinicLocation
+    description: Site-level operational and compliance context.
+    properties:
+      - location_id: string
+      - state: string
+      - compliance_flags: [string]
+      - source_record_ref: string
+
+  - name: ConsumableInventory
+    description: Injectable/implant consumables with lot and expiration tracking.
+    properties:
+      - inventory_item_id: string
+      - location_id: string
+      - lot_number: string
+      - expires_on: date
+      - quantity_on_hand: number
+      - source_record_ref: string
+
+  - name: FinancialEvent
+    description: Billing/collection/revenue-cycle events harmonized across systems.
+    properties:
+      - financial_event_id: string
+      - patient_id: string
+      - encounter_id: string
+      - amount: number
+      - event_type: string
+      - occurred_at: datetime
+      - source_record_ref: string
+
+  - name: ComplianceRecord
+    description: HIPAA/regulatory and internal policy evidence trail.
+    properties:
+      - compliance_record_id: string
+      - location_id: string
+      - policy_reference: string
+      - evidence_uri: string
+      - recorded_at: datetime
+      - source_record_ref: string
+
+links:
+  - from: PatientJourney
+    to: ClinicalEncounter
+    relation: includes
+  - from: ClinicalEncounter
+    to: AestheticProcedure
+    relation: performs
+  - from: ClinicalEncounter
+    to: Provider
+    relation: handled_by
+  - from: ClinicalEncounter
+    to: ClinicLocation
+    relation: occurs_at
+  - from: ConsumableInventory
+    to: ClinicLocation
+    relation: stocked_at
+  - from: FinancialEvent
+    to: ClinicalEncounter
+    relation: references
+  - from: ComplianceRecord
+    to: ClinicLocation
+    relation: governs
+
+provenance:
+  required_fields:
+    - source_system
+    - source_record_ref
+    - ingested_at
+    - ingested_by
+  lineage_policy: HIPAA-compliant lineage required for every normalized object and relationship.
+
+invariants:
+  - "All production transformations route through ontology-modeled objects."
+  - "New fields/entities/relationships are added in ontology/schema.yml first."
+  - "Provenance and HIPAA-compliant lineage are mandatory."
+  - "Ontology changes require explicit approval and README constitution update."
+  - "Autonomy systems optimize on truth and regulatory safety, never around them."
+
+operations:
+  PatientJourney:
+    create: upsert_patient_journey
+    read: get_patient_journey
+    update: patch_patient_journey
+  ClinicalEncounter:
+    create: upsert_clinical_encounter
+    read: list_clinical_encounters
+    update: patch_clinical_encounter
+  ConsumableInventory:
+    create: upsert_consumable_inventory
+    read: list_consumable_inventory
+    update: patch_consumable_inventory
+  FinancialEvent:
+    create: record_financial_event
+    read: list_recent_financial_events
+  ComplianceRecord:
+    create: record_compliance_event
+    read: list_compliance_events
+
+relationship_examples:
+  - name: patient_journey_includes_encounter
+    from: PatientJourney
+    to: ClinicalEncounter
+    example:
+      patient_id: p-100
+      encounter_id: ce-9001
+  - name: encounter_references_financial_event
+    from: ClinicalEncounter
+    to: FinancialEvent
+    example:
+      encounter_id: ce-9001
+      financial_event_id: fe-551
+  - name: inventory_stocked_at_location
+    from: ConsumableInventory
+    to: ClinicLocation
+    example:
+      inventory_item_id: inv-33
+      location_id: clinic-az-1

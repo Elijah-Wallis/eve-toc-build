@@ -9,6 +9,8 @@ from typing import Any, Dict, List, Tuple
 
 import requests
 
+from ontology.client import OntologyClient
+
 from n8n_workflow_lifecycle import (
     force_reregister_workflow_webhooks,
     get_workflow_by_name,
@@ -1197,16 +1199,11 @@ def _activate_workflow(name: str) -> str:
 
 
 def _upsert_feedback_cron_job() -> str:
-    supabase_url = os.environ.get("SUPABASE_URL", "").rstrip("/")
-    supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-    if not supabase_url or not supabase_key:
+    try:
+        ontology = OntologyClient()
+    except RuntimeError:
         return "skipped:missing_supabase"
-    headers = {
-        "Content-Type": "application/json",
-        "apikey": supabase_key,
-        "Authorization": f"Bearer {supabase_key}",
-        "Prefer": "resolution=merge-duplicates,return=representation",
-    }
+
     payload = {
         "name": "cron:openclaw-feedback-nightly",
         "cron": "5 3 * * *",
@@ -1214,14 +1211,11 @@ def _upsert_feedback_cron_job() -> str:
         "payload_json": {"workflow": "openclaw-feedback-nightly", "data": {"lookback_hours": 24}},
         "active": True,
     }
-    resp = requests.post(
-        f"{supabase_url}/rest/v1/cron_jobs?on_conflict=name",
-        headers=headers,
-        data=json.dumps(payload),
-        timeout=30,
-    )
-    if resp.status_code >= 400:
-        return f"failed:{resp.status_code}"
+    try:
+        ontology.insert("cron_jobs?on_conflict=name", payload, return_representation=True)
+    except requests.RequestException as exc:
+        status = exc.response.status_code if exc.response is not None else 500
+        return f"failed:{status}"
     return "ok"
 
 

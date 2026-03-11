@@ -17,6 +17,7 @@ from src.runtime.runtime_paths import resolve_state_dir
 from src.runtime.runtime_paths import state_path
 
 from .context_store import ContextStore
+from ontology.client import OntologyClient
 from .config_adapter import resolve_telemetry_path
 from .medspa_launch import MedspaLaunch
 from .registry_defaults import build_registry
@@ -34,8 +35,7 @@ class TelegramRouter:
         self.telemetry = Telemetry(str(resolve_telemetry_path()))
         self.engine = TaskEngine(self.registry, telemetry=self.telemetry)
         self.context = ContextStore()
-        self.supabase_url = os.environ.get("SUPABASE_URL", "")
-        self.supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+        self.ontology = OntologyClient()
         self.n8n_api_base = os.environ.get("N8N_API_BASE", "https://elijah-wallis.app.n8n.cloud/api/v1")
         self.n8n_api_key = os.environ.get("N8N_API_KEY", "")
 
@@ -352,7 +352,7 @@ class TelegramRouter:
 
             if cmd == "/status":
                 task_loop_raw = self._task_loop_status()
-                supabase = self._supabase_health()
+                store_status = self._supabase_health()
                 n8n = self._n8n_health()
 
                 task_loop = dict(task_loop_raw or {})
@@ -373,10 +373,10 @@ class TelegramRouter:
                         last_task["retries"] = last_event.get("retries")
 
                 return {
-                    "overall": self._overall_status(task_loop_raw, supabase, n8n),
+                    "overall": self._overall_status(task_loop_raw, store_status, n8n),
                     "task_loop": {**task_loop, **self._decorate(task_loop.get("status", "unknown"))},
                     "last_task": last_task,
-                    "supabase": {**supabase, **self._decorate(supabase.get("status", "unknown"))},
+                    "ontology_store": {**store_status, **self._decorate(store_status.get("status", "unknown"))},
                     "n8n": {**n8n, **self._decorate(n8n.get("status", "unknown"))},
                 }
 
@@ -491,8 +491,6 @@ class TelegramRouter:
         }
 
     def _upsert_cron_job(self, workflow: str, cron: str) -> Dict[str, Any]:
-        if not self.supabase_url or not self.supabase_key:
-            return {"error": "supabase_missing"}
         job = {
             "name": f"cron:{workflow}",
             "cron": cron,
@@ -501,59 +499,17 @@ class TelegramRouter:
             "active": True,
             "updated_at": self._now(),
         }
-        headers = self._headers()
-        headers["Prefer"] = "return=representation,resolution=merge-duplicates"
         try:
-            resp = requests.post(
-                f"{self.supabase_url}/rest/v1/cron_jobs?on_conflict=name",
-                headers=headers,
-                data=json.dumps(job),
-                timeout=30,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            return data[0] if isinstance(data, list) and data else data
-        except requests.HTTPError as exc:
-            if exc.response is None or exc.response.status_code != 409:
-                return {"error": f"upsert_failed:{exc}"}
-            # Last-resort fallback if conflict handling is not accepted by the PostgREST version.
-            try:
-                patch_headers = self._headers()
-                patch_headers["Prefer"] = "return=representation"
-                patch = {
-                    "cron": cron,
-                    "task_type": "n8n.trigger",
-                    "payload_json": {"workflow": workflow, "data": {}},
-                    "active": True,
-                    "updated_at": self._now(),
-                }
-                patch_resp = requests.patch(
-                    f"{self.supabase_url}/rest/v1/cron_jobs?name=eq.{job['name']}",
-                    headers=patch_headers,
-                    data=json.dumps(patch),
-                    timeout=30,
-                )
-                patch_resp.raise_for_status()
-                data = patch_resp.json()
-                return data[0] if isinstance(data, list) and data else data
-            except requests.RequestException as patch_exc:
-                return {"error": f"upsert_conflict:{patch_exc}"}
+            return self.ontology.insert("cron_jobs?on_conflict=name", job, return_representation=True)
         except requests.RequestException as exc:
             return {"error": f"upsert_failed:{exc}"}
 
     def _recent_task_runs(self) -> List[Dict[str, Any]]:
-        if not self.supabase_url or not self.supabase_key:
-            return []
         try:
-            params = {"select": "id,task_id,status,started_at,ended_at,error", "order": "created_at.desc", "limit": "5"}
-            resp = requests.get(
-                f"{self.supabase_url}/rest/v1/task_runs",
-                headers=self._headers(),
-                params=params,
-                timeout=30,
+            return self.ontology.select(
+                "task_runs",
+                {"select": "id,task_id,status,started_at,ended_at,error", "order": "created_at.desc", "limit": "5"},
             )
-            resp.raise_for_status()
-            return resp.json()
         except requests.RequestException:
             return []
 
@@ -572,15 +528,9 @@ class TelegramRouter:
             return {"status": "error", "error": str(exc)}
 
     def _supabase_health(self) -> Dict[str, Any]:
-        if not self.supabase_url or not self.supabase_key:
-            return {"status": "missing"}
         try:
-            resp = requests.get(
-                f"{self.supabase_url}/rest/v1/tasks?select=id&limit=1",
-                headers=self._headers(),
-                timeout=15,
-            )
-            return {"status": "ok" if resp.status_code == 200 else "error", "code": resp.status_code}
+            rows = self.ontology.select("tasks", {"select": "id", "limit": "1"})
+            return {"status": "ok", "code": 200, "rows": len(rows)}
         except requests.RequestException as exc:
             return {"status": "error", "error": f"{type(exc).__name__}:{exc}"}
 
@@ -636,9 +586,9 @@ class TelegramRouter:
         )
         return {k: event.get(k) for k in keep_keys if k in event}
 
-    def _overall_status(self, task_loop: Dict[str, Any], supabase: Dict[str, Any], n8n: Dict[str, Any]) -> Dict[str, Any]:
+    def _overall_status(self, task_loop: Dict[str, Any], store_status: Dict[str, Any], n8n: Dict[str, Any]) -> Dict[str, Any]:
         # If dependencies are down, overall is red.
-        if supabase.get("status") != "ok" or n8n.get("status") != "ok":
+        if store_status.get("status") != "ok" or n8n.get("status") != "ok":
             status = "down"
         else:
             last_event = (task_loop or {}).get("last_event") or {}
@@ -650,7 +600,7 @@ class TelegramRouter:
         return {"status": status, **self._decorate(status)}
 
     def _headers(self) -> Dict[str, str]:
-        return {"Content-Type": "application/json", "apikey": self.supabase_key, "Authorization": f"Bearer {self.supabase_key}"}
+        return self.ontology.headers()
 
     def _now(self) -> str:
         from datetime import datetime, timezone

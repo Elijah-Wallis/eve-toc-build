@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ssot-lint
+        name: ssot-lint
+        entry: python3 scripts/ci/lint_ssot_invariants.py
+        language: system
+        pass_filenames: false

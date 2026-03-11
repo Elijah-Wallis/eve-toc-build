@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Iterable, List, Optional
 
 import requests
+from ontology.client import OntologyClient
 
 from .ingest_validator import build_persistence_records
 from .ingest_validator import validate_retell_payload
@@ -25,12 +26,9 @@ OUTCOME_STATUS_MAP = {
 class PostcallReconciler:
     def __init__(self, telemetry: Optional[Telemetry] = None) -> None:
         self.telemetry = telemetry
-        self.supabase_url = os.environ.get("SUPABASE_URL", "").rstrip("/")
-        self.supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+        self.ontology = OntologyClient()
         self.retell_base = os.environ.get("RETELL_BASE_URL", "https://api.retellai.com").rstrip("/")
         self.retell_key = os.environ.get("RETELL_AI_KEY", "")
-        if not self.supabase_url or not self.supabase_key:
-            raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
         if not self.retell_key:
             raise RuntimeError("RETELL_AI_KEY is required")
         self._transcript_tables_available: Optional[bool] = None
@@ -124,14 +122,7 @@ class PostcallReconciler:
             "order": "created_at.desc",
             "limit": str(limit),
         }
-        resp = requests.get(
-            f"{self.supabase_url}/rest/v1/call_sessions",
-            headers=self._sb_headers(),
-            params=params,
-            timeout=30,
-        )
-        resp.raise_for_status()
-        return resp.json()
+        return self.ontology.select("call_sessions", params)
 
     def _fetch_lead_map(self, lead_ids: Iterable[Any]) -> Dict[str, Dict[str, Any]]:
         ids = [str(item) for item in lead_ids if item]
@@ -144,14 +135,7 @@ class PostcallReconciler:
                 "select": "id,place_id,source,business_name,phone,status,dm_email,last_contacted_at",
                 "id": f"in.({','.join(batch)})",
             }
-            resp = requests.get(
-                f"{self.supabase_url}/rest/v1/leads",
-                headers=self._sb_headers(),
-                params=params,
-                timeout=30,
-            )
-            resp.raise_for_status()
-            rows.extend(resp.json())
+            rows.extend(self.ontology.select("leads", params))
         return {str(row.get("id")): row for row in rows if row.get("id")}
 
     def _get_retell_call(self, retell_call_id: str) -> Dict[str, Any]:
@@ -176,14 +160,7 @@ class PostcallReconciler:
             patch["duration"] = max(1, int(round(float(record["duration_ms"]) / 1000.0)))
         if not patch:
             return False
-        resp = requests.patch(
-            f"{self.supabase_url}/rest/v1/call_sessions",
-            headers=self._sb_headers(),
-            params={"id": f"eq.{session['id']}"},
-            data=json.dumps(patch),
-            timeout=20,
-        )
-        resp.raise_for_status()
+        self.ontology.patch(f"call_sessions?id=eq.{session['id']}", patch)
         return True
 
     def _patch_lead_and_segment_if_needed(self, lead: Dict[str, Any], record: Dict[str, Any], *, force: bool) -> bool:
@@ -207,31 +184,16 @@ class PostcallReconciler:
             if str(lead.get("status") or "").upper() == "DNC" and target_status != "DNC":
                 patch["status"] = "DNC"
 
-        resp = requests.patch(
-            f"{self.supabase_url}/rest/v1/leads",
-            headers=self._sb_headers(),
-            params={"id": f"eq.{lead_id}"},
-            data=json.dumps(patch),
-            timeout=20,
+        self.ontology.patch(f"leads?id=eq.{lead_id}", patch)
+        self.ontology.insert(
+            "segments?on_conflict=lead_id",
+            {
+                "lead_id": lead_id,
+                "segment": outcome,
+                "last_updated": datetime.now(timezone.utc).isoformat(),
+            },
+            return_representation=False,
         )
-        resp.raise_for_status()
-
-        seg_headers = self._sb_headers()
-        seg_headers["Prefer"] = "resolution=merge-duplicates,return=minimal"
-        seg_resp = requests.post(
-            f"{self.supabase_url}/rest/v1/segments",
-            headers=seg_headers,
-            params={"on_conflict": "lead_id"},
-            data=json.dumps(
-                {
-                    "lead_id": lead_id,
-                    "segment": outcome,
-                    "last_updated": datetime.now(timezone.utc).isoformat(),
-                }
-            ),
-            timeout=20,
-        )
-        seg_resp.raise_for_status()
         return True
 
     def _upsert_postcall_event(self, session: Dict[str, Any], lead: Dict[str, Any], retell_payload: Dict[str, Any]) -> bool:
@@ -239,67 +201,38 @@ class PostcallReconciler:
         call_id = str(session.get("retell_call_id") or "")
         if not lead_id or not call_id:
             return False
-        headers = self._sb_headers()
-        headers["Prefer"] = "resolution=ignore-duplicates,return=representation"
-        resp = requests.post(
-            f"{self.supabase_url}/rest/v1/lead_events",
-            headers=headers,
-            params={"on_conflict": "idempotency_key"},
-            data=json.dumps(
-                {
-                    "lead_id": lead_id,
-                    "place_id": lead.get("place_id"),
-                    "event_type": "retell_postcall",
-                    "idempotency_key": f"{call_id}-postcall",
-                    "payload_json": retell_payload,
-                }
-            ),
-            timeout=20,
+        data = self.ontology.insert(
+            "lead_events?on_conflict=idempotency_key",
+            {
+                "lead_id": lead_id,
+                "place_id": lead.get("place_id"),
+                "event_type": "retell_postcall",
+                "idempotency_key": f"{call_id}-postcall",
+                "payload_json": retell_payload,
+            },
+            return_representation=True,
         )
-        resp.raise_for_status()
-        data = resp.json()
         return bool(data)
 
     def _persist_validation_failure(self, failure: Any) -> None:
         report_row, quarantine_row = build_persistence_records(failure)
-        headers = self._sb_headers()
         for table, row in (
             ("shacl_validation_reports", report_row),
             ("ingest_quarantine", quarantine_row),
         ):
-            resp = requests.post(
-                f"{self.supabase_url}/rest/v1/{table}",
-                headers=headers,
-                data=json.dumps(row),
-                timeout=20,
-            )
-            resp.raise_for_status()
+            self.ontology.insert(table, row)
 
     def _upsert_transcript_and_turns(self, record: Dict[str, Any], turns: List[Dict[str, Any]]) -> None:
-        headers = self._sb_headers()
-        write_headers = dict(headers)
-        write_headers["Prefer"] = "return=representation,resolution=merge-duplicates"
-        resp = requests.post(
-            f"{self.supabase_url}/rest/v1/call_transcripts",
-            headers=write_headers,
-            params={"on_conflict": "retell_call_id"},
-            data=json.dumps(record),
-            timeout=30,
+        row = self.ontology.insert(
+            "call_transcripts?on_conflict=retell_call_id",
+            record,
+            return_representation=True,
         )
-        resp.raise_for_status()
-        rows = resp.json()
-        row = rows[0] if isinstance(rows, list) and rows else rows
         transcript_id = row.get("id") if isinstance(row, dict) else None
         if not transcript_id:
             return
 
-        delete_resp = requests.delete(
-            f"{self.supabase_url}/rest/v1/call_transcript_turns",
-            headers=headers,
-            params={"transcript_id": f"eq.{transcript_id}"},
-            timeout=20,
-        )
-        delete_resp.raise_for_status()
+        self.ontology.delete(f"call_transcript_turns?transcript_id=eq.{transcript_id}")
 
         if not turns:
             return
@@ -318,46 +251,22 @@ class PostcallReconciler:
                     "payload_json": turn.get("payload_json") or {},
                 }
             )
-        for idx in range(0, len(payload_rows), 500):
-            batch = payload_rows[idx : idx + 500]
-            insert_resp = requests.post(
-                f"{self.supabase_url}/rest/v1/call_transcript_turns",
-                headers=headers,
-                data=json.dumps(batch),
-                timeout=30,
-            )
-            insert_resp.raise_for_status()
+        for row in payload_rows:
+            self.ontology.insert("call_transcript_turns", row)
 
     def _transcript_tables_enabled(self) -> bool:
         if self._transcript_tables_available is not None:
             return self._transcript_tables_available
         try:
-            t1 = requests.get(
-                f"{self.supabase_url}/rest/v1/call_transcripts",
-                headers=self._sb_headers(),
-                params={"select": "id", "limit": "1"},
-                timeout=10,
-            )
-            t2 = requests.get(
-                f"{self.supabase_url}/rest/v1/call_transcript_turns",
-                headers=self._sb_headers(),
-                params={"select": "id", "limit": "1"},
-                timeout=10,
-            )
-            self._transcript_tables_available = t1.status_code == 200 and t2.status_code == 200
+            self.ontology.select("call_transcripts", {"select": "id", "limit": "1"})
+            self.ontology.select("call_transcript_turns", {"select": "id", "limit": "1"})
+            self._transcript_tables_available = True
         except requests.RequestException:
             self._transcript_tables_available = False
         return bool(self._transcript_tables_available)
 
     def _session_needs_repair(self, session: Dict[str, Any]) -> bool:
         return not session.get("outcome") or not session.get("summary") or not session.get("duration")
-
-    def _sb_headers(self) -> Dict[str, str]:
-        return {
-            "Content-Type": "application/json",
-            "apikey": self.supabase_key,
-            "Authorization": f"Bearer {self.supabase_key}",
-        }
 
     def _retell_headers(self) -> Dict[str, str]:
         return {

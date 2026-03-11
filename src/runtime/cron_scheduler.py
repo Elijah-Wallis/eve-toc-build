@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import json
 import os
-import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional, Tuple
 
 import requests
+
+from ontology.client import OntologyClient
 
 from .task_engine import TaskEngine
 from .telemetry import Telemetry
@@ -18,12 +18,8 @@ class CronScheduler:
     def __init__(self, engine: TaskEngine, telemetry: Optional[Telemetry] = None) -> None:
         self.engine = engine
         self.telemetry = telemetry
-        self.supabase_url = os.environ.get("SUPABASE_URL", "")
-        self.supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
-        if not self.supabase_url or not self.supabase_key:
-            raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required")
+        self.ontology = OntologyClient()
         self.max_retries = max(0, int(os.environ.get("OPENCLAW_STEP_MAX_RETRIES", "2")))
-        self.backoff_ms = max(10, int(os.environ.get("OPENCLAW_STEP_BACKOFF_MS", "250")))
 
     def tick(self) -> int:
         now = datetime.now(timezone.utc)
@@ -57,12 +53,13 @@ class CronScheduler:
         return fired
 
     def _get_jobs(self) -> List[Dict[str, Any]]:
-        url = f"{self.supabase_url}/rest/v1/cron_jobs"
-        params = {
-            "select": "id,name,cron,task_type,payload_json,last_run_at,next_run_at,active",
-            "active": "eq.true",
-        }
-        return self._get(url, params=params)
+        return self.ontology.select(
+            "cron_jobs",
+            {
+                "select": "id,name,cron,task_type,payload_json,last_run_at,next_run_at,active",
+                "active": "eq.true",
+            },
+        )
 
     def _update_job(self, job_id: str, now: datetime, next_run: datetime) -> None:
         patch = {
@@ -70,7 +67,7 @@ class CronScheduler:
             "next_run_at": next_run.isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
-        self._patch(f"cron_jobs?id=eq.{job_id}", patch)
+        self.ontology.patch(f"cron_jobs?id=eq.{job_id}", patch)
 
     def _is_due(
         self,
@@ -115,43 +112,6 @@ class CronScheduler:
             return datetime.fromisoformat(value)
         except ValueError:
             return None
-
-    def _get(self, url: str, params: Dict[str, Any]) -> List[Dict[str, Any]]:
-        resp = self._request_with_retry("get", url, params=params)
-        resp.raise_for_status()
-        return resp.json()
-
-    def _patch(self, table_query: str, patch: Dict[str, Any]) -> None:
-        resp = self._request_with_retry(
-            "patch",
-            f"{self.supabase_url}/rest/v1/{table_query}",
-            data=json.dumps(patch),
-        )
-        resp.raise_for_status()
-
-    def _request_with_retry(self, method: str, url: str, **kwargs: Any) -> requests.Response:
-        timeout = kwargs.pop("timeout", 30)
-        headers = kwargs.pop("headers", self._headers())
-        last_exc: Optional[Exception] = None
-        for attempt in range(self.max_retries + 1):
-            try:
-                return requests.request(method, url, headers=headers, timeout=timeout, **kwargs)
-            except requests.RequestException as exc:
-                last_exc = exc
-                if attempt >= self.max_retries:
-                    break
-                backoff = min(15000, self.backoff_ms * (2**attempt))
-                time.sleep(backoff / 1000.0)
-        if isinstance(last_exc, Exception):
-            raise last_exc
-        raise RuntimeError("request failed without exception")
-
-    def _headers(self) -> Dict[str, str]:
-        return {
-            "Content-Type": "application/json",
-            "apikey": self.supabase_key,
-            "Authorization": f"Bearer {self.supabase_key}",
-        }
 
     def _emit(self, event: str, payload: Dict[str, Any]) -> None:
         if self.telemetry:
