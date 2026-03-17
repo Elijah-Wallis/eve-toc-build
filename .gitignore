@@ -11,3 +11,5 @@ generated/
 .ruff_cache/
 .mypy_cache/
 *.log
+
+/target/
