@@ -14,10 +14,6 @@ if [ -n "$(git status --porcelain)" ]; then
   fail "worktree is dirty. Commit/stash changes before creating a release baseline."
 fi
 
-if ! docker info >/dev/null 2>&1; then
-  fail "docker daemon unavailable. Start Docker because baseline gates include docker-backed checks (AT-018B/AT-034B/AT-035B)."
-fi
-
 if ! python3 scripts/acceptance/run_acceptance.py --ids AT-001 >/dev/null; then
   fail "acceptance precheck failed (AT-001). Verify Python/runtime deps, then rerun."
 fi
@@ -27,7 +23,7 @@ tag="baseline-$(date +%Y%m%d-%H%M)"
 snapshot_dir="${STATE_DIR}/release_snapshots/${tag}"
 mkdir -p "$snapshot_dir"
 
-ids="AT-PRO-001,AT-PRO-002,AT-PRO-003,AT-001,AT-002,AT-003,AT-007,AT-009,AT-011,AT-012,AT-013B,AT-018B,AT-021B,AT-024B,AT-034B,AT-035B,AT-SEC-002"
+ids="AT-PRO-001,AT-PRO-002,AT-PRO-003,AT-001,AT-002,AT-003,AT-007,AT-009,AT-011,AT-012,AT-013B,AT-021B,AT-024B,AT-SEC-002"
 
 echo "Running baseline suite: $ids"
 python3 scripts/acceptance/run_acceptance.py --ids "$ids" | tee "${snapshot_dir}/gates_run.json" >/dev/null

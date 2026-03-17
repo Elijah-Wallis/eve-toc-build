@@ -679,6 +679,9 @@ class OntologyClient:
 
     def _request(self, method: str, url: str, **kwargs: Any) -> requests.Response:
         timeout = kwargs.pop("timeout", 30)
+        requester = getattr(requests, method.lower(), None)
+        if callable(requester):
+            return requester(url, timeout=timeout, **kwargs)
         return requests.request(method, url, timeout=timeout, **kwargs)
 
     def _headers(self) -> Dict[str, str]:
