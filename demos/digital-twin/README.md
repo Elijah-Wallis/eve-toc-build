@@ -6,7 +6,7 @@
 
 The flagship B2B lead magnet for Eve L5_Medspa_IaC. Clinic owners input 5 KPIs and instantly receive a live "Digital Twin" of their practice running under full autonomous ontology — revenue projections, staff reduction, hidden leaks, and a downloadable branded PDF report.
 
-This is the business-version of the "free tire plug" story that turned $0 visitors into $384 customers.
+This is the business-version of the "free tire plug" story that turned $0 visitors into $384 customers — now extended with a speed-to-lead patient response module that turns the diagnostic into a complete patient-acquisition flywheel.
 
 ## Purpose
 
@@ -29,10 +29,17 @@ This is the business-version of the "free tire plug" story that turned $0 visito
 3. Eve re-runs with tighter confidence intervals (92–99% CI) and identifies 2–4 additional bottlenecks: staff idle time, missed upsell, inventory waste, marketing attribution leakage.
 4. Dashboard updates in-place with refined projections, new bottleneck cards, and "Deep Ontology" badge.
 
+### Stage 3 — Speed-to-Lead Patient Response Module
+1. Visit `/speed-to-lead` or run the embedded simulation directly from the diagnostic results section.
+2. Simulate a new patient lead with name, phone, email, concern, and service interest.
+3. Eve pulls the relevant ontology pathway, sends hyper-personalized SMS + email (plus optional voice), asks 2–3 smart qualification questions, and moves the lead toward booking.
+4. Demo mode uses mock Twilio, Vapi, and Calendly/Cal.com layers so the orchestration works instantly without live credentials.
+5. The clinic owner receives an immediate summary notification, and the dashboard frames the expected booking lift at 35–70%.
+
 ### Conversion
 - Bottleneck cards with CI ranges build trust and urgency — each one is a quantified problem the pilot solves.
 - Two-stage flow keeps friction low while collecting progressively richer data.
-- PDF includes full bottleneck analysis with CI ranges for stakeholder sharing.
+- PDF includes full bottleneck analysis with CI ranges plus the new speed-to-lead module overview for stakeholder sharing.
 
 ## Tech Stack & Purpose
 
@@ -41,6 +48,7 @@ This is the business-version of the "free tire plug" story that turned $0 visito
 | Next.js 15 App Router | Fast, server-rendered frontend + API routes |
 | Supabase | Postgres DB for persisting diagnostics and seeding real ontology states |
 | MCP Agents | Core Eve hive-mind ontology engine that performs state shifts and projections |
+| Twilio / Vapi / Calendly / Cal.com (mock) | Instant demo-mode patient response, qualification, and booking orchestration |
 | shadcn/ui + Tailwind | Premium cyber-medical UI (teal/gold dark theme) |
 | Recharts | Interactive before/after revenue, staff, and trajectory charts |
 | jsPDF + html2canvas | Generate beautiful branded PDF reports with embedded charts |
@@ -53,3 +61,8 @@ This is the business-version of the "free tire plug" story that turned $0 visito
 ```bash
 npm run demo  # or: npm run dev
 ```
+
+Then open:
+
+- `http://localhost:3000/diagnostic` for the clinic autonomy diagnostic
+- `http://localhost:3000/speed-to-lead` for the patient lead-response module

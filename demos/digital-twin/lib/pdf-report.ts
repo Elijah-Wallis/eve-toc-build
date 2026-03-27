@@ -157,6 +157,38 @@ export async function generatePdfReport(
     y += 4;
   }
 
+  // Speed-to-lead module
+  ensureSpace(38);
+  doc.setDrawColor(13, 148, 136);
+  doc.setLineWidth(0.3);
+  doc.line(margin, y, pageW - margin, y);
+  y += 8;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(0, 0, 0);
+  doc.text("How Eve Handles Your New Patient Leads 24/7", margin, y);
+  y += 6;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(80, 80, 80);
+  const speedToLeadLines = [
+    "Responds in under 10 seconds with hyper-personalized SMS + email and optional voice follow-up.",
+    "Pulls the relevant medspa ontology state, asks 2-3 smart qualification questions, and keeps context across channels.",
+    "Offers Calendly/Cal.com slots instantly or auto-holds the best opening for high-intent leads in demo mode.",
+    "Sends the owner a clean lead summary with status, qualification context, and expected booking lift.",
+    "Expected booking lift from faster response + qualification + booking handoff: 35%-70%.",
+  ];
+  speedToLeadLines.forEach((line) => {
+    ensureSpace(6);
+    const wrapped = doc.splitTextToSize(`- ${line}`, pageW - 2 * margin);
+    wrapped.forEach((segment: string) => {
+      ensureSpace(5);
+      doc.text(segment, margin, y);
+      y += 4.5;
+    });
+  });
+  y += 6;
+
   // Executive summary
   ensureSpace(20);
   doc.setFont("helvetica", "bold");
